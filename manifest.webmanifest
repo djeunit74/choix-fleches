@@ -1,0 +1,19 @@
+﻿{
+  "name": "Choix de Fleches",
+  "short_name": "Fleches",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2efe6",
+  "theme_color": "#b23b2f",
+  "lang": "fr",
+  "description": "Application web publique pour estimer un spine de fleches.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

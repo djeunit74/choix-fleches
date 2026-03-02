@@ -1,0 +1,147 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choix de Fleches - Spine</title>
+  <meta name="description" content="Application web publique pour estimer un spine de fleches." />
+  <meta name="theme-color" content="#b23b2f" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>Choix de fleches</h1>
+      <p>Estimez un spine de depart selon votre arc et votre allonge.</p>
+    </header>
+
+    <section class="card">
+      <form id="spine-form" novalidate>
+        <label>
+          Type d'arc
+          <select id="bowType" required>
+            <option value="recurve">Recurve</option>
+            <option value="compound">Compound</option>
+          </select>
+        </label>
+
+        <label>
+          Profil de tableau
+          <select id="profile" required>
+            <option value="generic">Generique (base)</option>
+            <option value="easton">Tendance Easton</option>
+            <option value="victory">Tendance Victory</option>
+            <option value="carbon">Tendance Carbon Express</option>
+            <option value="skylon">Skylon (tableau fourni)</option>
+          </select>
+        </label>
+
+        <label id="compoundSpeedWrap">
+          Vitesse arc compound
+          <select id="compoundSpeed">
+            <option value="lt276">&lt; 276 fps</option>
+            <option value="276_300">276 - 300 fps</option>
+            <option value="301_340">301 - 340 fps</option>
+            <option value="340_360">340 - 360 fps</option>
+          </select>
+        </label>
+
+        <label>
+          Marque preferee
+          <select id="preferredBrand" required>
+            <option value="all">Toutes</option>
+          </select>
+        </label>
+
+        <label>
+          Budget
+          <select id="budgetLevel" required>
+            <option value="all">Tous</option>
+            <option value="eco">Eco</option>
+            <option value="mid">Intermediaire</option>
+            <option value="premium">Premium</option>
+          </select>
+        </label>
+
+        <label>
+          Unites
+          <select id="units" required>
+            <option value="imperial">lbs + pouces</option>
+            <option value="metric">kg + cm</option>
+          </select>
+        </label>
+
+        <label id="drawWeightLabel">
+          Puissance reelle a l'allonge
+          <input id="drawWeight" type="number" min="10" max="100" step="0.5" value="36" required />
+        </label>
+
+        <label id="arrowLengthLabel">
+          Longueur de fleche
+          <input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required />
+        </label>
+
+        <label>
+          Poids de pointe (grains)
+          <input id="pointWeight" type="number" min="60" max="250" step="5" value="100" required />
+        </label>
+
+        <label>
+          Usage
+          <select id="discipline">
+            <option value="target">Cible</option>
+            <option value="field">Campagne / 3D</option>
+            <option value="hunting">Chasse (si autorisee)</option>
+          </select>
+        </label>
+
+        <button type="submit">Calculer</button>
+      </form>
+    </section>
+
+    <section class="card notes">
+      <h3>Importer un tableau fabricant</h3>
+      <p>Formats supportes: JSON ou CSV (`brand,spine,model`). Fichier optionnel.</p>
+      <input id="catalogFile" type="file" accept=".json,.csv,text/csv,application/json" />
+      <div class="row-actions">
+        <button id="importCatalogBtn" type="button">Importer / Charger recommande</button>
+        <button id="resetCatalogBtn" type="button">Restaurer base locale</button>
+      </div>
+      <p id="catalogStatus">Base locale active.</p>
+    </section>
+
+    <section class="card result" id="result" aria-live="polite">
+      <h2>Recommandation</h2>
+      <p>Entrez vos parametres puis lancez le calcul.</p>
+    </section>
+
+    <section class="card notes" id="history">
+      <h3>Historique (5 derniers)</h3>
+      <div id="historyContent">
+        <p>Aucun calcul pour le moment.</p>
+      </div>
+      <button id="clearHistoryBtn" type="button">Vider l'historique</button>
+    </section>
+
+    <section class="card notes">
+      <h3>Important</h3>
+      <ul>
+        <li>Ce calcul donne un <strong>spine de depart</strong> (approche pratique).</li>
+        <li>Validez toujours au tir (paper tune, groupements, vol de fleche).</li>
+        <li>Consultez le tableau du fabricant final (Easton, Victory, Carbon Express...).</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
