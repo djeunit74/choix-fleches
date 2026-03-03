@@ -2,7 +2,6 @@
   form: document.getElementById("spine-form"),
   result: document.getElementById("result"),
   historyContent: document.getElementById("historyContent"),
-  units: document.getElementById("units"),
   drawWeightLabel: document.getElementById("drawWeightLabel"),
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
@@ -149,7 +148,6 @@ const LIVE_DEALS = [
 ];
 
 let arrowCatalog = loadCatalog();
-let lastUnits = els.units.value;
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
@@ -159,54 +157,19 @@ function pickSpine(raw) {
   return SPINE_BANDS.find((band) => raw <= band.max)?.label ?? "N/A";
 }
 
-function toImperial(units, drawWeight, arrowLength) {
-  if (units === "metric") {
-    return {
-      drawWeight: drawWeight * 2.20462,
-      arrowLength: arrowLength / 2.54
-    };
-  }
+function toImperial(drawWeight, arrowLength) {
   return { drawWeight, arrowLength };
 }
 
-function convertDisplayedInputs(oldUnits, newUnits) {
-  if (oldUnits === newUnits) return;
-
-  const draw = Number(els.drawWeight.value);
-  const length = Number(els.arrowLength.value);
-  if (!Number.isFinite(draw) || !Number.isFinite(length)) return;
-
-  if (oldUnits === "imperial" && newUnits === "metric") {
-    els.drawWeight.value = (draw / 2.20462).toFixed(1);
-    els.arrowLength.value = (length * 2.54).toFixed(1);
-  } else if (oldUnits === "metric" && newUnits === "imperial") {
-    els.drawWeight.value = (draw * 2.20462).toFixed(2);
-    els.arrowLength.value = (length / 2.54).toFixed(2);
-  }
-}
-
 function applyUnitConstraints() {
-  const metric = els.units.value === "metric";
-
-  if (metric) {
-    els.drawWeightLabel.firstChild.textContent = "Puissance reelle a l'allonge (kg)";
-    els.arrowLengthLabel.firstChild.textContent = "Longueur de fleche (cm)";
-    els.drawWeight.min = "5";
-    els.drawWeight.max = "46";
-    els.drawWeight.step = "0.2";
-    els.arrowLength.min = "56";
-    els.arrowLength.max = "86";
-    els.arrowLength.step = "0.5";
-  } else {
-    els.drawWeightLabel.firstChild.textContent = "Puissance reelle a l'allonge (lbs)";
-    els.arrowLengthLabel.firstChild.textContent = "Longueur de fleche (pouces)";
-    els.drawWeight.min = "10";
-    els.drawWeight.max = "100";
-    els.drawWeight.step = "0.5";
-    els.arrowLength.min = "22";
-    els.arrowLength.max = "34";
-    els.arrowLength.step = "0.25";
-  }
+  els.drawWeightLabel.firstChild.textContent = "Puissance reelle a l'allonge (lbs)";
+  els.arrowLengthLabel.firstChild.textContent = "Longueur de fleche (pouces)";
+  els.drawWeight.min = "10";
+  els.drawWeight.max = "100";
+  els.drawWeight.step = "0.5";
+  els.arrowLength.min = "22";
+  els.arrowLength.max = "34";
+  els.arrowLength.step = "0.25";
 }
 
 function updateVisibility() {
@@ -690,13 +653,6 @@ function renderRecommendation(input) {
   });
 }
 
-els.units.addEventListener("change", () => {
-  const newUnits = els.units.value;
-  convertDisplayedInputs(lastUnits, newUnits);
-  applyUnitConstraints();
-  lastUnits = newUnits;
-});
-
 els.bowType.addEventListener("change", updateVisibility);
 els.preferredBrand.addEventListener("change", updateVisibility);
 
@@ -740,8 +696,7 @@ els.resetCatalogBtn.addEventListener("click", () => {
 els.form.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const units = els.units.value;
-  const converted = toImperial(units, Number(els.drawWeight.value), Number(els.arrowLength.value));
+  const converted = toImperial( Number(els.drawWeight.value), Number(els.arrowLength.value));
 
   const input = {
     bowType: els.bowType.value,
@@ -774,3 +729,4 @@ if (localStorage.getItem(STORAGE.catalog)) {
   saveCatalog(arrowCatalog);
   setCatalogStatus("Catalogue recommande actif.");
 }
+

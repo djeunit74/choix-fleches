@@ -48,7 +48,7 @@ Fichier deja fourni:
 - Affiche un niveau de confiance sur la recommandation (Faible / Moyenne / Elevee).
 - Permet de filtrer par marque preferee (ou toutes les marques).
 - Permet de filtrer les suggestions par budget (Eco / Intermediaire / Premium).
-- Gere les unites imperiales (`lbs/pouces`) et metriques (`kg/cm`).
+- Utilise uniquement les unites imperiales (`lbs/pouces`).
 - Sauvegarde les 5 derniers calculs localement.
 - Propose des modeles de tubes par spine (base locale editable dans `app.js`).
 - Permet d'importer un tableau fabricant en CSV/JSON et de le memoriser localement.
