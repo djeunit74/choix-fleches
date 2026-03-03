@@ -6,10 +6,6 @@
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
   preferredBrand: document.getElementById("preferredBrand"),
-  catalogFile: document.getElementById("catalogFile"),
-  importCatalogBtn: document.getElementById("importCatalogBtn"),
-  resetCatalogBtn: document.getElementById("resetCatalogBtn"),
-  catalogStatus: document.getElementById("catalogStatus"),
   budgetLevel: document.getElementById("budgetLevel"),
   compoundSpeedWrap: document.getElementById("compoundSpeedWrap"),
   compoundSpeed: document.getElementById("compoundSpeed"),
@@ -22,7 +18,6 @@
 
 const STORAGE = {
   history: "spineHistory",
-  catalog: "arrowCatalogCustom"
 };
 
 const BRAND_REFERENCE = {
@@ -147,7 +142,7 @@ const LIVE_DEALS = [
   { brand: "carbon", tier: "eco", title: "Carbon Express Predator II", price: "5,70 EUR / tube", url: "https://www.disport.it/en/product/aste53b505/carbon-express-predator-ii-shaft", shop: "disport.it" }
 ];
 
-let arrowCatalog = loadCatalog();
+let arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
@@ -347,185 +342,8 @@ function brandLabel(key) {
   return key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ");
 }
 
-function normalizeBrandKey(raw) {
-  const value = String(raw || "").trim().toLowerCase();
-  if (!value) return "custom";
-  if (value.includes("easton")) return "easton";
-  if (value.includes("victory")) return "victory";
-  if (value.includes("carbon")) return "carbon";
-  if (value.includes("skylon")) return "skylon";
-  return value.replace(/\s+/g, "_");
-}
-
 function cloneCatalog(catalog) {
   return JSON.parse(JSON.stringify(catalog));
-}
-
-function mergeCatalogWithDefault(catalog) {
-  const merged = cloneCatalog(DEFAULT_CATALOG);
-
-  for (const [brand, spineMap] of Object.entries(catalog || {})) {
-    if (!merged[brand]) merged[brand] = {};
-    if (!spineMap || typeof spineMap !== "object") continue;
-
-    for (const [spine, models] of Object.entries(spineMap)) {
-      const list = Array.isArray(models) ? models : [models];
-      const cleaned = list.map((m) => String(m).trim()).filter(Boolean);
-      if (cleaned.length) merged[brand][spine] = cleaned;
-    }
-  }
-
-  return merged;
-}
-
-function loadCatalog() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE.catalog) || "null");
-    if (!saved || typeof saved !== "object") return cloneCatalog(DEFAULT_CATALOG);
-    return mergeCatalogWithDefault(saved);
-  } catch {
-    return cloneCatalog(DEFAULT_CATALOG);
-  }
-}
-
-function saveCatalog(catalog) {
-  localStorage.setItem(STORAGE.catalog, JSON.stringify(catalog));
-}
-
-function parseCsvLine(line, delimiter) {
-  const out = [];
-  let current = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i += 1) {
-    const ch = line[i];
-    if (ch === '"') {
-      const next = line[i + 1];
-      if (inQuotes && next === '"') {
-        current += '"';
-        i += 1;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (ch === delimiter && !inQuotes) {
-      out.push(current.trim());
-      current = "";
-    } else {
-      current += ch;
-    }
-  }
-
-  out.push(current.trim());
-  return out;
-}
-
-function parseCatalogCsv(text) {
-  const rows = text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"));
-
-  if (!rows.length) throw new Error("CSV vide");
-
-  const delimiter = rows[0].includes(";") ? ";" : ",";
-  const first = parseCsvLine(rows[0], delimiter).map((v) => v.toLowerCase());
-  const hasHeader = first.includes("brand") || first.includes("marque");
-  const start = hasHeader ? 1 : 0;
-  const catalog = {};
-
-  for (let i = start; i < rows.length; i += 1) {
-    const cols = parseCsvLine(rows[i], delimiter);
-    if (cols.length < 3) continue;
-
-    const brand = normalizeBrandKey(cols[0]);
-    const spine = String(cols[1]).trim();
-    const models = cols.slice(2).join(" ").split("|").map((m) => m.trim()).filter(Boolean);
-    if (!spine || !models.length) continue;
-
-    if (!catalog[brand]) catalog[brand] = {};
-    if (!catalog[brand][spine]) catalog[brand][spine] = [];
-
-    for (const model of models) {
-      if (!catalog[brand][spine].includes(model)) catalog[brand][spine].push(model);
-    }
-  }
-
-  if (!Object.keys(catalog).length) {
-    throw new Error("CSV invalide: aucune ligne exploitable");
-  }
-
-  return catalog;
-}
-
-function normalizeCatalogJson(input) {
-  if (Array.isArray(input)) {
-    const catalog = {};
-    for (const row of input) {
-      const brand = normalizeBrandKey(row.brand || row.marque);
-      const spine = String(row.spine || "").trim();
-      const modelValue = row.model || row.modele || row.models;
-      const models = Array.isArray(modelValue)
-        ? modelValue.map((m) => String(m).trim()).filter(Boolean)
-        : String(modelValue || "").split("|").map((m) => m.trim()).filter(Boolean);
-
-      if (!spine || !models.length) continue;
-      if (!catalog[brand]) catalog[brand] = {};
-      if (!catalog[brand][spine]) catalog[brand][spine] = [];
-      for (const model of models) {
-        if (!catalog[brand][spine].includes(model)) catalog[brand][spine].push(model);
-      }
-    }
-    if (!Object.keys(catalog).length) throw new Error("JSON invalide");
-    return catalog;
-  }
-
-  if (input && typeof input === "object") {
-    const catalog = {};
-    for (const [brandRaw, spineMap] of Object.entries(input)) {
-      const brand = normalizeBrandKey(brandRaw);
-      if (!spineMap || typeof spineMap !== "object") continue;
-      catalog[brand] = {};
-      for (const [spine, models] of Object.entries(spineMap)) {
-        const arr = Array.isArray(models) ? models : [models];
-        const cleaned = arr.map((m) => String(m).trim()).filter(Boolean);
-        if (cleaned.length) catalog[brand][spine] = cleaned;
-      }
-    }
-    if (!Object.keys(catalog).length) throw new Error("JSON invalide");
-    return catalog;
-  }
-
-  throw new Error("JSON invalide");
-}
-
-function readFileAsText(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ""));
-    reader.onerror = () => reject(new Error("Lecture fichier impossible"));
-    reader.readAsText(file);
-  });
-}
-
-function refreshBrandOptions() {
-  const current = els.preferredBrand.value || "all";
-  const brands = Object.keys(arrowCatalog).sort((a, b) => brandLabel(a).localeCompare(brandLabel(b), "fr"));
-
-  els.preferredBrand.innerHTML = '<option value="all">Toutes</option>';
-  for (const brand of brands) {
-    const option = document.createElement("option");
-    option.value = brand;
-    option.textContent = brandLabel(brand);
-    els.preferredBrand.appendChild(option);
-  }
-
-  if (brands.includes(current) || current === "all") {
-    els.preferredBrand.value = current;
-  }
-}
-
-function setCatalogStatus(text) {
-  els.catalogStatus.textContent = text;
 }
 
 function readHistory() {
@@ -662,38 +480,6 @@ els.clearHistoryBtn.addEventListener("click", () => {
   renderHistory();
 });
 
-els.importCatalogBtn.addEventListener("click", async () => {
-  const file = els.catalogFile.files?.[0];
-  if (!file) {
-    arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
-    saveCatalog(arrowCatalog);
-    refreshBrandOptions();
-    setCatalogStatus("Catalogue recommande charge (sans fichier).");
-    return;
-  }
-
-  try {
-    const text = await readFileAsText(file);
-    const imported = file.name.toLowerCase().endsWith(".json")
-      ? normalizeCatalogJson(JSON.parse(text))
-      : parseCatalogCsv(text);
-
-    arrowCatalog = mergeCatalogWithDefault(imported);
-    saveCatalog(arrowCatalog);
-    refreshBrandOptions();
-    setCatalogStatus(`Import OK (${Object.keys(imported).length} marque(s)).`);
-  } catch (error) {
-    setCatalogStatus(`Import echoue: ${error.message}`);
-  }
-});
-
-els.resetCatalogBtn.addEventListener("click", () => {
-  localStorage.removeItem(STORAGE.catalog);
-  arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
-  refreshBrandOptions();
-  setCatalogStatus("Base locale restauree.");
-});
-
 els.form.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -724,10 +510,5 @@ updateVisibility();
 renderHistory();
 refreshBrandOptions();
 
-if (localStorage.getItem(STORAGE.catalog)) {
-  setCatalogStatus("Catalogue personnalise charge.");
-} else {
-  saveCatalog(arrowCatalog);
-  setCatalogStatus("Catalogue recommande actif.");
-}
+
 
