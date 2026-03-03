@@ -40,19 +40,23 @@ Fichier deja fourni:
 - Propose un spine principal.
 - Donne deux options voisines (plus souple / plus rigide).
 - Affiche un niveau d'alerte selon la charge dynamique.
-- Permet un profil de tableau (Generique / Easton / Victory / Carbon Express).
+- Adapte le tableau de reference selon la marque preferee.
+- En mode `Generique + Toutes`, affiche une comparaison spine par marque.
 - Ajoute un mode Skylon (groupe A1..A13) base sur votre capture du tableau.
+- Affiche la vitesse compound uniquement si `Type d'arc = Compound` et `Marque preferee = Skylon`.
+- Priorise la recommandation Skylon (groupe) quand la marque Skylon est choisie.
+- Affiche un niveau de confiance sur la recommandation (Faible / Moyenne / Elevee).
 - Permet de filtrer par marque preferee (ou toutes les marques).
 - Permet de filtrer les suggestions par budget (Eco / Intermediaire / Premium).
 - Gere les unites imperiales (`lbs/pouces`) et metriques (`kg/cm`).
 - Sauvegarde les 5 derniers calculs localement.
 - Propose des modeles de tubes par spine (base locale editable dans `app.js`).
 - Permet d'importer un tableau fabricant en CSV/JSON et de le memoriser localement.
-- Affiche des liens d'offres interessantes du moment (filtrees par marque et budget).
+- Affiche des liens utiles d'achat (filtres par marque et budget, sans garantie de prix/stock).
 
 ## Mode Skylon
 
-- Selectionner `Profil de tableau = Skylon (tableau fourni)`.
+- Selectionner `Marque preferee = Skylon`.
 - Pour compound, renseigner `Vitesse arc compound`.
 - L'app calcule un groupe Skylon (`A1` a `A13`, ou zone `Y`) selon puissance + longueur.
 
@@ -60,6 +64,8 @@ Fichier deja fourni:
 
 - Le resultat est indicatif, pas un remplacement du tableau fabricant.
 - Toujours valider au tir et ajuster selon votre tuning.
+- Le filtre budget est indicatif (gamme produit), pas un prix temps reel.
+- Les liens d'achat doivent etre verifies manuellement avant achat.
 
 ## Import de tableau
 
