@@ -134,12 +134,14 @@ const SKYLON_GROUP_MODELS = {
 };
 
 const LIVE_DEALS = [
-  { brand: "easton", tier: "mid", title: "Pack Easton Avance (12 tubes)", price: "299,96 EUR", url: "https://www.archerie.fr/fr/10691-promo-tubes-easton-avance.html", shop: "archerie.fr" },
-  { brand: "victory", tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-443507-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
-  { brand: "victory", tier: "mid", title: "Victory VAP Gamer V3", price: "12,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/victory-vap-gamer-v3-tube-carbone", shop: "erhart-sports.com" },
-  { brand: "skylon", tier: "eco", title: "Skylon Radius ID4.2 lot de 12", price: "39,95 EUR", url: "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html", shop: "archerie.fr" },
-  { brand: "skylon", tier: "mid", title: "Skylon Carbon Phoric ID6.2", price: "82,50 EUR", url: "https://www.europearchery.fr/skylon-carbon-arrow-3k-maverick-id6-2-12-pack-1", shop: "europearchery.fr" },
-  { brand: "carbon", tier: "eco", title: "Carbon Express Predator II", price: "5,70 EUR / tube", url: "https://www.disport.it/en/product/aste53b505/carbon-express-predator-ii-shaft", shop: "disport.it" }
+  { brand: "skylon", tier: "eco", title: "Skylon Radius ID4.2 lot de 12 (en stock)", price: "39,95 EUR", url: "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html", shop: "archerie.fr" },
+  { brand: "skylon", tier: "eco", title: "Skylon Rove ID6.2 lot de 12 (sur commande)", price: "58,95 EUR", url: "https://www.archerie.fr/fr/4762-lot-de-12-tubes-skylon-rove-id62-en-carbone.html", shop: "archerie.fr" },
+  { brand: "skylon", tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
+  { brand: "easton", tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
+  { brand: "easton", tier: "premium", title: "Easton X10 Parallel Pro lot de 12", price: "295,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/3643-easton-x10-parallel-pro-pack-de-12.html", shop: "erhart-sports.com" },
+  { brand: "easton", tier: "premium", title: "Easton ACE lot de 12 tubes", price: "376,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/3034-easton-ace-lot-de-12-tubes.html", shop: "erhart-sports.com" },
+  { brand: "victory", tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
+  { brand: "carbon", tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
 ];
 
 let arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
@@ -457,7 +459,7 @@ function renderRecommendation(input) {
     ${specialBlock}
     <p>Modeles conseilles:</p>
     <ul>${modelList}</ul>
-    <p>Liens utiles (prix/stock non garantis, verification manuelle requise):</p>
+    <p>Bons plans (mise a jour 3 mars 2026, verification manuelle requise):</p>
     <ul>${dealsList}</ul>
     <p>Budget: filtre indicatif base sur la gamme, pas sur prix temps reel.</p>
   `;
