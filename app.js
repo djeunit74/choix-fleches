@@ -244,10 +244,10 @@ function genericRecommendation(input) {
     mode: "generic",
     referenceBrand,
     main: picked.main,
-    raw,
+    raw: picked.raw,
     softer: picked.softer,
     stiffer: picked.stiffer,
-    load,
+    load: picked.load,
     confidence: evaluateConfidence({ referenceBrand, bowType: input.bowType, arrowLength: input.arrowLength }),
     warnings: []
   };
