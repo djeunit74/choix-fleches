@@ -20,6 +20,13 @@ const STORAGE = {
   history: "spineHistory",
 };
 
+const BOW_LIMITS = {
+  recurve: { minDrawWeight: 12, maxDrawWeight: 70, minArrowLength: 22, maxArrowLength: 34 },
+  compound: { minDrawWeight: 20, maxDrawWeight: 100, minArrowLength: 22, maxArrowLength: 34 }
+};
+
+const VALID_COMPOUND_SPEEDS = ["lt276", "276_300", "301_340", "340_360"];
+
 const BRAND_REFERENCE = {
   generic: { compoundBoost: 4, lengthFactor: 3.0, pointFactor: 0.10, fieldBoost: 2, huntingBoost: 4, rawAdjust: 0 },
   easton: { compoundBoost: 4, lengthFactor: 3.2, pointFactor: 0.11, fieldBoost: 2, huntingBoost: 4, rawAdjust: -20 },
@@ -187,12 +194,15 @@ function dynamicLoadScore({ bowType, drawWeight, arrowLength, pointWeight, disci
 }
 
 function evaluateConfidence({ referenceBrand, bowType, arrowLength }) {
+  const reasons = [];
   if (referenceBrand === "skylon") {
-    if (arrowLength < 23 || arrowLength > 32) return "Faible";
-    return bowType === "compound" ? "Elevee" : "Moyenne";
+    if (arrowLength < 23 || arrowLength > 32) return { level: "Faible", reasons: ["Longueur hors plage du tableau Skylon (23-32)."] };
+    reasons.push("Correspondance directe possible avec la grille Skylon.");
+    return { level: bowType === "compound" ? "Elevee" : "Moyenne", reasons };
   }
-  if (arrowLength < 24 || arrowLength > 31) return "Faible";
-  return "Moyenne";
+  if (arrowLength < 24 || arrowLength > 31) return { level: "Faible", reasons: ["Longueur hors plage centrale des tableaux generiques (24-31)."] };
+  reasons.push("Estimation dynamique sur plage centrale exploitable.");
+  return { level: "Moyenne", reasons };
 }
 
 function getReferenceBrand(input) {
@@ -236,6 +246,7 @@ function recommendationForBrand(input, brand) {
 function genericRecommendation(input) {
   const referenceBrand = getReferenceBrand(input);
   const picked = recommendationForBrand(input, referenceBrand);
+  const confidence = evaluateConfidence({ referenceBrand, bowType: input.bowType, arrowLength: input.arrowLength });
 
   return {
     mode: "generic",
@@ -245,7 +256,8 @@ function genericRecommendation(input) {
     softer: picked.softer,
     stiffer: picked.stiffer,
     load: picked.load,
-    confidence: evaluateConfidence({ referenceBrand, bowType: input.bowType, arrowLength: input.arrowLength }),
+    confidence: confidence.level,
+    confidenceReasons: confidence.reasons,
     warnings: []
   };
 }
@@ -380,9 +392,17 @@ function validateInput(input) {
   if (!Number.isFinite(input.drawWeight) || !Number.isFinite(input.arrowLength) || !Number.isFinite(input.pointWeight)) {
     return "Valeurs numeriques invalides.";
   }
-  if (input.drawWeight < 10 || input.drawWeight > 100) return "Puissance hors plage (10-100 lbs).";
-  if (input.arrowLength < 22 || input.arrowLength > 34) return "Longueur hors plage (22-34 pouces).";
+  const limits = BOW_LIMITS[input.bowType] || BOW_LIMITS.recurve;
+  if (input.drawWeight < limits.minDrawWeight || input.drawWeight > limits.maxDrawWeight) {
+    return `Puissance hors plage pour ${input.bowType} (${limits.minDrawWeight}-${limits.maxDrawWeight} lbs).`;
+  }
+  if (input.arrowLength < limits.minArrowLength || input.arrowLength > limits.maxArrowLength) {
+    return `Longueur hors plage (${limits.minArrowLength}-${limits.maxArrowLength} pouces).`;
+  }
   if (input.pointWeight < 60 || input.pointWeight > 250) return "Poids de pointe hors plage (60-250 grains).";
+  if (input.bowType === "compound" && !VALID_COMPOUND_SPEEDS.includes(input.compoundSpeed)) {
+    return "Vitesse compound invalide.";
+  }
   return "";
 }
 
@@ -399,6 +419,7 @@ function renderRecommendation(input) {
   let primary = generic.main;
   let method = "Methode: estimation dynamique (indicative) avec adaptation marque.";
   let confidence = generic.confidence;
+  let confidenceReasons = generic.confidenceReasons || [];
   let details = `
     <p>Alternatives: plus souple <strong>${generic.softer}</strong>, plus rigide <strong>${generic.stiffer}</strong></p>
     <p>Indice de charge: ${generic.load.toFixed(1)} / 100</p>
@@ -429,6 +450,7 @@ function renderRecommendation(input) {
     if (skylon.ok) {
       primary = skylon.group;
       confidence = skylon.confidence;
+      confidenceReasons = ["Resultat directement issu du tableau Skylon integre."];
       const filtered = filterByBudget(skylon.models, input.budgetLevel);
       const skylonModels = filtered.length ? filtered : ["Aucun modele Skylon dans ce budget."];
       specialBlock = `
@@ -441,11 +463,16 @@ function renderRecommendation(input) {
     } else {
       primary = "N/A";
       confidence = "Faible";
+      confidenceReasons = [skylon.message];
       specialBlock = `<p><strong>Skylon:</strong> ${skylon.message}</p>`;
     }
 
     details += `<p>Spine generique de comparaison: <strong>${generic.main}</strong></p>`;
   }
+
+  const confidenceList = confidenceReasons.length
+    ? `<ul>${confidenceReasons.map((r) => `<li>${r}</li>`).join("")}</ul>`
+    : "<p>Aucune precision supplementaire.</p>";
 
   els.result.innerHTML = `
     <h2>${title}</h2>
@@ -454,6 +481,8 @@ function renderRecommendation(input) {
     <p>Marque de reference: <strong>${referenceLabel}</strong></p>
     <p>${method}</p>
     <p>Niveau de confiance: <strong>${confidence}</strong></p>
+    <p>Pourquoi ce niveau:</p>
+    ${confidenceList}
     ${details}
     ${comparisonBlock}
     ${specialBlock}
