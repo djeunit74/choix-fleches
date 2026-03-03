@@ -175,6 +175,7 @@ function applyUnitConstraints() {
 function updateVisibility() {
   const showCompoundSpeed = els.bowType.value === "compound";
   els.compoundSpeedWrap.hidden = !showCompoundSpeed;
+  els.compoundSpeedWrap.style.display = showCompoundSpeed ? "grid" : "none";
   els.compoundSpeed.disabled = !showCompoundSpeed;
 }
 
