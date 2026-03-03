@@ -210,7 +210,7 @@ function applyUnitConstraints() {
 }
 
 function updateVisibility() {
-  const showCompoundSpeed = els.bowType.value === "compound" && els.preferredBrand.value === "skylon";
+  const showCompoundSpeed = els.bowType.value === "compound";
   els.compoundSpeedWrap.hidden = !showCompoundSpeed;
   els.compoundSpeed.disabled = !showCompoundSpeed;
 }
