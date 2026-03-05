@@ -2,16 +2,18 @@
 
 Application web statique pour estimer une configuration de fleche exploitable en club.
 
-## Ce que fait la V2
+## Ce que fait la V3
 
 - travaille uniquement en `lbs` et `pouces`
 - separe `recurve` et `compound`
+- ajoute des profils de tir (`recurve exterieur`, `recurve salle`, `compound cible`, `campagne / 3D`)
 - ajoute `interieur / exterieur / polyvalent`
 - ajoute `carbone / alu / alu-carbone`
 - ajoute une priorite de selection (`club`, `polyvalence`, `performance`, `competition`)
 - produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
 - conserve une comparaison par marque quand `Marque preferee = Toutes`
 - utilise le tableau integre Skylon quand `Skylon` est choisi
+- ajoute un bloc de diagnostic `tuning` selon symptome renseigne
 
 ## Lancer
 
@@ -37,3 +39,4 @@ Fichiers statiques deja presents :
 - les references alu salle doivent etre confirmees avec le tableau dedie du fabricant
 - validation au tir obligatoire : bareshaft, groupements, vol de fleche, tuning
 - les bons plans affiches sont indicatifs et a verifier manuellement
+- les conseils de diagnostic restent generiques et ne remplacent pas une observation complete du tir

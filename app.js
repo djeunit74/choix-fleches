@@ -6,6 +6,7 @@ const els = {
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
   preferredBrand: document.getElementById("preferredBrand"),
+  shootingProfile: document.getElementById("shootingProfile"),
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
   selectionGoal: document.getElementById("selectionGoal"),
@@ -16,7 +17,8 @@ const els = {
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   pointWeight: document.getElementById("pointWeight"),
-  discipline: document.getElementById("discipline")
+  discipline: document.getElementById("discipline"),
+  tuningFeedback: document.getElementById("tuningFeedback")
 };
 
 const STORAGE = { history: "spineHistory" };
@@ -25,6 +27,13 @@ const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const BOW_LIMITS = {
   recurve: { minDrawWeight: 12, maxDrawWeight: 70, minArrowLength: 22, maxArrowLength: 34 },
   compound: { minDrawWeight: 20, maxDrawWeight: 100, minArrowLength: 22, maxArrowLength: 34 }
+};
+
+const SHOOTING_PROFILES = {
+  recurve_outdoor: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", selectionGoal: "performance", discipline: "target" },
+  recurve_indoor: { bowType: "recurve", shootingEnvironment: "indoor", shaftMaterial: "alu", selectionGoal: "club", discipline: "target" },
+  compound_target: { bowType: "compound", shootingEnvironment: "outdoor", shaftMaterial: "carbon", selectionGoal: "competition", discipline: "target" },
+  field_3d: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", selectionGoal: "polyvalent", discipline: "field" }
 };
 
 const BRAND_REFERENCE = {
@@ -97,6 +106,13 @@ function diameterLabel(key) { return key === "large" ? "Large / salle" : key ===
 function environmentLabel(key) { return key === "indoor" ? "Interieur / salle" : key === "mixed" ? "Polyvalent" : "Exterieur"; }
 function disciplineLabel(key) { return key === "field" ? "Campagne / 3D" : key === "hunting" ? "Chasse" : "Cible"; }
 function goalLabel(key) { return key === "club" ? "Club / tolerance" : key === "performance" ? "Performance" : key === "competition" ? "Competition" : "Polyvalence"; }
+function profileLabel(key) {
+  if (key === "recurve_outdoor") return "Recurve exterieur";
+  if (key === "recurve_indoor") return "Recurve salle";
+  if (key === "compound_target") return "Compound cible";
+  if (key === "field_3d") return "Campagne / 3D";
+  return "Personnalise";
+}
 
 function applyUnitConstraints() {
   els.drawWeightLabel.firstChild.textContent = "Puissance reelle a l'allonge (lbs)";
@@ -114,6 +130,17 @@ function updateVisibility() {
   els.compoundSpeedWrap.hidden = !showCompoundSpeed;
   els.compoundSpeedWrap.style.display = showCompoundSpeed ? "grid" : "none";
   els.compoundSpeed.disabled = !showCompoundSpeed;
+}
+
+function applyProfileDefaults() {
+  const profile = SHOOTING_PROFILES[els.shootingProfile.value];
+  if (!profile) return;
+  els.bowType.value = profile.bowType;
+  els.shootingEnvironment.value = profile.shootingEnvironment;
+  els.shaftMaterial.value = profile.shaftMaterial;
+  els.selectionGoal.value = profile.selectionGoal;
+  els.discipline.value = profile.discipline;
+  updateVisibility();
 }
 
 function pickSpine(raw) {
@@ -321,6 +348,31 @@ function renderDeals(preferredBrand, budget) {
   return deals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em></li>`).join("");
 }
 
+function tuningDiagnosis(input, recommendation) {
+  const feedback = input.tuningFeedback;
+  if (feedback === "none") return [];
+
+  const diag = [];
+  if (feedback === "stiff" || feedback === "left") {
+    diag.push(`Essayer un spine plus souple: ${recommendation.softer}.`);
+    diag.push("Augmenter legerement le poids de pointe ou reduire la tension de bouton si pertinent.");
+  }
+  if (feedback === "weak" || feedback === "right") {
+    diag.push(`Essayer un spine plus rigide: ${recommendation.stiffer}.`);
+    diag.push("Reduire legerement le poids de pointe ou raccourcir si la marge de securite le permet.");
+  }
+  if (feedback === "bare_high") {
+    diag.push("Verifier le nocking point et la synchronisation verticale avant de changer de spine.");
+    diag.push("Controle de tiller / repose-fleche recommande.");
+  }
+  if (feedback === "bare_low") {
+    diag.push("Verifier le nocking point trop bas et la sortie de repose-fleche.");
+    diag.push("Ne pas conclure trop vite a un probleme de spine lateral.");
+  }
+  if (recommendation.mode === "skylon") diag.push("Conserver le groupe Skylon comme reference, puis ajuster pointe et reglages avant de changer de groupe.");
+  return diag;
+}
+
 function cloneCatalog(catalog) { return JSON.parse(JSON.stringify(catalog)); }
 function readHistory() { try { return JSON.parse(localStorage.getItem(STORAGE.history) || "[]"); } catch { return []; } }
 function writeHistory(entry) { const next = [entry, ...readHistory()].slice(0, 5); localStorage.setItem(STORAGE.history, JSON.stringify(next)); renderHistory(); }
@@ -352,6 +404,7 @@ function renderComparison(input) {
     <h2>Comparaison par marque</h2>
     <p>Chaque marque garde sa propre logique de reference.</p>
     <p class="result-value">Choisissez une marque</p>
+    <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
     <p>Configuration cible: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     <ul>${lines}</ul>
@@ -370,12 +423,14 @@ function renderRecommendation(input) {
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel);
+  const tuningList = tuningDiagnosis(input, recommendation);
   const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
 
   els.result.innerHTML = `
     <h2>Recommandation ${brandLabel(recommendation.brand)}</h2>
     <p>Sortie orientee club: spine, construction, diametre et modele.</p>
     <p class="result-value">${primaryLabel}</p>
+    <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
     <p>Contexte: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
@@ -389,6 +444,7 @@ function renderRecommendation(input) {
     <ul>${renderModelList(recommendation)}</ul>
     <p>Notes techniques:</p>
     ${notesList}
+    ${tuningList.length ? `<p>Diagnostic tuning:</p><ul>${tuningList.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
     <p>Bons plans (mise a jour 3 mars 2026, verification manuelle requise):</p>
     <ul>${dealsList}</ul>
   `;
@@ -396,6 +452,7 @@ function renderRecommendation(input) {
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: brandLabel(recommendation.brand), primary: recommendation.mode === "skylon" ? `Groupe ${recommendation.primary}` : `Spine ${recommendation.primary}`, bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });
 }
 
+els.shootingProfile.addEventListener("change", applyProfileDefaults);
 els.bowType.addEventListener("change", updateVisibility);
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
@@ -407,6 +464,7 @@ els.form.addEventListener("submit", (event) => {
   const converted = toImperial(Number(els.drawWeight.value), Number(els.arrowLength.value));
   const input = {
     bowType: els.bowType.value,
+    shootingProfile: els.shootingProfile.value,
     preferredBrand: els.preferredBrand.value,
     shootingEnvironment: els.shootingEnvironment.value,
     shaftMaterial: els.shaftMaterial.value,
@@ -416,7 +474,8 @@ els.form.addEventListener("submit", (event) => {
     drawWeight: converted.drawWeight,
     arrowLength: converted.arrowLength,
     pointWeight: Number(els.pointWeight.value),
-    discipline: els.discipline.value
+    discipline: els.discipline.value,
+    tuningFeedback: els.tuningFeedback.value
   };
 
   const error = validateInput(input);
@@ -429,5 +488,6 @@ els.form.addEventListener("submit", (event) => {
 });
 
 applyUnitConstraints();
+applyProfileDefaults();
 updateVisibility();
 renderHistory();
