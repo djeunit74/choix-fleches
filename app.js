@@ -205,10 +205,6 @@ function evaluateConfidence({ referenceBrand, bowType, arrowLength }) {
   return { level: "Moyenne", reasons };
 }
 
-function getReferenceBrand(input) {
-  return input.preferredBrand === "all" ? "generic" : input.preferredBrand;
-}
-
 function getBrandSpines(brand) {
   if (!arrowCatalog[brand]) return [];
   return Object.keys(arrowCatalog[brand])
@@ -244,7 +240,7 @@ function recommendationForBrand(input, brand) {
 }
 
 function genericRecommendation(input) {
-  const referenceBrand = getReferenceBrand(input);
+  const referenceBrand = input.preferredBrand === "all" ? "easton" : input.preferredBrand;
   const picked = recommendationForBrand(input, referenceBrand);
   const confidence = evaluateConfidence({ referenceBrand, bowType: input.bowType, arrowLength: input.arrowLength });
 
@@ -408,7 +404,6 @@ function validateInput(input) {
 
 function renderRecommendation(input) {
   const generic = genericRecommendation(input);
-  const referenceLabel = brandLabel(generic.referenceBrand || "generic");
   const effectiveBrandFilter = input.preferredBrand;
   const modelList = suggestModels(generic.main, effectiveBrandFilter, input.budgetLevel);
   const dealsList = renderDeals(effectiveBrandFilter, input.budgetLevel);
@@ -420,10 +415,10 @@ function renderRecommendation(input) {
   let method = "Methode: estimation dynamique (indicative) avec adaptation marque.";
   let confidence = generic.confidence;
   let confidenceReasons = generic.confidenceReasons || [];
+  let historyProfile = brandLabel(generic.referenceBrand);
   let details = `
     <p>Alternatives: plus souple <strong>${generic.softer}</strong>, plus rigide <strong>${generic.stiffer}</strong></p>
     <p>Indice de charge: ${generic.load.toFixed(1)} / 100</p>
-    <p>Tableau de reference adapte: <strong>${referenceLabel}</strong></p>
   `;
   let specialBlock = "";
 
@@ -436,9 +431,17 @@ function renderRecommendation(input) {
       })
       .join("");
     comparisonBlock = `
-      <p>Comparaison tableau de reference par marque:</p>
+      <p>Comparaison par marque:</p>
       <ul>${lines}</ul>
     `;
+    title = "Comparaison par marque";
+    lead = "Selectionne une marque pour une recommandation ciblee";
+    primary = "-";
+    method = "Mode comparaison: aucun tableau generique, chaque marque garde sa propre reference.";
+    confidence = "Variable";
+    confidenceReasons = ["Aucune marque unique selectionnee.", "Les valeurs ci-dessous sont calculees separement pour chaque marque."];
+    historyProfile = "Comparaison";
+    details = "";
   }
 
   if (generic.referenceBrand === "skylon") {
@@ -478,7 +481,6 @@ function renderRecommendation(input) {
     <h2>${title}</h2>
     <p>${lead}</p>
     <p class="result-value">${primary}</p>
-    <p>Marque de reference: <strong>${referenceLabel}</strong></p>
     <p>${method}</p>
     <p>Niveau de confiance: <strong>${confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
@@ -495,7 +497,7 @@ function renderRecommendation(input) {
 
   writeHistory({
     date: new Date().toLocaleString("fr-FR"),
-    profile: referenceLabel,
+    profile: historyProfile,
     primary,
     bowType: input.bowType,
     drawWeight: input.drawWeight.toFixed(1),
