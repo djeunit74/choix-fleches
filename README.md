@@ -1,105 +1,39 @@
-﻿# Choix de Fleches (V2)
+# Choix de Fleches
 
-Mini application web pour estimer un spine de depart.
+Application web statique pour estimer une configuration de fleche exploitable en club.
+
+## Ce que fait la V2
+
+- travaille uniquement en `lbs` et `pouces`
+- separe `recurve` et `compound`
+- ajoute `interieur / exterieur / polyvalent`
+- ajoute `carbone / alu / alu-carbone`
+- ajoute une priorite de selection (`club`, `polyvalence`, `performance`, `competition`)
+- produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
+- conserve une comparaison par marque quand `Marque preferee = Toutes`
+- utilise le tableau integre Skylon quand `Skylon` est choisi
 
 ## Lancer
 
-1. Ouvrir `index.html` dans un navigateur.
-2. Renseigner les parametres d'arc et de fleche.
+1. Ouvrir [index.html](c:/Users/User/app choix des fleches/index.html) dans un navigateur.
+2. Renseigner les parametres.
 3. Cliquer sur `Calculer`.
 
-## Publication web app publique
+## Publication
 
-L'application est maintenant prete pour un hebergement statique public (PWA incluse).
+Le projet reste compatible avec GitHub Pages et Netlify.
 
-### Option 1: GitHub Pages
-
-1. Creer un repository GitHub et pousser ce dossier.
-2. Dans `Settings > Pages`: Source `Deploy from a branch`.
-3. Choisir la branche (`main`) et le dossier racine (`/root`).
-4. Ouvrir l'URL publique fournie par GitHub Pages.
-
-Fichiers deja fournis:
-- `manifest.webmanifest`
-- `sw.js`
-- `404.html`
-- `.nojekyll`
-
-### Option 2: Netlify
-
-1. Creer un nouveau site Netlify depuis le repository Git.
-2. Build command: vide (aucun build).
-3. Publish directory: `.` (racine).
-4. Deployer.
-
-Fichier deja fourni:
-- `netlify.toml`
-
-## Ce que fait l'app
-
-- Propose un spine principal.
-- Donne deux options voisines (plus souple / plus rigide).
-- Affiche un niveau d'alerte selon la charge dynamique.
-- Adapte le tableau de reference selon la marque preferee.
-- En mode `Generique + Toutes`, affiche une comparaison spine par marque.
-- Ajoute un mode Skylon (groupe A1..A13) base sur votre capture du tableau.
-- Affiche la vitesse compound uniquement si `Type d'arc = Compound` et `Marque preferee = Skylon`.
-- Priorise la recommandation Skylon (groupe) quand la marque Skylon est choisie.
-- Affiche un niveau de confiance sur la recommandation (Faible / Moyenne / Elevee).
-- Permet de filtrer par marque preferee (ou toutes les marques).
-- Permet de filtrer les suggestions par budget (Eco / Intermediaire / Premium).
-- Utilise uniquement les unites imperiales (`lbs/pouces`).
-- Sauvegarde les 5 derniers calculs localement.
-- Propose des modeles de tubes par spine (base locale editable dans `app.js`).
-- Permet d'importer un tableau fabricant en CSV/JSON et de le memoriser localement.
-- Affiche des liens utiles d'achat (filtres par marque et budget, sans garantie de prix/stock).
-
-## Mode Skylon
-
-- Selectionner `Marque preferee = Skylon`.
-- Pour compound, renseigner `Vitesse arc compound`.
-- L'app calcule un groupe Skylon (`A1` a `A13`, ou zone `Y`) selon puissance + longueur.
+Fichiers statiques deja presents :
+- [index.html](c:/Users/User/app choix des fleches/index.html)
+- [app.js](c:/Users/User/app choix des fleches/app.js)
+- [styles.css](c:/Users/User/app choix des fleches/styles.css)
+- [404.html](c:/Users/User/app choix des fleches/404.html)
+- [manifest.webmanifest](c:/Users/User/app choix des fleches/manifest.webmanifest)
+- [sw.js](c:/Users/User/app choix des fleches/sw.js)
 
 ## Limites
 
-- Le resultat est indicatif, pas un remplacement du tableau fabricant.
-- Toujours valider au tir et ajuster selon votre tuning.
-- Le filtre budget est indicatif (gamme produit), pas un prix temps reel.
-- Les liens d'achat doivent etre verifies manuellement avant achat.
-
-## Import de tableau
-
-### CSV
-
-Format attendu:
-
-```csv
-brand,spine,model
-easton,500,Inspire
-easton,500,Vector
-victory,400,VAP Sport|VForce
-carbon,340,Hunter XT
-```
-
-- Delimiteur accepte: `,` ou `;`
-- Plusieurs modeles sur une ligne: separateur `|`
-
-### JSON
-
-Objet imbrique:
-
-```json
-{
-  "easton": { "500": ["Inspire", "Vector"] },
-  "victory": { "400": ["VAP Sport", "VForce"] }
-}
-```
-
-Ou tableau d'objets:
-
-```json
-[
-  { "brand": "easton", "spine": "500", "model": "Inspire|Vector" },
-  { "brand": "victory", "spine": "400", "models": ["VAP Sport", "VForce"] }
-]
-```
+- la recommandation reste un point de depart, pas un remplacement du tableau officiel fabricant
+- les references alu salle doivent etre confirmees avec le tableau dedie du fabricant
+- validation au tir obligatoire : bareshaft, groupements, vol de fleche, tuning
+- les bons plans affiches sont indicatifs et a verifier manuellement
