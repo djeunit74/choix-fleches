@@ -7,6 +7,7 @@ const els = {
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
   preferredBrand: document.getElementById("preferredBrand"),
   shootingProfile: document.getElementById("shootingProfile"),
+  shootingEnvironmentWrap: document.getElementById("shootingEnvironmentWrap"),
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
   selectionGoal: document.getElementById("selectionGoal"),
@@ -17,6 +18,7 @@ const els = {
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   pointWeight: document.getElementById("pointWeight"),
+  disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline"),
   tuningFeedback: document.getElementById("tuningFeedback")
 };
@@ -127,19 +129,25 @@ function applyUnitConstraints() {
 
 function updateVisibility() {
   const showCompoundSpeed = els.bowType.value === "compound";
+  const showCustomContext = els.shootingProfile.value === "custom";
   els.compoundSpeedWrap.hidden = !showCompoundSpeed;
   els.compoundSpeedWrap.style.display = showCompoundSpeed ? "grid" : "none";
   els.compoundSpeed.disabled = !showCompoundSpeed;
+  els.shootingEnvironmentWrap.hidden = !showCustomContext;
+  els.shootingEnvironmentWrap.style.display = showCustomContext ? "grid" : "none";
+  els.disciplineWrap.hidden = !showCustomContext;
+  els.disciplineWrap.style.display = showCustomContext ? "grid" : "none";
 }
 
 function applyProfileDefaults() {
   const profile = SHOOTING_PROFILES[els.shootingProfile.value];
-  if (!profile) return;
-  els.bowType.value = profile.bowType;
-  els.shootingEnvironment.value = profile.shootingEnvironment;
-  els.shaftMaterial.value = profile.shaftMaterial;
-  els.selectionGoal.value = profile.selectionGoal;
-  els.discipline.value = profile.discipline;
+  if (profile) {
+    els.bowType.value = profile.bowType;
+    els.shootingEnvironment.value = profile.shootingEnvironment;
+    els.shaftMaterial.value = profile.shaftMaterial;
+    els.selectionGoal.value = profile.selectionGoal;
+    els.discipline.value = profile.discipline;
+  }
   updateVisibility();
 }
 
@@ -398,6 +406,9 @@ function validateInput(input) {
 }
 
 function renderComparison(input) {
+  const contextLine = input.shootingProfile === "custom"
+    ? `<p>Configuration cible: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>`
+    : `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong> avec priorite <strong>${goalLabel(input.selectionGoal)}</strong>.</p>`;
   const lines = BRAND_ORDER.map((brand) => {
     const rec = buildBrandRecommendation(input, brand);
     const primaryLabel = rec.mode === "skylon" ? `${rec.primary} (eq. ${rec.comparisonSpine})` : rec.primary;
@@ -410,7 +421,7 @@ function renderComparison(input) {
     <p>Chaque marque garde sa propre logique de reference.</p>
     <p class="result-value">Choisissez une marque</p>
     <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
-    <p>Configuration cible: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>
+    ${contextLine}
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     <ul>${lines}</ul>
   `;
@@ -425,6 +436,9 @@ function renderRecommendation(input) {
   }
 
   const recommendation = buildBrandRecommendation(input, input.preferredBrand);
+  const contextLine = input.shootingProfile === "custom"
+    ? `<p>Contexte: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>`
+    : `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong> avec priorite <strong>${goalLabel(input.selectionGoal)}</strong>.</p>`;
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial);
@@ -436,7 +450,7 @@ function renderRecommendation(input) {
     <p>Sortie orientee club: spine, construction, diametre et modele.</p>
     <p class="result-value">${primaryLabel}</p>
     <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
-    <p>Contexte: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>
+    ${contextLine}
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
