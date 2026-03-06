@@ -232,6 +232,45 @@ function rankModels(models, input, profile) {
     .sort((a, b) => b.score - a.score);
 }
 
+function nearbySpineValues(brand, spine) {
+  const values = getBrandSpines(brand);
+  const target = Number(spine);
+  return values
+    .filter((value) => value !== target)
+    .sort((a, b) => Math.abs(a - target) - Math.abs(b - target))
+    .slice(0, 3);
+}
+
+function rankNearbyModels(brand, mainSpine, input, profile) {
+  const candidates = nearbySpineValues(brand, mainSpine)
+    .flatMap((value) => (arrowCatalog[brand]?.[String(value)] || []).map((model) => ({ model, sourceSpine: String(value) })));
+
+  return candidates
+    .map((candidate) => {
+      const scored = scoreModel(candidate.model, input, profile);
+      return { ...candidate, score: scored.score, meta: scored.meta };
+    })
+    .filter((entry) => entry.score > -1000)
+    .sort((a, b) => b.score - a.score);
+}
+
+function rankCrossBrandAlternatives(input, profile, budget, excludedBrand) {
+  return BRAND_ORDER
+    .filter((brand) => brand !== excludedBrand)
+    .flatMap((brand) =>
+      Object.entries(arrowCatalog[brand] || {}).flatMap(([spine, models]) =>
+        filterByBudget(models, budget).map((model) => ({ brand, spine, model }))
+      )
+    )
+    .map((candidate) => {
+      const scored = scoreModel(candidate.model, input, profile);
+      return { ...candidate, score: scored.score, meta: scored.meta };
+    })
+    .filter((entry) => entry.score > -1000)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+}
+
 function modelBudgetTier(modelName) {
   const name = normalizeModelKey(modelName);
   const premiumKeys = ["x10", "a/c/e", "nano-pro", "bruxx", "empros"];
@@ -304,9 +343,25 @@ function buildBrandRecommendation(input, brand) {
   if (input.arrowLength < 24 || input.arrowLength > 31) reasons.push("Longueur hors plage centrale: verification fabricant imperative.");
 
   const notes = [];
+  let fallbackLabel = "";
+  let alternatives = [];
+  if (!ranked.length) {
+    const nearby = rankNearbyModels(brand, base.main, input, profile);
+    if (nearby.length) {
+      ranked = nearby;
+      fallbackLabel = "modeles proches";
+      notes.push("Aucune correspondance exacte sur le spine principal; proposition de references voisines de la marque.");
+    } else {
+      alternatives = rankCrossBrandAlternatives(input, profile, input.budgetLevel, brand);
+      if (alternatives.length) {
+        fallbackLabel = "alternatives marque";
+        notes.push("Aucune reference exploitable dans cette marque pour ce filtre; alternatives compatibles proposees sur d'autres marques.");
+      }
+    }
+  }
   if (input.shootingEnvironment === "indoor" && profile.preferredMaterial === "alu") notes.push("Pour la salle recurve, verifier ensuite le tableau alu dedie du fabricant.");
-  if (topMeta?.note) notes.push(topMeta.note);
-  if (!ranked.length) notes.push("Aucun modele strictement conforme aux filtres. Elargir les contraintes peut etre utile.");
+  if ((ranked[0]?.meta || topMeta)?.note) notes.push((ranked[0]?.meta || topMeta).note);
+  if (!ranked.length && !alternatives.length) notes.push("Aucun modele strictement conforme aux filtres. Elargir les contraintes peut etre utile.");
 
   return {
     brand,
@@ -318,9 +373,11 @@ function buildBrandRecommendation(input, brand) {
     confidence: "Moyenne",
     confidenceReasons: reasons,
     models: ranked,
-    recommendedMaterial: topMeta?.material || profile.preferredMaterial,
-    recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
-    recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+    alternativeModels: alternatives,
+    fallbackLabel,
+    recommendedMaterial: (ranked[0]?.meta || topMeta)?.material || profile.preferredMaterial,
+    recommendedDiameter: (ranked[0]?.meta || topMeta)?.diameters?.[0] || profile.preferredDiameter,
+    recommendedPointRange: (ranked[0]?.meta || topMeta)?.pointRange || profile.pointRange,
     notes
   };
 }
@@ -329,9 +386,18 @@ function renderModelList(recommendation) {
   if (!recommendation.models.length) return "<li>Aucun modele correspondant strictement a vos filtres.</li>";
   return recommendation.models.slice(0, 4).map((entry) => {
     const meta = entry.meta;
-    const details = meta ? `${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
+    const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
+    const details = meta ? `${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${source}` : "Meta technique locale incomplete";
     return `<li><strong>${entry.model}</strong> - score ${entry.score} - ${details}</li>`;
   }).join("");
+}
+
+function renderAlternativeModelList(recommendation) {
+  if (!recommendation.alternativeModels?.length) return "";
+  const lines = recommendation.alternativeModels
+    .map((entry) => `<li><strong>${brandLabel(entry.brand)}</strong>: ${entry.model} - spine ${entry.spine}</li>`)
+    .join("");
+  return `<p>Alternatives pertinentes hors marque:</p><ul>${lines}</ul>`;
 }
 
 function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
@@ -343,7 +409,17 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
     const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
     return brandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk;
   });
-  if (!deals.length) return "<li>Aucune offre correspondant au filtre actuel.</li>";
+  if (!deals.length) {
+    const fallbackDeals = LIVE_DEALS.filter((deal) => {
+      const budgetOk = budget === "all" || deal.tier === budget;
+      const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
+      const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
+      const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
+      return budgetOk && allowedMaterialOk && materialOk && bowTypeOk;
+    });
+    if (!fallbackDeals.length) return "<li>Aucune offre correspondant au filtre actuel.</li>";
+    return fallbackDeals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em> - alternative hors marque</li>`).join("");
+  }
   return deals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em></li>`).join("");
 }
 
@@ -430,6 +506,9 @@ function renderRecommendation(input) {
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
   const tuningList = tuningDiagnosis(input, recommendation);
   const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
+  const modelTitle = recommendation.fallbackLabel === "modeles proches"
+    ? "Modeles proches dans la marque:"
+    : "Modeles conseilles:";
 
   els.result.innerHTML = `
     <h2>Recommandation ${brandLabel(recommendation.brand)}</h2>
@@ -444,8 +523,9 @@ function renderRecommendation(input) {
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
     ${confidenceList}
-    <p>Modeles conseilles:</p>
+    <p>${modelTitle}</p>
     <ul>${renderModelList(recommendation)}</ul>
+    ${renderAlternativeModelList(recommendation)}
     <p>Notes techniques:</p>
     ${notesList}
     ${tuningList.length ? `<p>Diagnostic tuning:</p><ul>${tuningList.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
