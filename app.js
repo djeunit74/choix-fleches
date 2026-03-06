@@ -5,6 +5,7 @@ const els = {
   drawWeightLabel: document.getElementById("drawWeightLabel"),
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+  bowTypeWrap: document.getElementById("bowTypeWrap"),
   preferredBrand: document.getElementById("preferredBrand"),
   shootingProfile: document.getElementById("shootingProfile"),
   shootingEnvironmentWrap: document.getElementById("shootingEnvironmentWrap"),
@@ -88,12 +89,12 @@ const SKYLON_RECURVE_RANGES = [[16,19],[20,23],[24,29],[30,35],[36,40],[41,45],[
 const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius R900"], A2: ["Brixxon R900-850","Edge 800","Radius 850-800"], A3: ["Brixxon R850-800","Edge 800-750","Radius 750-700"], A4: ["Brixxon R750-700","Edge 700-650","Radius 700-650"], A5: ["Brixxon R700-650","Edge 700-650","Radius 650-600"], A6: ["Brixxon R600-550","Edge 700-600","Radius 600-550"], A7: ["Brixxon R550-500","Edge 600-500","Maverick 500"], A8: ["Brixxon R500-450","Edge 500-400","Maverick 500-400"], A9: ["Brixxon R450-400","Edge 400-350","Maverick 400"], A10: ["Brixxon R400","Edge 400-350","Radius 400"], A11: ["Bruxx 350-300","Empros 350-300","Maverick 350-300"], A12: ["Bruxx 300","Edge 350-300","Empros 330"], A13: ["Bruxx 300","Empros 300","Maverick 300"] };
 
 const LIVE_DEALS = [
-  { brand: "skylon", material: "carbon", tier: "eco", title: "Skylon Radius ID4.2 lot de 12 (en stock)", price: "39,95 EUR", url: "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html", shop: "archerie.fr" },
-  { brand: "skylon", material: "carbon", tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
-  { brand: "easton", material: "alu", tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
-  { brand: "easton", material: "hybrid", tier: "premium", title: "Easton ACE lot de 12 tubes", price: "376,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/3034-easton-ace-lot-de-12-tubes.html", shop: "erhart-sports.com" },
-  { brand: "victory", material: "carbon", tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
-  { brand: "carbon", material: "carbon", tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
+  { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Skylon Radius ID4.2 lot de 12 (en stock)", price: "39,95 EUR", url: "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html", shop: "archerie.fr" },
+  { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
+  { brand: "easton", material: "alu", bowTypes: ["recurve", "compound"], tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
+  { brand: "easton", material: "hybrid", bowTypes: ["recurve"], tier: "premium", title: "Easton ACE lot de 12 tubes", price: "376,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/3034-easton-ace-lot-de-12-tubes.html", shop: "erhart-sports.com" },
+  { brand: "victory", material: "carbon", bowTypes: ["recurve", "compound"], tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
+  { brand: "carbon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
 ];
 
 let arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
@@ -130,6 +131,8 @@ function applyUnitConstraints() {
 function updateVisibility() {
   const showCompoundSpeed = els.bowType.value === "compound";
   const showCustomContext = els.shootingProfile.value === "custom";
+  els.bowTypeWrap.hidden = !showCustomContext;
+  els.bowTypeWrap.style.display = showCustomContext ? "grid" : "none";
   els.compoundSpeedWrap.hidden = !showCompoundSpeed;
   els.compoundSpeedWrap.style.display = showCompoundSpeed ? "grid" : "none";
   els.compoundSpeed.disabled = !showCompoundSpeed;
@@ -224,7 +227,7 @@ function deriveTargetProfile(input) {
 
 function scoreModel(modelName, input, profile) {
   const meta = getModelMetadata(modelName);
-  if (!meta) return { score: 0, meta: null };
+  if (!meta) return { score: -1000, meta: null };
   if (!meta.bowTypes.includes(input.bowType)) return { score: -1000, meta };
   if (input.shaftMaterial !== "all" && meta.material !== input.shaftMaterial) return { score: -1000, meta };
 
@@ -350,12 +353,13 @@ function renderModelList(recommendation) {
   }).join("");
 }
 
-function renderDeals(preferredBrand, budget, shaftMaterial) {
+function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
   const deals = LIVE_DEALS.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
     const budgetOk = budget === "all" || deal.tier === budget;
     const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
-    return brandOk && budgetOk && materialOk;
+    const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
+    return brandOk && budgetOk && materialOk && bowTypeOk;
   });
   if (!deals.length) return "<li>Aucune offre correspondant au filtre actuel.</li>";
   return deals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em></li>`).join("");
@@ -441,7 +445,7 @@ function renderRecommendation(input) {
     : `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong> avec priorite <strong>${goalLabel(input.selectionGoal)}</strong>.</p>`;
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
-  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial);
+  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
   const tuningList = tuningDiagnosis(input, recommendation);
   const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
 
