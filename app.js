@@ -411,7 +411,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
   });
   let finalDeals = deals;
   let fallbackMessage = "";
-  if (!finalDeals.length) {
+  if (!finalDeals.length && preferredBrand === "all") {
     finalDeals = LIVE_DEALS.filter((deal) => {
       const budgetOk = budget === "all" || deal.tier === budget;
       const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
