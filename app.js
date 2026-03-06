@@ -96,7 +96,7 @@ function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength 
 function normalizeModelKey(modelName) { return String(modelName || "").toLowerCase().replace(/\s*\([^)]*\)/g, "").trim(); }
 function getModelMetadata(modelName) { return MODEL_METADATA[normalizeModelKey(modelName)] || null; }
 function brandLabel(key) { return key === "carbon" ? "Carbon Express" : key.charAt(0).toUpperCase() + key.slice(1); }
-function materialLabel(key) { return key === "alu" ? "Alu" : key === "hybrid" ? "Alu / carbone" : "Carbone"; }
+function materialLabel(key) { return key === "alu" ? "Alu" : "Carbone"; }
 function diameterLabel(key) { return key === "large" ? "Large / salle" : key === "thin" ? "Fin / vent" : "Standard"; }
 function environmentLabel(key) { return key === "indoor" ? "Interieur / salle" : key === "mixed" ? "Polyvalent" : "Exterieur"; }
 function disciplineLabel(key) { return key === "field" ? "Campagne / 3D" : key === "hunting" ? "Chasse" : "Cible"; }
@@ -191,7 +191,6 @@ function deriveTargetProfile(input) {
   if (preferredMaterial === "all") {
     if (input.discipline === "hunting") preferredMaterial = "carbon";
     else if (input.shootingEnvironment === "indoor" && input.bowType === "recurve" && input.discipline === "target") preferredMaterial = "alu";
-    else if (input.shootingEnvironment === "outdoor" && input.preferredBrand === "easton") preferredMaterial = "hybrid";
     else preferredMaterial = "carbon";
   }
 
