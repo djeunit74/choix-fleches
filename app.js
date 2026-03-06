@@ -486,6 +486,7 @@ function validateInput(input) {
 
 function renderComparison(input) {
   const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
+  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
   const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
   const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
@@ -510,6 +511,8 @@ function renderComparison(input) {
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     ${emptyState}
     ${hiddenState}
+    <p>Offres chez les marchands (mise a jour 3 mars 2026, verification manuelle requise) :</p>
+    ${dealsList}
   `;
 
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: "Comparaison", primary: "Multi-marques", bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });
