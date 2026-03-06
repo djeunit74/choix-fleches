@@ -40,7 +40,7 @@ const BRAND_REFERENCE = {
 };
 
 const DEFAULT_CATALOG = {
-  easton: { "300": ["Axis 5mm"], "340": ["Avance"], "400": ["Avance", "Jazz"], "500": ["Inspire", "Vector"], "600": ["Inspire", "Jazz"], "700": ["Inspire", "Jazz"], "800": ["X10 (recurve)", "A/C/E (recurve)"], "900": ["A/C/E (recurve)", "X10 (recurve)"], "1000": ["A/C/E (recurve)", "XX75 Platinum Plus"] },
+  easton: { "300": ["Axis 5mm"], "340": ["Avance"], "400": ["Avance", "X7"], "500": ["Avance", "X7"], "600": ["X7", "XX75 Platinum Plus"], "700": ["X7", "XX75 Platinum Plus"], "800": ["XX75 Platinum Plus", "Avance"], "900": ["XX75 Platinum Plus", "Avance"], "1000": ["XX75 Platinum Plus", "Avance"] },
   victory: { "300": ["RIP TKO", "VAP Sport"], "340": ["VAP Sport", "RIP XV"], "400": ["VAP Sport", "VForce"], "500": ["VForce", "VAP V3"], "600": ["VAP V3", "VForce"], "700": ["VAP V3", "VForce"], "800": ["VAP Target", "VAP V3"], "900": ["VAP Target", "VAP V3"], "1000": ["VAP Target", "VAP JR"] },
   carbon: { "300": ["Maxima RED", "Hunter XT"], "340": ["Hunter XT", "Predator II"], "400": ["Predator II", "Trojan"], "500": ["Predator II", "Nano-Pro RZ"], "600": ["Nano-Pro RZ", "Predator II"], "700": ["Nano-Pro RZ", "Predator II"], "800": ["Nano-Pro Xtreme", "Nano-Pro RZ"], "900": ["Nano-Pro Xtreme", "Medallion XR"], "1000": ["Medallion XR", "Nano-Pro Xtreme"] },
   skylon: { "300": ["Bruxx 300", "Empros 300", "Maverick 300"], "340": ["Bruxx 350-300", "Empros 350-300", "Maverick 350-300"], "400": ["Brixxon R400", "Edge 400-350", "Radius 400"], "500": ["Brixxon R550-500", "Edge 600-500", "Maverick 500"], "600": ["Brixxon R650-600", "Edge 700-650", "Radius 650-600"], "700": ["Brixxon R750-700", "Edge 700-650", "Radius 700-650"], "800": ["Brixxon R850-800", "Edge 800-750", "Radius 850-800"], "900": ["Brixxon R900-850", "Edge 900-850", "Radius 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900"] }
@@ -48,6 +48,7 @@ const DEFAULT_CATALOG = {
 
 const MODEL_METADATA = {
   "avance": { material: "carbon", diameters: ["thin"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin exterieur." },
+  "x7": { material: "alu", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [100, 150], note: "Tube alu salle / club tres classique." },
   "jazz": { material: "alu", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [80, 120], note: "Reference salle recurve." },
   "inspire": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [80, 110], note: "Option club accessible." },
   "vector": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["polyvalent", "performance"], pointRange: [90, 120], note: "Plus cible exterieure." },
