@@ -486,9 +486,9 @@ function validateInput(input) {
 
 function renderComparison(input) {
   const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
-  const comparisons = BRAND_ORDER
-    .map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }))
-    .filter((entry) => entry.rec.models.length > 0);
+  const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
+  const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
+  const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
   const lines = comparisons.map((entry) => {
     const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
     const bestModel = entry.rec.models[0]?.model || "Aucun modele";
@@ -497,6 +497,9 @@ function renderComparison(input) {
   const emptyState = comparisons.length
     ? `<ul>${lines}</ul>`
     : "<p>Aucune marque ne propose de modele coherent avec les filtres actuels.</p>";
+  const hiddenState = hiddenBrands.length
+    ? `<p>Marques non affichees pour ce filtre: <strong>${hiddenBrands.join(", ")}</strong>.</p>`
+    : "";
 
   els.result.innerHTML = `
     <h2>Comparaison par marque</h2>
@@ -506,6 +509,7 @@ function renderComparison(input) {
     ${contextLine}
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     ${emptyState}
+    ${hiddenState}
   `;
 
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: "Comparaison", primary: "Multi-marques", bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });
