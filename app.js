@@ -392,12 +392,17 @@ function validateInput(input) {
 
 function renderComparison(input) {
   const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
-  const lines = BRAND_ORDER.map((brand) => {
-    const rec = buildBrandRecommendation(input, brand);
-    const primaryLabel = rec.mode === "skylon" ? `${rec.primary} (eq. ${rec.comparisonSpine})` : rec.primary;
-    const bestModel = rec.models[0]?.model || "Aucun modele";
-    return `<li><strong>${brandLabel(brand)}</strong>: ${primaryLabel} - ${materialLabel(rec.recommendedMaterial)} - ${diameterLabel(rec.recommendedDiameter)} - ${bestModel}</li>`;
+  const comparisons = BRAND_ORDER
+    .map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }))
+    .filter((entry) => entry.rec.models.length > 0);
+  const lines = comparisons.map((entry) => {
+    const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
+    const bestModel = entry.rec.models[0]?.model || "Aucun modele";
+    return `<li><strong>${brandLabel(entry.brand)}</strong>: ${primaryLabel} - ${materialLabel(entry.rec.recommendedMaterial)} - ${diameterLabel(entry.rec.recommendedDiameter)} - ${bestModel}</li>`;
   }).join("");
+  const emptyState = comparisons.length
+    ? `<ul>${lines}</ul>`
+    : "<p>Aucune marque ne propose de modele coherent avec les filtres actuels.</p>";
 
   els.result.innerHTML = `
     <h2>Comparaison par marque</h2>
@@ -406,7 +411,7 @@ function renderComparison(input) {
     <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
     ${contextLine}
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
-    <ul>${lines}</ul>
+    ${emptyState}
   `;
 
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: "Comparaison", primary: "Multi-marques", bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });
