@@ -22,6 +22,7 @@ const els = {
 
 const STORAGE = { history: "spineHistory" };
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
+const ALLOWED_SHAFT_MATERIALS = ["carbon", "alu"];
 const BOW_LIMITS = {
   recurve: { minDrawWeight: 12, maxDrawWeight: 70, minArrowLength: 22, maxArrowLength: 34 }
 };
@@ -84,7 +85,6 @@ const LIVE_DEALS = [
   { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Skylon Radius ID4.2 lot de 12 (en stock)", price: "39,95 EUR", url: "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html", shop: "archerie.fr" },
   { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
   { brand: "easton", material: "alu", bowTypes: ["recurve", "compound"], tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
-  { brand: "easton", material: "hybrid", bowTypes: ["recurve"], tier: "premium", title: "Easton ACE lot de 12 tubes", price: "376,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/3034-easton-ace-lot-de-12-tubes.html", shop: "erhart-sports.com" },
   { brand: "victory", material: "carbon", bowTypes: ["recurve", "compound"], tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
   { brand: "carbon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
 ];
@@ -209,6 +209,7 @@ function deriveTargetProfile(input) {
 function scoreModel(modelName, input, profile) {
   const meta = getModelMetadata(modelName);
   if (!meta) return { score: -1000, meta: null };
+  if (!ALLOWED_SHAFT_MATERIALS.includes(meta.material)) return { score: -1000, meta };
   if (!meta.bowTypes.includes(input.bowType)) return { score: -1000, meta };
   if (input.shaftMaterial !== "all" && meta.material !== input.shaftMaterial) return { score: -1000, meta };
 
@@ -337,9 +338,10 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
   const deals = LIVE_DEALS.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
     const budgetOk = budget === "all" || deal.tier === budget;
+    const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
     const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
     const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
-    return brandOk && budgetOk && materialOk && bowTypeOk;
+    return brandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk;
   });
   if (!deals.length) return "<li>Aucune offre correspondant au filtre actuel.</li>";
   return deals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em></li>`).join("");
