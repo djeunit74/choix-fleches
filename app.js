@@ -459,7 +459,6 @@ function renderRecommendation(input) {
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
-    <p>Indice de charge interne: <strong>${recommendation.load.toFixed(1)} / 100</strong></p>
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
     ${confidenceList}
