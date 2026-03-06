@@ -11,7 +11,6 @@ const els = {
   shootingEnvironmentWrap: document.getElementById("shootingEnvironmentWrap"),
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
-  selectionGoal: document.getElementById("selectionGoal"),
   budgetLevel: document.getElementById("budgetLevel"),
   compoundSpeedWrap: document.getElementById("compoundSpeedWrap"),
   compoundSpeed: document.getElementById("compoundSpeed"),
@@ -34,10 +33,10 @@ const BOW_LIMITS = {
 };
 
 const SHOOTING_PROFILES = {
-  recurve_outdoor: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", selectionGoal: "performance", discipline: "target" },
-  recurve_indoor: { bowType: "recurve", shootingEnvironment: "indoor", shaftMaterial: "alu", selectionGoal: "club", discipline: "target" },
-  compound_target: { bowType: "compound", shootingEnvironment: "outdoor", shaftMaterial: "carbon", selectionGoal: "competition", discipline: "target" },
-  field_3d: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", selectionGoal: "polyvalent", discipline: "field" }
+  recurve_outdoor: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", discipline: "target" },
+  recurve_indoor: { bowType: "recurve", shootingEnvironment: "indoor", shaftMaterial: "alu", discipline: "target" },
+  compound_target: { bowType: "compound", shootingEnvironment: "outdoor", shaftMaterial: "carbon", discipline: "target" },
+  field_3d: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", discipline: "field" }
 };
 
 const BRAND_REFERENCE = {
@@ -109,7 +108,6 @@ function materialLabel(key) { return key === "alu" ? "Alu" : key === "hybrid" ? 
 function diameterLabel(key) { return key === "large" ? "Large / salle" : key === "thin" ? "Fin / vent" : "Standard"; }
 function environmentLabel(key) { return key === "indoor" ? "Interieur / salle" : key === "mixed" ? "Polyvalent" : "Exterieur"; }
 function disciplineLabel(key) { return key === "field" ? "Campagne / 3D" : key === "hunting" ? "Chasse" : "Cible"; }
-function goalLabel(key) { return key === "club" ? "Club / tolerance" : key === "performance" ? "Performance" : key === "competition" ? "Competition" : "Polyvalence"; }
 function profileLabel(key) {
   if (key === "recurve_outdoor") return "Recurve exterieur";
   if (key === "recurve_indoor") return "Recurve salle";
@@ -151,7 +149,6 @@ function applyProfileDefaults() {
     els.bowType.value = profile.bowType;
     els.shootingEnvironment.value = profile.shootingEnvironment;
     els.shaftMaterial.value = profile.shaftMaterial;
-    els.selectionGoal.value = profile.selectionGoal;
     els.discipline.value = profile.discipline;
   }
   updateVisibility();
@@ -212,7 +209,7 @@ function deriveTargetProfile(input) {
   if (preferredMaterial === "all") {
     if (input.discipline === "hunting") preferredMaterial = "carbon";
     else if (input.shootingEnvironment === "indoor" && input.bowType === "recurve" && input.discipline === "target") preferredMaterial = "alu";
-    else if (input.shootingEnvironment === "outdoor" && input.selectionGoal === "competition") preferredMaterial = "hybrid";
+    else if (input.shootingEnvironment === "outdoor" && input.preferredBrand === "easton") preferredMaterial = "hybrid";
     else preferredMaterial = "carbon";
   }
 
@@ -237,7 +234,6 @@ function scoreModel(modelName, input, profile) {
   let score = 0;
   if (meta.environments.includes(input.shootingEnvironment)) score += 4;
   if (meta.disciplines.includes(input.discipline)) score += 4;
-  if (meta.goals.includes(input.selectionGoal)) score += 3;
   if (meta.material === profile.preferredMaterial) score += 3;
   if (meta.diameters.includes(profile.preferredDiameter)) score += 2;
   if (meta.pointRange && input.pointWeight >= meta.pointRange[0] && input.pointWeight <= meta.pointRange[1]) score += 2;
@@ -414,8 +410,8 @@ function validateInput(input) {
 
 function renderComparison(input) {
   const contextLine = input.shootingProfile === "custom"
-    ? `<p>Configuration cible: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>`
-    : `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong> avec priorite <strong>${goalLabel(input.selectionGoal)}</strong>.</p>`;
+    ? `<p>Configuration cible: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong></p>`
+    : `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const lines = BRAND_ORDER.map((brand) => {
     const rec = buildBrandRecommendation(input, brand);
     const primaryLabel = rec.mode === "skylon" ? `${rec.primary} (eq. ${rec.comparisonSpine})` : rec.primary;
@@ -444,8 +440,8 @@ function renderRecommendation(input) {
 
   const recommendation = buildBrandRecommendation(input, input.preferredBrand);
   const contextLine = input.shootingProfile === "custom"
-    ? `<p>Contexte: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong>, <strong>${goalLabel(input.selectionGoal)}</strong></p>`
-    : `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong> avec priorite <strong>${goalLabel(input.selectionGoal)}</strong>.</p>`;
+    ? `<p>Contexte: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong></p>`
+    : `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
@@ -493,7 +489,6 @@ els.form.addEventListener("submit", (event) => {
     preferredBrand: els.preferredBrand.value,
     shootingEnvironment: els.shootingEnvironment.value,
     shaftMaterial: els.shaftMaterial.value,
-    selectionGoal: els.selectionGoal.value,
     compoundSpeed: els.compoundSpeed.value,
     budgetLevel: els.budgetLevel.value,
     drawWeight: converted.drawWeight,
