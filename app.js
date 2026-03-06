@@ -15,9 +15,7 @@ const els = {
   arrowLength: document.getElementById("arrowLength"),
   pointWeight: document.getElementById("pointWeight"),
   disciplineWrap: document.getElementById("disciplineWrap"),
-  discipline: document.getElementById("discipline"),
-  tuningFeedbackWrap: document.getElementById("tuningFeedbackWrap"),
-  tuningFeedback: document.getElementById("tuningFeedback")
+  discipline: document.getElementById("discipline")
 };
 
 const STORAGE = { history: "spineHistory" };
@@ -123,8 +121,6 @@ function updateVisibility() {
   els.shootingEnvironmentWrap.style.display = "none";
   els.disciplineWrap.hidden = true;
   els.disciplineWrap.style.display = "none";
-  els.tuningFeedbackWrap.hidden = true;
-  els.tuningFeedbackWrap.style.display = "none";
 }
 
 function applyProfileDefaults() {
@@ -442,31 +438,6 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
   return `${fallbackMessage}<ul>${content}</ul>`;
 }
 
-function tuningDiagnosis(input, recommendation) {
-  const feedback = input.tuningFeedback;
-  if (feedback === "none") return [];
-
-  const diag = [];
-  if (feedback === "stiff" || feedback === "left") {
-    diag.push(`Essayer un spine plus souple: ${recommendation.softer}.`);
-    diag.push("Augmenter legerement le poids de pointe ou reduire la tension de bouton si pertinent.");
-  }
-  if (feedback === "weak" || feedback === "right") {
-    diag.push(`Essayer un spine plus rigide: ${recommendation.stiffer}.`);
-    diag.push("Reduire legerement le poids de pointe ou raccourcir si la marge de securite le permet.");
-  }
-  if (feedback === "bare_high") {
-    diag.push("Verifier le nocking point et la synchronisation verticale avant de changer de spine.");
-    diag.push("Controle de tiller / repose-fleche recommande.");
-  }
-  if (feedback === "bare_low") {
-    diag.push("Verifier le nocking point trop bas et la sortie de repose-fleche.");
-    diag.push("Ne pas conclure trop vite a un probleme de spine lateral.");
-  }
-  if (recommendation.mode === "skylon") diag.push("Conserver le groupe Skylon comme reference, puis ajuster pointe et reglages avant de changer de groupe.");
-  return diag;
-}
-
 function cloneCatalog(catalog) { return JSON.parse(JSON.stringify(catalog)); }
 function readHistory() { try { return JSON.parse(localStorage.getItem(STORAGE.history) || "[]"); } catch { return []; } }
 function writeHistory(entry) { const next = [entry, ...readHistory()].slice(0, 5); localStorage.setItem(STORAGE.history, JSON.stringify(next)); renderHistory(); }
@@ -530,7 +501,6 @@ function renderRecommendation(input) {
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
-  const tuningList = tuningDiagnosis(input, recommendation);
   const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
   const modelTitle = recommendation.fallbackLabel === "modeles proches"
     ? "Modeles proches dans la marque:"
@@ -554,7 +524,6 @@ function renderRecommendation(input) {
     ${renderAlternativeModelList(recommendation)}
     <p>Notes techniques:</p>
     ${notesList}
-    ${tuningList.length ? `<p>Diagnostic tuning:</p><ul>${tuningList.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
     <p>Offres chez les marchands (mise a jour 3 mars 2026, verification manuelle requise) :</p>
     ${dealsList}
   `;
@@ -581,8 +550,7 @@ els.form.addEventListener("submit", (event) => {
     drawWeight: converted.drawWeight,
     arrowLength: converted.arrowLength,
     pointWeight: Number(els.pointWeight.value),
-    discipline: els.discipline.value,
-    tuningFeedback: els.tuningFeedback.value
+    discipline: els.discipline.value
   };
 
   const error = validateInput(input);

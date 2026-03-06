@@ -34,5 +34,5 @@ Fichiers statiques deja presents :
 
 - la recommandation reste un point de depart, pas un remplacement du tableau officiel fabricant
 - les references alu salle doivent etre confirmees avec le tableau dedie du fabricant
-- validation au tir obligatoire : bareshaft, groupements, vol de fleche, tuning
+- validation au tir obligatoire : groupements et vol de fleche
 - les bons plans affiches sont indicatifs et a verifier manuellement
