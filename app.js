@@ -409,18 +409,36 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType) {
     const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
     return brandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk;
   });
-  if (!deals.length) {
-    const fallbackDeals = LIVE_DEALS.filter((deal) => {
+  let finalDeals = deals;
+  let fallbackMessage = "";
+  if (!finalDeals.length) {
+    finalDeals = LIVE_DEALS.filter((deal) => {
       const budgetOk = budget === "all" || deal.tier === budget;
       const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
       const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
       const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
       return budgetOk && allowedMaterialOk && materialOk && bowTypeOk;
     });
-    if (!fallbackDeals.length) return "<li>Aucune offre correspondant au filtre actuel.</li>";
-    return fallbackDeals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em> - alternative hors marque</li>`).join("");
+    if (finalDeals.length) fallbackMessage = "<p>Pas d'offre directe dans la marque choisie. Alternatives marchands compatibles :</p>";
   }
-  return deals.map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price} <em>(${deal.shop})</em></li>`).join("");
+  if (!finalDeals.length) return "<p>Aucune offre correspondant au filtre actuel.</p>";
+
+  const groups = finalDeals.reduce((acc, deal) => {
+    if (!acc[deal.shop]) acc[deal.shop] = [];
+    acc[deal.shop].push(deal);
+    return acc;
+  }, {});
+
+  const content = Object.entries(groups)
+    .map(([shop, shopDeals]) => {
+      const lines = shopDeals
+        .map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price}</li>`)
+        .join("");
+      return `<li><strong>${shop}</strong><ul>${lines}</ul></li>`;
+    })
+    .join("");
+
+  return `${fallbackMessage}<ul>${content}</ul>`;
 }
 
 function tuningDiagnosis(input, recommendation) {
@@ -529,8 +547,8 @@ function renderRecommendation(input) {
     <p>Notes techniques:</p>
     ${notesList}
     ${tuningList.length ? `<p>Diagnostic tuning:</p><ul>${tuningList.map((item) => `<li>${item}</li>`).join("")}</ul>` : ""}
-    <p>Bons plans (mise a jour 3 mars 2026, verification manuelle requise):</p>
-    <ul>${dealsList}</ul>
+    <p>Offres chez les marchands (mise a jour 3 mars 2026, verification manuelle requise) :</p>
+    ${dealsList}
   `;
 
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: brandLabel(recommendation.brand), primary: recommendation.mode === "skylon" ? `Groupe ${recommendation.primary}` : `Spine ${recommendation.primary}`, bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });
