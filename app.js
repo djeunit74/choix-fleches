@@ -21,6 +21,7 @@ const els = {
   pointWeight: document.getElementById("pointWeight"),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline"),
+  tuningFeedbackWrap: document.getElementById("tuningFeedbackWrap"),
   tuningFeedback: document.getElementById("tuningFeedback")
 };
 
@@ -140,6 +141,8 @@ function updateVisibility() {
   els.shootingEnvironmentWrap.style.display = showCustomContext ? "grid" : "none";
   els.disciplineWrap.hidden = !showCustomContext;
   els.disciplineWrap.style.display = showCustomContext ? "grid" : "none";
+  els.tuningFeedbackWrap.hidden = true;
+  els.tuningFeedbackWrap.style.display = "none";
 }
 
 function applyProfileDefaults() {
