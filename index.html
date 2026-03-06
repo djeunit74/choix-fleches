@@ -19,32 +19,11 @@
 
     <section class="card">
       <form id="spine-form" novalidate>
-        <label id="bowTypeWrap">
-          Type d'arc
-          <select id="bowType" required>
-            <option value="recurve">Recurve</option>
-            <option value="compound">Compound</option>
-          </select>
-        </label>
-
         <label>
           Profil de tir
           <select id="shootingProfile" required>
             <option value="recurve_outdoor">Recurve exterieur</option>
             <option value="recurve_indoor">Recurve salle</option>
-            <option value="compound_target">Compound cible</option>
-            <option value="field_3d">Campagne / 3D</option>
-            <option value="custom">Personnalise</option>
-          </select>
-        </label>
-
-        <label id="compoundSpeedWrap" hidden style="display: none;">
-          Vitesse arc compound
-          <select id="compoundSpeed">
-            <option value="lt276">&lt; 276 fps</option>
-            <option value="276_300">276 - 300 fps</option>
-            <option value="301_340">301 - 340 fps</option>
-            <option value="340_360">340 - 360 fps</option>
           </select>
         </label>
 
@@ -59,7 +38,7 @@
           </select>
         </label>
 
-        <label id="shootingEnvironmentWrap">
+        <label id="shootingEnvironmentWrap" hidden style="display: none;">
           Environnement
           <select id="shootingEnvironment" required>
             <option value="outdoor">Exterieur</option>
@@ -103,7 +82,7 @@
           <input id="pointWeight" type="number" min="60" max="250" step="5" value="100" required />
         </label>
 
-        <label id="disciplineWrap">
+        <label id="disciplineWrap" hidden style="display: none;">
           Usage
           <select id="discipline">
             <option value="target">Cible</option>

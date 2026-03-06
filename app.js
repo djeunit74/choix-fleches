@@ -5,16 +5,12 @@ const els = {
   drawWeightLabel: document.getElementById("drawWeightLabel"),
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
-  bowTypeWrap: document.getElementById("bowTypeWrap"),
   preferredBrand: document.getElementById("preferredBrand"),
   shootingProfile: document.getElementById("shootingProfile"),
   shootingEnvironmentWrap: document.getElementById("shootingEnvironmentWrap"),
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
   budgetLevel: document.getElementById("budgetLevel"),
-  compoundSpeedWrap: document.getElementById("compoundSpeedWrap"),
-  compoundSpeed: document.getElementById("compoundSpeed"),
-  bowType: document.getElementById("bowType"),
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   pointWeight: document.getElementById("pointWeight"),
@@ -25,18 +21,14 @@ const els = {
 };
 
 const STORAGE = { history: "spineHistory" };
-const VALID_COMPOUND_SPEEDS = ["lt276", "276_300", "301_340", "340_360"];
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const BOW_LIMITS = {
-  recurve: { minDrawWeight: 12, maxDrawWeight: 70, minArrowLength: 22, maxArrowLength: 34 },
-  compound: { minDrawWeight: 20, maxDrawWeight: 100, minArrowLength: 22, maxArrowLength: 34 }
+  recurve: { minDrawWeight: 12, maxDrawWeight: 70, minArrowLength: 22, maxArrowLength: 34 }
 };
 
 const SHOOTING_PROFILES = {
   recurve_outdoor: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", discipline: "target" },
-  recurve_indoor: { bowType: "recurve", shootingEnvironment: "indoor", shaftMaterial: "alu", discipline: "target" },
-  compound_target: { bowType: "compound", shootingEnvironment: "outdoor", shaftMaterial: "carbon", discipline: "target" },
-  field_3d: { bowType: "recurve", shootingEnvironment: "outdoor", shaftMaterial: "carbon", discipline: "field" }
+  recurve_indoor: { bowType: "recurve", shootingEnvironment: "indoor", shaftMaterial: "alu", discipline: "target" }
 };
 
 const BRAND_REFERENCE = {
@@ -111,9 +103,7 @@ function disciplineLabel(key) { return key === "field" ? "Campagne / 3D" : key =
 function profileLabel(key) {
   if (key === "recurve_outdoor") return "Recurve exterieur";
   if (key === "recurve_indoor") return "Recurve salle";
-  if (key === "compound_target") return "Compound cible";
-  if (key === "field_3d") return "Campagne / 3D";
-  return "Personnalise";
+  return "Recurve";
 }
 
 function applyUnitConstraints() {
@@ -128,17 +118,10 @@ function applyUnitConstraints() {
 }
 
 function updateVisibility() {
-  const showCompoundSpeed = els.bowType.value === "compound";
-  const showCustomContext = els.shootingProfile.value === "custom";
-  els.bowTypeWrap.hidden = !showCustomContext;
-  els.bowTypeWrap.style.display = showCustomContext ? "grid" : "none";
-  els.compoundSpeedWrap.hidden = !showCompoundSpeed;
-  els.compoundSpeedWrap.style.display = showCompoundSpeed ? "grid" : "none";
-  els.compoundSpeed.disabled = !showCompoundSpeed;
-  els.shootingEnvironmentWrap.hidden = !showCustomContext;
-  els.shootingEnvironmentWrap.style.display = showCustomContext ? "grid" : "none";
-  els.disciplineWrap.hidden = !showCustomContext;
-  els.disciplineWrap.style.display = showCustomContext ? "grid" : "none";
+  els.shootingEnvironmentWrap.hidden = true;
+  els.shootingEnvironmentWrap.style.display = "none";
+  els.disciplineWrap.hidden = true;
+  els.disciplineWrap.style.display = "none";
   els.tuningFeedbackWrap.hidden = true;
   els.tuningFeedbackWrap.style.display = "none";
 }
@@ -146,7 +129,6 @@ function updateVisibility() {
 function applyProfileDefaults() {
   const profile = SHOOTING_PROFILES[els.shootingProfile.value];
   if (profile) {
-    els.bowType.value = profile.bowType;
     els.shootingEnvironment.value = profile.shootingEnvironment;
     els.shaftMaterial.value = profile.shaftMaterial;
     els.discipline.value = profile.discipline;
@@ -400,18 +382,15 @@ function renderHistory() {
 
 function validateInput(input) {
   if (!Number.isFinite(input.drawWeight) || !Number.isFinite(input.arrowLength) || !Number.isFinite(input.pointWeight)) return "Valeurs numeriques invalides.";
-  const limits = BOW_LIMITS[input.bowType] || BOW_LIMITS.recurve;
-  if (input.drawWeight < limits.minDrawWeight || input.drawWeight > limits.maxDrawWeight) return `Puissance hors plage pour ${input.bowType} (${limits.minDrawWeight}-${limits.maxDrawWeight} lbs).`;
+  const limits = BOW_LIMITS.recurve;
+  if (input.drawWeight < limits.minDrawWeight || input.drawWeight > limits.maxDrawWeight) return `Puissance hors plage pour recurve (${limits.minDrawWeight}-${limits.maxDrawWeight} lbs).`;
   if (input.arrowLength < limits.minArrowLength || input.arrowLength > limits.maxArrowLength) return `Longueur hors plage (${limits.minArrowLength}-${limits.maxArrowLength} pouces).`;
   if (input.pointWeight < 60 || input.pointWeight > 250) return "Poids de pointe hors plage (60-250 grains).";
-  if (input.bowType === "compound" && !VALID_COMPOUND_SPEEDS.includes(input.compoundSpeed)) return "Vitesse compound invalide.";
   return "";
 }
 
 function renderComparison(input) {
-  const contextLine = input.shootingProfile === "custom"
-    ? `<p>Configuration cible: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong></p>`
-    : `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
+  const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const lines = BRAND_ORDER.map((brand) => {
     const rec = buildBrandRecommendation(input, brand);
     const primaryLabel = rec.mode === "skylon" ? `${rec.primary} (eq. ${rec.comparisonSpine})` : rec.primary;
@@ -439,9 +418,7 @@ function renderRecommendation(input) {
   }
 
   const recommendation = buildBrandRecommendation(input, input.preferredBrand);
-  const contextLine = input.shootingProfile === "custom"
-    ? `<p>Contexte: <strong>${environmentLabel(input.shootingEnvironment)}</strong>, <strong>${disciplineLabel(input.discipline)}</strong></p>`
-    : `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
+  const contextLine = `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
@@ -474,7 +451,6 @@ function renderRecommendation(input) {
 }
 
 els.shootingProfile.addEventListener("change", applyProfileDefaults);
-els.bowType.addEventListener("change", updateVisibility);
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
@@ -484,12 +460,11 @@ els.form.addEventListener("submit", (event) => {
   event.preventDefault();
   const converted = toImperial(Number(els.drawWeight.value), Number(els.arrowLength.value));
   const input = {
-    bowType: els.bowType.value,
+    bowType: "recurve",
     shootingProfile: els.shootingProfile.value,
     preferredBrand: els.preferredBrand.value,
     shootingEnvironment: els.shootingEnvironment.value,
     shaftMaterial: els.shaftMaterial.value,
-    compoundSpeed: els.compoundSpeed.value,
     budgetLevel: els.budgetLevel.value,
     drawWeight: converted.drawWeight,
     arrowLength: converted.arrowLength,
