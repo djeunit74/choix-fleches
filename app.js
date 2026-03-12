@@ -84,7 +84,7 @@ const MODEL_FAMILY_METADATA = {
   "bruxx": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [100, 120], note: "Tube fin performance recurve." },
   "empros": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [100, 120], note: "Tube fin performance recurve." },
   "premiens": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin performance recurve." },
-  "paragon": { material: "carbon", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [100, 150], note: "Tube carbone salle gros diametre." },
+  "paragon": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube carbone recurve exterieur." },
   "rip tko": { material: "carbon", diameters: ["thin"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin oriente exterieur." },
   "rip xv": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [90, 120], note: "Carbone exterieur plus tolerant." },
   "maxima red": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube carbone polyvalent." },
@@ -134,7 +134,7 @@ function normalizeModelKey(modelName) { return String(modelName || "").toLowerCa
 function getModelMetadata(modelName) {
   const key = normalizeModelKey(modelName);
   if (MODEL_METADATA[key]) return MODEL_METADATA[key];
-  const family = Object.keys(MODEL_FAMILY_METADATA).find((prefix) => key.startsWith(prefix));
+  const family = Object.keys(MODEL_FAMILY_METADATA).find((prefix) => key.startsWith(prefix) || key.includes(prefix));
   return family ? MODEL_FAMILY_METADATA[family] : null;
 }
 function brandLabel(key) { return key === "carbon" ? "Carbon Express" : key.charAt(0).toUpperCase() + key.slice(1); }
