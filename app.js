@@ -106,7 +106,7 @@ const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius R900"], A2: ["Br
 
 const LIVE_DEALS = [
   { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Skylon Brixxon carbone 4,2 lot de 12 tubes", price: "67,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes", shop: "erhart-sports.com" },
-  { brand: "skylon", material: "carbon", bowTypes: ["recurve"], tier: "premium", title: "Skylon Paragon lot de 12 tubes", price: "149,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html", shop: "erhart-sports.com" },
+  { brand: "skylon", material: "carbon", bowTypes: ["recurve"], tier: "premium", title: "Skylon Paragon lot de 12 tubes", price: "134,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html", shop: "erhart-sports.com" },
   { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
   { brand: "easton", material: "alu", bowTypes: ["recurve", "compound"], tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
   { brand: "easton", material: "alu", bowTypes: ["recurve"], tier: "premium", title: "Easton X23 tube aluminium", price: "12,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x23-tube-aluminium", shop: "erhart-sports.com" },
