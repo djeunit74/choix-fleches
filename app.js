@@ -118,6 +118,7 @@ const LIVE_DEALS = [
 ];
 
 const DEALS_ENDPOINT = "deals.json";
+const DEALS_CONFIG_ENDPOINT = "deals-config.json";
 const DEFAULT_DEALS_STATE = {
   updatedAt: "2026-03-12T19:00:00+01:00",
   source: "embedded-fallback",
@@ -159,8 +160,97 @@ function dealsUpdatedLabel() {
 function isValidDealEntry(entry) {
   return entry && typeof entry.brand === "string" && typeof entry.material === "string" && typeof entry.title === "string" && typeof entry.price === "string" && typeof entry.url === "string" && typeof entry.shop === "string";
 }
+function parseCsvLine(line) {
+  const cells = [];
+  let current = "";
+  let inQuotes = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    if (char === '"') {
+      const nextChar = line[index + 1];
+      if (inQuotes && nextChar === '"') {
+        current += '"';
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === "," && !inQuotes) {
+      cells.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  cells.push(current.trim());
+  return cells;
+}
+function csvToDeals(text) {
+  const rows = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (rows.length < 2) return [];
+  const headers = parseCsvLine(rows[0]).map((value) => value.toLowerCase());
+  return rows.slice(1).map((row) => {
+    const values = parseCsvLine(row);
+    const entry = Object.fromEntries(headers.map((header, index) => [header, values[index] || ""]));
+    return {
+      brand: entry.brand,
+      material: entry.material,
+      bowTypes: (entry.bowtypes || "recurve").split("|").map((value) => value.trim()).filter(Boolean),
+      tier: entry.tier || "mid",
+      title: entry.title,
+      price: entry.price,
+      url: entry.url,
+      shop: entry.shop
+    };
+  }).filter(isValidDealEntry);
+}
+async function fetchDealsConfig() {
+  try {
+    const response = await fetch(`${DEALS_CONFIG_ENDPOINT}?t=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) return {};
+    return await response.json();
+  } catch {
+    return {};
+  }
+}
+async function fetchRemoteDeals(config) {
+  if (config.remoteJsonUrl) {
+    const response = await fetch(`${config.remoteJsonUrl}${config.remoteJsonUrl.includes("?") ? "&" : "?"}t=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`remote json HTTP ${response.status}`);
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.deals)) throw new Error("invalid remote json payload");
+    const validDeals = payload.deals.filter(isValidDealEntry);
+    if (!validDeals.length) throw new Error("empty remote json payload");
+    return {
+      updatedAt: payload.updatedAt || new Date().toISOString(),
+      source: payload.source || "remote-json",
+      deals: validDeals
+    };
+  }
+
+  if (config.remoteCsvUrl) {
+    const response = await fetch(`${config.remoteCsvUrl}${config.remoteCsvUrl.includes("?") ? "&" : "?"}t=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`remote csv HTTP ${response.status}`);
+    const text = await response.text();
+    const deals = csvToDeals(text);
+    if (!deals.length) throw new Error("empty remote csv payload");
+    return {
+      updatedAt: new Date().toISOString(),
+      source: "remote-csv",
+      deals
+    };
+  }
+
+  return null;
+}
 async function refreshDealsCatalog() {
   try {
+    const config = await fetchDealsConfig();
+    const remoteState = await fetchRemoteDeals(config);
+    if (remoteState) {
+      dealsState = remoteState;
+      return;
+    }
+
     const response = await fetch(`${DEALS_ENDPOINT}?t=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = await response.json();
