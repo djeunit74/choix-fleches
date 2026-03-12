@@ -10,6 +10,7 @@ Application web statique pour estimer une configuration de fleche exploitable en
 - travaille avec `carbone` ou `alu`
 - produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
 - affiche aussi le `positionnement serie` et une `plage de pointe` par modele
+- recharge les `offres marchands` a chaque calcul depuis [deals.json](c:/Users/User/app choix des fleches/deals.json)
 - conserve une comparaison par marque quand `Marque preferee = Toutes`
 - utilise le tableau integre Skylon quand `Skylon` est choisi
 
@@ -30,6 +31,7 @@ Fichiers statiques deja presents :
 - [404.html](c:/Users/User/app choix des fleches/404.html)
 - [manifest.webmanifest](c:/Users/User/app choix des fleches/manifest.webmanifest)
 - [sw.js](c:/Users/User/app choix des fleches/sw.js)
+- [deals.json](c:/Users/User/app choix des fleches/deals.json)
 
 ## Limites
 

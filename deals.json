@@ -1,0 +1,106 @@
+{
+  "updatedAt": "2026-03-12T19:00:00+01:00",
+  "source": "local-curated",
+  "deals": [
+    {
+      "brand": "skylon",
+      "material": "carbon",
+      "bowTypes": ["recurve", "compound"],
+      "tier": "eco",
+      "title": "Skylon Brixxon carbone 4,2 lot de 12 tubes",
+      "price": "67,50 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "skylon",
+      "material": "carbon",
+      "bowTypes": ["recurve"],
+      "tier": "premium",
+      "title": "Skylon Paragon lot de 12 tubes",
+      "price": "149,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "skylon",
+      "material": "carbon",
+      "bowTypes": ["recurve", "compound"],
+      "tier": "mid",
+      "title": "Skylon Precium ID3.2 lot de 12 (pack promo)",
+      "price": "150,73 EUR",
+      "url": "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "easton",
+      "material": "alu",
+      "bowTypes": ["recurve", "compound"],
+      "tier": "mid",
+      "title": "Easton X7 lot de 12 tubes",
+      "price": "139,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "easton",
+      "material": "alu",
+      "bowTypes": ["recurve"],
+      "tier": "premium",
+      "title": "Easton X23 tube aluminium",
+      "price": "12,50 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/easton-x23-tube-aluminium",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "easton",
+      "material": "alu",
+      "bowTypes": ["recurve"],
+      "tier": "mid",
+      "title": "Easton RX7 douzaine de tubes aluminium",
+      "price": "169,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/2627-easton-rx7-tube-aluminium.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "material": "carbon",
+      "bowTypes": ["recurve", "compound"],
+      "tier": "premium",
+      "title": "Victory VAP Target V1 lot de 12",
+      "price": "159,00 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "material": "carbon",
+      "bowTypes": ["recurve"],
+      "tier": "premium",
+      "title": "Victory V-TAC 23 Elite lot de 12 tubes",
+      "price": "164,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/victory-v-tac-23-elite-lot-de-12-tubes",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "material": "carbon",
+      "bowTypes": ["recurve"],
+      "tier": "mid",
+      "title": "Victory VAP Gamer V3 tube carbone",
+      "price": "12,50 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/3949-victory-vap-gamer-v3-tube-carbone.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "carbon",
+      "material": "carbon",
+      "bowTypes": ["recurve", "compound"],
+      "tier": "eco",
+      "title": "Carbon Express Predator II",
+      "price": "49,90 EUR",
+      "url": "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html",
+      "shop": "archerie.fr"
+    }
+  ]
+}

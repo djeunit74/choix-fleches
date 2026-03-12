@@ -117,7 +117,15 @@ const LIVE_DEALS = [
   { brand: "carbon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
 ];
 
+const DEALS_ENDPOINT = "deals.json";
+const DEFAULT_DEALS_STATE = {
+  updatedAt: "2026-03-12T19:00:00+01:00",
+  source: "embedded-fallback",
+  deals: LIVE_DEALS
+};
+
 let arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
+let dealsState = { ...DEFAULT_DEALS_STATE };
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength }; }
@@ -142,6 +150,31 @@ function profileLabel(key) {
   if (key === "recurve_outdoor") return "Recurve exterieur";
   if (key === "recurve_indoor") return "Recurve salle";
   return "Recurve";
+}
+function dealsUpdatedLabel() {
+  const date = new Date(dealsState.updatedAt);
+  if (!Number.isFinite(date.getTime())) return "date inconnue";
+  return date.toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
+}
+function isValidDealEntry(entry) {
+  return entry && typeof entry.brand === "string" && typeof entry.material === "string" && typeof entry.title === "string" && typeof entry.price === "string" && typeof entry.url === "string" && typeof entry.shop === "string";
+}
+async function refreshDealsCatalog() {
+  try {
+    const response = await fetch(`${DEALS_ENDPOINT}?t=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.deals)) throw new Error("invalid deals payload");
+    const validDeals = payload.deals.filter(isValidDealEntry);
+    if (!validDeals.length) throw new Error("empty deals payload");
+    dealsState = {
+      updatedAt: payload.updatedAt || DEFAULT_DEALS_STATE.updatedAt,
+      source: payload.source || "external-json",
+      deals: validDeals
+    };
+  } catch {
+    dealsState = { ...DEFAULT_DEALS_STATE };
+  }
 }
 
 function applyUnitConstraints() {
@@ -468,7 +501,7 @@ function renderAlternativeModelList(recommendation) {
 }
 
 function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile) {
-  const deals = LIVE_DEALS.filter((deal) => {
+  const deals = dealsState.deals.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
     const budgetOk = budget === "all" || deal.tier === budget;
     const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
@@ -480,7 +513,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   let finalDeals = deals;
   let fallbackMessage = "";
   if (!finalDeals.length && preferredBrand === "all") {
-    finalDeals = LIVE_DEALS.filter((deal) => {
+    finalDeals = dealsState.deals.filter((deal) => {
       const budgetOk = budget === "all" || deal.tier === budget;
       const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
       const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
@@ -555,7 +588,7 @@ function renderComparison(input) {
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     ${emptyState}
     ${hiddenState}
-    <p>Offres chez les marchands (mise a jour 3 mars 2026, verification manuelle requise) :</p>
+    <p>Offres chez les marchands (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise) :</p>
     ${dealsList}
   `;
 
@@ -598,7 +631,7 @@ function renderRecommendation(input) {
     ${renderAlternativeModelList(recommendation)}
     <p>Notes techniques:</p>
     ${notesList}
-    <p>Offres chez les marchands (mise a jour 3 mars 2026, verification manuelle requise) :</p>
+    <p>Offres chez les marchands (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise) :</p>
     ${dealsList}
   `;
 
@@ -612,7 +645,7 @@ els.clearHistoryBtn.addEventListener("click", () => {
   renderHistory();
 });
 
-els.form.addEventListener("submit", (event) => {
+els.form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const converted = toImperial(Number(els.drawWeight.value), Number(els.arrowLength.value));
   const input = {
@@ -635,6 +668,7 @@ els.form.addEventListener("submit", (event) => {
     return;
   }
 
+  await refreshDealsCatalog();
   renderRecommendation(normalizedInput);
 });
 
@@ -642,3 +676,4 @@ applyUnitConstraints();
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
+refreshDealsCatalog();
