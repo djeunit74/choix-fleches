@@ -164,23 +164,31 @@ function updateVisibility() {
 
 function updateMaterialOptions() {
   const profileKey = els.shootingProfile.value;
-  const options = Array.from(els.shaftMaterial.options);
 
   if (profileKey === "recurve_outdoor") {
-    options.forEach((option) => {
-      option.disabled = option.value !== "carbon";
-      option.hidden = option.value !== "carbon";
-    });
+    els.shaftMaterial.innerHTML = '<option value="carbon">Carbone</option>';
     els.shaftMaterial.value = "carbon";
     els.shaftMaterial.disabled = true;
     return;
   }
 
-  options.forEach((option) => {
-    option.disabled = false;
-    option.hidden = false;
-  });
+  els.shaftMaterial.innerHTML = `
+    <option value="all">Toutes</option>
+    <option value="carbon">Carbone</option>
+    <option value="alu">Alu</option>
+  `;
+  els.shaftMaterial.value = SHOOTING_PROFILES[profileKey]?.shaftMaterial || "all";
   els.shaftMaterial.disabled = false;
+}
+
+function normalizeInput(input) {
+  if (input.shootingProfile === "recurve_outdoor") {
+    return { ...input, shaftMaterial: "carbon", shootingEnvironment: "outdoor", discipline: "target" };
+  }
+  if (input.shootingProfile === "recurve_indoor") {
+    return { ...input, shootingEnvironment: "indoor", discipline: "target" };
+  }
+  return input;
 }
 
 function applyProfileDefaults() {
@@ -618,14 +626,15 @@ els.form.addEventListener("submit", (event) => {
     pointWeight: Number(els.pointWeight.value),
     discipline: els.discipline.value
   };
+  const normalizedInput = normalizeInput(input);
 
-  const error = validateInput(input);
+  const error = validateInput(normalizedInput);
   if (error) {
     els.result.innerHTML = `<h2>Recommandation</h2><p>${error}</p>`;
     return;
   }
 
-  renderRecommendation(input);
+  renderRecommendation(normalizedInput);
 });
 
 applyUnitConstraints();
