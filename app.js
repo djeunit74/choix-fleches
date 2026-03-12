@@ -590,26 +590,28 @@ function renderAlternativeModelList(recommendation) {
   return `<p>Alternatives pertinentes hors marque:</p><ul>${lines}</ul>`;
 }
 
-function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile) {
+function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile, allowedBrands = null) {
   const deals = dealsState.deals.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
+    const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
     const budgetOk = budget === "all" || deal.tier === budget;
     const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
     const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
     const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
     const outdoorRecurveOk = shootingProfile !== "recurve_outdoor" || deal.material === "carbon";
-    return brandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
+    return brandOk && visibleBrandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
   });
   let finalDeals = deals;
   let fallbackMessage = "";
   if (!finalDeals.length && preferredBrand === "all") {
     finalDeals = dealsState.deals.filter((deal) => {
+      const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
       const budgetOk = budget === "all" || deal.tier === budget;
       const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
       const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
       const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
       const outdoorRecurveOk = shootingProfile !== "recurve_outdoor" || deal.material === "carbon";
-      return budgetOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
+      return visibleBrandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
     });
     if (finalDeals.length) fallbackMessage = "<p>Pas d'offre directe dans la marque choisie. Alternatives marchands compatibles :</p>";
   }
@@ -653,9 +655,10 @@ function validateInput(input) {
 
 function renderComparison(input) {
   const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
-  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile);
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
   const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
+  const visibleBrands = comparisons.map((entry) => entry.brand);
+  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, visibleBrands);
   const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
   const lines = comparisons.map((entry) => {
     const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
