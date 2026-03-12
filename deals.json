@@ -34,6 +34,16 @@
     },
     {
       "brand": "easton",
+      "material": "carbon",
+      "bowTypes": ["recurve"],
+      "tier": "mid",
+      "title": "Easton Tube Avance",
+      "price": "12,90 EUR",
+      "url": "https://www.heraclesarcherie.fr/tubes-carbone/easton-tube-avance-detail",
+      "shop": "heraclesarcherie.fr"
+    },
+    {
+      "brand": "easton",
       "material": "alu",
       "bowTypes": ["recurve", "compound"],
       "tier": "mid",
