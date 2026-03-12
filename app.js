@@ -606,6 +606,7 @@ function renderRecommendation(input) {
 }
 
 els.shootingProfile.addEventListener("change", applyProfileDefaults);
+window.addEventListener("pageshow", applyProfileDefaults);
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
