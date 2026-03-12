@@ -81,5 +81,11 @@ Important :
 - la recommandation reste un point de depart, pas un remplacement du tableau officiel fabricant
 - l'application reste indicative et doit etre confirmee par un entraineur ou un referent materiel
 - les references alu salle doivent etre confirmees avec le tableau dedie du fabricant
-- validation au tir obligatoire : groupements et vol de fleche
 - les bons plans affiches sont indicatifs et a verifier manuellement
+
+Tableaux officiels utiles :
+- Skylon : https://skylonarchery.com/
+- Easton : https://eastonarchery.com/selector/
+- Victory : https://victoryarchery.com/arrow-guide/
+- Victory fitting charts : https://victoryarchery.com/fitting-charts/
+- Carbon Express : https://www.feradyne.com/brands/carbon-express/arrow-charts/
