@@ -86,7 +86,7 @@ const MODEL_FAMILY_METADATA = {
   "premiens": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin performance recurve." },
   "paragon": { material: "carbon", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [100, 150], note: "Tube carbone salle gros diametre." },
   "rip tko": { material: "carbon", diameters: ["thin"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin oriente exterieur." },
-  "rip xv": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [90, 120], note: "Carbone exterieur plus tolérant." },
+  "rip xv": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [90, 120], note: "Carbone exterieur plus tolerant." },
   "maxima red": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube carbone polyvalent." },
   "hunter xt": { material: "carbon", diameters: ["standard"], environments: ["mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club"], pointRange: [90, 120], note: "Option carbone accessible." },
   "trojan": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Carbone club exterieur." },
@@ -133,6 +133,11 @@ function materialLabel(key) { return key === "alu" ? "Alu" : "Carbone"; }
 function diameterLabel(key) { return key === "large" ? "Large / salle" : key === "thin" ? "Fin / vent" : "Standard"; }
 function environmentLabel(key) { return key === "indoor" ? "Interieur / salle" : key === "mixed" ? "Polyvalent" : "Exterieur"; }
 function disciplineLabel(key) { return key === "field" ? "Campagne / 3D" : key === "hunting" ? "Chasse" : "Cible"; }
+function goalLabel(key) { return key === "competition" ? "Competition" : key === "performance" ? "Performance" : "Club"; }
+function goalsSummary(goals) {
+  if (!goals?.length) return "Club";
+  return goals.slice(0, 2).map(goalLabel).join(" / ");
+}
 function profileLabel(key) {
   if (key === "recurve_outdoor") return "Recurve exterieur";
   if (key === "recurve_indoor") return "Recurve salle";
@@ -418,7 +423,7 @@ function renderModelList(recommendation) {
   return recommendation.models.slice(0, 8).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
-    const details = meta ? `${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${source}` : "Meta technique locale incomplete";
+    const details = meta ? `${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${environmentLabel(meta.environments[0] || "mixed")} | ${goalsSummary(meta.goals)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${source}` : "Meta technique locale incomplete";
     return `<li><strong>${entry.model}</strong> - score ${entry.score} - ${details}</li>`;
   }).join("");
 }
@@ -535,6 +540,7 @@ function renderRecommendation(input) {
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType);
+  const topMeta = recommendation.models[0]?.meta || null;
   const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
   const modelTitle = recommendation.fallbackLabel === "modeles proches"
     ? "Modeles proches dans la marque:"
@@ -548,6 +554,7 @@ function renderRecommendation(input) {
     ${contextLine}
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
+    ${topMeta ? `<p>Positionnement serie: <strong>${goalsSummary(topMeta.goals)}</strong></p>` : ""}
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>

@@ -9,6 +9,7 @@ Application web statique pour estimer une configuration de fleche exploitable en
 - propose deux profils de tir : `recurve exterieur` et `recurve salle`
 - travaille avec `carbone` ou `alu`
 - produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
+- affiche aussi le `positionnement serie` et une `plage de pointe` par modele
 - conserve une comparaison par marque quand `Marque preferee = Toutes`
 - utilise le tableau integre Skylon quand `Skylon` est choisi
 
