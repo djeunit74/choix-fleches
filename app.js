@@ -118,15 +118,31 @@ const LIVE_DEALS = [
   { brand: "carbon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
 ];
 
+const CATALOG_ENDPOINT = "catalog.json";
 const DEALS_ENDPOINT = "deals.json";
 const DEALS_CONFIG_ENDPOINT = "deals-config.json";
+const DEFAULT_CATALOG_STATE = {
+  version: 2,
+  updatedAt: "2026-03-12T20:30:00+01:00",
+  source: "embedded-fallback",
+  catalog: cloneCatalog(DEFAULT_CATALOG),
+  models: cloneCatalog(MODEL_METADATA),
+  families: cloneCatalog(MODEL_FAMILY_METADATA),
+  skylon: {
+    grid: cloneCatalog(SKYLON_GRID),
+    compoundRanges: cloneCatalog(SKYLON_COMPOUND_RANGES),
+    recurveRanges: cloneCatalog(SKYLON_RECURVE_RANGES),
+    groupModels: cloneCatalog(SKYLON_GROUP_MODELS)
+  }
+};
 const DEFAULT_DEALS_STATE = {
   updatedAt: "2026-03-12T19:00:00+01:00",
   source: "embedded-fallback",
   deals: LIVE_DEALS
 };
 
-let arrowCatalog = cloneCatalog(DEFAULT_CATALOG);
+let catalogState = cloneCatalog(DEFAULT_CATALOG_STATE);
+let arrowCatalog = cloneCatalog(catalogState.catalog);
 let dealsState = { ...DEFAULT_DEALS_STATE };
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
@@ -134,9 +150,9 @@ function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength 
 function normalizeModelKey(modelName) { return String(modelName || "").toLowerCase().replace(/\s*\([^)]*\)/g, "").trim(); }
 function getModelMetadata(modelName) {
   const key = normalizeModelKey(modelName);
-  if (MODEL_METADATA[key]) return MODEL_METADATA[key];
-  const family = Object.keys(MODEL_FAMILY_METADATA).find((prefix) => key.startsWith(prefix) || key.includes(prefix));
-  return family ? MODEL_FAMILY_METADATA[family] : null;
+  if (catalogState.models[key]) return catalogState.models[key];
+  const family = Object.keys(catalogState.families).find((prefix) => key.startsWith(prefix) || key.includes(prefix));
+  return family ? catalogState.families[family] : null;
 }
 function brandLabel(key) { return key === "carbon" ? "Carbon Express" : key.charAt(0).toUpperCase() + key.slice(1); }
 function materialLabel(key) { return key === "alu" ? "Alu" : "Carbone"; }
@@ -160,6 +176,45 @@ function dealsUpdatedLabel() {
 }
 function isValidDealEntry(entry) {
   return entry && typeof entry.brand === "string" && typeof entry.material === "string" && typeof entry.title === "string" && typeof entry.price === "string" && typeof entry.url === "string" && typeof entry.shop === "string";
+}
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+function isValidCatalogPayload(payload) {
+  return isPlainObject(payload)
+    && isPlainObject(payload.catalog)
+    && isPlainObject(payload.models)
+    && isPlainObject(payload.families)
+    && isPlainObject(payload.skylon)
+    && Array.isArray(payload.skylon.grid)
+    && isPlainObject(payload.skylon.compoundRanges)
+    && Array.isArray(payload.skylon.recurveRanges)
+    && isPlainObject(payload.skylon.groupModels);
+}
+async function refreshCatalogState() {
+  try {
+    const response = await fetch(`${CATALOG_ENDPOINT}?t=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    if (!isValidCatalogPayload(payload)) throw new Error("invalid catalog payload");
+    catalogState = {
+      version: payload.version || DEFAULT_CATALOG_STATE.version,
+      updatedAt: payload.updatedAt || DEFAULT_CATALOG_STATE.updatedAt,
+      source: payload.source || "external-json",
+      catalog: cloneCatalog(payload.catalog),
+      models: cloneCatalog(payload.models),
+      families: cloneCatalog(payload.families),
+      skylon: {
+        grid: cloneCatalog(payload.skylon.grid),
+        compoundRanges: cloneCatalog(payload.skylon.compoundRanges),
+        recurveRanges: cloneCatalog(payload.skylon.recurveRanges),
+        groupModels: cloneCatalog(payload.skylon.groupModels)
+      }
+    };
+  } catch {
+    catalogState = cloneCatalog(DEFAULT_CATALOG_STATE);
+  }
+  arrowCatalog = cloneCatalog(catalogState.catalog);
 }
 function parseCsvLine(line) {
   const cells = [];
@@ -489,11 +544,15 @@ function findRangeRow(ranges, value) {
 function skylonRecommendation(input) {
   const col = Math.round(input.arrowLength) - 23;
   if (col < 0 || col > 9) return { ok: false, message: "Longueur hors tableau Skylon (23 a 32 pouces)." };
-  const row = input.bowType === "compound" ? findRangeRow(SKYLON_COMPOUND_RANGES[input.compoundSpeed] || [], input.drawWeight) : findRangeRow(SKYLON_RECURVE_RANGES, input.drawWeight);
-  if (row < 0 || row >= SKYLON_GRID.length) return { ok: false, message: "Puissance hors plages du tableau Skylon." };
-  const group = SKYLON_GRID[row][col] || "";
+  const compoundRanges = catalogState.skylon.compoundRanges || {};
+  const recurveRanges = catalogState.skylon.recurveRanges || [];
+  const grid = catalogState.skylon.grid || [];
+  const groupModels = catalogState.skylon.groupModels || {};
+  const row = input.bowType === "compound" ? findRangeRow(compoundRanges[input.compoundSpeed] || [], input.drawWeight) : findRangeRow(recurveRanges, input.drawWeight);
+  if (row < 0 || row >= grid.length) return { ok: false, message: "Puissance hors plages du tableau Skylon." };
+  const group = grid[row][col] || "";
   if (!group) return { ok: false, message: "Case vide dans le tableau Skylon pour cette combinaison." };
-  return { ok: true, group, models: SKYLON_GROUP_MODELS[group] || [], warning: group.startsWith("Y") };
+  return { ok: true, group, models: groupModels[group] || [], warning: group.startsWith("Y") };
 }
 
 function buildBrandRecommendation(input, brand) {
@@ -763,6 +822,7 @@ els.form.addEventListener("submit", async (event) => {
     return;
   }
 
+  await refreshCatalogState();
   await refreshDealsCatalog();
   renderRecommendation(normalizedInput);
 });
@@ -771,4 +831,5 @@ applyUnitConstraints();
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
+refreshCatalogState();
 refreshDealsCatalog();

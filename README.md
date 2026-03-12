@@ -2,6 +2,8 @@
 
 Application web statique pour estimer une configuration de fleche exploitable en club.
 
+V2 : le catalogue technique n'est plus uniquement embarque dans [app.js](c:/Users/User/app choix des fleches/app.js). Il est expose dans [catalog.json](c:/Users/User/app choix des fleches/catalog.json) et recharge par l'application.
+
 ## Ce que fait l'app
 
 - travaille uniquement en `lbs` et `pouces`
@@ -10,6 +12,7 @@ Application web statique pour estimer une configuration de fleche exploitable en
 - travaille avec `carbone` ou `alu`
 - produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
 - affiche aussi le `positionnement serie` et une `plage de pointe` par modele
+- recharge le `catalogue technique` depuis [catalog.json](c:/Users/User/app choix des fleches/catalog.json) avec fallback local si le JSON n'est pas disponible
 - recharge les `offres marchands` a chaque calcul depuis [deals.json](c:/Users/User/app choix des fleches/deals.json)
 - peut lire une source distante via [deals-config.json](c:/Users/User/app choix des fleches/deals-config.json)
 - conserve une comparaison par marque quand `Marque preferee = Toutes`
@@ -32,8 +35,22 @@ Fichiers statiques deja presents :
 - [404.html](c:/Users/User/app choix des fleches/404.html)
 - [manifest.webmanifest](c:/Users/User/app choix des fleches/manifest.webmanifest)
 - [sw.js](c:/Users/User/app choix des fleches/sw.js)
+- [catalog.json](c:/Users/User/app choix des fleches/catalog.json)
 - [deals.json](c:/Users/User/app choix des fleches/deals.json)
 - [deals-config.json](c:/Users/User/app choix des fleches/deals-config.json)
+
+## V2 data-driven
+
+Le moteur charge maintenant deux sources distinctes :
+
+- [catalog.json](c:/Users/User/app choix des fleches/catalog.json) pour les references techniques par marque, spine, modele et metadonnees
+- [deals.json](c:/Users/User/app choix des fleches/deals.json) pour les offres marchands
+
+Effet concret :
+
+- la logique de recommandation est moins dependante du code
+- l'enrichissement du catalogue peut se faire sans reecrire le moteur
+- les erreurs de melange de marques ou d'environnements sont plus faciles a auditer
 
 ## Mise a jour distante des prix
 
