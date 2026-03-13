@@ -518,6 +518,7 @@ function scoreModel(modelName, input, profile) {
   if (meta.distanceBand === profile.preferredDistanceBand) score += 2;
   if (meta.useCase === profile.preferredUseCase) score += 2;
   if (meta.dataPrecision === "model") score += 1;
+  score += budgetScore(modelName, input.budgetLevel);
   return { score, meta };
 }
 
@@ -581,7 +582,16 @@ function modelBudgetTier(modelName) {
 
 function filterByBudget(models, budget) {
   if (budget === "all") return models;
-  return models.filter((model) => modelBudgetTier(model) === budget);
+  const exactMatches = models.filter((model) => modelBudgetTier(model) === budget);
+  return exactMatches.length ? exactMatches : models;
+}
+
+function budgetScore(modelName, budget) {
+  if (budget === "all") return 0;
+  const tier = modelBudgetTier(modelName);
+  if (tier === budget) return 3;
+  if ((budget === "eco" && tier === "mid") || (budget === "premium" && tier === "mid")) return 1;
+  return 0;
 }
 
 function findRangeRow(ranges, value) {
@@ -752,30 +762,32 @@ function rankDealsAgainstModels(deals, modelNames) {
 }
 
 function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile, allowedBrands = null, recommendedModels = []) {
-  const deals = dealsState.deals.filter((deal) => {
+  const baseDeals = dealsState.deals.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
     const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
-    const budgetOk = budget === "all" || deal.tier === budget;
     const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
     const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
     const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
     const outdoorRecurveOk = shootingProfile !== "recurve_outdoor" || deal.material === "carbon";
-    return brandOk && visibleBrandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
+    return brandOk && visibleBrandOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
   });
-  let finalDeals = deals;
+  let finalDeals = budget === "all" ? baseDeals : baseDeals.filter((deal) => deal.tier === budget);
   let fallbackMessage = "";
   let matchingMessage = "";
   if (!finalDeals.length && preferredBrand === "all") {
-    finalDeals = dealsState.deals.filter((deal) => {
+    finalDeals = (budget === "all" ? dealsState.deals : dealsState.deals.filter((deal) => deal.tier === budget)).filter((deal) => {
       const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
-      const budgetOk = budget === "all" || deal.tier === budget;
       const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
       const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
       const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
       const outdoorRecurveOk = shootingProfile !== "recurve_outdoor" || deal.material === "carbon";
-      return visibleBrandOk && budgetOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
+      return visibleBrandOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
     });
     if (finalDeals.length) fallbackMessage = "<p>Pas d'offre directe dans la marque choisie. Alternatives marchands compatibles :</p>";
+  }
+  if (!finalDeals.length && budget !== "all") {
+    finalDeals = baseDeals;
+    if (finalDeals.length) fallbackMessage = "<p>Pas d'offre stricte dans cette categorie budget. La meilleure reference disponible reste affichee.</p>";
   }
   if (!finalDeals.length) return "<p>Aucune offre correspondant au filtre actuel.</p>";
 
