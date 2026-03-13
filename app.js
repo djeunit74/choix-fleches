@@ -148,6 +148,17 @@ let dealsState = { ...DEFAULT_DEALS_STATE };
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength }; }
 function normalizeModelKey(modelName) { return String(modelName || "").toLowerCase().replace(/\s*\([^)]*\)/g, "").trim(); }
+function compactText(value) { return normalizeModelKey(value).replace(/[^a-z0-9]+/g, " ").trim(); }
+function dealModelTokens(modelName) {
+  const normalized = compactText(modelName);
+  if (!normalized) return [];
+  const reduced = normalized
+    .replace(/\b(r?\d{3,4}(?:\s*[-/]\s*\d{3,4})?)\b/g, " ")
+    .replace(/\b(v\d+)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return [...new Set([normalized, reduced].filter((token) => token && token.length >= 3))];
+}
 function getModelMetadata(modelName) {
   const key = normalizeModelKey(modelName);
   if (catalogState.models[key]) return catalogState.models[key];
@@ -711,7 +722,36 @@ function renderAlternativeModelList(recommendation) {
   return `<p>Alternatives pertinentes hors marque:</p><ul>${lines}</ul>`;
 }
 
-function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile, allowedBrands = null) {
+function rankDealsAgainstModels(deals, modelNames) {
+  if (!modelNames?.length) return deals.map((deal) => ({ deal, score: 0, matchedModel: "" }));
+  const ranked = deals.map((deal) => {
+    const title = compactText(deal.title);
+    let bestScore = 0;
+    let matchedModel = "";
+    modelNames.forEach((modelName, index) => {
+      const tokens = dealModelTokens(modelName);
+      tokens.forEach((token) => {
+        if (token === title) {
+          const score = 200 - index * 10;
+          if (score > bestScore) {
+            bestScore = score;
+            matchedModel = modelName;
+          }
+        } else if (title.includes(token)) {
+          const score = 120 - index * 10 + token.length;
+          if (score > bestScore) {
+            bestScore = score;
+            matchedModel = modelName;
+          }
+        }
+      });
+    });
+    return { deal, score: bestScore, matchedModel };
+  });
+  return ranked.sort((a, b) => b.score - a.score || a.deal.shop.localeCompare(b.deal.shop));
+}
+
+function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile, allowedBrands = null, recommendedModels = []) {
   const deals = dealsState.deals.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
     const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
@@ -724,6 +764,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   });
   let finalDeals = deals;
   let fallbackMessage = "";
+  let matchingMessage = "";
   if (!finalDeals.length && preferredBrand === "all") {
     finalDeals = dealsState.deals.filter((deal) => {
       const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
@@ -738,22 +779,33 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   }
   if (!finalDeals.length) return "<p>Aucune offre correspondant au filtre actuel.</p>";
 
-  const groups = finalDeals.reduce((acc, deal) => {
-    if (!acc[deal.shop]) acc[deal.shop] = [];
-    acc[deal.shop].push(deal);
+  const rankedDeals = rankDealsAgainstModels(finalDeals, recommendedModels);
+  const matchedDeals = rankedDeals.filter((entry) => entry.score > 0);
+  const displayedDeals = matchedDeals.length ? [...matchedDeals, ...rankedDeals.filter((entry) => entry.score <= 0)] : rankedDeals;
+  if (matchedDeals.length) {
+    matchingMessage = "<p>Offres reliees aux modeles conseilles en tete de liste.</p>";
+  }
+
+  const groups = displayedDeals.reduce((acc, entry) => {
+    if (!acc[entry.deal.shop]) acc[entry.deal.shop] = [];
+    acc[entry.deal.shop].push(entry);
     return acc;
   }, {});
 
   const content = Object.entries(groups)
     .map(([shop, shopDeals]) => {
       const lines = shopDeals
-        .map((deal) => `<li><a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price}</li>`)
+        .map(({ deal, matchedModel, score }) => {
+          const link = `<a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price}`;
+          const relation = score > 0 && matchedModel ? ` <span class="result-subvalue">modele lie: ${matchedModel}</span>` : "";
+          return `<li>${link}${relation}</li>`;
+        })
         .join("");
       return `<li><strong>${shop}</strong><ul>${lines}</ul></li>`;
     })
     .join("");
 
-  return `${fallbackMessage}<ul>${content}</ul>`;
+  return `${fallbackMessage}${matchingMessage}<ul>${content}</ul>`;
 }
 
 function cloneCatalog(catalog) { return JSON.parse(JSON.stringify(catalog)); }
@@ -779,7 +831,8 @@ function renderComparison(input) {
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
   const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
   const visibleBrands = comparisons.map((entry) => entry.brand);
-  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, visibleBrands);
+  const recommendedModels = comparisons.map((entry) => entry.rec.models[0]?.model).filter(Boolean);
+  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, visibleBrands, recommendedModels);
   const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
   const lines = comparisons.map((entry) => {
     const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
@@ -819,7 +872,11 @@ function renderRecommendation(input) {
   const contextLine = `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
-  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile);
+  const recommendedModels = [
+    ...recommendation.models.slice(0, 4).map((entry) => entry.model),
+    ...(recommendation.alternativeModels || []).slice(0, 2).map((entry) => entry.model)
+  ];
+  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, recommendedModels);
   const topMeta = recommendation.models[0]?.meta || null;
   const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
   const modelTitle = recommendation.fallbackLabel === "modeles proches"
