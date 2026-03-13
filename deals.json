@@ -4,6 +4,7 @@
   "deals": [
     {
       "brand": "skylon",
+      "modelKey": "brixxon",
       "material": "carbon",
       "bowTypes": ["recurve", "compound"],
       "tier": "eco",
@@ -14,6 +15,7 @@
     },
     {
       "brand": "skylon",
+      "modelKey": "paragon",
       "material": "carbon",
       "bowTypes": ["recurve"],
       "tier": "premium",
@@ -24,6 +26,7 @@
     },
     {
       "brand": "skylon",
+      "modelKey": "premiens",
       "material": "carbon",
       "bowTypes": ["recurve", "compound"],
       "tier": "mid",
@@ -34,6 +37,7 @@
     },
     {
       "brand": "easton",
+      "modelKey": "avance",
       "material": "carbon",
       "bowTypes": ["recurve"],
       "tier": "mid",
@@ -44,6 +48,7 @@
     },
     {
       "brand": "easton",
+      "modelKey": "x7",
       "material": "alu",
       "bowTypes": ["recurve", "compound"],
       "tier": "mid",
@@ -54,6 +59,7 @@
     },
     {
       "brand": "easton",
+      "modelKey": "x23",
       "material": "alu",
       "bowTypes": ["recurve"],
       "tier": "premium",
@@ -64,6 +70,7 @@
     },
     {
       "brand": "easton",
+      "modelKey": "rx7",
       "material": "alu",
       "bowTypes": ["recurve"],
       "tier": "mid",
@@ -74,6 +81,7 @@
     },
     {
       "brand": "victory",
+      "modelKey": "vap target",
       "material": "carbon",
       "bowTypes": ["recurve", "compound"],
       "tier": "premium",
@@ -84,6 +92,7 @@
     },
     {
       "brand": "victory",
+      "modelKey": "v-tac 23 elite",
       "material": "carbon",
       "bowTypes": ["recurve"],
       "tier": "premium",
@@ -94,6 +103,7 @@
     },
     {
       "brand": "victory",
+      "modelKey": "vap gamer v3",
       "material": "carbon",
       "bowTypes": ["recurve"],
       "tier": "mid",
@@ -104,6 +114,7 @@
     },
     {
       "brand": "carbon",
+      "modelKey": "predator ii",
       "material": "carbon",
       "bowTypes": ["recurve", "compound"],
       "tier": "eco",

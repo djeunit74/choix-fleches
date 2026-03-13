@@ -105,17 +105,17 @@ const SKYLON_RECURVE_RANGES = [[16,19],[20,23],[24,29],[30,35],[36,40],[41,45],[
 const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius R900"], A2: ["Brixxon R900-850","Edge 800","Radius 850-800"], A3: ["Brixxon R850-800","Edge 800-750","Radius 750-700"], A4: ["Brixxon R750-700","Edge 700-650","Radius 700-650"], A5: ["Brixxon R700-650","Edge 700-650","Radius 650-600"], A6: ["Brixxon R600-550","Edge 700-600","Radius 600-550"], A7: ["Brixxon R550-500","Edge 600-500","Maverick 500"], A8: ["Brixxon R500-450","Edge 500-400","Maverick 500-400"], A9: ["Brixxon R450-400","Edge 400-350","Maverick 400"], A10: ["Brixxon R400","Edge 400-350","Radius 400"], A11: ["Bruxx 350-300","Empros 350-300","Maverick 350-300"], A12: ["Bruxx 300","Edge 350-300","Empros 330"], A13: ["Bruxx 300","Empros 300","Maverick 300"] };
 
 const LIVE_DEALS = [
-  { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Skylon Brixxon carbone 4,2 lot de 12 tubes", price: "67,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes", shop: "erhart-sports.com" },
-  { brand: "skylon", material: "carbon", bowTypes: ["recurve"], tier: "premium", title: "Skylon Paragon lot de 12 tubes", price: "134,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html", shop: "erhart-sports.com" },
-  { brand: "skylon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
-  { brand: "easton", material: "carbon", bowTypes: ["recurve"], tier: "mid", title: "Easton Tube Avance", price: "12,90 EUR", url: "https://www.heraclesarcherie.fr/tubes-carbone/easton-tube-avance-detail", shop: "heraclesarcherie.fr" },
-  { brand: "easton", material: "alu", bowTypes: ["recurve", "compound"], tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
-  { brand: "easton", material: "alu", bowTypes: ["recurve"], tier: "premium", title: "Easton X23 tube aluminium", price: "12,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x23-tube-aluminium", shop: "erhart-sports.com" },
-  { brand: "easton", material: "alu", bowTypes: ["recurve"], tier: "mid", title: "Easton RX7 douzaine de tubes aluminium", price: "169,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/2627-easton-rx7-tube-aluminium.html", shop: "erhart-sports.com" },
-  { brand: "victory", material: "carbon", bowTypes: ["recurve", "compound"], tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
-  { brand: "victory", material: "carbon", bowTypes: ["recurve"], tier: "premium", title: "Victory V-TAC 23 Elite lot de 12 tubes", price: "164,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/victory-v-tac-23-elite-lot-de-12-tubes", shop: "erhart-sports.com" },
-  { brand: "victory", material: "carbon", bowTypes: ["recurve"], tier: "mid", title: "Victory VAP Gamer V3 tube carbone", price: "12,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/3949-victory-vap-gamer-v3-tube-carbone.html", shop: "erhart-sports.com" },
-  { brand: "carbon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
+  { brand: "skylon", modelKey: "brixxon", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Skylon Brixxon carbone 4,2 lot de 12 tubes", price: "67,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes", shop: "erhart-sports.com" },
+  { brand: "skylon", modelKey: "paragon", material: "carbon", bowTypes: ["recurve"], tier: "premium", title: "Skylon Paragon lot de 12 tubes", price: "134,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html", shop: "erhart-sports.com" },
+  { brand: "skylon", modelKey: "premiens", material: "carbon", bowTypes: ["recurve", "compound"], tier: "mid", title: "Skylon Precium ID3.2 lot de 12 (pack promo)", price: "150,73 EUR", url: "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html", shop: "archerie.fr" },
+  { brand: "easton", modelKey: "avance", material: "carbon", bowTypes: ["recurve"], tier: "mid", title: "Easton Tube Avance", price: "12,90 EUR", url: "https://www.heraclesarcherie.fr/tubes-carbone/easton-tube-avance-detail", shop: "heraclesarcherie.fr" },
+  { brand: "easton", modelKey: "x7", material: "alu", bowTypes: ["recurve", "compound"], tier: "mid", title: "Easton X7 lot de 12 tubes", price: "139,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes", shop: "erhart-sports.com" },
+  { brand: "easton", modelKey: "x23", material: "alu", bowTypes: ["recurve"], tier: "premium", title: "Easton X23 tube aluminium", price: "12,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/easton-x23-tube-aluminium", shop: "erhart-sports.com" },
+  { brand: "easton", modelKey: "rx7", material: "alu", bowTypes: ["recurve"], tier: "mid", title: "Easton RX7 douzaine de tubes aluminium", price: "169,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/2627-easton-rx7-tube-aluminium.html", shop: "erhart-sports.com" },
+  { brand: "victory", modelKey: "vap target", material: "carbon", bowTypes: ["recurve", "compound"], tier: "premium", title: "Victory VAP Target V1 lot de 12", price: "159,00 EUR", url: "https://www.erhart-sports.com/tubes-nus/2143-victory-vap-target-v1-lot-de-12-tubes.html", shop: "erhart-sports.com" },
+  { brand: "victory", modelKey: "v-tac 23 elite", material: "carbon", bowTypes: ["recurve"], tier: "premium", title: "Victory V-TAC 23 Elite lot de 12 tubes", price: "164,90 EUR", url: "https://www.erhart-sports.com/tubes-nus/victory-v-tac-23-elite-lot-de-12-tubes", shop: "erhart-sports.com" },
+  { brand: "victory", modelKey: "vap gamer v3", material: "carbon", bowTypes: ["recurve"], tier: "mid", title: "Victory VAP Gamer V3 tube carbone", price: "12,50 EUR", url: "https://www.erhart-sports.com/tubes-nus/3949-victory-vap-gamer-v3-tube-carbone.html", shop: "erhart-sports.com" },
+  { brand: "carbon", modelKey: "predator ii", material: "carbon", bowTypes: ["recurve", "compound"], tier: "eco", title: "Carbon Express Predator II", price: "49,90 EUR", url: "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html", shop: "archerie.fr" }
 ];
 
 const CATALOG_ENDPOINT = "catalog.json";
@@ -278,6 +278,7 @@ function csvToDeals(text) {
     const entry = Object.fromEntries(headers.map((header, index) => [header, values[index] || ""]));
     return {
       brand: entry.brand,
+      modelKey: entry.modelkey || normalizeModelKey(entry.title),
       material: entry.material,
       bowTypes: (entry.bowtypes || "recurve").split("|").map((value) => value.trim()).filter(Boolean),
       tier: entry.tier || "mid",
@@ -733,32 +734,35 @@ function renderAlternativeModelList(recommendation) {
 }
 
 function rankDealsAgainstModels(deals, modelNames) {
-  if (!modelNames?.length) return deals.map((deal) => ({ deal, score: 0, matchedModel: "" }));
-  const ranked = deals.map((deal) => {
-    const title = compactText(deal.title);
-    let bestScore = 0;
-    let matchedModel = "";
-    modelNames.forEach((modelName, index) => {
-      const tokens = dealModelTokens(modelName);
-      tokens.forEach((token) => {
-        if (token === title) {
-          const score = 200 - index * 10;
-          if (score > bestScore) {
-            bestScore = score;
-            matchedModel = modelName;
+  if (!modelNames?.length) return [];
+  const modelIndex = new Map(modelNames.map((modelName, index) => [normalizeModelKey(modelName), { modelName, index }]));
+  return deals
+    .map((deal) => {
+      const directKey = normalizeModelKey(deal.modelKey || deal.title);
+      const directMatch = modelIndex.get(directKey);
+      if (directMatch) {
+        return { deal, score: 200 - directMatch.index * 10, matchedModel: directMatch.modelName };
+      }
+
+      const title = compactText(deal.title);
+      let bestScore = 0;
+      let matchedModel = "";
+      modelNames.forEach((modelName, index) => {
+        const tokens = dealModelTokens(modelName);
+        tokens.forEach((token) => {
+          if (title.includes(token)) {
+            const score = 100 - index * 10 + token.length;
+            if (score > bestScore) {
+              bestScore = score;
+              matchedModel = modelName;
+            }
           }
-        } else if (title.includes(token)) {
-          const score = 120 - index * 10 + token.length;
-          if (score > bestScore) {
-            bestScore = score;
-            matchedModel = modelName;
-          }
-        }
+        });
       });
-    });
-    return { deal, score: bestScore, matchedModel };
-  });
-  return ranked.sort((a, b) => b.score - a.score || a.deal.shop.localeCompare(b.deal.shop));
+      return { deal, score: bestScore, matchedModel };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || a.deal.shop.localeCompare(b.deal.shop));
 }
 
 function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile, allowedBrands = null, recommendedModels = []) {
@@ -772,31 +776,13 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
     return brandOk && visibleBrandOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
   });
   let finalDeals = budget === "all" ? baseDeals : baseDeals.filter((deal) => deal.tier === budget);
-  let fallbackMessage = "";
-  let matchingMessage = "";
-  if (!finalDeals.length && preferredBrand === "all") {
-    finalDeals = (budget === "all" ? dealsState.deals : dealsState.deals.filter((deal) => deal.tier === budget)).filter((deal) => {
-      const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
-      const allowedMaterialOk = ALLOWED_SHAFT_MATERIALS.includes(deal.material);
-      const materialOk = shaftMaterial === "all" || deal.material === shaftMaterial;
-      const bowTypeOk = !deal.bowTypes || deal.bowTypes.includes(bowType);
-      const outdoorRecurveOk = shootingProfile !== "recurve_outdoor" || deal.material === "carbon";
-      return visibleBrandOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
-    });
-    if (finalDeals.length) fallbackMessage = "<p>Pas d'offre directe dans la marque choisie. Alternatives marchands compatibles :</p>";
-  }
   if (!finalDeals.length && budget !== "all") {
     finalDeals = baseDeals;
-    if (finalDeals.length) fallbackMessage = "<p>Pas d'offre stricte dans cette categorie budget. La meilleure reference disponible reste affichee.</p>";
   }
   if (!finalDeals.length) return "<p>Aucune offre correspondant au filtre actuel.</p>";
 
-  const rankedDeals = rankDealsAgainstModels(finalDeals, recommendedModels);
-  const matchedDeals = rankedDeals.filter((entry) => entry.score > 0);
-  const displayedDeals = matchedDeals.length ? [...matchedDeals, ...rankedDeals.filter((entry) => entry.score <= 0)] : rankedDeals;
-  if (matchedDeals.length) {
-    matchingMessage = "<p>Offres reliees aux modeles conseilles en tete de liste.</p>";
-  }
+  const displayedDeals = rankDealsAgainstModels(finalDeals, recommendedModels);
+  if (!displayedDeals.length) return "<p>Aucune offre marchande ne correspond exactement aux modeles resultats.</p>";
 
   const groups = displayedDeals.reduce((acc, entry) => {
     if (!acc[entry.deal.shop]) acc[entry.deal.shop] = [];
@@ -817,7 +803,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
     })
     .join("");
 
-  return `${fallbackMessage}${matchingMessage}<ul>${content}</ul>`;
+  return `<p>Offres correspondant aux modeles resultats :</p><ul>${content}</ul>`;
 }
 
 function cloneCatalog(catalog) { return JSON.parse(JSON.stringify(catalog)); }
