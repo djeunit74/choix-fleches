@@ -164,6 +164,24 @@ function goalsSummary(goals) {
   if (!goals?.length) return "Club";
   return goals.slice(0, 2).map(goalLabel).join(" / ");
 }
+function seriesLabel(key) {
+  return key === "competition" ? "Competition" : key === "performance" ? "Performance" : "Club";
+}
+function massLabel(key) {
+  return key === "light" ? "Legere" : key === "heavy" ? "Lourde" : "Moyenne";
+}
+function toleranceLabel(key) {
+  return key === "precision" ? "Precision" : key === "matched" ? "Selectionnee" : "Standard";
+}
+function componentSystemLabel(key) {
+  return key === "pin" ? "Pin / pin-nock" : key === "swage" ? "Swage / alu classique" : key === "large-nock" ? "Gros fut / bushing large" : "Insert standard";
+}
+function distanceBandLabel(key) {
+  return key === "indoor" ? "18 m / salle" : key === "long" ? "Exterieur / longues distances" : "Polyvalent";
+}
+function useCaseLabel(key) {
+  return key === "linecut" ? "Salle / line-cut" : key === "wind" ? "Vent / exterieur" : key === "target" ? "Cible exterieure" : key === "budget" ? "Club / budget" : key === "training" ? "Entrainement" : "Polyvalent";
+}
 function profileLabel(key) {
   if (key === "recurve_outdoor") return "Recurve exterieur";
   if (key === "recurve_indoor") return "Recurve salle";
@@ -448,7 +466,24 @@ function deriveTargetProfile(input) {
   if (input.discipline === "hunting") pointRange = [100, input.bowType === "compound" ? 150 : 125];
   if (input.shootingEnvironment === "indoor" && input.discipline === "target") pointRange = [input.bowType === "compound" ? 120 : 100, input.bowType === "compound" ? 150 : 120];
 
-  return { preferredMaterial, preferredDiameter, pointRange };
+  let preferredSeries = "performance";
+  if (input.budgetLevel === "eco") preferredSeries = "club";
+  if (input.budgetLevel === "premium") preferredSeries = "competition";
+  if (input.shootingEnvironment === "indoor" && input.budgetLevel === "all") preferredSeries = "performance";
+
+  let preferredMass = "medium";
+  if (input.shootingEnvironment === "indoor") preferredMass = "heavy";
+  if (input.shootingEnvironment === "outdoor" && input.pointWeight <= 90) preferredMass = "light";
+  if (input.shootingEnvironment === "outdoor" && input.pointWeight >= 110) preferredMass = "medium";
+
+  let preferredTolerance = "matched";
+  if (input.budgetLevel === "eco") preferredTolerance = "standard";
+  if (input.budgetLevel === "premium") preferredTolerance = "precision";
+
+  const preferredDistanceBand = input.shootingEnvironment === "indoor" ? "indoor" : "long";
+  const preferredUseCase = input.shootingEnvironment === "indoor" ? "linecut" : preferredDiameter === "thin" ? "wind" : "target";
+
+  return { preferredMaterial, preferredDiameter, pointRange, preferredSeries, preferredMass, preferredTolerance, preferredDistanceBand, preferredUseCase };
 }
 
 function scoreModel(modelName, input, profile) {
@@ -461,11 +496,17 @@ function scoreModel(modelName, input, profile) {
   if (!meta.environments.includes(input.shootingEnvironment) && !meta.environments.includes("mixed")) return { score: -1000, meta };
 
   let score = 0;
-  if (meta.environments.includes(input.shootingEnvironment)) score += 4;
+  if (meta.environments.includes(input.shootingEnvironment)) score += 5;
   if (meta.disciplines.includes(input.discipline)) score += 4;
-  if (meta.material === profile.preferredMaterial) score += 3;
-  if (meta.diameters.includes(profile.preferredDiameter)) score += 2;
-  if (meta.pointRange && input.pointWeight >= meta.pointRange[0] && input.pointWeight <= meta.pointRange[1]) score += 2;
+  if (meta.material === profile.preferredMaterial) score += 4;
+  if (meta.diameters.includes(profile.preferredDiameter)) score += 3;
+  if (meta.pointRange && input.pointWeight >= meta.pointRange[0] && input.pointWeight <= meta.pointRange[1]) score += 3;
+  if (meta.seriesTier === profile.preferredSeries) score += 2;
+  if (meta.massClass === profile.preferredMass) score += 2;
+  if (meta.toleranceClass === profile.preferredTolerance) score += 1;
+  if (meta.distanceBand === profile.preferredDistanceBand) score += 2;
+  if (meta.useCase === profile.preferredUseCase) score += 2;
+  if (meta.dataPrecision === "model") score += 1;
   return { score, meta };
 }
 
@@ -576,11 +617,17 @@ function buildBrandRecommendation(input, brand) {
         stiffer: base.stiffer,
         load: base.load,
         confidence: skylon.warning ? "Moyenne" : "Elevee",
-        confidenceReasons: skylon.warning ? ["Zone Y: valider absolument au tir."] : ["Groupe issu du tableau Skylon.", "Modeles tries selon usage et construction."],
+        confidenceReasons: skylon.warning ? ["Zone Y: confirmation par entraineur recommandee.", topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."] : ["Groupe issu du tableau Skylon.", "Modeles tries selon usage et construction.", topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."].filter(Boolean),
         models: ranked,
         recommendedMaterial: topMeta?.material || profile.preferredMaterial,
         recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
         recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+        recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
+        recommendedMass: topMeta?.massClass || profile.preferredMass,
+        recommendedTolerance: topMeta?.toleranceClass || profile.preferredTolerance,
+        recommendedComponentSystem: topMeta?.componentSystem || "insert",
+        recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
+        recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
         notes: [topMeta?.note || "Controle final au tir requis."]
       };
     }
@@ -592,6 +639,7 @@ function buildBrandRecommendation(input, brand) {
   if (input.shootingEnvironment === "outdoor") reasons.push("Contexte exterieur pris en compte.");
   if (ranked.length >= 2) reasons.push("Plusieurs modeles coherents trouves dans la marque.");
   if (input.arrowLength < 24 || input.arrowLength > 31) reasons.push("Longueur hors plage centrale: verification fabricant imperative.");
+  if ((ranked[0]?.meta || topMeta)?.dataPrecision === "model") reasons.push("Fiche modele directe utilisee.");
 
   const notes = [];
   let fallbackLabel = "";
@@ -629,6 +677,12 @@ function buildBrandRecommendation(input, brand) {
     recommendedMaterial: (ranked[0]?.meta || topMeta)?.material || profile.preferredMaterial,
     recommendedDiameter: (ranked[0]?.meta || topMeta)?.diameters?.[0] || profile.preferredDiameter,
     recommendedPointRange: (ranked[0]?.meta || topMeta)?.pointRange || profile.pointRange,
+    recommendedSeries: (ranked[0]?.meta || topMeta)?.seriesTier || profile.preferredSeries,
+    recommendedMass: (ranked[0]?.meta || topMeta)?.massClass || profile.preferredMass,
+    recommendedTolerance: (ranked[0]?.meta || topMeta)?.toleranceClass || profile.preferredTolerance,
+    recommendedComponentSystem: (ranked[0]?.meta || topMeta)?.componentSystem || "insert",
+    recommendedUseCase: (ranked[0]?.meta || topMeta)?.useCase || profile.preferredUseCase,
+    recommendedDistanceBand: (ranked[0]?.meta || topMeta)?.distanceBand || profile.preferredDistanceBand,
     notes
   };
 }
@@ -638,15 +692,21 @@ function renderModelList(recommendation) {
   return recommendation.models.slice(0, 8).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
-    const details = meta ? `${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${environmentLabel(meta.environments[0] || "mixed")} | ${goalsSummary(meta.goals)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${source}` : "Meta technique locale incomplete";
-    return `<li><strong>${entry.model}</strong> - score ${entry.score} - ${details}</li>`;
+    const details = meta
+      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${source}`
+      : "Meta technique locale incomplete";
+    return `<li><strong>${entry.model}</strong> - ${details}</li>`;
   }).join("");
 }
 
 function renderAlternativeModelList(recommendation) {
   if (!recommendation.alternativeModels?.length) return "";
   const lines = recommendation.alternativeModels
-    .map((entry) => `<li><strong>${brandLabel(entry.brand)}</strong>: ${entry.model} - spine ${entry.spine}</li>`)
+    .map((entry) => {
+      const meta = entry.meta;
+      const details = meta ? ` - ${seriesLabel(meta.seriesTier)} - ${diameterLabel(meta.diameters[0] || "standard")} - ${useCaseLabel(meta.useCase)}` : "";
+      return `<li><strong>${brandLabel(entry.brand)}</strong>: ${entry.model} - spine ${entry.spine}${details}</li>`;
+    })
     .join("");
   return `<p>Alternatives pertinentes hors marque:</p><ul>${lines}</ul>`;
 }
@@ -724,7 +784,7 @@ function renderComparison(input) {
   const lines = comparisons.map((entry) => {
     const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
     const bestModel = entry.rec.models[0]?.model || "Aucun modele";
-    return `<li><strong>${brandLabel(entry.brand)}</strong>: ${primaryLabel} - ${materialLabel(entry.rec.recommendedMaterial)} - ${diameterLabel(entry.rec.recommendedDiameter)} - ${bestModel}</li>`;
+    return `<li><strong>${brandLabel(entry.brand)}</strong>: ${primaryLabel} - ${materialLabel(entry.rec.recommendedMaterial)} - ${diameterLabel(entry.rec.recommendedDiameter)} - ${seriesLabel(entry.rec.recommendedSeries)} - ${bestModel}</li>`;
   }).join("");
   const emptyState = comparisons.length
     ? `<ul>${lines}</ul>`
@@ -774,7 +834,11 @@ function renderRecommendation(input) {
     ${contextLine}
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
-    ${topMeta ? `<p>Positionnement serie: <strong>${goalsSummary(topMeta.goals)}</strong></p>` : ""}
+    <p>Positionnement serie: <strong>${seriesLabel(recommendation.recommendedSeries)}</strong></p>
+    <p>Masse lineique cible: <strong>${massLabel(recommendation.recommendedMass)}</strong></p>
+    <p>Niveau de tri conseille: <strong>${toleranceLabel(recommendation.recommendedTolerance)}</strong></p>
+    <p>Systeme de composants: <strong>${componentSystemLabel(recommendation.recommendedComponentSystem)}</strong></p>
+    <p>Orientation cible: <strong>${distanceBandLabel(recommendation.recommendedDistanceBand)} / ${useCaseLabel(recommendation.recommendedUseCase)}</strong></p>
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>

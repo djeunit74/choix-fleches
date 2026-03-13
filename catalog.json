@@ -1,7 +1,7 @@
 {
-  "version": 2,
-  "updatedAt": "2026-03-12T20:30:00+01:00",
-  "source": "local-json",
+  "version": 3,
+  "updatedAt": "2026-03-13T10:30:00+01:00",
+  "source": "local-json-v3",
   "catalog": {
     "easton": {
       "300": [
@@ -239,7 +239,14 @@
         90,
         120
       ],
-      "note": "Tube fin exterieur."
+      "note": "Tube fin exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "axis 5mm": {
       "material": "carbon",
@@ -264,7 +271,14 @@
         90,
         120
       ],
-      "note": "Tube carbone polyvalent."
+      "note": "Tube carbone polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "medium",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "long",
+      "useCase": "polyvalent"
     },
     "x7": {
       "material": "alu",
@@ -289,7 +303,14 @@
         100,
         150
       ],
-      "note": "Tube alu salle / club tres classique."
+      "note": "Tube alu salle / club tres classique.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "swage",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "jazz": {
       "material": "alu",
@@ -363,7 +384,14 @@
         90,
         120
       ],
-      "note": "Plus cible exterieure."
+      "note": "Plus cible exterieure.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "medium",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "long",
+      "useCase": "polyvalent"
     },
     "x10": {
       "material": "hybrid",
@@ -462,7 +490,14 @@
         90,
         120
       ],
-      "note": "Fine et accessible."
+      "note": "Fine et accessible.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "vforce": {
       "material": "carbon",
@@ -488,7 +523,14 @@
         90,
         120
       ],
-      "note": "Polyvalent club/exterieur."
+      "note": "Polyvalent club/exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "vap v3": {
       "material": "carbon",
@@ -513,7 +555,14 @@
         90,
         120
       ],
-      "note": "Profil vent."
+      "note": "Profil vent.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "vap target": {
       "material": "carbon",
@@ -538,7 +587,14 @@
         100,
         120
       ],
-      "note": "Cible exterieure."
+      "note": "Cible exterieure.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
     },
     "vap jr": {
       "material": "carbon",
@@ -562,7 +618,14 @@
         70,
         100
       ],
-      "note": "Petites puissances."
+      "note": "Petites puissances.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "predator ii": {
       "material": "carbon",
@@ -588,7 +651,14 @@
         90,
         120
       ],
-      "note": "Budget polyvalent."
+      "note": "Budget polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
     },
     "nano-pro rz": {
       "material": "carbon",
@@ -613,7 +683,14 @@
         90,
         120
       ],
-      "note": "Tube fin exterieur."
+      "note": "Tube fin exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
     },
     "nano-pro xtreme": {
       "material": "carbon",
@@ -637,7 +714,14 @@
         100,
         120
       ],
-      "note": "Competition exterieure."
+      "note": "Competition exterieure.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "medallion xr": {
       "material": "carbon",
@@ -661,7 +745,14 @@
         100,
         150
       ],
-      "note": "Gros diametre salle."
+      "note": "Gros diametre salle.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "heavy",
+      "toleranceClass": "precision",
+      "componentSystem": "large-nock",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "radius 400": {
       "material": "carbon",
@@ -688,7 +779,14 @@
         100,
         120
       ],
-      "note": "Tube club coherent."
+      "note": "Tube club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "radius 650-600": {
       "material": "carbon",
@@ -715,7 +813,14 @@
         90,
         120
       ],
-      "note": "Tube club coherent."
+      "note": "Tube club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "radius 700-650": {
       "material": "carbon",
@@ -742,7 +847,14 @@
         90,
         120
       ],
-      "note": "Tube club coherent."
+      "note": "Tube club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "radius 850-800": {
       "material": "carbon",
@@ -769,7 +881,14 @@
         80,
         110
       ],
-      "note": "Tube club coherent."
+      "note": "Tube club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "edge 400-350": {
       "material": "carbon",
@@ -795,7 +914,14 @@
         100,
         150
       ],
-      "note": "Profil salle."
+      "note": "Profil salle.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "edge 600-500": {
       "material": "carbon",
@@ -821,7 +947,14 @@
         100,
         150
       ],
-      "note": "Profil salle."
+      "note": "Profil salle.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "edge 700-650": {
       "material": "carbon",
@@ -847,7 +980,14 @@
         100,
         150
       ],
-      "note": "Profil salle."
+      "note": "Profil salle.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "maverick 300": {
       "material": "carbon",
@@ -871,7 +1011,14 @@
         90,
         120
       ],
-      "note": "Option club."
+      "note": "Option club.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "maverick 350-300": {
       "material": "carbon",
@@ -895,7 +1042,14 @@
         90,
         120
       ],
-      "note": "Option club."
+      "note": "Option club.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "bruxx 300": {
       "material": "carbon",
@@ -918,7 +1072,14 @@
         100,
         120
       ],
-      "note": "Competition recurve."
+      "note": "Competition recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "empros 300": {
       "material": "carbon",
@@ -941,7 +1102,1220 @@
         100,
         120
       ],
-      "note": "Competition recurve."
+      "note": "Competition recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "superdrive micro": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "rx7": {
+      "material": "alu",
+      "diameters": [
+        "large"
+      ],
+      "environments": [
+        "indoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "performance"
+      ],
+      "pointRange": [
+        100,
+        150
+      ],
+      "note": "Tube alu salle.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "swage",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
+    },
+    "x23": {
+      "material": "alu",
+      "diameters": [
+        "large"
+      ],
+      "environments": [
+        "indoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        120,
+        180
+      ],
+      "note": "Grand diametre salle competition.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "heavy",
+      "toleranceClass": "precision",
+      "componentSystem": "large-nock",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
+    },
+    "rip tko": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin oriente exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "rip xv": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Carbone exterieur plus tolerant.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "medium",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "long",
+      "useCase": "polyvalent"
+    },
+    "vxt elite v1": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "vap gamer v3": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        110
+      ],
+      "note": "Carbone accessible club.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "v-tac 23 elite": {
+      "material": "carbon",
+      "diameters": [
+        "large"
+      ],
+      "environments": [
+        "indoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        100,
+        150
+      ],
+      "note": "Tube salle carbone gros diametre.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "heavy",
+      "toleranceClass": "precision",
+      "componentSystem": "large-nock",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
+    },
+    "vft gamer v3": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        110
+      ],
+      "note": "Carbone accessible club.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "maxima red": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube carbone polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "hunter xt": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Option carbone accessible.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "trojan": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Carbone club exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "premiens 300": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "bruxx 350-300": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        100,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "empros 350-300": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        100,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "premiens 350-300": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "brixxon r400": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "premiens 400": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "brixxon r550-500": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "radius 500": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "premiens 500": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "maverick 500": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "mixed",
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Option club simple.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "brixxon r650-600": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "premiens 600": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "brixxon r750-700": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "paragon 700": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube carbone recurve exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "premiens 700": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "brixxon r850-800": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "edge 800-750": {
+      "material": "carbon",
+      "diameters": [
+        "large"
+      ],
+      "environments": [
+        "indoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "performance"
+      ],
+      "pointRange": [
+        100,
+        150
+      ],
+      "note": "Profil salle recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
+    },
+    "paragon 800": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube carbone recurve exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "premiens 800": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
+    },
+    "brixxon r900-850": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "edge 900-850": {
+      "material": "carbon",
+      "diameters": [
+        "large"
+      ],
+      "environments": [
+        "indoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "performance"
+      ],
+      "pointRange": [
+        100,
+        150
+      ],
+      "note": "Profil salle recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
+    },
+    "radius 900": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "paragon 900": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube carbone recurve exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "brixxon r1000-900": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
+    },
+    "radius r1000-900": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "club",
+        "polyvalent"
+      ],
+      "pointRange": [
+        80,
+        120
+      ],
+      "note": "Tube carbone club coherent.",
+      "dataPrecision": "model",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
+    },
+    "paragon 1000": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube carbone recurve exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     }
   },
   "families": {
@@ -969,7 +2343,14 @@
         80,
         120
       ],
-      "note": "Tube carbone club polyvalent."
+      "note": "Tube carbone club polyvalent.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "budget"
     },
     "radius": {
       "material": "carbon",
@@ -995,7 +2376,14 @@
         80,
         120
       ],
-      "note": "Tube carbone club coherent."
+      "note": "Tube carbone club coherent.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "edge": {
       "material": "carbon",
@@ -1020,7 +2408,14 @@
         100,
         150
       ],
-      "note": "Profil salle recurve."
+      "note": "Profil salle recurve.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "maverick": {
       "material": "carbon",
@@ -1045,7 +2440,14 @@
         90,
         120
       ],
-      "note": "Option club simple."
+      "note": "Option club simple.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "bruxx": {
       "material": "carbon",
@@ -1069,7 +2471,14 @@
         100,
         120
       ],
-      "note": "Tube fin performance recurve."
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "empros": {
       "material": "carbon",
@@ -1093,7 +2502,14 @@
         100,
         120
       ],
-      "note": "Tube fin performance recurve."
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "premiens": {
       "material": "carbon",
@@ -1117,7 +2533,14 @@
         90,
         120
       ],
-      "note": "Tube fin performance recurve."
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
     },
     "paragon": {
       "material": "carbon",
@@ -1141,7 +2564,14 @@
         90,
         120
       ],
-      "note": "Tube carbone recurve exterieur."
+      "note": "Tube carbone recurve exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "rip tko": {
       "material": "carbon",
@@ -1166,7 +2596,14 @@
         90,
         120
       ],
-      "note": "Tube fin oriente exterieur."
+      "note": "Tube fin oriente exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "rip xv": {
       "material": "carbon",
@@ -1191,7 +2628,14 @@
         90,
         120
       ],
-      "note": "Carbone exterieur plus tolerant."
+      "note": "Carbone exterieur plus tolerant.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "medium",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "long",
+      "useCase": "polyvalent"
     },
     "maxima red": {
       "material": "carbon",
@@ -1217,7 +2661,14 @@
         90,
         120
       ],
-      "note": "Tube carbone polyvalent."
+      "note": "Tube carbone polyvalent.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "hunter xt": {
       "material": "carbon",
@@ -1241,7 +2692,14 @@
         90,
         120
       ],
-      "note": "Option carbone accessible."
+      "note": "Option carbone accessible.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "trojan": {
       "material": "carbon",
@@ -1266,7 +2724,14 @@
         90,
         120
       ],
-      "note": "Carbone club exterieur."
+      "note": "Carbone club exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "superdrive micro": {
       "material": "carbon",
@@ -1289,7 +2754,14 @@
         90,
         120
       ],
-      "note": "Tube fin exterieur."
+      "note": "Tube fin exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     },
     "rx7": {
       "material": "alu",
@@ -1314,7 +2786,14 @@
         100,
         150
       ],
-      "note": "Tube alu salle."
+      "note": "Tube alu salle.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "heavy",
+      "toleranceClass": "matched",
+      "componentSystem": "swage",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "x23": {
       "material": "alu",
@@ -1338,7 +2817,14 @@
         120,
         180
       ],
-      "note": "Grand diametre salle competition."
+      "note": "Grand diametre salle competition.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "heavy",
+      "toleranceClass": "precision",
+      "componentSystem": "large-nock",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "vap gamer v3": {
       "material": "carbon",
@@ -1363,7 +2849,14 @@
         80,
         110
       ],
-      "note": "Carbone accessible club."
+      "note": "Carbone accessible club.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "vft gamer v3": {
       "material": "carbon",
@@ -1388,7 +2881,14 @@
         80,
         110
       ],
-      "note": "Carbone accessible club."
+      "note": "Carbone accessible club.",
+      "dataPrecision": "family",
+      "seriesTier": "club",
+      "massClass": "medium",
+      "toleranceClass": "standard",
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "v-tac 23 elite": {
       "material": "carbon",
@@ -1411,7 +2911,14 @@
         100,
         150
       ],
-      "note": "Tube salle carbone gros diametre."
+      "note": "Tube salle carbone gros diametre.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "heavy",
+      "toleranceClass": "precision",
+      "componentSystem": "large-nock",
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "vxt elite v1": {
       "material": "carbon",
@@ -1434,7 +2941,14 @@
         90,
         120
       ],
-      "note": "Tube fin exterieur."
+      "note": "Tube fin exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
     }
   },
   "skylon": {
