@@ -840,15 +840,11 @@ function recommendationPrimaryDisplay(recommendation) {
 function renderComparisonBrandCard(entry, input) {
   const topModel = entry.rec.models[0];
   const primaryLabel = topModel?.advisedSpine || (entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary);
-  const secondaryLabel = entry.rec.mode === "skylon"
-    ? `base ${entry.rec.primary} / eq. ${entry.rec.comparisonSpine}`
-    : `base ${entry.rec.primary}`;
-  const bestModel = entry.rec.models[0]?.model || "Aucun modele";
   const topModels = entry.rec.models.slice(0, 3);
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
       const meta = modelEntry.meta;
-      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | ${seriesLabel(meta.seriesTier)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
+      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
       return `<li><strong>${modelEntry.model}</strong> - ${details}</li>`;
     }).join("")}</ul>`
     : "<p>Aucun modele detaille pour cette marque.</p>";
@@ -857,10 +853,7 @@ function renderComparisonBrandCard(entry, input) {
     <article class="mini-card">
       <p class="mini-card-brand">${brandLabel(entry.brand)}</p>
       <p class="mini-card-spine">${primaryLabel}</p>
-      <p class="result-subvalue">${secondaryLabel}</p>
-      <p class="mini-card-meta">${materialLabel(entry.rec.recommendedMaterial)} | ${diameterLabel(entry.rec.recommendedDiameter)} | ${seriesLabel(entry.rec.recommendedSeries)}</p>
-      <p class="mini-card-model"><strong>${bestModel}</strong></p>
-      <p class="mini-card-subtitle">Modeles proposes</p>
+      <p class="mini-card-subtitle">Modeles coherents</p>
       ${modelList}
       ${brandDeals}
     </article>
