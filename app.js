@@ -739,27 +739,12 @@ function rankDealsAgainstModels(deals, modelNames) {
   return deals
     .map((deal) => {
       const directKey = normalizeModelKey(deal.modelKey || deal.title);
-      const directMatch = modelIndex.get(directKey);
+      const prefixedMatch = [...modelIndex.entries()].find(([modelKey]) => modelKey.startsWith(`${directKey} `) || modelKey.startsWith(`${directKey}-`) || modelKey.startsWith(`${directKey}/`));
+      const directMatch = modelIndex.get(directKey) || (prefixedMatch ? prefixedMatch[1] : null);
       if (directMatch) {
         return { deal, score: 200 - directMatch.index * 10, matchedModel: directMatch.modelName };
       }
-
-      const title = compactText(deal.title);
-      let bestScore = 0;
-      let matchedModel = "";
-      modelNames.forEach((modelName, index) => {
-        const tokens = dealModelTokens(modelName);
-        tokens.forEach((token) => {
-          if (title.includes(token)) {
-            const score = 100 - index * 10 + token.length;
-            if (score > bestScore) {
-              bestScore = score;
-              matchedModel = modelName;
-            }
-          }
-        });
-      });
-      return { deal, score: bestScore, matchedModel };
+      return { deal, score: 0, matchedModel: "" };
     })
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score || a.deal.shop.localeCompare(b.deal.shop));
@@ -809,7 +794,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
 function renderComparisonBrandCard(entry, input) {
   const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
   const bestModel = entry.rec.models[0]?.model || "Aucun modele";
-  const brandDeals = renderDeals(entry.brand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, entry.rec.models.slice(0, 3).map((modelEntry) => modelEntry.model));
+  const brandDeals = renderDeals(entry.brand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, bestModel === "Aucun modele" ? [] : [bestModel]);
   return `
     <article class="mini-card">
       <p class="mini-card-brand">${brandLabel(entry.brand)}</p>
