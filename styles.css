@@ -145,6 +145,22 @@ button {
   font-size: 1rem;
 }
 
+.mini-card-subtitle {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--accent-2);
+}
+
+.mini-card ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.mini-card li {
+  margin: 6px 0;
+}
+
 .result-value {
   font-size: 2rem;
   font-weight: 800;
