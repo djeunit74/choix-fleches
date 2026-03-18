@@ -806,6 +806,21 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   return `<p>Offres correspondant aux modeles resultats :</p><ul>${content}</ul>`;
 }
 
+function renderComparisonBrandCard(entry, input) {
+  const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
+  const bestModel = entry.rec.models[0]?.model || "Aucun modele";
+  const brandDeals = renderDeals(entry.brand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, entry.rec.models.slice(0, 3).map((modelEntry) => modelEntry.model));
+  return `
+    <article class="mini-card">
+      <p class="mini-card-brand">${brandLabel(entry.brand)}</p>
+      <p class="mini-card-spine">${primaryLabel}</p>
+      <p class="mini-card-meta">${materialLabel(entry.rec.recommendedMaterial)} | ${diameterLabel(entry.rec.recommendedDiameter)} | ${seriesLabel(entry.rec.recommendedSeries)}</p>
+      <p class="mini-card-model"><strong>${bestModel}</strong></p>
+      ${brandDeals}
+    </article>
+  `;
+}
+
 function cloneCatalog(catalog) { return JSON.parse(JSON.stringify(catalog)); }
 function readHistory() { try { return JSON.parse(localStorage.getItem(STORAGE.history) || "[]"); } catch { return []; } }
 function writeHistory(entry) { const next = [entry, ...readHistory()].slice(0, 5); localStorage.setItem(STORAGE.history, JSON.stringify(next)); renderHistory(); }
@@ -828,17 +843,9 @@ function renderComparison(input) {
   const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
   const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
-  const visibleBrands = comparisons.map((entry) => entry.brand);
-  const recommendedModels = comparisons.map((entry) => entry.rec.models[0]?.model).filter(Boolean);
-  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, visibleBrands, recommendedModels);
   const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
-  const lines = comparisons.map((entry) => {
-    const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
-    const bestModel = entry.rec.models[0]?.model || "Aucun modele";
-    return `<li><strong>${brandLabel(entry.brand)}</strong>: ${primaryLabel} - ${materialLabel(entry.rec.recommendedMaterial)} - ${diameterLabel(entry.rec.recommendedDiameter)} - ${seriesLabel(entry.rec.recommendedSeries)} - ${bestModel}</li>`;
-  }).join("");
   const emptyState = comparisons.length
-    ? `<ul>${lines}</ul>`
+    ? `<div class="comparison-grid">${comparisons.map((entry) => renderComparisonBrandCard(entry, input)).join("")}</div>`
     : "<p>Aucune marque ne propose de modele coherent avec les filtres actuels.</p>";
   const hiddenState = hiddenBrands.length
     ? `<p>Marques non affichees pour ce filtre: <strong>${hiddenBrands.join(", ")}</strong>.</p>`
@@ -853,8 +860,7 @@ function renderComparison(input) {
     <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     ${emptyState}
     ${hiddenState}
-    <p>Offres chez les marchands (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise) :</p>
-    ${dealsList}
+    <p>Offres marchands reliees aux resultats (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise).</p>
   `;
 
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: "Comparaison", primary: "Multi-marques", bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });

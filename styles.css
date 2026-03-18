@@ -105,6 +105,46 @@ button {
   padding-left: 20px;
 }
 
+.comparison-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.mini-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  background: linear-gradient(180deg, #fffefb 0%, #f8f5ee 100%);
+}
+
+.mini-card p {
+  margin: 0 0 8px;
+}
+
+.mini-card-brand {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mini-card-spine {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent-2);
+}
+
+.mini-card-meta {
+  color: #4c4c4c;
+  font-size: 0.95rem;
+}
+
+.mini-card-model {
+  font-size: 1rem;
+}
+
 .result-value {
   font-size: 2rem;
   font-weight: 800;
