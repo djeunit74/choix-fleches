@@ -461,6 +461,27 @@ function recommendationForBrand(input, brand) {
   return { brand, raw, load, ...nearestSpine(raw, getBrandSpines(brand)) };
 }
 
+function adjustedRawForModel(baseRaw, meta, profile) {
+  let adjusted = baseRaw;
+  if (!meta) return adjusted;
+  if (meta.diameters?.includes("thin")) adjusted += 35;
+  if (meta.diameters?.includes("large")) adjusted -= 35;
+  if (meta.seriesTier === "competition") adjusted += 20;
+  if (meta.seriesTier === "club") adjusted -= 20;
+  if (meta.massClass === "light") adjusted += 20;
+  if (meta.massClass === "heavy") adjusted -= 20;
+  if (meta.toleranceClass === "precision") adjusted += 10;
+  if (meta.useCase === "wind") adjusted += 15;
+  if (meta.useCase === "linecut") adjusted -= 15;
+  if (profile.preferredDiameter === "thin" && meta.diameters?.includes("thin")) adjusted += 10;
+  if (profile.preferredDiameter === "large" && meta.diameters?.includes("large")) adjusted -= 10;
+  return adjusted;
+}
+
+function resolveModelSpine(rawValue, brand) {
+  return nearestSpine(rawValue, getBrandSpines(brand)).main;
+}
+
 function deriveTargetProfile(input) {
   let preferredMaterial = input.shaftMaterial;
   if (preferredMaterial === "all") {
@@ -531,6 +552,13 @@ function rankModels(models, input, profile) {
     })
     .filter((entry) => entry.score > -1000)
     .sort((a, b) => b.score - a.score);
+}
+
+function attachModelSpines(entries, brand, baseRaw, profile) {
+  return entries.map((entry) => ({
+    ...entry,
+    advisedSpine: resolveModelSpine(adjustedRawForModel(baseRaw, entry.meta, profile), brand)
+  }));
 }
 
 function nearbySpineValues(brand, spine) {
@@ -629,6 +657,7 @@ function buildBrandRecommendation(input, brand) {
     if (skylon.ok) {
       models = filterByBudget(skylon.models, input.budgetLevel);
       ranked = rankModels(models, input, profile);
+      ranked = attachModelSpines(ranked, brand, base.raw, profile);
       const topMeta = ranked[0]?.meta || null;
       return {
         brand,
@@ -684,6 +713,12 @@ function buildBrandRecommendation(input, brand) {
   if ((ranked[0]?.meta || topMeta)?.note) notes.push((ranked[0]?.meta || topMeta).note);
   if (!ranked.length && !alternatives.length) notes.push("Aucun modele strictement conforme aux filtres. Elargir les contraintes peut etre utile.");
 
+  ranked = attachModelSpines(ranked, brand, base.raw, profile);
+  alternatives = alternatives.map((entry) => ({
+    ...entry,
+    advisedSpine: resolveModelSpine(adjustedRawForModel(recommendationForBrand(input, entry.brand).raw, entry.meta, profile), entry.brand)
+  }));
+
   return {
     brand,
     mode: "brand",
@@ -714,8 +749,9 @@ function renderModelList(recommendation) {
   return recommendation.models.slice(0, 8).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
+    const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : "";
     const details = meta
-      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${source}`
+      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${advisedSpine}${source}`
       : "Meta technique locale incomplete";
     return `<li><strong>${entry.model}</strong> - ${details}</li>`;
   }).join("");
@@ -727,7 +763,8 @@ function renderAlternativeModelList(recommendation) {
     .map((entry) => {
       const meta = entry.meta;
       const details = meta ? ` - ${seriesLabel(meta.seriesTier)} - ${diameterLabel(meta.diameters[0] || "standard")} - ${useCaseLabel(meta.useCase)}` : "";
-      return `<li><strong>${brandLabel(entry.brand)}</strong>: ${entry.model} - spine ${entry.spine}${details}</li>`;
+      const advisedSpine = entry.advisedSpine ? ` - spine conseille ${entry.advisedSpine}` : ` - spine ${entry.spine}`;
+      return `<li><strong>${brandLabel(entry.brand)}</strong>: ${entry.model}${advisedSpine}${details}</li>`;
     })
     .join("");
   return `<p>Alternatives pertinentes hors marque:</p><ul>${lines}</ul>`;
@@ -798,7 +835,7 @@ function renderComparisonBrandCard(entry, input) {
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
       const meta = modelEntry.meta;
-      const details = meta ? `${diameterLabel(meta.diameters[0] || "standard")} | ${seriesLabel(meta.seriesTier)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
+      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | ${seriesLabel(meta.seriesTier)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
       return `<li><strong>${modelEntry.model}</strong> - ${details}</li>`;
     }).join("")}</ul>`
     : "<p>Aucun modele detaille pour cette marque.</p>";
