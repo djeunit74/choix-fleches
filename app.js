@@ -828,8 +828,21 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   return `<p>Offres correspondant aux modeles resultats :</p><ul>${content}</ul>`;
 }
 
+function recommendationPrimaryDisplay(recommendation) {
+  const topModel = recommendation.models[0];
+  const topSpine = topModel?.advisedSpine || recommendation.primary;
+  if (recommendation.mode === "skylon") {
+    return `${topSpine} <span class="result-subvalue">base ${recommendation.primary} / eq. ${recommendation.comparisonSpine}</span>`;
+  }
+  return `${topSpine} <span class="result-subvalue">base ${recommendation.primary}</span>`;
+}
+
 function renderComparisonBrandCard(entry, input) {
-  const primaryLabel = entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary;
+  const topModel = entry.rec.models[0];
+  const primaryLabel = topModel?.advisedSpine || (entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary);
+  const secondaryLabel = entry.rec.mode === "skylon"
+    ? `base ${entry.rec.primary} / eq. ${entry.rec.comparisonSpine}`
+    : `base ${entry.rec.primary}`;
   const bestModel = entry.rec.models[0]?.model || "Aucun modele";
   const topModels = entry.rec.models.slice(0, 3);
   const modelList = topModels.length
@@ -844,6 +857,7 @@ function renderComparisonBrandCard(entry, input) {
     <article class="mini-card">
       <p class="mini-card-brand">${brandLabel(entry.brand)}</p>
       <p class="mini-card-spine">${primaryLabel}</p>
+      <p class="result-subvalue">${secondaryLabel}</p>
       <p class="mini-card-meta">${materialLabel(entry.rec.recommendedMaterial)} | ${diameterLabel(entry.rec.recommendedDiameter)} | ${seriesLabel(entry.rec.recommendedSeries)}</p>
       <p class="mini-card-model"><strong>${bestModel}</strong></p>
       <p class="mini-card-subtitle">Modeles proposes</p>
@@ -914,7 +928,7 @@ function renderRecommendation(input) {
   ];
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, recommendedModels);
   const topMeta = recommendation.models[0]?.meta || null;
-  const primaryLabel = recommendation.mode === "skylon" ? `${recommendation.primary} <span class="result-subvalue">eq. spine ${recommendation.comparisonSpine}</span>` : recommendation.primary;
+  const primaryLabel = recommendationPrimaryDisplay(recommendation);
   const modelTitle = recommendation.fallbackLabel === "modeles proches"
     ? "Modeles proches dans la marque:"
     : "Modeles conseilles:";
