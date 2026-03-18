@@ -838,8 +838,6 @@ function recommendationPrimaryDisplay(recommendation) {
 }
 
 function renderComparisonBrandCard(entry, input) {
-  const topModel = entry.rec.models[0];
-  const primaryLabel = topModel?.advisedSpine || (entry.rec.mode === "skylon" ? `${entry.rec.primary} (eq. ${entry.rec.comparisonSpine})` : entry.rec.primary);
   const topModels = entry.rec.models.slice(0, 3);
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
@@ -852,7 +850,6 @@ function renderComparisonBrandCard(entry, input) {
   return `
     <article class="mini-card">
       <p class="mini-card-brand">${brandLabel(entry.brand)}</p>
-      <p class="mini-card-spine">${primaryLabel}</p>
       <p class="mini-card-subtitle">Modeles coherents</p>
       ${modelList}
       ${brandDeals}
