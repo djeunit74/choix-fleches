@@ -3275,22 +3275,26 @@
     "groupModels": {
       "A1": [
         "Brixxon R1000/R900",
-        "Radius R900"
+        "Radius R900",
+        "Paragon 1000"
       ],
       "A2": [
         "Brixxon R900-850",
         "Edge 800",
-        "Radius 850-800"
+        "Radius 850-800",
+        "Paragon 900"
       ],
       "A3": [
         "Brixxon R850-800",
         "Edge 800-750",
-        "Radius 750-700"
+        "Radius 750-700",
+        "Paragon 800"
       ],
       "A4": [
         "Brixxon R750-700",
         "Edge 700-650",
-        "Radius 700-650"
+        "Radius 700-650",
+        "Paragon 700"
       ],
       "A5": [
         "Brixxon R700-650",
