@@ -101,7 +101,7 @@
 
     <section class="card">
       <h2>Reglage de l'arc classique</h2>
-      <p>Repères pratiques pour le band, le tiller, le point d'encochage et les contrôles de base.</p>
+      <p>Outil simple de depart : taille d'arc, tiller haut mesure, tiller bas attendu et plage de band.</p>
       <form id="arc-setup-form" novalidate autocomplete="off">
         <label>
           Taille d'arc (AMO)
@@ -114,56 +114,8 @@
         </label>
 
         <label>
-          Band mesure (cm)
-          <input id="braceHeight" type="number" min="18" max="26" step="0.1" value="22.0" required />
-        </label>
-
-        <label>
-          Distance corde / branche haute (mm)
+          Tiller haut mesure (mm)
           <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
-        </label>
-
-        <label>
-          Distance corde / branche basse (mm)
-          <input id="lowerTiller" type="number" min="150" max="260" step="0.5" value="218" required />
-        </label>
-
-        <label>
-          Point d'encochage actuel (mm au-dessus de l'equerre)
-          <input id="nockingPoint" type="number" min="0" max="20" step="0.5" value="6" required />
-        </label>
-
-        <label>
-          Ecart bare shaft vertical (cm)
-          <input id="bareShaftVertical" type="number" min="-20" max="20" step="0.5" value="0" required />
-        </label>
-
-        <label>
-          Ecart bare shaft horizontal (cm)
-          <input id="bareShaftHorizontal" type="number" min="-20" max="20" step="0.5" value="0" required />
-        </label>
-
-        <label>
-          Position de fleche au berger
-          <select id="centerShot">
-            <option value="aligned" selected>Dans l'axe / parallele a la corde</option>
-            <option value="inside">Trop a l'interieur</option>
-            <option value="outside">Trop a l'exterieur</option>
-          </select>
-        </label>
-
-        <label>
-          Tension du berger button
-          <select id="buttonPressure">
-            <option value="medium" selected>Moyenne</option>
-            <option value="soft">Souple</option>
-            <option value="hard">Dure</option>
-          </select>
-        </label>
-
-        <label>
-          Depassement repose-fleche (mm)
-          <input id="restExtension" type="number" min="0" max="10" step="0.5" value="2" required />
         </label>
 
         <button type="submit">Calculer le reglage</button>

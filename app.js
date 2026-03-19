@@ -17,15 +17,7 @@ const els = {
   arrowLength: document.getElementById("arrowLength"),
   pointWeight: document.getElementById("pointWeight"),
   arcLength: document.getElementById("arcLength"),
-  braceHeight: document.getElementById("braceHeight"),
   upperTiller: document.getElementById("upperTiller"),
-  lowerTiller: document.getElementById("lowerTiller"),
-  nockingPoint: document.getElementById("nockingPoint"),
-  bareShaftVertical: document.getElementById("bareShaftVertical"),
-  bareShaftHorizontal: document.getElementById("bareShaftHorizontal"),
-  centerShot: document.getElementById("centerShot"),
-  buttonPressure: document.getElementById("buttonPressure"),
-  restExtension: document.getElementById("restExtension"),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
@@ -1089,85 +1081,26 @@ function defaultBraceRangeCm(arcLength) {
   return ranges[arcLength] || ranges[68];
 }
 
-function recommendedNockingRangeMm() {
-  return [4, 8];
-}
-
-function formatSignedMm(value) {
-  const rounded = Math.round(value * 10) / 10;
-  return `${rounded > 0 ? "+" : ""}${rounded} mm`;
-}
-
 function computeArcSetup(input) {
   const braceRange = defaultBraceRangeCm(input.arcLength);
   const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
-  const braceDeltaMm = Math.round((braceTarget - input.braceHeight) * 10);
-  const estimatedTwists = Math.max(0, Math.round(Math.abs(braceDeltaMm) / 1.8));
-
-  let braceAction = "Band dans la zone de depart.";
-  if (input.braceHeight < braceRange[0]) braceAction = `Band trop bas : vriller la corde pour viser ${braceTarget.toFixed(1)} cm (environ ${estimatedTwists} vrilles).`;
-  if (input.braceHeight > braceRange[1]) braceAction = `Band trop haut : devriller la corde pour viser ${braceTarget.toFixed(1)} cm (environ ${estimatedTwists} vrilles).`;
-
-  const tiller = Math.round((input.upperTiller - input.lowerTiller) * 10) / 10;
-  let tillerAction = "Tiller dans la zone recommandee (positif, 2 a 6 mm).";
-  if (tiller < 2) tillerAction = "Tiller trop faible : augmenter le tiller positif en vissant la branche basse ou en devissant la branche haute.";
-  if (tiller > 6) tillerAction = "Tiller trop fort : reduire le tiller positif en devissant la branche basse ou en vissant la branche haute.";
-
-  const [nockingMin, nockingMax] = recommendedNockingRangeMm();
-  let nockingAction = "Point d'encochage proche de la zone de depart.";
-  if (input.bareShaftVertical > 3) {
-    const correction = Math.max(2, Math.min(6, Math.round(Math.abs(input.bareShaftVertical))));
-    nockingAction = `Bare shaft au-dessus : point d'encochage trop bas. Monter d'environ ${correction} mm puis recontroler.`;
-  } else if (input.bareShaftVertical < -3) {
-    const correction = Math.max(2, Math.min(6, Math.round(Math.abs(input.bareShaftVertical))));
-    nockingAction = `Bare shaft en-dessous : point d'encochage trop haut. Descendre d'environ ${correction} mm puis recontroler.`;
-  } else if (input.nockingPoint < nockingMin || input.nockingPoint > nockingMax) {
-    nockingAction = `Point d'encochage hors zone courante. Revenir vers ${nockingMin}-${nockingMax} mm au-dessus de l'equerre puis verifier au tir.`;
-  }
-
-  let restAction = "Depassement du repose-fleche correct.";
-  if (input.restExtension > 2) restAction = "Le repose-fleche depasse trop. Ramener la tige a environ 2 mm pour limiter les contacts avec l'empennage.";
-  if (input.restExtension < 1) restAction = "Le repose-fleche semble tres court. Verifier que le tube est bien soutenu sans exces.";
-
-  let centerShotAction = "Center-shot proche d'un reglage de depart : fleche parallele a la corde et au stabilisateur.";
-  if (input.centerShot === "inside") centerShotAction = "La fleche parait trop a l'interieur. Devisser legerement le berger button pour sortir la fleche.";
-  if (input.centerShot === "outside") centerShotAction = "La fleche parait trop a l'exterieur. Visser legerement le berger button pour rentrer la fleche.";
-
-  let buttonAction = "Tension du berger button a garder pour le premier passage au papier ou au bare shaft horizontal.";
-  if (Math.abs(input.bareShaftHorizontal) <= 3) {
-    buttonAction = "Ecart horizontal faible : conserver la tension actuelle du berger et valider au groupement.";
-  } else if (input.bareShaftHorizontal > 3) {
-    buttonAction = input.buttonPressure === "hard"
-      ? "Bare shaft a droite : avant d'assouplir davantage, verifier d'abord le spine et le center-shot. Si tout est propre, assouplir legerement le berger."
-      : "Bare shaft a droite : assouplir legerement le berger button puis retester.";
-  } else if (input.bareShaftHorizontal < -3) {
-    buttonAction = input.buttonPressure === "soft"
-      ? "Bare shaft a gauche : avant de durcir davantage, verifier d'abord le spine et le center-shot. Si tout est propre, durcir legerement le berger."
-      : "Bare shaft a gauche : durcir legerement le berger button puis retester.";
-  }
-
-  const horizontalCheck = Math.abs(input.bareShaftHorizontal) <= 3
-    ? "Bare shaft horizontal coherent."
-    : `Bare shaft horizontal a corriger (${input.bareShaftHorizontal > 0 ? "droite" : "gauche"} de ${Math.abs(input.bareShaftHorizontal).toFixed(1)} cm).`;
+  const recommendedTiller = 4;
+  const lowerTiller = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
+  let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la mesure basse attendue est ${lowerTiller.toFixed(1)} mm.`;
+  if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Mesure basse attendue : ${lowerTiller.toFixed(1)} mm.`;
 
   return {
     braceRange,
     braceTarget,
-    braceAction,
-    tiller,
+    upperTiller: input.upperTiller,
+    lowerTiller,
+    tillerTarget: recommendedTiller,
     tillerAction,
-    nockingRange: [nockingMin, nockingMax],
-    nockingAction,
-    restAction,
-    centerShotAction,
-    buttonAction,
-    horizontalCheck,
     checks: [
-      "Aligner les branches avec la corde et le stabilisateur. Ce reglage depend de la marque de poignee et reste plus sur avec un entraineur.",
-      "Placer la fleche dans l'axe vertical de la corde et parallele au stabilisateur central.",
-      "Le berger button se regle seulement apres validation du calibre des fleches.",
-      "Tester d'abord au bare shaft vertical a 18 m (debutants) ou 30 m (experimente).",
-      "Pour le lateral, ajuster le center-shot avant de toucher fortement a la tension du berger."
+      "Band : commencer dans la plage de depart du constructeur. La valeur cible ici est une base pratique.",
+      "Tiller : garder un tiller positif de depart autour de +4 mm reste une base simple et classique.",
+      "Toute modification du tiller agit aussi sur la puissance ressentie de l'arc.",
+      "Ensuite seulement, affiner au tir avec un entraineur si besoin."
     ]
   };
 }
@@ -1176,28 +1109,13 @@ function renderArcSetup(input) {
   const setup = computeArcSetup(input);
   els.arcSetupResult.innerHTML = `
     <h2>Reglage de l'arc</h2>
-    <p>Base issue du fascicule FFTA <em>Je regle mon arc classique</em>.</p>
+    <p>Base simple issue du fascicule FFTA <em>Je regle mon arc classique</em>.</p>
     <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
     <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
-    <p>${setup.braceAction}</p>
-    <p><strong>Tiller mesure</strong> : ${formatSignedMm(setup.tiller)}</p>
+    <p><strong>Tiller haut mesure</strong> : ${setup.upperTiller.toFixed(1)} mm</p>
+    <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
+    <p><strong>Tiller bas attendu</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
     <p>${setup.tillerAction}</p>
-    <p><strong>Point d'encochage de depart</strong> : ${setup.nockingRange[0]} a ${setup.nockingRange[1]} mm au-dessus de l'equerre</p>
-    <p>${setup.nockingAction}</p>
-    <p><strong>Alignement lateral</strong> :</p>
-    <p>${setup.centerShotAction}</p>
-    <p>${setup.buttonAction}</p>
-    <p>${setup.horizontalCheck}</p>
-    <p>${setup.restAction}</p>
-    <p><strong>Ordre conseille</strong> :</p>
-    <ol>
-      <li>Regler le band.</li>
-      <li>Verifier le tiller.</li>
-      <li>Poser le point d'encochage.</li>
-      <li>Verifier repose-fleche et centre de fleche.</li>
-      <li>Ajuster le center-shot.</li>
-      <li>Finir au bare shaft vertical puis au berger button.</li>
-    </ol>
     <p><strong>Points de controle</strong> :</p>
     <ul>${setup.checks.map((check) => `<li>${check}</li>`).join("")}</ul>
   `;
@@ -1320,15 +1238,7 @@ els.arcSetupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = {
     arcLength: Number(els.arcLength.value),
-    braceHeight: Number(els.braceHeight.value),
-    upperTiller: Number(els.upperTiller.value),
-    lowerTiller: Number(els.lowerTiller.value),
-    nockingPoint: Number(els.nockingPoint.value),
-    bareShaftVertical: Number(els.bareShaftVertical.value),
-    bareShaftHorizontal: Number(els.bareShaftHorizontal.value),
-    centerShot: els.centerShot.value,
-    buttonPressure: els.buttonPressure.value,
-    restExtension: Number(els.restExtension.value)
+    upperTiller: Number(els.upperTiller.value)
   };
 
   if (Object.values(input).some((value) => !Number.isFinite(value))) {
@@ -1347,13 +1257,5 @@ refreshCatalogState();
 refreshDealsCatalog();
 renderArcSetup({
   arcLength: Number(els.arcLength.value),
-  braceHeight: Number(els.braceHeight.value),
-  upperTiller: Number(els.upperTiller.value),
-  lowerTiller: Number(els.lowerTiller.value),
-  nockingPoint: Number(els.nockingPoint.value),
-  bareShaftVertical: Number(els.bareShaftVertical.value),
-  bareShaftHorizontal: Number(els.bareShaftHorizontal.value),
-  centerShot: els.centerShot.value,
-  buttonPressure: els.buttonPressure.value,
-  restExtension: Number(els.restExtension.value)
+  upperTiller: Number(els.upperTiller.value)
 });
