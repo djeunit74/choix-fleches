@@ -138,26 +138,40 @@
         <p>Outil simple de depart : taille d'arc, distance corde / branche haute, distance basse attendue et plage de band.</p>
         <div class="measurement-guide">
           <h3>Schema des mesures</h3>
-          <svg viewBox="0 0 420 300" class="measurement-diagram" role="img" aria-label="Schema des mesures de tiller sur un arc classique">
-            <line x1="294" y1="26" x2="294" y2="274" class="diagram-string" />
-            <path d="M215 124 C205 126 198 135 198 150 C198 165 205 174 215 176
-                     L230 176 C243 176 252 166 252 150 C252 134 243 124 230 124 Z" class="diagram-riser" />
-            <path d="M220 124 C212 106 214 88 224 70 C236 48 252 34 268 24" class="diagram-limb" />
-            <path d="M220 176 C212 194 214 212 224 230 C236 252 252 266 268 276" class="diagram-limb" />
-            <path d="M268 24 C286 34 293 46 294 58" class="diagram-tip" />
-            <path d="M268 276 C286 266 293 254 294 242" class="diagram-tip" />
-            <line x1="220" y1="112" x2="294" y2="112" class="diagram-measure" />
-            <line x1="220" y1="188" x2="294" y2="188" class="diagram-measure" />
-            <circle cx="220" cy="112" r="4.5" class="diagram-point" />
-            <circle cx="294" cy="112" r="4.5" class="diagram-point" />
-            <circle cx="220" cy="188" r="4.5" class="diagram-point" />
-            <circle cx="294" cy="188" r="4.5" class="diagram-point" />
-            <text x="72" y="106" class="diagram-label">Mesure haute</text>
-            <text x="72" y="182" class="diagram-label">Mesure basse</text>
-            <text x="308" y="34" class="diagram-label">Corde</text>
-            <text x="92" y="138" class="diagram-note">Branche haute / poche haute</text>
-            <text x="92" y="214" class="diagram-note">Branche basse / poche basse</text>
-            <text x="56" y="262" class="diagram-note">Tiller positif = mesure haute - mesure basse</text>
+          <svg viewBox="0 0 420 320" class="measurement-diagram" role="img" aria-label="Schema des mesures de tiller sur un arc classique">
+            <defs>
+              <marker id="arrow-head" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" class="diagram-arrowhead" />
+              </marker>
+            </defs>
+            <line x1="317" y1="22" x2="317" y2="298" class="diagram-string" />
+            <path d="M234 20 C258 38 278 64 292 100 C302 126 308 150 309 160" class="diagram-limb" />
+            <path d="M309 160 C308 170 302 194 292 220 C278 256 258 282 234 300" class="diagram-limb" />
+            <path d="M185 96
+                     C178 105 175 118 175 132
+                     C175 145 179 155 187 162
+                     C194 169 196 177 192 189
+                     C188 203 187 217 193 230
+                     C202 249 216 258 232 258
+                     C245 258 254 253 261 244
+                     C268 235 271 224 271 210
+                     C271 197 267 186 259 179
+                     C252 172 250 164 254 152
+                     C258 138 259 123 253 110
+                     C244 91 230 82 214 82
+                     C202 82 192 87 185 96 Z" class="diagram-riser" />
+            <line x1="196" y1="112" x2="317" y2="112" class="diagram-measure" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)" />
+            <line x1="263" y1="210" x2="317" y2="210" class="diagram-measure" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)" />
+            <circle cx="196" cy="112" r="4.5" class="diagram-point" />
+            <circle cx="317" cy="112" r="4.5" class="diagram-point" />
+            <circle cx="263" cy="210" r="4.5" class="diagram-point" />
+            <circle cx="317" cy="210" r="4.5" class="diagram-point" />
+            <text x="38" y="106" class="diagram-label">Mesure haute</text>
+            <text x="38" y="204" class="diagram-label">Mesure basse</text>
+            <text x="331" y="34" class="diagram-label">Corde</text>
+            <text x="58" y="134" class="diagram-note">Zone de mesure haute</text>
+            <text x="58" y="232" class="diagram-note">Zone de mesure basse</text>
+            <text x="38" y="292" class="diagram-note">Tiller positif = mesure haute - mesure basse</text>
           </svg>
           <p>Prenez la distance entre la corde et la branche au meme niveau en haut et en bas, pres des fixations de branches.</p>
         </div>

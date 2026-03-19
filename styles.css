@@ -85,35 +85,32 @@ body {
 }
 
 .diagram-string {
-  stroke: var(--accent-2);
-  stroke-width: 3;
-  stroke-dasharray: 6 6;
+  stroke: #787878;
+  stroke-width: 2.5;
+  stroke-dasharray: 6 5;
 }
 
 .diagram-limb {
   fill: none;
-  stroke: #5d4632;
-  stroke-width: 8;
-  stroke-linecap: round;
-}
-
-.diagram-tip {
-  fill: none;
-  stroke: #5d4632;
-  stroke-width: 6;
+  stroke: #2a2a2a;
+  stroke-width: 7;
   stroke-linecap: round;
 }
 
 .diagram-riser {
-  fill: #8d6847;
-  stroke: #5d4632;
-  stroke-width: 3;
+  fill: #2e67c7;
+  stroke: #1f3d77;
+  stroke-width: 3.5;
 }
 
 .diagram-measure {
   stroke: var(--accent);
-  stroke-width: 4;
+  stroke-width: 3.5;
   stroke-linecap: round;
+}
+
+.diagram-arrowhead {
+  fill: var(--accent);
 }
 
 .diagram-point {
