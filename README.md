@@ -16,7 +16,7 @@ V3 : le catalogue technique est desormais pilote par [catalog.json](c:/Users/Use
 - propose deux profils de tir : `recurve exterieur` et `recurve salle`
 - travaille avec `carbone` ou `alu`
 - produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
-- calcule aussi un `poids de pointe conseille` et compare la pointe actuelle a la cible
+- calcule aussi un `poids de pointe conseille` avec des options plausibles selon le tube retenu
 - integre un module `reglage de l'arc classique` avec repères de `band`, `tiller`, `point d'encochage` et checklist de base
 - affiche aussi le `positionnement serie` et une `plage de pointe` par modele
 - recharge le `catalogue technique` depuis [catalog.json](c:/Users/User/app choix des fleches/catalog.json) avec fallback local si le JSON n'est pas disponible

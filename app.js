@@ -16,7 +16,6 @@ const els = {
   budgetLevel: document.getElementById("budgetLevel"),
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
-  pointWeight: document.getElementById("pointWeight"),
   arcLength: document.getElementById("arcLength"),
   upperTiller: document.getElementById("upperTiller"),
   lowerTillerMeasured: document.getElementById("lowerTillerMeasured"),
@@ -688,6 +687,15 @@ function dynamicLoadScore(input, refCfg) {
   return clamp(load, 15, 100);
 }
 
+function defaultPointWeightForInput(input) {
+  let pointWeight = input.shootingEnvironment === "indoor" ? 110 : 100;
+  if (input.drawWeight <= 28) pointWeight += 10;
+  else if (input.drawWeight >= 40) pointWeight -= 10;
+  if (input.arrowLength >= 29) pointWeight -= 10;
+  else if (input.arrowLength <= 27) pointWeight += 10;
+  return clamp(roundPointWeight(pointWeight), 70, 150);
+}
+
 function recommendationForBrand(input, brand) {
   const refCfg = BRAND_REFERENCE[brand] || BRAND_REFERENCE.easton;
   const load = dynamicLoadScore(input, refCfg);
@@ -796,17 +804,11 @@ function estimatePointSetup(input, pointRange, meta = null) {
   if (recommended <= pointRange[0] + span / 3) profile = "legere";
   if (recommended >= pointRange[1] - span / 3) profile = "lourde";
 
-  const delta = Math.round((input.pointWeight - recommended) * 10) / 10;
-  let feedback = "Votre pointe actuelle est coherente avec cette configuration.";
-  if (delta >= 10) feedback = "Votre pointe actuelle est plus lourde que la cible calculee : elle assouplit davantage le tube.";
-  else if (delta <= -10) feedback = "Votre pointe actuelle est plus legere que la cible calculee : elle raidit davantage le tube.";
-
   return {
     recommended,
     pointChoices,
     profile,
-    feedback,
-    note: "Une pointe plus lourde assouplit dynamiquement le tube; une pointe plus legere le raidit."
+    note: "Pour assouplir un peu le tube, montez dans les options de pointes. Pour le raidir un peu, descendez."
   };
 }
 
@@ -968,7 +970,6 @@ function buildBrandRecommendation(input, brand) {
         recommendedPointWeight: pointSetup.recommended,
         recommendedPointChoices: pointSetup.pointChoices,
         recommendedPointProfile: pointSetup.profile,
-        pointWeightFeedback: pointSetup.feedback,
         pointWeightNote: pointSetup.note,
         recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
         recommendedMass: topMeta?.massClass || profile.preferredMass,
@@ -1035,7 +1036,6 @@ function buildBrandRecommendation(input, brand) {
     recommendedPointWeight: pointSetup.recommended,
     recommendedPointChoices: pointSetup.pointChoices,
     recommendedPointProfile: pointSetup.profile,
-    pointWeightFeedback: pointSetup.feedback,
     pointWeightNote: pointSetup.note,
     recommendedSeries: (ranked[0]?.meta || topMeta)?.seriesTier || profile.preferredSeries,
     recommendedMass: (ranked[0]?.meta || topMeta)?.massClass || profile.preferredMass,
@@ -1172,11 +1172,10 @@ function renderHistory() {
 }
 
 function validateInput(input) {
-  if (!Number.isFinite(input.drawWeight) || !Number.isFinite(input.arrowLength) || !Number.isFinite(input.pointWeight)) return "Valeurs numeriques invalides.";
+  if (!Number.isFinite(input.drawWeight) || !Number.isFinite(input.arrowLength)) return "Valeurs numeriques invalides.";
   const limits = BOW_LIMITS.recurve;
   if (input.drawWeight < limits.minDrawWeight || input.drawWeight > limits.maxDrawWeight) return `Puissance hors plage pour recurve (${limits.minDrawWeight}-${limits.maxDrawWeight} lbs).`;
   if (input.arrowLength < limits.minArrowLength || input.arrowLength > limits.maxArrowLength) return `Longueur hors plage (${limits.minArrowLength}-${limits.maxArrowLength} pouces).`;
-  if (input.pointWeight < 60 || input.pointWeight > 250) return "Poids de pointe hors plage (60-250 grains).";
   return "";
 }
 
@@ -1340,7 +1339,6 @@ function renderRecommendation(input) {
     <p>Orientation cible: <strong>${distanceBandLabel(recommendation.recommendedDistanceBand)} / ${useCaseLabel(recommendation.recommendedUseCase)}</strong></p>
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
     <p>Options de pointes plausibles: <strong>${recommendation.recommendedPointChoices?.join(" / ") || recommendation.recommendedPointRange.join(" - ")}</strong></p>
-    <p>${recommendation.pointWeightFeedback}</p>
     <p>${recommendation.pointWeightNote}</p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
@@ -1381,10 +1379,10 @@ els.form.addEventListener("submit", async (event) => {
     budgetLevel: els.budgetLevel.value,
     drawWeight: converted.drawWeight,
     arrowLength: converted.arrowLength,
-    pointWeight: Number(els.pointWeight.value),
     discipline: els.discipline.value
   };
   const normalizedInput = normalizeInput(input);
+  normalizedInput.pointWeight = defaultPointWeightForInput(normalizedInput);
 
   const error = validateInput(normalizedInput);
   if (error) {
