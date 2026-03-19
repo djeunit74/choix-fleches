@@ -139,6 +139,29 @@
         </label>
 
         <label>
+          Ecart bare shaft horizontal (cm)
+          <input id="bareShaftHorizontal" type="number" min="-20" max="20" step="0.5" value="0" required />
+        </label>
+
+        <label>
+          Position de fleche au berger
+          <select id="centerShot">
+            <option value="aligned" selected>Dans l'axe / parallele a la corde</option>
+            <option value="inside">Trop a l'interieur</option>
+            <option value="outside">Trop a l'exterieur</option>
+          </select>
+        </label>
+
+        <label>
+          Tension du berger button
+          <select id="buttonPressure">
+            <option value="medium" selected>Moyenne</option>
+            <option value="soft">Souple</option>
+            <option value="hard">Dure</option>
+          </select>
+        </label>
+
+        <label>
           Depassement repose-fleche (mm)
           <input id="restExtension" type="number" min="0" max="10" step="0.5" value="2" required />
         </label>

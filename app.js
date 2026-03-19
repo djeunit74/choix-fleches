@@ -22,6 +22,9 @@ const els = {
   lowerTiller: document.getElementById("lowerTiller"),
   nockingPoint: document.getElementById("nockingPoint"),
   bareShaftVertical: document.getElementById("bareShaftVertical"),
+  bareShaftHorizontal: document.getElementById("bareShaftHorizontal"),
+  centerShot: document.getElementById("centerShot"),
+  buttonPressure: document.getElementById("buttonPressure"),
   restExtension: document.getElementById("restExtension"),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
@@ -1124,7 +1127,28 @@ function computeArcSetup(input) {
 
   let restAction = "Depassement du repose-fleche correct.";
   if (input.restExtension > 2) restAction = "Le repose-fleche depasse trop. Ramener la tige a environ 2 mm pour limiter les contacts avec l'empennage.";
-  if (input.restExtension < 1) restAction = "Le repose-fleche semble tres court. Verifier que le tube est bien soutenu sans excès.";
+  if (input.restExtension < 1) restAction = "Le repose-fleche semble tres court. Verifier que le tube est bien soutenu sans exces.";
+
+  let centerShotAction = "Center-shot proche d'un reglage de depart : fleche parallele a la corde et au stabilisateur.";
+  if (input.centerShot === "inside") centerShotAction = "La fleche parait trop a l'interieur. Devisser legerement le berger button pour sortir la fleche.";
+  if (input.centerShot === "outside") centerShotAction = "La fleche parait trop a l'exterieur. Visser legerement le berger button pour rentrer la fleche.";
+
+  let buttonAction = "Tension du berger button a garder pour le premier passage au papier ou au bare shaft horizontal.";
+  if (Math.abs(input.bareShaftHorizontal) <= 3) {
+    buttonAction = "Ecart horizontal faible : conserver la tension actuelle du berger et valider au groupement.";
+  } else if (input.bareShaftHorizontal > 3) {
+    buttonAction = input.buttonPressure === "hard"
+      ? "Bare shaft a droite : avant d'assouplir davantage, verifier d'abord le spine et le center-shot. Si tout est propre, assouplir legerement le berger."
+      : "Bare shaft a droite : assouplir legerement le berger button puis retester.";
+  } else if (input.bareShaftHorizontal < -3) {
+    buttonAction = input.buttonPressure === "soft"
+      ? "Bare shaft a gauche : avant de durcir davantage, verifier d'abord le spine et le center-shot. Si tout est propre, durcir legerement le berger."
+      : "Bare shaft a gauche : durcir legerement le berger button puis retester.";
+  }
+
+  const horizontalCheck = Math.abs(input.bareShaftHorizontal) <= 3
+    ? "Bare shaft horizontal coherent."
+    : `Bare shaft horizontal a corriger (${input.bareShaftHorizontal > 0 ? "droite" : "gauche"} de ${Math.abs(input.bareShaftHorizontal).toFixed(1)} cm).`;
 
   return {
     braceRange,
@@ -1135,11 +1159,15 @@ function computeArcSetup(input) {
     nockingRange: [nockingMin, nockingMax],
     nockingAction,
     restAction,
+    centerShotAction,
+    buttonAction,
+    horizontalCheck,
     checks: [
       "Aligner les branches avec la corde et le stabilisateur. Ce reglage depend de la marque de poignee et reste plus sur avec un entraineur.",
       "Placer la fleche dans l'axe vertical de la corde et parallele au stabilisateur central.",
       "Le berger button se regle seulement apres validation du calibre des fleches.",
-      "Tester d'abord au bare shaft vertical a 18 m (debutants) ou 30 m (experimente)."
+      "Tester d'abord au bare shaft vertical a 18 m (debutants) ou 30 m (experimente).",
+      "Pour le lateral, ajuster le center-shot avant de toucher fortement a la tension du berger."
     ]
   };
 }
@@ -1156,6 +1184,10 @@ function renderArcSetup(input) {
     <p>${setup.tillerAction}</p>
     <p><strong>Point d'encochage de depart</strong> : ${setup.nockingRange[0]} a ${setup.nockingRange[1]} mm au-dessus de l'equerre</p>
     <p>${setup.nockingAction}</p>
+    <p><strong>Alignement lateral</strong> :</p>
+    <p>${setup.centerShotAction}</p>
+    <p>${setup.buttonAction}</p>
+    <p>${setup.horizontalCheck}</p>
     <p>${setup.restAction}</p>
     <p><strong>Ordre conseille</strong> :</p>
     <ol>
@@ -1163,6 +1195,7 @@ function renderArcSetup(input) {
       <li>Verifier le tiller.</li>
       <li>Poser le point d'encochage.</li>
       <li>Verifier repose-fleche et centre de fleche.</li>
+      <li>Ajuster le center-shot.</li>
       <li>Finir au bare shaft vertical puis au berger button.</li>
     </ol>
     <p><strong>Points de controle</strong> :</p>
@@ -1292,6 +1325,9 @@ els.arcSetupForm.addEventListener("submit", (event) => {
     lowerTiller: Number(els.lowerTiller.value),
     nockingPoint: Number(els.nockingPoint.value),
     bareShaftVertical: Number(els.bareShaftVertical.value),
+    bareShaftHorizontal: Number(els.bareShaftHorizontal.value),
+    centerShot: els.centerShot.value,
+    buttonPressure: els.buttonPressure.value,
     restExtension: Number(els.restExtension.value)
   };
 
@@ -1316,5 +1352,8 @@ renderArcSetup({
   lowerTiller: Number(els.lowerTiller.value),
   nockingPoint: Number(els.nockingPoint.value),
   bareShaftVertical: Number(els.bareShaftVertical.value),
+  bareShaftHorizontal: Number(els.bareShaftHorizontal.value),
+  centerShot: els.centerShot.value,
+  buttonPressure: els.buttonPressure.value,
   restExtension: Number(els.restExtension.value)
 });
