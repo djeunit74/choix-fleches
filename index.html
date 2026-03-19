@@ -133,40 +133,37 @@
         <p>Outil simple de depart : tiller, band et estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.</p>
         <div class="measurement-guide">
           <h3>Schema des mesures</h3>
-          <svg viewBox="0 0 420 320" class="measurement-diagram" role="img" aria-label="Schema des mesures de tiller sur un arc classique">
+          <svg viewBox="0 0 420 320" class="measurement-diagram" role="img" aria-label="Schema technique des mesures de tiller sur un arc classique">
             <defs>
               <marker id="arrow-head" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
                 <path d="M0,0 L8,4 L0,8 z" class="diagram-arrowhead" />
               </marker>
             </defs>
-            <line x1="317" y1="22" x2="317" y2="298" class="diagram-string" />
-            <path d="M234 20 C258 38 278 64 292 100 C302 126 308 150 309 160" class="diagram-limb" />
-            <path d="M309 160 C308 170 302 194 292 220 C278 256 258 282 234 300" class="diagram-limb" />
-            <path d="M185 96
-                     C178 105 175 118 175 132
-                     C175 145 179 155 187 162
-                     C194 169 196 177 192 189
-                     C188 203 187 217 193 230
-                     C202 249 216 258 232 258
-                     C245 258 254 253 261 244
-                     C268 235 271 224 271 210
-                     C271 197 267 186 259 179
-                     C252 172 250 164 254 152
-                     C258 138 259 123 253 110
-                     C244 91 230 82 214 82
-                     C202 82 192 87 185 96 Z" class="diagram-riser" />
-            <line x1="196" y1="112" x2="317" y2="112" class="diagram-measure" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)" />
-            <line x1="263" y1="210" x2="317" y2="210" class="diagram-measure" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)" />
-            <circle cx="196" cy="112" r="4.5" class="diagram-point" />
-            <circle cx="317" cy="112" r="4.5" class="diagram-point" />
-            <circle cx="263" cy="210" r="4.5" class="diagram-point" />
-            <circle cx="317" cy="210" r="4.5" class="diagram-point" />
-            <text x="38" y="106" class="diagram-label">Mesure haute</text>
-            <text x="38" y="204" class="diagram-label">Mesure basse</text>
-            <text x="331" y="34" class="diagram-label">Corde</text>
-            <text x="58" y="134" class="diagram-note">Zone de mesure haute</text>
-            <text x="58" y="232" class="diagram-note">Zone de mesure basse</text>
-            <text x="38" y="292" class="diagram-note">Tiller positif = mesure haute - mesure basse</text>
+            <line x1="86" y1="20" x2="86" y2="300" class="diagram-string" />
+            <path d="M96 18 C118 42 132 76 138 116 C142 142 142 151 141 160" class="diagram-limb" />
+            <path d="M141 160 C142 169 142 178 138 204 C132 244 118 278 96 302" class="diagram-limb" />
+            <path d="M142 120
+                     C150 114 164 110 177 114
+                     C188 118 197 126 201 138
+                     C205 150 205 170 201 182
+                     C197 194 188 202 177 206
+                     C164 210 150 206 142 198
+                     C136 190 135 179 136 170
+                     C137 164 137 156 136 150
+                     C135 141 136 130 142 120 Z" class="diagram-riser" />
+            <line x1="201" y1="152" x2="272" y2="128" class="diagram-stab" />
+            <line x1="188" y1="190" x2="302" y2="190" class="diagram-stab main" />
+            <line x1="150" y1="214" x2="120" y2="245" class="diagram-stab short" />
+            <line x1="148" y1="112" x2="86" y2="112" class="diagram-measure" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)" />
+            <line x1="154" y1="222" x2="86" y2="222" class="diagram-measure" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)" />
+            <line x1="110" y1="98" x2="188" y2="98" class="diagram-callout" />
+            <line x1="110" y1="244" x2="188" y2="244" class="diagram-callout" />
+            <text x="194" y="101" class="diagram-label">Tiller haut</text>
+            <text x="224" y="121" class="diagram-label">A</text>
+            <text x="194" y="247" class="diagram-label">Tiller bas</text>
+            <text x="224" y="267" class="diagram-label">B</text>
+            <text x="26" y="160" class="diagram-note vertical">Corde</text>
+            <text x="30" y="292" class="diagram-note">Mesurer au meme niveau entre la corde et la base de branche.</text>
           </svg>
           <p>Prenez la distance entre la corde et la branche au meme niveau en haut et en bas, pres des fixations de branches.</p>
         </div>

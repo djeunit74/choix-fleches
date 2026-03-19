@@ -85,27 +85,45 @@ body {
 }
 
 .diagram-string {
-  stroke: #787878;
-  stroke-width: 2.5;
-  stroke-dasharray: 6 5;
+  stroke: #4f4f4f;
+  stroke-width: 2;
 }
 
 .diagram-limb {
   fill: none;
-  stroke: #2a2a2a;
-  stroke-width: 7;
+  stroke: #1f1f1f;
+  stroke-width: 4;
   stroke-linecap: round;
 }
 
 .diagram-riser {
-  fill: #2e67c7;
-  stroke: #1f3d77;
-  stroke-width: 3.5;
+  fill: #e8e8e8;
+  stroke: #1f1f1f;
+  stroke-width: 2.2;
+}
+
+.diagram-stab {
+  stroke: #1f1f1f;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.diagram-stab.main {
+  stroke-width: 2.8;
+}
+
+.diagram-stab.short {
+  stroke-width: 2.2;
+}
+
+.diagram-callout {
+  stroke: #4f4f4f;
+  stroke-width: 1.6;
 }
 
 .diagram-measure {
   stroke: var(--accent);
-  stroke-width: 3.5;
+  stroke-width: 2.6;
   stroke-linecap: round;
 }
 
@@ -118,14 +136,19 @@ body {
 }
 
 .diagram-label {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  fill: var(--accent-2);
+  fill: #1f1f1f;
 }
 
 .diagram-note {
-  font-size: 14px;
+  font-size: 12px;
   fill: #4c4c4c;
+}
+
+.diagram-note.vertical {
+  writing-mode: vertical-rl;
+  glyph-orientation-vertical: 0;
 }
 
 .card {
