@@ -64,9 +64,9 @@ body {
 .measurement-guide {
   margin-top: 14px;
   padding: 14px;
-  border: 1px dashed #ccbfa9;
+  border: 1px dashed #cfc7bb;
   border-radius: 12px;
-  background: linear-gradient(180deg, #fffdf8 0%, #f7f1e7 100%);
+  background: linear-gradient(180deg, #fffefb 0%, #f4f0e8 100%);
 }
 
 .measurement-guide h3 {
@@ -85,45 +85,45 @@ body {
 }
 
 .diagram-string {
-  stroke: #4f4f4f;
-  stroke-width: 2;
+  stroke: #6a6a6a;
+  stroke-width: 1.6;
 }
 
 .diagram-limb {
   fill: none;
-  stroke: #1f1f1f;
-  stroke-width: 4;
+  stroke: #2a2a2a;
+  stroke-width: 2.8;
   stroke-linecap: round;
 }
 
 .diagram-riser {
-  fill: #e8e8e8;
-  stroke: #1f1f1f;
-  stroke-width: 2.2;
+  fill: #f1f1f1;
+  stroke: #2a2a2a;
+  stroke-width: 1.8;
 }
 
 .diagram-stab {
-  stroke: #1f1f1f;
-  stroke-width: 2.4;
+  stroke: #2a2a2a;
+  stroke-width: 1.8;
   stroke-linecap: round;
 }
 
 .diagram-stab.main {
-  stroke-width: 2.8;
+  stroke-width: 2.2;
 }
 
 .diagram-stab.short {
-  stroke-width: 2.2;
+  stroke-width: 1.8;
 }
 
 .diagram-callout {
   stroke: #4f4f4f;
-  stroke-width: 1.6;
+  stroke-width: 1.2;
 }
 
 .diagram-measure {
   stroke: var(--accent);
-  stroke-width: 2.6;
+  stroke-width: 2.2;
   stroke-linecap: round;
 }
 
@@ -136,13 +136,13 @@ body {
 }
 
 .diagram-label {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   fill: #1f1f1f;
 }
 
 .diagram-note {
-  font-size: 12px;
+  font-size: 11px;
   fill: #4c4c4c;
 }
 
