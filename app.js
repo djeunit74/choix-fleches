@@ -19,6 +19,9 @@ const els = {
   arcLength: document.getElementById("arcLength"),
   upperTiller: document.getElementById("upperTiller"),
   lowerTillerMeasured: document.getElementById("lowerTillerMeasured"),
+  limbMarkedWeight: document.getElementById("limbMarkedWeight"),
+  riserLength: document.getElementById("riserLength"),
+  drawLengthForWeight: document.getElementById("drawLengthForWeight"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
@@ -1202,6 +1205,9 @@ function validateArcSetupInput(input) {
   if (![66, 68, 70, 72].includes(input.arcLength)) return "Taille d'arc invalide.";
   if (!Number.isFinite(input.upperTiller)) return "Mesure haute invalide.";
   if (!Number.isFinite(input.lowerTillerMeasured)) return "Mesure basse invalide.";
+  if (![23, 25, 27].includes(input.riserLength)) return "Taille de poignee invalide.";
+  if (!Number.isFinite(input.limbMarkedWeight) || input.limbMarkedWeight < 10 || input.limbMarkedWeight > 60) return "Puissance marquee des branches invalide.";
+  if (!Number.isFinite(input.drawLengthForWeight) || input.drawLengthForWeight < 22 || input.drawLengthForWeight > 34) return "Allonge invalide pour l'estimation de puissance.";
   if (input.upperTiller < 150 || input.upperTiller > 260) {
     return "Entrez la distance corde / branche haute en mm, par exemple 222, et non le tiller positif.";
   }
@@ -1209,6 +1215,17 @@ function validateArcSetupInput(input) {
     return "Entrez la distance corde / branche basse en mm, par exemple 218.";
   }
   return "";
+}
+
+function estimateDrawWeight(input) {
+  const riserAdjust = input.riserLength === 23 ? 2 : input.riserLength === 27 ? -2 : 0;
+  const drawAdjust = (input.drawLengthForWeight - 28) * 2;
+  const estimated = Math.round((input.limbMarkedWeight + riserAdjust + drawAdjust) * 10) / 10;
+  return {
+    estimated,
+    riserAdjust,
+    drawAdjust: Math.round(drawAdjust * 10) / 10
+  };
 }
 
 function buildTillerAdjustment(actualTiller, targetTiller) {
@@ -1239,6 +1256,7 @@ function computeArcSetup(input) {
   const actualTiller = Math.round((input.upperTiller - input.lowerTillerMeasured) * 10) / 10;
   const lowerGap = Math.round((input.lowerTillerMeasured - expectedLowerDistance) * 10) / 10;
   const adjustment = buildTillerAdjustment(actualTiller, recommendedTiller);
+  const drawWeightEstimate = estimateDrawWeight(input);
   let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
   if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Distance basse attendue : ${expectedLowerDistance.toFixed(1)} mm.`;
   else tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
@@ -1254,10 +1272,12 @@ function computeArcSetup(input) {
     tillerTarget: recommendedTiller,
     tillerAction,
     adjustment,
+    drawWeightEstimate,
     checks: [
       "Band : commencer dans la plage de depart du constructeur. La valeur cible ici est une base pratique.",
       "Tiller : garder un tiller positif de depart autour de +4 mm reste une base simple et classique.",
       "Toute modification des vis de branches agit aussi sur la puissance ressentie de l'arc.",
+      "Le tiller n'est pas un indicateur direct de puissance tiree.",
       "Re-mesurez le haut et le bas apres chaque micro-ajustement."
     ]
   };
@@ -1276,6 +1296,9 @@ function renderArcSetup(input) {
     <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
     <p><strong>Distance basse attendue</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
     <p><strong>Ecart sur la mesure basse</strong> : ${setup.lowerGap > 0 ? "+" : ""}${setup.lowerGap.toFixed(1)} mm</p>
+    <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
+    <p>Base de calcul puissance : branches ${input.limbMarkedWeight.toFixed(1)} lbs, poignee ${input.riserLength}", allonge ${input.drawLengthForWeight.toFixed(2)}".</p>
+    <p>Correction poignee : ${setup.drawWeightEstimate.riserAdjust > 0 ? "+" : ""}${setup.drawWeightEstimate.riserAdjust.toFixed(1)} lbs | correction allonge : ${setup.drawWeightEstimate.drawAdjust > 0 ? "+" : ""}${setup.drawWeightEstimate.drawAdjust.toFixed(1)} lbs</p>
     <p>${setup.tillerAction}</p>
     <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
     <p>${setup.adjustment.advice}</p>
@@ -1410,7 +1433,10 @@ els.arcSetupForm.addEventListener("submit", (event) => {
   const input = {
     arcLength: Number(els.arcLength.value),
     upperTiller: Number(els.upperTiller.value),
-    lowerTillerMeasured: Number(els.lowerTillerMeasured.value)
+    lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
+    limbMarkedWeight: Number(els.limbMarkedWeight.value),
+    riserLength: Number(els.riserLength.value),
+    drawLengthForWeight: Number(els.drawLengthForWeight.value)
   };
 
   const setupError = validateArcSetupInput(input);
@@ -1432,16 +1458,25 @@ refreshDealsCatalog();
 const initialArcSetup = {
   arcLength: Number(els.arcLength.value),
   upperTiller: Number(els.upperTiller.value),
-  lowerTillerMeasured: Number(els.lowerTillerMeasured.value)
+  lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
+  limbMarkedWeight: Number(els.limbMarkedWeight.value),
+  riserLength: Number(els.riserLength.value),
+  drawLengthForWeight: Number(els.drawLengthForWeight.value)
 };
 const initialArcSetupError = validateArcSetupInput(initialArcSetup);
 if (initialArcSetupError) {
   els.upperTiller.value = "222";
   els.lowerTillerMeasured.value = "218";
+  els.limbMarkedWeight.value = "30";
+  els.riserLength.value = "25";
+  els.drawLengthForWeight.value = "28";
   renderArcSetup({
     arcLength: Number(els.arcLength.value),
     upperTiller: Number(els.upperTiller.value),
-    lowerTillerMeasured: Number(els.lowerTillerMeasured.value)
+    lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
+    limbMarkedWeight: Number(els.limbMarkedWeight.value),
+    riserLength: Number(els.riserLength.value),
+    drawLengthForWeight: Number(els.drawLengthForWeight.value)
   });
 } else {
   renderArcSetup(initialArcSetup);

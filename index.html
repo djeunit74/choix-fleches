@@ -130,7 +130,7 @@
     <section class="tab-panel" data-panel="arc-setup" hidden>
       <section class="card">
         <h2>Reglage de l'arc classique</h2>
-        <p>Outil simple de depart : taille d'arc, distance corde / branche haute, distance basse attendue et plage de band.</p>
+        <p>Outil simple de depart : tiller, band et estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.</p>
         <div class="measurement-guide">
           <h3>Schema des mesures</h3>
           <svg viewBox="0 0 420 320" class="measurement-diagram" role="img" aria-label="Schema des mesures de tiller sur un arc classique">
@@ -189,6 +189,22 @@
             Distance corde / branche basse mesuree (mm)
             <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
           </label>
+          <label>
+            Puissance marquee des branches (lbs)
+            <input id="limbMarkedWeight" type="number" min="10" max="60" step="1" value="30" required />
+          </label>
+          <label>
+            Taille de poignee (")
+            <select id="riserLength">
+              <option value="23">23"</option>
+              <option value="25" selected>25"</option>
+              <option value="27">27"</option>
+            </select>
+          </label>
+          <label>
+            Allonge reelle (")
+            <input id="drawLengthForWeight" type="number" min="22" max="34" step="0.25" value="28" required />
+          </label>
           <p>Exemple : <strong>222 mm</strong>. Ne saisissez pas le tiller positif ici.</p>
 
           <button type="submit">Calculer le reglage</button>
@@ -202,7 +218,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260319g"></script>
+  <script src="app.js?v=20260319h"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
