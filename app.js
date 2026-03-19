@@ -803,12 +803,17 @@ function estimatePointSetup(input, pointRange, meta = null) {
   let profile = "standard";
   if (recommended <= pointRange[0] + span / 3) profile = "legere";
   if (recommended >= pointRange[1] - span / 3) profile = "lourde";
+  const recommendedIndex = pointChoices.indexOf(recommended);
+  const softerOption = recommendedIndex >= 0 && recommendedIndex < pointChoices.length - 1 ? pointChoices[recommendedIndex + 1] : null;
+  const stifferOption = recommendedIndex > 0 ? pointChoices[recommendedIndex - 1] : null;
 
   return {
     recommended,
     pointChoices,
     profile,
-    note: "Pour assouplir un peu le tube, montez dans les options de pointes. Pour le raidir un peu, descendez."
+    softerOption,
+    stifferOption,
+    note: "La pointe conseillee est une base de depart pour ce tube."
   };
 }
 
@@ -970,6 +975,8 @@ function buildBrandRecommendation(input, brand) {
         recommendedPointWeight: pointSetup.recommended,
         recommendedPointChoices: pointSetup.pointChoices,
         recommendedPointProfile: pointSetup.profile,
+        recommendedPointSofter: pointSetup.softerOption,
+        recommendedPointStiffer: pointSetup.stifferOption,
         pointWeightNote: pointSetup.note,
         recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
         recommendedMass: topMeta?.massClass || profile.preferredMass,
@@ -1036,6 +1043,8 @@ function buildBrandRecommendation(input, brand) {
     recommendedPointWeight: pointSetup.recommended,
     recommendedPointChoices: pointSetup.pointChoices,
     recommendedPointProfile: pointSetup.profile,
+    recommendedPointSofter: pointSetup.softerOption,
+    recommendedPointStiffer: pointSetup.stifferOption,
     pointWeightNote: pointSetup.note,
     recommendedSeries: (ranked[0]?.meta || topMeta)?.seriesTier || profile.preferredSeries,
     recommendedMass: (ranked[0]?.meta || topMeta)?.massClass || profile.preferredMass,
@@ -1340,6 +1349,7 @@ function renderRecommendation(input) {
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
     <p>Options de pointes plausibles: <strong>${recommendation.recommendedPointChoices?.join(" / ") || recommendation.recommendedPointRange.join(" - ")}</strong></p>
     <p>${recommendation.pointWeightNote}</p>
+    <p>Ajustement rapide: <strong>assouplir</strong> -> ${recommendation.recommendedPointSofter ? `${recommendation.recommendedPointSofter} gr` : "pas d'option plus lourde"} | <strong>raidir</strong> -> ${recommendation.recommendedPointStiffer ? `${recommendation.recommendedPointStiffer} gr` : "pas d'option plus legere"}</p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
