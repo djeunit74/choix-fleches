@@ -78,79 +78,13 @@ body {
   margin: 10px 0 0;
 }
 
-.measurement-diagram {
-  width: 100%;
-  height: auto;
-  display: block;
+.measurement-list {
+  margin: 0;
+  padding-left: 18px;
 }
 
-.diagram-string {
-  stroke: #6a6a6a;
-  stroke-width: 1.6;
-}
-
-.diagram-limb {
-  fill: none;
-  stroke: #2a2a2a;
-  stroke-width: 2.8;
-  stroke-linecap: round;
-}
-
-.diagram-riser {
-  fill: #f1f1f1;
-  stroke: #2a2a2a;
-  stroke-width: 1.8;
-}
-
-.diagram-rest {
-  fill: none;
-  stroke: #2a2a2a;
-  stroke-width: 1.4;
-}
-
-.diagram-stab {
-  stroke: #2a2a2a;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-}
-
-.diagram-stab.main {
-  stroke-width: 2.2;
-}
-
-.diagram-stab.short {
-  stroke-width: 1.8;
-}
-
-.diagram-callout {
-  stroke: #4f4f4f;
-  stroke-width: 1.2;
-}
-
-.diagram-measure {
-  stroke: #a73f32;
-  stroke-width: 2;
-  stroke-linecap: round;
-}
-
-.diagram-arrowhead {
-  fill: #a73f32;
-}
-
-.diagram-label {
-  font-size: 13px;
-  font-weight: 700;
-  fill: #1f1f1f;
-}
-
-.diagram-note {
-  font-size: 11px;
-  fill: #4c4c4c;
-}
-
-.diagram-note.vertical {
-  writing-mode: vertical-rl;
-  glyph-orientation-vertical: 0;
+.measurement-list li {
+  margin: 8px 0;
 }
 
 .card {
