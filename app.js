@@ -1287,24 +1287,15 @@ function renderArcSetup(input) {
   const setup = computeArcSetup(input);
   els.arcSetupResult.innerHTML = `
     <h2>Reglage de l'arc</h2>
-    <p>Base simple issue du fascicule FFTA <em>Je regle mon arc classique</em> et du <em>Carnet de reglage technique d'un arc classique</em>.</p>
     <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
     <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
-    <p><strong>Distance haute mesuree</strong> : ${setup.upperTiller.toFixed(1)} mm</p>
-    <p><strong>Distance basse mesuree</strong> : ${setup.lowerTillerMeasured.toFixed(1)} mm</p>
     <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
     <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
-    <p><strong>Plage tiller utile</strong> : +2 a +10 mm</p>
-    <p><strong>Distance basse attendue</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
-    <p><strong>Ecart sur la mesure basse</strong> : ${setup.lowerGap > 0 ? "+" : ""}${setup.lowerGap.toFixed(1)} mm</p>
     <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
-    <p>Base de calcul puissance : branches ${input.limbMarkedWeight.toFixed(1)} lbs, poignee ${input.riserLength}", allonge ${input.drawLengthForWeight.toFixed(2)}".</p>
-    <p>Correction poignee : ${setup.drawWeightEstimate.riserAdjust > 0 ? "+" : ""}${setup.drawWeightEstimate.riserAdjust.toFixed(1)} lbs | correction allonge : ${setup.drawWeightEstimate.drawAdjust > 0 ? "+" : ""}${setup.drawWeightEstimate.drawAdjust.toFixed(1)} lbs</p>
-    <p>${setup.tillerAction}</p>
     <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
     <p>${setup.adjustment.advice}</p>
-    <p><strong>Points de controle</strong> :</p>
-    <ul>${setup.checks.map((check) => `<li>${check}</li>`).join("")}</ul>
+    <p><strong>Repere utile</strong> : tiller positif de base entre +2 et +10 mm, avec un prereglage courant autour de +6 mm.</p>
+    <p><strong>Note</strong> : le tiller n'est pas un indicateur direct de puissance tiree.</p>
   `;
 }
 
