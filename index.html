@@ -101,7 +101,7 @@
 
     <section class="card">
       <h2>Reglage de l'arc classique</h2>
-      <p>Outil simple de depart : taille d'arc, tiller haut mesure, tiller bas attendu et plage de band.</p>
+      <p>Outil simple de depart : taille d'arc, distance corde / branche haute, distance basse attendue et plage de band.</p>
       <form id="arc-setup-form" novalidate autocomplete="off">
         <label>
           Taille d'arc (AMO)
@@ -114,9 +114,10 @@
         </label>
 
         <label>
-          Tiller haut mesure (mm)
+          Distance corde / branche haute (mm)
           <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
         </label>
+        <p>Exemple : <strong>222 mm</strong>. Ne saisissez pas le tiller positif ici.</p>
 
         <button type="submit">Calculer le reglage</button>
       </form>
@@ -151,7 +152,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260319a"></script>
+  <script src="app.js?v=20260319b"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

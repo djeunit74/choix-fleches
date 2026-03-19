@@ -1081,13 +1081,22 @@ function defaultBraceRangeCm(arcLength) {
   return ranges[arcLength] || ranges[68];
 }
 
+function validateArcSetupInput(input) {
+  if (![66, 68, 70, 72].includes(input.arcLength)) return "Taille d'arc invalide.";
+  if (!Number.isFinite(input.upperTiller)) return "Mesure haute invalide.";
+  if (input.upperTiller < 150 || input.upperTiller > 260) {
+    return "Entrez la distance corde / branche haute en mm, par exemple 222, et non le tiller positif.";
+  }
+  return "";
+}
+
 function computeArcSetup(input) {
   const braceRange = defaultBraceRangeCm(input.arcLength);
   const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
   const recommendedTiller = 4;
   const lowerTiller = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
-  let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la mesure basse attendue est ${lowerTiller.toFixed(1)} mm.`;
-  if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Mesure basse attendue : ${lowerTiller.toFixed(1)} mm.`;
+  let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${lowerTiller.toFixed(1)} mm.`;
+  if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Distance basse attendue : ${lowerTiller.toFixed(1)} mm.`;
 
   return {
     braceRange,
@@ -1112,9 +1121,9 @@ function renderArcSetup(input) {
     <p>Base simple issue du fascicule FFTA <em>Je regle mon arc classique</em>.</p>
     <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
     <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
-    <p><strong>Tiller haut mesure</strong> : ${setup.upperTiller.toFixed(1)} mm</p>
+    <p><strong>Distance haute mesuree</strong> : ${setup.upperTiller.toFixed(1)} mm</p>
     <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
-    <p><strong>Tiller bas attendu</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
+    <p><strong>Distance basse attendue</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
     <p>${setup.tillerAction}</p>
     <p><strong>Points de controle</strong> :</p>
     <ul>${setup.checks.map((check) => `<li>${check}</li>`).join("")}</ul>
@@ -1241,8 +1250,9 @@ els.arcSetupForm.addEventListener("submit", (event) => {
     upperTiller: Number(els.upperTiller.value)
   };
 
-  if (Object.values(input).some((value) => !Number.isFinite(value))) {
-    els.arcSetupResult.innerHTML = "<h2>Reglage de l'arc</h2><p>Valeurs invalides pour le module de reglage.</p>";
+  const setupError = validateArcSetupInput(input);
+  if (setupError) {
+    els.arcSetupResult.innerHTML = `<h2>Reglage de l'arc</h2><p>${setupError}</p>`;
     return;
   }
 
@@ -1255,7 +1265,17 @@ updateVisibility();
 renderHistory();
 refreshCatalogState();
 refreshDealsCatalog();
-renderArcSetup({
+const initialArcSetup = {
   arcLength: Number(els.arcLength.value),
   upperTiller: Number(els.upperTiller.value)
-});
+};
+const initialArcSetupError = validateArcSetupInput(initialArcSetup);
+if (initialArcSetupError) {
+  els.upperTiller.value = "222";
+  renderArcSetup({
+    arcLength: Number(els.arcLength.value),
+    upperTiller: Number(els.upperTiller.value)
+  });
+} else {
+  renderArcSetup(initialArcSetup);
+}
