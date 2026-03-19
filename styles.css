@@ -64,9 +64,9 @@ body {
 .measurement-guide {
   margin-top: 14px;
   padding: 14px;
-  border: 1px dashed #cfc7bb;
+  border: 1px solid #d8d2c8;
   border-radius: 12px;
-  background: linear-gradient(180deg, #fffefb 0%, #f4f0e8 100%);
+  background: #fffdfa;
 }
 
 .measurement-guide h3 {
@@ -102,6 +102,12 @@ body {
   stroke-width: 1.8;
 }
 
+.diagram-rest {
+  fill: none;
+  stroke: #2a2a2a;
+  stroke-width: 1.4;
+}
+
 .diagram-stab {
   stroke: #2a2a2a;
   stroke-width: 1.8;
@@ -122,17 +128,13 @@ body {
 }
 
 .diagram-measure {
-  stroke: var(--accent);
-  stroke-width: 2.2;
+  stroke: #a73f32;
+  stroke-width: 2;
   stroke-linecap: round;
 }
 
 .diagram-arrowhead {
-  fill: var(--accent);
-}
-
-.diagram-point {
-  fill: var(--accent);
+  fill: #a73f32;
 }
 
 .diagram-label {
