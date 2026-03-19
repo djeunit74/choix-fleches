@@ -1193,10 +1193,10 @@ function validateInput(input) {
 
 function defaultBraceRangeCm(arcLength) {
   const ranges = {
-    66: [21.0, 22.0],
-    68: [21.5, 22.5],
-    70: [22.0, 23.0],
-    72: [22.5, 23.5]
+    66: [21.0, 22.5],
+    68: [22.0, 23.5],
+    70: [23.0, 24.5],
+    72: [23.5, 25.0]
   };
   return ranges[arcLength] || ranges[68];
 }
@@ -1251,7 +1251,7 @@ function buildTillerAdjustment(actualTiller, targetTiller) {
 function computeArcSetup(input) {
   const braceRange = defaultBraceRangeCm(input.arcLength);
   const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
-  const recommendedTiller = 4;
+  const recommendedTiller = 6;
   const expectedLowerDistance = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
   const actualTiller = Math.round((input.upperTiller - input.lowerTillerMeasured) * 10) / 10;
   const lowerGap = Math.round((input.lowerTillerMeasured - expectedLowerDistance) * 10) / 10;
@@ -1275,7 +1275,7 @@ function computeArcSetup(input) {
     drawWeightEstimate,
     checks: [
       "Band : commencer dans la plage de depart du constructeur. La valeur cible ici est une base pratique.",
-      "Tiller : garder un tiller positif de depart autour de +4 mm reste une base simple et classique.",
+      "Tiller : base carnet de reglage, tiller positif entre +2 et +10 mm, prereglage autour de +6 mm.",
       "Toute modification des vis de branches agit aussi sur la puissance ressentie de l'arc.",
       "Le tiller n'est pas un indicateur direct de puissance tiree.",
       "Re-mesurez le haut et le bas apres chaque micro-ajustement."
@@ -1287,13 +1287,14 @@ function renderArcSetup(input) {
   const setup = computeArcSetup(input);
   els.arcSetupResult.innerHTML = `
     <h2>Reglage de l'arc</h2>
-    <p>Base simple issue du fascicule FFTA <em>Je regle mon arc classique</em>.</p>
+    <p>Base simple issue du fascicule FFTA <em>Je regle mon arc classique</em> et du <em>Carnet de reglage technique d'un arc classique</em>.</p>
     <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
     <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
     <p><strong>Distance haute mesuree</strong> : ${setup.upperTiller.toFixed(1)} mm</p>
     <p><strong>Distance basse mesuree</strong> : ${setup.lowerTillerMeasured.toFixed(1)} mm</p>
     <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
     <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
+    <p><strong>Plage tiller utile</strong> : +2 a +10 mm</p>
     <p><strong>Distance basse attendue</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
     <p><strong>Ecart sur la mesure basse</strong> : ${setup.lowerGap > 0 ? "+" : ""}${setup.lowerGap.toFixed(1)} mm</p>
     <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
