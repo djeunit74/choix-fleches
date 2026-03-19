@@ -1,6 +1,8 @@
-# Choix de Fleches
+# Assistant Fleches et Reglages
 
-Application web statique pour estimer une configuration de fleche exploitable en club.
+Aide au choix des fleches et aux reglages de base de l'arc classique.
+
+Une application simple pour aider les archers debutants a choisir des fleches coherentes et regler un arc plus facilement.
 
 V3 : le catalogue technique est desormais pilote par [catalog.json](c:/Users/User/app choix des fleches/catalog.json) avec une fiche directe par modele propose dans l'app.
 
