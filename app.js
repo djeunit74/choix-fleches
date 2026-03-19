@@ -761,6 +761,20 @@ function clampPointWeight(value, pointRange) {
   return clamp(roundPointWeight(value), pointRange[0], pointRange[1]);
 }
 
+function inferPointChoices(pointRange, meta = null) {
+  if (Array.isArray(meta?.pointChoices) && meta.pointChoices.length) return meta.pointChoices;
+  const baseChoices = [70, 80, 90, 100, 110, 120, 130, 140, 150, 180];
+  let choices = baseChoices.filter((value) => value >= pointRange[0] && value <= pointRange[1]);
+  if (meta?.diameters?.includes("large")) choices = choices.filter((value) => value >= 100);
+  if (meta?.diameters?.includes("thin")) choices = choices.filter((value) => value <= 120);
+  if (!choices.length) choices = [roundPointWeight((pointRange[0] + pointRange[1]) / 2)];
+  return [...new Set(choices)].sort((a, b) => a - b);
+}
+
+function nearestPointChoice(target, pointChoices) {
+  return pointChoices.reduce((best, current) => (Math.abs(current - target) < Math.abs(best - target) ? current : best), pointChoices[0]);
+}
+
 function estimatePointSetup(input, pointRange, meta = null) {
   let target = (pointRange[0] + pointRange[1]) / 2;
   if (input.shootingEnvironment === "outdoor") target -= 5;
@@ -775,7 +789,8 @@ function estimatePointSetup(input, pointRange, meta = null) {
   if (input.arrowLength >= 29) target -= 10;
   else if (input.arrowLength <= 27) target += 5;
 
-  const recommended = clampPointWeight(target, pointRange);
+  const pointChoices = inferPointChoices(pointRange, meta);
+  const recommended = nearestPointChoice(clampPointWeight(target, pointRange), pointChoices);
   const span = pointRange[1] - pointRange[0];
   let profile = "standard";
   if (recommended <= pointRange[0] + span / 3) profile = "legere";
@@ -788,6 +803,7 @@ function estimatePointSetup(input, pointRange, meta = null) {
 
   return {
     recommended,
+    pointChoices,
     profile,
     feedback,
     note: "Une pointe plus lourde assouplit dynamiquement le tube; une pointe plus legere le raidit."
@@ -950,6 +966,7 @@ function buildBrandRecommendation(input, brand) {
         recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
         recommendedPointRange: topMeta?.pointRange || profile.pointRange,
         recommendedPointWeight: pointSetup.recommended,
+        recommendedPointChoices: pointSetup.pointChoices,
         recommendedPointProfile: pointSetup.profile,
         pointWeightFeedback: pointSetup.feedback,
         pointWeightNote: pointSetup.note,
@@ -1016,6 +1033,7 @@ function buildBrandRecommendation(input, brand) {
     recommendedDiameter: (ranked[0]?.meta || topMeta)?.diameters?.[0] || profile.preferredDiameter,
     recommendedPointRange: (ranked[0]?.meta || topMeta)?.pointRange || profile.pointRange,
     recommendedPointWeight: pointSetup.recommended,
+    recommendedPointChoices: pointSetup.pointChoices,
     recommendedPointProfile: pointSetup.profile,
     pointWeightFeedback: pointSetup.feedback,
     pointWeightNote: pointSetup.note,
@@ -1037,7 +1055,7 @@ function renderModelList(recommendation, input) {
     const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : "";
     const pointSetup = meta?.pointRange ? estimatePointSetup(input, meta.pointRange, meta) : null;
     const details = meta
-      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | pointe ${pointSetup?.recommended || meta.pointRange[0]} gr (plage ${meta.pointRange[0]}-${meta.pointRange[1]} gr)${advisedSpine}${source}`
+      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | pointe conseillee ${pointSetup?.recommended || meta.pointRange[0]} gr (options ${pointSetup?.pointChoices?.join("/") || `${meta.pointRange[0]}-${meta.pointRange[1]}`})${advisedSpine}${source}`
       : "Meta technique locale incomplete";
     return `<li><strong>${entry.model}</strong> - ${details}</li>`;
   }).join("");
@@ -1129,7 +1147,7 @@ function renderComparisonBrandCard(entry, input) {
     ? `<ul>${topModels.map((modelEntry) => {
       const meta = modelEntry.meta;
       const pointSetup = meta?.pointRange ? estimatePointSetup(input, meta.pointRange, meta) : null;
-      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | pointe ${pointSetup?.recommended || meta.pointRange[0]} gr | plage ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
+      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | pointe ${pointSetup?.recommended || meta.pointRange[0]} gr | options ${pointSetup?.pointChoices?.join("/") || `${meta.pointRange[0]}-${meta.pointRange[1]}`}` : "Meta technique locale incomplete";
       return `<li><strong>${modelEntry.model}</strong> - ${details}</li>`;
     }).join("")}</ul>`
     : "<p>Aucun modele detaille pour cette marque.</p>";
@@ -1314,13 +1332,14 @@ function renderRecommendation(input) {
     ${contextLine}
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
-    <p>Poids de pointe calcule: <strong>${recommendation.recommendedPointWeight} gr</strong> (${recommendation.recommendedPointProfile})</p>
+    <p>Poids de pointe conseille pour le tube retenu: <strong>${recommendation.recommendedPointWeight} gr</strong> (${recommendation.recommendedPointProfile})</p>
     <p>Positionnement serie: <strong>${seriesLabel(recommendation.recommendedSeries)}</strong></p>
     <p>Masse lineique cible: <strong>${massLabel(recommendation.recommendedMass)}</strong></p>
     <p>Niveau de tri conseille: <strong>${toleranceLabel(recommendation.recommendedTolerance)}</strong></p>
     <p>Systeme de composants: <strong>${componentSystemLabel(recommendation.recommendedComponentSystem)}</strong></p>
     <p>Orientation cible: <strong>${distanceBandLabel(recommendation.recommendedDistanceBand)} / ${useCaseLabel(recommendation.recommendedUseCase)}</strong></p>
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
+    <p>Options de pointes plausibles: <strong>${recommendation.recommendedPointChoices?.join(" / ") || recommendation.recommendedPointRange.join(" - ")}</strong></p>
     <p>${recommendation.pointWeightFeedback}</p>
     <p>${recommendation.pointWeightNote}</p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
