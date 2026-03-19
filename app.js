@@ -12,6 +12,7 @@ const els = {
   shootingEnvironmentWrap: document.getElementById("shootingEnvironmentWrap"),
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
+  materialGuidance: document.getElementById("materialGuidance"),
   budgetLevel: document.getElementById("budgetLevel"),
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
@@ -602,6 +603,26 @@ function updateMaterialOptions() {
   els.shaftMaterial.disabled = false;
 }
 
+function updateMaterialGuidance() {
+  if (!els.materialGuidance) return;
+  const profileKey = els.shootingProfile.value;
+  const materialValue = els.shaftMaterial.value;
+
+  if (profileKey === "recurve_outdoor") {
+    els.materialGuidance.innerHTML = `Repere FFTA : en <strong>exterieur</strong>, on privilegie surtout le <strong>carbone</strong>.`;
+    return;
+  }
+  if (profileKey === "recurve_indoor" && materialValue === "alu") {
+    els.materialGuidance.innerHTML = `Repere FFTA : en <strong>salle</strong>, l'<strong>alu</strong> est souvent le choix de base.`;
+    return;
+  }
+  if (profileKey === "recurve_indoor" && materialValue === "carbon") {
+    els.materialGuidance.innerHTML = `Repere FFTA : en <strong>salle</strong>, le <strong>carbone</strong> reste possible, mais l'<strong>alu</strong> est la base la plus classique.`;
+    return;
+  }
+  els.materialGuidance.innerHTML = "Repere debutant : carbone pour l'exterieur, alu surtout pour la salle.";
+}
+
 function normalizeInput(input) {
   if (input.shootingProfile === "recurve_outdoor") {
     return { ...input, shaftMaterial: "carbon", shootingEnvironment: "outdoor", discipline: "target" };
@@ -620,6 +641,7 @@ function applyProfileDefaults() {
     els.discipline.value = profile.discipline;
   }
   updateMaterialOptions();
+  updateMaterialGuidance();
   updateVisibility();
 }
 
@@ -1262,6 +1284,7 @@ function renderRecommendation(input) {
 }
 
 els.shootingProfile.addEventListener("change", applyProfileDefaults);
+els.shaftMaterial.addEventListener("change", updateMaterialGuidance);
 window.addEventListener("pageshow", applyProfileDefaults);
 els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setActiveTab(button.dataset.tab || "spine"));

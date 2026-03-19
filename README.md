@@ -4,6 +4,9 @@ Aide au choix des fleches et aux reglages de base de l'arc classique.
 
 Une application simple pour aider les archers debutants a choisir des fleches coherentes et regler un arc plus facilement.
 
+Reference pedagogique utile :
+- FFTA, `Les fleches` : https://www.ffta.fr/pratiquer/le-materiel/les-fleches
+
 V3 : le catalogue technique est desormais pilote par [catalog.json](c:/Users/User/app choix des fleches/catalog.json) avec une fiche directe par modele propose dans l'app.
 
 ## Ce que fait l'app
