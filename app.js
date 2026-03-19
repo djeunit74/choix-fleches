@@ -19,11 +19,13 @@ const els = {
   arcLength: document.getElementById("arcLength"),
   upperTiller: document.getElementById("upperTiller"),
   lowerTillerMeasured: document.getElementById("lowerTillerMeasured"),
+  tabButtons: Array.from(document.querySelectorAll(".tab-button")),
+  tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab" };
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const ALLOWED_SHAFT_MATERIALS = ["carbon", "alu"];
 const BOW_LIMITS = {
@@ -394,6 +396,19 @@ function profileLabel(key) {
   if (key === "recurve_outdoor") return "Recurve exterieur";
   if (key === "recurve_indoor") return "Recurve salle";
   return "Recurve";
+}
+function setActiveTab(tabName) {
+  els.tabButtons.forEach((button) => {
+    const isActive = button.dataset.tab === tabName;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+  els.tabPanels.forEach((panel) => {
+    const isActive = panel.dataset.panel === tabName;
+    panel.classList.toggle("is-active", isActive);
+    panel.hidden = !isActive;
+  });
+  localStorage.setItem(STORAGE.activeTab, tabName);
 }
 function dealsUpdatedLabel() {
   const date = new Date(dealsState.updatedAt);
@@ -1248,6 +1263,9 @@ function renderRecommendation(input) {
 
 els.shootingProfile.addEventListener("change", applyProfileDefaults);
 window.addEventListener("pageshow", applyProfileDefaults);
+els.tabButtons.forEach((button) => {
+  button.addEventListener("click", () => setActiveTab(button.dataset.tab || "spine"));
+});
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
@@ -1302,6 +1320,7 @@ applyUnitConstraints();
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
+setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
 refreshCatalogState();
 refreshDealsCatalog();
 const initialArcSetup = {

@@ -17,146 +17,155 @@
       <p>Estimez un spine de depart selon votre arc et votre allonge.</p>
     </header>
 
-    <section class="card">
-      <form id="spine-form" novalidate autocomplete="off">
-        <label>
-          Profil de tir
-          <select id="shootingProfile" required>
-            <option value="recurve_outdoor">Recurve exterieur</option>
-            <option value="recurve_indoor">Recurve salle</option>
-          </select>
-        </label>
+    <nav class="tab-nav" aria-label="Navigation principale">
+      <button type="button" class="tab-button is-active" data-tab="spine">Choix des fleches</button>
+      <button type="button" class="tab-button" data-tab="arc-setup">Reglage de l'arc</button>
+    </nav>
 
-        <label>
-          Marque preferee
-          <select id="preferredBrand" required>
-            <option value="all">Toutes</option>
-            <option value="skylon">Skylon</option>
-            <option value="easton">Easton</option>
-            <option value="victory">Victory</option>
-            <option value="carbon">Carbon Express</option>
-          </select>
-        </label>
+    <section class="tab-panel is-active" data-panel="spine">
+      <section class="card">
+        <form id="spine-form" novalidate autocomplete="off">
+          <label>
+            Profil de tir
+            <select id="shootingProfile" required>
+              <option value="recurve_outdoor">Recurve exterieur</option>
+              <option value="recurve_indoor">Recurve salle</option>
+            </select>
+          </label>
 
-        <label id="shootingEnvironmentWrap" hidden style="display: none;">
-          Environnement
-          <select id="shootingEnvironment" required>
-            <option value="outdoor">Exterieur</option>
-            <option value="indoor">Interieur / salle</option>
-            <option value="mixed">Polyvalent</option>
-          </select>
-        </label>
+          <label>
+            Marque preferee
+            <select id="preferredBrand" required>
+              <option value="all">Toutes</option>
+              <option value="skylon">Skylon</option>
+              <option value="easton">Easton</option>
+              <option value="victory">Victory</option>
+              <option value="carbon">Carbon Express</option>
+            </select>
+          </label>
 
-        <label>
-          Construction du tube
-          <select id="shaftMaterial" required>
-            <option value="all">Toutes</option>
-            <option value="carbon">Carbone</option>
-            <option value="alu">Alu</option>
-          </select>
-        </label>
+          <label id="shootingEnvironmentWrap" hidden style="display: none;">
+            Environnement
+            <select id="shootingEnvironment" required>
+              <option value="outdoor">Exterieur</option>
+              <option value="indoor">Interieur / salle</option>
+              <option value="mixed">Polyvalent</option>
+            </select>
+          </label>
 
-        <label>
-          Budget
-          <select id="budgetLevel" required>
-            <option value="all">Tous</option>
-            <option value="eco">Eco</option>
-            <option value="mid">Intermediaire</option>
-            <option value="premium">Premium</option>
-          </select>
-        </label>
+          <label>
+            Construction du tube
+            <select id="shaftMaterial" required>
+              <option value="all">Toutes</option>
+              <option value="carbon">Carbone</option>
+              <option value="alu">Alu</option>
+            </select>
+          </label>
 
-        <label id="drawWeightLabel">
-          Puissance reelle a l'allonge
-          <input id="drawWeight" type="number" min="10" max="100" step="0.5" value="36" required />
-        </label>
+          <label>
+            Budget
+            <select id="budgetLevel" required>
+              <option value="all">Tous</option>
+              <option value="eco">Eco</option>
+              <option value="mid">Intermediaire</option>
+              <option value="premium">Premium</option>
+            </select>
+          </label>
 
-        <label id="arrowLengthLabel">
-          Longueur de fleche
-          <input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required />
-        </label>
+          <label id="drawWeightLabel">
+            Puissance reelle a l'allonge
+            <input id="drawWeight" type="number" min="10" max="100" step="0.5" value="36" required />
+          </label>
 
-        <label>
-          Poids de pointe (grains)
-          <input id="pointWeight" type="number" min="60" max="250" step="5" value="100" required />
-        </label>
+          <label id="arrowLengthLabel">
+            Longueur de fleche
+            <input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required />
+          </label>
 
-        <label id="disciplineWrap" hidden style="display: none;">
-          Usage
-          <select id="discipline">
-            <option value="target">Cible</option>
-            <option value="field">Campagne / 3D</option>
-            <option value="hunting">Chasse</option>
-          </select>
-        </label>
+          <label>
+            Poids de pointe (grains)
+            <input id="pointWeight" type="number" min="60" max="250" step="5" value="100" required />
+          </label>
 
-        <button type="submit">Calculer</button>
-      </form>
+          <label id="disciplineWrap" hidden style="display: none;">
+            Usage
+            <select id="discipline">
+              <option value="target">Cible</option>
+              <option value="field">Campagne / 3D</option>
+              <option value="hunting">Chasse</option>
+            </select>
+          </label>
+
+          <button type="submit">Calculer</button>
+        </form>
+      </section>
+
+      <section class="card result" id="result" aria-live="polite">
+        <h2>Recommandation</h2>
+        <p>Entrez vos parametres puis lancez le calcul.</p>
+      </section>
+
+      <section class="card notes" id="history">
+        <h3>Historique (5 derniers)</h3>
+        <div id="historyContent">
+          <p>Aucun calcul pour le moment.</p>
+        </div>
+        <button id="clearHistoryBtn" type="button">Vider l'historique</button>
+      </section>
+
+      <section class="card notes">
+        <h3>Important</h3>
+        <ul>
+          <li>Cette application reste <strong>indicative</strong> et donne un <strong>spine de depart</strong>.</li>
+          <li>Demandez conseil a un <strong>entraineur</strong> pour confirmer l'estimation.</li>
+          <li>Tableau integre dans l'app : <a href="https://skylonarchery.com/" target="_blank" rel="noopener noreferrer">Skylon Archery - Chart</a>.</li>
+          <li>Tableaux officiels a consulter :
+            <a href="https://eastonarchery.com/selector/" target="_blank" rel="noopener noreferrer">Easton</a>,
+            <a href="https://victoryarchery.com/arrow-guide/" target="_blank" rel="noopener noreferrer">Victory</a>,
+            <a href="https://victoryarchery.com/fitting-charts/" target="_blank" rel="noopener noreferrer">Victory fitting charts</a>,
+            <a href="https://www.feradyne.com/brands/carbon-express/arrow-charts/" target="_blank" rel="noopener noreferrer">Carbon Express</a>.
+          </li>
+        </ul>
+      </section>
     </section>
 
-    <section class="card result" id="result" aria-live="polite">
-      <h2>Recommandation</h2>
-      <p>Entrez vos parametres puis lancez le calcul.</p>
-    </section>
+    <section class="tab-panel" data-panel="arc-setup" hidden>
+      <section class="card">
+        <h2>Reglage de l'arc classique</h2>
+        <p>Outil simple de depart : taille d'arc, distance corde / branche haute, distance basse attendue et plage de band.</p>
+        <form id="arc-setup-form" novalidate autocomplete="off">
+          <label>
+            Taille d'arc (AMO)
+            <select id="arcLength">
+              <option value="66">66"</option>
+              <option value="68" selected>68"</option>
+              <option value="70">70"</option>
+              <option value="72">72"</option>
+            </select>
+          </label>
 
-    <section class="card">
-      <h2>Reglage de l'arc classique</h2>
-      <p>Outil simple de depart : taille d'arc, distance corde / branche haute, distance basse attendue et plage de band.</p>
-      <form id="arc-setup-form" novalidate autocomplete="off">
-        <label>
-          Taille d'arc (AMO)
-          <select id="arcLength">
-            <option value="66">66"</option>
-            <option value="68" selected>68"</option>
-            <option value="70">70"</option>
-            <option value="72">72"</option>
-          </select>
-        </label>
+          <label>
+            Distance corde / branche haute (mm)
+            <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
+          </label>
+          <label>
+            Distance corde / branche basse mesuree (mm)
+            <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
+          </label>
+          <p>Exemple : <strong>222 mm</strong>. Ne saisissez pas le tiller positif ici.</p>
 
-        <label>
-          Distance corde / branche haute (mm)
-          <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
-        </label>
-        <label>
-          Distance corde / branche basse mesuree (mm)
-          <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
-        </label>
-        <p>Exemple : <strong>222 mm</strong>. Ne saisissez pas le tiller positif ici.</p>
+          <button type="submit">Calculer le reglage</button>
+        </form>
+      </section>
 
-        <button type="submit">Calculer le reglage</button>
-      </form>
-    </section>
-
-    <section class="card result" id="arcSetupResult" aria-live="polite">
-      <h2>Reglage de l'arc</h2>
-      <p>Renseignez vos mesures puis lancez le calcul.</p>
-    </section>
-
-    <section class="card notes" id="history">
-      <h3>Historique (5 derniers)</h3>
-      <div id="historyContent">
-        <p>Aucun calcul pour le moment.</p>
-      </div>
-      <button id="clearHistoryBtn" type="button">Vider l'historique</button>
-    </section>
-
-    <section class="card notes">
-      <h3>Important</h3>
-      <ul>
-        <li>Cette application reste <strong>indicative</strong> et donne un <strong>spine de depart</strong>.</li>
-        <li>Demandez conseil a un <strong>entraineur</strong> pour confirmer l'estimation.</li>
-        <li>Tableau integre dans l'app : <a href="https://skylonarchery.com/" target="_blank" rel="noopener noreferrer">Skylon Archery - Chart</a>.</li>
-        <li>Tableaux officiels a consulter :
-          <a href="https://eastonarchery.com/selector/" target="_blank" rel="noopener noreferrer">Easton</a>,
-          <a href="https://victoryarchery.com/arrow-guide/" target="_blank" rel="noopener noreferrer">Victory</a>,
-          <a href="https://victoryarchery.com/fitting-charts/" target="_blank" rel="noopener noreferrer">Victory fitting charts</a>,
-          <a href="https://www.feradyne.com/brands/carbon-express/arrow-charts/" target="_blank" rel="noopener noreferrer">Carbon Express</a>.
-        </li>
-      </ul>
+      <section class="card result" id="arcSetupResult" aria-live="polite">
+        <h2>Reglage de l'arc</h2>
+        <p>Renseignez vos mesures puis lancez le calcul.</p>
+      </section>
     </section>
   </main>
 
-  <script src="app.js?v=20260319c"></script>
+  <script src="app.js?v=20260319d"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
