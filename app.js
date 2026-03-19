@@ -753,6 +753,47 @@ function deriveTargetProfile(input) {
   return { preferredMaterial, preferredDiameter, pointRange, preferredSeries, preferredMass, preferredTolerance, preferredDistanceBand, preferredUseCase };
 }
 
+function roundPointWeight(value) {
+  return Math.round(value / 10) * 10;
+}
+
+function clampPointWeight(value, pointRange) {
+  return clamp(roundPointWeight(value), pointRange[0], pointRange[1]);
+}
+
+function estimatePointSetup(input, pointRange, meta = null) {
+  let target = (pointRange[0] + pointRange[1]) / 2;
+  if (input.shootingEnvironment === "outdoor") target -= 5;
+  if (input.shootingEnvironment === "indoor") target += 5;
+  if (meta?.diameters?.includes("thin")) target -= 5;
+  if (meta?.diameters?.includes("large")) target += 10;
+  if (meta?.useCase === "wind") target -= 5;
+  if (meta?.useCase === "linecut") target += 10;
+  if (input.drawWeight >= 40) target -= 10;
+  else if (input.drawWeight <= 28) target += 10;
+  else if (input.drawWeight <= 32) target += 5;
+  if (input.arrowLength >= 29) target -= 10;
+  else if (input.arrowLength <= 27) target += 5;
+
+  const recommended = clampPointWeight(target, pointRange);
+  const span = pointRange[1] - pointRange[0];
+  let profile = "standard";
+  if (recommended <= pointRange[0] + span / 3) profile = "legere";
+  if (recommended >= pointRange[1] - span / 3) profile = "lourde";
+
+  const delta = Math.round((input.pointWeight - recommended) * 10) / 10;
+  let feedback = "Votre pointe actuelle est coherente avec cette configuration.";
+  if (delta >= 10) feedback = "Votre pointe actuelle est plus lourde que la cible calculee : elle assouplit davantage le tube.";
+  else if (delta <= -10) feedback = "Votre pointe actuelle est plus legere que la cible calculee : elle raidit davantage le tube.";
+
+  return {
+    recommended,
+    profile,
+    feedback,
+    note: "Une pointe plus lourde assouplit dynamiquement le tube; une pointe plus legere le raidit."
+  };
+}
+
 function scoreModel(modelName, input, profile) {
   const meta = getModelMetadata(modelName);
   if (!meta) return { score: -1000, meta: null };
@@ -893,6 +934,7 @@ function buildBrandRecommendation(input, brand) {
       ranked = rankModels(models, input, profile);
       ranked = attachModelSpines(ranked, brand, base.raw, profile);
       const topMeta = ranked[0]?.meta || null;
+      const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
       return {
         brand,
         mode: "skylon",
@@ -907,6 +949,10 @@ function buildBrandRecommendation(input, brand) {
         recommendedMaterial: topMeta?.material || profile.preferredMaterial,
         recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
         recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+        recommendedPointWeight: pointSetup.recommended,
+        recommendedPointProfile: pointSetup.profile,
+        pointWeightFeedback: pointSetup.feedback,
+        pointWeightNote: pointSetup.note,
         recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
         recommendedMass: topMeta?.massClass || profile.preferredMass,
         recommendedTolerance: topMeta?.toleranceClass || profile.preferredTolerance,
@@ -919,6 +965,7 @@ function buildBrandRecommendation(input, brand) {
   }
 
   const topMeta = ranked[0]?.meta || null;
+  const pointSetup = estimatePointSetup(input, (ranked[0]?.meta || topMeta)?.pointRange || profile.pointRange, ranked[0]?.meta || topMeta || null);
   const reasons = [];
   if (input.shaftMaterial !== "all") reasons.push("Filtre de construction impose.");
   if (input.shootingEnvironment === "outdoor") reasons.push("Contexte exterieur pris en compte.");
@@ -968,6 +1015,10 @@ function buildBrandRecommendation(input, brand) {
     recommendedMaterial: (ranked[0]?.meta || topMeta)?.material || profile.preferredMaterial,
     recommendedDiameter: (ranked[0]?.meta || topMeta)?.diameters?.[0] || profile.preferredDiameter,
     recommendedPointRange: (ranked[0]?.meta || topMeta)?.pointRange || profile.pointRange,
+    recommendedPointWeight: pointSetup.recommended,
+    recommendedPointProfile: pointSetup.profile,
+    pointWeightFeedback: pointSetup.feedback,
+    pointWeightNote: pointSetup.note,
     recommendedSeries: (ranked[0]?.meta || topMeta)?.seriesTier || profile.preferredSeries,
     recommendedMass: (ranked[0]?.meta || topMeta)?.massClass || profile.preferredMass,
     recommendedTolerance: (ranked[0]?.meta || topMeta)?.toleranceClass || profile.preferredTolerance,
@@ -978,14 +1029,15 @@ function buildBrandRecommendation(input, brand) {
   };
 }
 
-function renderModelList(recommendation) {
+function renderModelList(recommendation, input) {
   if (!recommendation.models.length) return "<li>Aucun modele correspondant strictement a vos filtres.</li>";
   return recommendation.models.slice(0, 8).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
     const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : "";
+    const pointSetup = meta?.pointRange ? estimatePointSetup(input, meta.pointRange, meta) : null;
     const details = meta
-      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr${advisedSpine}${source}`
+      ? `${seriesLabel(meta.seriesTier)} | ${materialLabel(meta.material)} | ${diameterLabel(meta.diameters[0] || "standard")} | ${massLabel(meta.massClass)} | ${toleranceLabel(meta.toleranceClass)} | ${componentSystemLabel(meta.componentSystem)} | ${distanceBandLabel(meta.distanceBand)} | ${useCaseLabel(meta.useCase)} | pointe ${pointSetup?.recommended || meta.pointRange[0]} gr (plage ${meta.pointRange[0]}-${meta.pointRange[1]} gr)${advisedSpine}${source}`
       : "Meta technique locale incomplete";
     return `<li><strong>${entry.model}</strong> - ${details}</li>`;
   }).join("");
@@ -1076,7 +1128,8 @@ function renderComparisonBrandCard(entry, input) {
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
       const meta = modelEntry.meta;
-      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
+      const pointSetup = meta?.pointRange ? estimatePointSetup(input, meta.pointRange, meta) : null;
+      const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | pointe ${pointSetup?.recommended || meta.pointRange[0]} gr | plage ${meta.pointRange[0]}-${meta.pointRange[1]} gr` : "Meta technique locale incomplete";
       return `<li><strong>${modelEntry.model}</strong> - ${details}</li>`;
     }).join("")}</ul>`
     : "<p>Aucun modele detaille pour cette marque.</p>";
@@ -1261,18 +1314,21 @@ function renderRecommendation(input) {
     ${contextLine}
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
+    <p>Poids de pointe calcule: <strong>${recommendation.recommendedPointWeight} gr</strong> (${recommendation.recommendedPointProfile})</p>
     <p>Positionnement serie: <strong>${seriesLabel(recommendation.recommendedSeries)}</strong></p>
     <p>Masse lineique cible: <strong>${massLabel(recommendation.recommendedMass)}</strong></p>
     <p>Niveau de tri conseille: <strong>${toleranceLabel(recommendation.recommendedTolerance)}</strong></p>
     <p>Systeme de composants: <strong>${componentSystemLabel(recommendation.recommendedComponentSystem)}</strong></p>
     <p>Orientation cible: <strong>${distanceBandLabel(recommendation.recommendedDistanceBand)} / ${useCaseLabel(recommendation.recommendedUseCase)}</strong></p>
     <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
+    <p>${recommendation.pointWeightFeedback}</p>
+    <p>${recommendation.pointWeightNote}</p>
     <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
     ${confidenceList}
     <p>${modelTitle}</p>
-    <ul>${renderModelList(recommendation)}</ul>
+    <ul>${renderModelList(recommendation, input)}</ul>
     ${renderAlternativeModelList(recommendation)}
     <p>Notes techniques:</p>
     ${notesList}
