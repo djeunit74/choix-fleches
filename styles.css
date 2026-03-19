@@ -61,6 +61,64 @@ body {
   display: none;
 }
 
+.measurement-guide {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px dashed #ccbfa9;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fffdf8 0%, #f7f1e7 100%);
+}
+
+.measurement-guide h3 {
+  margin: 0 0 10px;
+  color: var(--accent-2);
+}
+
+.measurement-guide p {
+  margin: 10px 0 0;
+}
+
+.measurement-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram-string {
+  stroke: var(--accent-2);
+  stroke-width: 3;
+  stroke-dasharray: 6 6;
+}
+
+.diagram-limb {
+  fill: none;
+  stroke: #5d4632;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.diagram-measure {
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  marker-start: url(#none);
+}
+
+.diagram-point {
+  fill: var(--accent);
+}
+
+.diagram-label {
+  font-size: 16px;
+  font-weight: 700;
+  fill: var(--accent-2);
+}
+
+.diagram-note {
+  font-size: 14px;
+  fill: #4c4c4c;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--line);

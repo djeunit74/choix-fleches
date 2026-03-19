@@ -136,6 +136,27 @@
       <section class="card">
         <h2>Reglage de l'arc classique</h2>
         <p>Outil simple de depart : taille d'arc, distance corde / branche haute, distance basse attendue et plage de band.</p>
+        <div class="measurement-guide">
+          <h3>Schema des mesures</h3>
+          <svg viewBox="0 0 420 300" class="measurement-diagram" role="img" aria-label="Schema des mesures de tiller sur un arc classique">
+            <line x1="210" y1="24" x2="210" y2="276" class="diagram-string" />
+            <path d="M210 24 Q140 72 150 130 Q160 170 210 150" class="diagram-limb" />
+            <path d="M210 276 Q280 228 270 170 Q260 130 210 150" class="diagram-limb" />
+            <line x1="150" y1="92" x2="210" y2="92" class="diagram-measure" />
+            <line x1="210" y1="208" x2="270" y2="208" class="diagram-measure" />
+            <circle cx="150" cy="92" r="4" class="diagram-point" />
+            <circle cx="270" cy="208" r="4" class="diagram-point" />
+            <circle cx="210" cy="92" r="4" class="diagram-point" />
+            <circle cx="210" cy="208" r="4" class="diagram-point" />
+            <text x="42" y="86" class="diagram-label">Mesure haute</text>
+            <text x="282" y="202" class="diagram-label">Mesure basse</text>
+            <text x="225" y="34" class="diagram-label">Corde</text>
+            <text x="92" y="132" class="diagram-note">Branche haute</text>
+            <text x="258" y="176" class="diagram-note">Branche basse</text>
+            <text x="28" y="258" class="diagram-note">Tiller positif = mesure haute - mesure basse</text>
+          </svg>
+          <p>Prenez la distance entre la corde et la branche au meme niveau en haut et en bas, pres des fixations de branches.</p>
+        </div>
         <form id="arc-setup-form" novalidate autocomplete="off">
           <label>
             Taille d'arc (AMO)
@@ -168,7 +189,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260319e"></script>
+  <script src="app.js?v=20260319f"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
