@@ -1,6 +1,8 @@
 const els = {
   form: document.getElementById("spine-form"),
   result: document.getElementById("result"),
+  arcSetupForm: document.getElementById("arc-setup-form"),
+  arcSetupResult: document.getElementById("arcSetupResult"),
   historyContent: document.getElementById("historyContent"),
   drawWeightLabel: document.getElementById("drawWeightLabel"),
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
@@ -14,6 +16,13 @@ const els = {
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   pointWeight: document.getElementById("pointWeight"),
+  arcLength: document.getElementById("arcLength"),
+  braceHeight: document.getElementById("braceHeight"),
+  upperTiller: document.getElementById("upperTiller"),
+  lowerTiller: document.getElementById("lowerTiller"),
+  nockingPoint: document.getElementById("nockingPoint"),
+  bareShaftVertical: document.getElementById("bareShaftVertical"),
+  restExtension: document.getElementById("restExtension"),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
@@ -1067,6 +1076,100 @@ function validateInput(input) {
   return "";
 }
 
+function defaultBraceRangeCm(arcLength) {
+  const ranges = {
+    66: [21.0, 22.0],
+    68: [21.5, 22.5],
+    70: [22.0, 23.0],
+    72: [22.5, 23.5]
+  };
+  return ranges[arcLength] || ranges[68];
+}
+
+function recommendedNockingRangeMm() {
+  return [4, 8];
+}
+
+function formatSignedMm(value) {
+  const rounded = Math.round(value * 10) / 10;
+  return `${rounded > 0 ? "+" : ""}${rounded} mm`;
+}
+
+function computeArcSetup(input) {
+  const braceRange = defaultBraceRangeCm(input.arcLength);
+  const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
+  const braceDeltaMm = Math.round((braceTarget - input.braceHeight) * 10);
+  const estimatedTwists = Math.max(0, Math.round(Math.abs(braceDeltaMm) / 1.8));
+
+  let braceAction = "Band dans la zone de depart.";
+  if (input.braceHeight < braceRange[0]) braceAction = `Band trop bas : vriller la corde pour viser ${braceTarget.toFixed(1)} cm (environ ${estimatedTwists} vrilles).`;
+  if (input.braceHeight > braceRange[1]) braceAction = `Band trop haut : devriller la corde pour viser ${braceTarget.toFixed(1)} cm (environ ${estimatedTwists} vrilles).`;
+
+  const tiller = Math.round((input.upperTiller - input.lowerTiller) * 10) / 10;
+  let tillerAction = "Tiller dans la zone recommandee (positif, 2 a 6 mm).";
+  if (tiller < 2) tillerAction = "Tiller trop faible : augmenter le tiller positif en vissant la branche basse ou en devissant la branche haute.";
+  if (tiller > 6) tillerAction = "Tiller trop fort : reduire le tiller positif en devissant la branche basse ou en vissant la branche haute.";
+
+  const [nockingMin, nockingMax] = recommendedNockingRangeMm();
+  let nockingAction = "Point d'encochage proche de la zone de depart.";
+  if (input.bareShaftVertical > 3) {
+    const correction = Math.max(2, Math.min(6, Math.round(Math.abs(input.bareShaftVertical))));
+    nockingAction = `Bare shaft au-dessus : point d'encochage trop bas. Monter d'environ ${correction} mm puis recontroler.`;
+  } else if (input.bareShaftVertical < -3) {
+    const correction = Math.max(2, Math.min(6, Math.round(Math.abs(input.bareShaftVertical))));
+    nockingAction = `Bare shaft en-dessous : point d'encochage trop haut. Descendre d'environ ${correction} mm puis recontroler.`;
+  } else if (input.nockingPoint < nockingMin || input.nockingPoint > nockingMax) {
+    nockingAction = `Point d'encochage hors zone courante. Revenir vers ${nockingMin}-${nockingMax} mm au-dessus de l'equerre puis verifier au tir.`;
+  }
+
+  let restAction = "Depassement du repose-fleche correct.";
+  if (input.restExtension > 2) restAction = "Le repose-fleche depasse trop. Ramener la tige a environ 2 mm pour limiter les contacts avec l'empennage.";
+  if (input.restExtension < 1) restAction = "Le repose-fleche semble tres court. Verifier que le tube est bien soutenu sans excès.";
+
+  return {
+    braceRange,
+    braceTarget,
+    braceAction,
+    tiller,
+    tillerAction,
+    nockingRange: [nockingMin, nockingMax],
+    nockingAction,
+    restAction,
+    checks: [
+      "Aligner les branches avec la corde et le stabilisateur. Ce reglage depend de la marque de poignee et reste plus sur avec un entraineur.",
+      "Placer la fleche dans l'axe vertical de la corde et parallele au stabilisateur central.",
+      "Le berger button se regle seulement apres validation du calibre des fleches.",
+      "Tester d'abord au bare shaft vertical a 18 m (debutants) ou 30 m (experimente)."
+    ]
+  };
+}
+
+function renderArcSetup(input) {
+  const setup = computeArcSetup(input);
+  els.arcSetupResult.innerHTML = `
+    <h2>Reglage de l'arc</h2>
+    <p>Base issue du fascicule FFTA <em>Je regle mon arc classique</em>.</p>
+    <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
+    <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
+    <p>${setup.braceAction}</p>
+    <p><strong>Tiller mesure</strong> : ${formatSignedMm(setup.tiller)}</p>
+    <p>${setup.tillerAction}</p>
+    <p><strong>Point d'encochage de depart</strong> : ${setup.nockingRange[0]} a ${setup.nockingRange[1]} mm au-dessus de l'equerre</p>
+    <p>${setup.nockingAction}</p>
+    <p>${setup.restAction}</p>
+    <p><strong>Ordre conseille</strong> :</p>
+    <ol>
+      <li>Regler le band.</li>
+      <li>Verifier le tiller.</li>
+      <li>Poser le point d'encochage.</li>
+      <li>Verifier repose-fleche et centre de fleche.</li>
+      <li>Finir au bare shaft vertical puis au berger button.</li>
+    </ol>
+    <p><strong>Points de controle</strong> :</p>
+    <ul>${setup.checks.map((check) => `<li>${check}</li>`).join("")}</ul>
+  `;
+}
+
 function renderComparison(input) {
   const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
@@ -1180,9 +1283,38 @@ els.form.addEventListener("submit", async (event) => {
   renderRecommendation(normalizedInput);
 });
 
+els.arcSetupForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = {
+    arcLength: Number(els.arcLength.value),
+    braceHeight: Number(els.braceHeight.value),
+    upperTiller: Number(els.upperTiller.value),
+    lowerTiller: Number(els.lowerTiller.value),
+    nockingPoint: Number(els.nockingPoint.value),
+    bareShaftVertical: Number(els.bareShaftVertical.value),
+    restExtension: Number(els.restExtension.value)
+  };
+
+  if (Object.values(input).some((value) => !Number.isFinite(value))) {
+    els.arcSetupResult.innerHTML = "<h2>Reglage de l'arc</h2><p>Valeurs invalides pour le module de reglage.</p>";
+    return;
+  }
+
+  renderArcSetup(input);
+});
+
 applyUnitConstraints();
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
 refreshCatalogState();
 refreshDealsCatalog();
+renderArcSetup({
+  arcLength: Number(els.arcLength.value),
+  braceHeight: Number(els.braceHeight.value),
+  upperTiller: Number(els.upperTiller.value),
+  lowerTiller: Number(els.lowerTiller.value),
+  nockingPoint: Number(els.nockingPoint.value),
+  bareShaftVertical: Number(els.bareShaftVertical.value),
+  restExtension: Number(els.restExtension.value)
+});

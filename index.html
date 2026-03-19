@@ -99,6 +99,59 @@
       <p>Entrez vos parametres puis lancez le calcul.</p>
     </section>
 
+    <section class="card">
+      <h2>Reglage de l'arc classique</h2>
+      <p>Repères pratiques pour le band, le tiller, le point d'encochage et les contrôles de base.</p>
+      <form id="arc-setup-form" novalidate autocomplete="off">
+        <label>
+          Taille d'arc (AMO)
+          <select id="arcLength">
+            <option value="66">66"</option>
+            <option value="68" selected>68"</option>
+            <option value="70">70"</option>
+            <option value="72">72"</option>
+          </select>
+        </label>
+
+        <label>
+          Band mesure (cm)
+          <input id="braceHeight" type="number" min="18" max="26" step="0.1" value="22.0" required />
+        </label>
+
+        <label>
+          Distance corde / branche haute (mm)
+          <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
+        </label>
+
+        <label>
+          Distance corde / branche basse (mm)
+          <input id="lowerTiller" type="number" min="150" max="260" step="0.5" value="218" required />
+        </label>
+
+        <label>
+          Point d'encochage actuel (mm au-dessus de l'equerre)
+          <input id="nockingPoint" type="number" min="0" max="20" step="0.5" value="6" required />
+        </label>
+
+        <label>
+          Ecart bare shaft vertical (cm)
+          <input id="bareShaftVertical" type="number" min="-20" max="20" step="0.5" value="0" required />
+        </label>
+
+        <label>
+          Depassement repose-fleche (mm)
+          <input id="restExtension" type="number" min="0" max="10" step="0.5" value="2" required />
+        </label>
+
+        <button type="submit">Calculer le reglage</button>
+      </form>
+    </section>
+
+    <section class="card result" id="arcSetupResult" aria-live="polite">
+      <h2>Reglage de l'arc</h2>
+      <p>Renseignez vos mesures puis lancez le calcul.</p>
+    </section>
+
     <section class="card notes" id="history">
       <h3>Historique (5 derniers)</h3>
       <div id="historyContent">
@@ -123,7 +176,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260318c"></script>
+  <script src="app.js?v=20260319a"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

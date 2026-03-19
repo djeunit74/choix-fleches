@@ -11,6 +11,7 @@ V3 : le catalogue technique est desormais pilote par [catalog.json](c:/Users/Use
 - propose deux profils de tir : `recurve exterieur` et `recurve salle`
 - travaille avec `carbone` ou `alu`
 - produit une recommandation de `spine`, `construction`, `diametre` et `modeles`
+- integre un module `reglage de l'arc classique` avec repères de `band`, `tiller`, `point d'encochage` et checklist de base
 - affiche aussi le `positionnement serie` et une `plage de pointe` par modele
 - recharge le `catalogue technique` depuis [catalog.json](c:/Users/User/app choix des fleches/catalog.json) avec fallback local si le JSON n'est pas disponible
 - travaille avec des fiches `modele par modele` : serie, masse, tolerance, composants, orientation d'usage
@@ -94,6 +95,20 @@ Recommendation pragmatique :
 Important :
 - ne donne pas l'ecriture a tout Internet si tu veux garder des donnees fiables
 - reserve l'edition a quelques responsables du club
+
+## Reglage de l'arc
+
+L'app comporte aussi un module de reglage de l'arc classique.
+
+Il donne des repères pratiques pour :
+- le `band`
+- le `tiller`
+- le `point d'encochage`
+- le `repose-fleche`
+- l'ordre logique des controles
+
+Base documentaire utilisee :
+- fascicule FFTA `Je regle mon arc classique`
 
 ## Limites
 
