@@ -117,6 +117,10 @@
           Distance corde / branche haute (mm)
           <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
         </label>
+        <label>
+          Distance corde / branche basse mesuree (mm)
+          <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
+        </label>
         <p>Exemple : <strong>222 mm</strong>. Ne saisissez pas le tiller positif ici.</p>
 
         <button type="submit">Calculer le reglage</button>
@@ -152,7 +156,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260319b"></script>
+  <script src="app.js?v=20260319c"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

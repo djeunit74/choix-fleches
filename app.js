@@ -18,6 +18,7 @@ const els = {
   pointWeight: document.getElementById("pointWeight"),
   arcLength: document.getElementById("arcLength"),
   upperTiller: document.getElementById("upperTiller"),
+  lowerTillerMeasured: document.getElementById("lowerTillerMeasured"),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
@@ -1084,32 +1085,64 @@ function defaultBraceRangeCm(arcLength) {
 function validateArcSetupInput(input) {
   if (![66, 68, 70, 72].includes(input.arcLength)) return "Taille d'arc invalide.";
   if (!Number.isFinite(input.upperTiller)) return "Mesure haute invalide.";
+  if (!Number.isFinite(input.lowerTillerMeasured)) return "Mesure basse invalide.";
   if (input.upperTiller < 150 || input.upperTiller > 260) {
     return "Entrez la distance corde / branche haute en mm, par exemple 222, et non le tiller positif.";
   }
+  if (input.lowerTillerMeasured < 150 || input.lowerTillerMeasured > 260) {
+    return "Entrez la distance corde / branche basse en mm, par exemple 218.";
+  }
   return "";
+}
+
+function buildTillerAdjustment(actualTiller, targetTiller) {
+  const delta = Math.round((actualTiller - targetTiller) * 10) / 10;
+  if (Math.abs(delta) <= 0.5) {
+    return {
+      status: "OK",
+      advice: "Le tiller est deja proche de la base retenue. Ne touchez pas les vis de branches pour l'instant."
+    };
+  }
+  if (delta > 0) {
+    return {
+      status: "Tiller trop positif",
+      advice: "Pour reduire le tiller, vissez legerement la branche haute ou devissez legerement la branche basse, puis re-mesurez."
+    };
+  }
+  return {
+    status: "Tiller trop faible",
+    advice: "Pour augmenter le tiller, vissez legerement la branche basse ou devissez legerement la branche haute, puis re-mesurez."
+  };
 }
 
 function computeArcSetup(input) {
   const braceRange = defaultBraceRangeCm(input.arcLength);
   const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
   const recommendedTiller = 4;
-  const lowerTiller = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
-  let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${lowerTiller.toFixed(1)} mm.`;
-  if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Distance basse attendue : ${lowerTiller.toFixed(1)} mm.`;
+  const expectedLowerDistance = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
+  const actualTiller = Math.round((input.upperTiller - input.lowerTillerMeasured) * 10) / 10;
+  const lowerGap = Math.round((input.lowerTillerMeasured - expectedLowerDistance) * 10) / 10;
+  const adjustment = buildTillerAdjustment(actualTiller, recommendedTiller);
+  let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
+  if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Distance basse attendue : ${expectedLowerDistance.toFixed(1)} mm.`;
+  else tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
 
   return {
     braceRange,
     braceTarget,
     upperTiller: input.upperTiller,
-    lowerTiller,
+    lowerTillerMeasured: input.lowerTillerMeasured,
+    lowerTiller: expectedLowerDistance,
+    actualTiller,
+    lowerGap,
     tillerTarget: recommendedTiller,
     tillerAction,
+    adjustment,
     checks: [
       "Band : commencer dans la plage de depart du constructeur. La valeur cible ici est une base pratique.",
       "Tiller : garder un tiller positif de depart autour de +4 mm reste une base simple et classique.",
-      "Toute modification du tiller agit aussi sur la puissance ressentie de l'arc.",
-      "Ensuite seulement, affiner au tir avec un entraineur si besoin."
+      "Toute modification des vis de branches agit aussi sur la puissance ressentie de l'arc.",
+      "Re-mesurez le haut et le bas apres chaque micro-ajustement."
     ]
   };
 }
@@ -1122,9 +1155,14 @@ function renderArcSetup(input) {
     <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
     <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
     <p><strong>Distance haute mesuree</strong> : ${setup.upperTiller.toFixed(1)} mm</p>
+    <p><strong>Distance basse mesuree</strong> : ${setup.lowerTillerMeasured.toFixed(1)} mm</p>
+    <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
     <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
     <p><strong>Distance basse attendue</strong> : ${setup.lowerTiller.toFixed(1)} mm</p>
+    <p><strong>Ecart sur la mesure basse</strong> : ${setup.lowerGap > 0 ? "+" : ""}${setup.lowerGap.toFixed(1)} mm</p>
     <p>${setup.tillerAction}</p>
+    <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
+    <p>${setup.adjustment.advice}</p>
     <p><strong>Points de controle</strong> :</p>
     <ul>${setup.checks.map((check) => `<li>${check}</li>`).join("")}</ul>
   `;
@@ -1247,7 +1285,8 @@ els.arcSetupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = {
     arcLength: Number(els.arcLength.value),
-    upperTiller: Number(els.upperTiller.value)
+    upperTiller: Number(els.upperTiller.value),
+    lowerTillerMeasured: Number(els.lowerTillerMeasured.value)
   };
 
   const setupError = validateArcSetupInput(input);
@@ -1267,14 +1306,17 @@ refreshCatalogState();
 refreshDealsCatalog();
 const initialArcSetup = {
   arcLength: Number(els.arcLength.value),
-  upperTiller: Number(els.upperTiller.value)
+  upperTiller: Number(els.upperTiller.value),
+  lowerTillerMeasured: Number(els.lowerTillerMeasured.value)
 };
 const initialArcSetupError = validateArcSetupInput(initialArcSetup);
 if (initialArcSetupError) {
   els.upperTiller.value = "222";
+  els.lowerTillerMeasured.value = "218";
   renderArcSetup({
     arcLength: Number(els.arcLength.value),
-    upperTiller: Number(els.upperTiller.value)
+    upperTiller: Number(els.upperTiller.value),
+    lowerTillerMeasured: Number(els.lowerTillerMeasured.value)
   });
 } else {
   renderArcSetup(initialArcSetup);
