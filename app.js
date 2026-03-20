@@ -351,6 +351,25 @@ function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength }; }
 function normalizeModelKey(modelName) { return String(modelName || "").toLowerCase().replace(/\s*\([^)]*\)/g, "").trim(); }
 function compactText(value) { return normalizeModelKey(value).replace(/[^a-z0-9]+/g, " ").trim(); }
+function modelSeriesKey(modelName) {
+  const key = normalizeModelKey(modelName)
+    .replace(/\br?\d{3,4}(?:\s*[-/]\s*\d{3,4})?\b/g, " ")
+    .replace(/\b\d{3,4}\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const family = Object.keys(catalogState.families || {}).find((prefix) => key.startsWith(prefix) || key.includes(prefix));
+  if (family) return family;
+  return key.split(" ")[0] || key;
+}
+function uniqueModelEntries(entries, limit = entries.length) {
+  const seen = new Set();
+  return entries.filter((entry) => {
+    const seriesKey = modelSeriesKey(entry.model);
+    if (seen.has(seriesKey)) return false;
+    seen.add(seriesKey);
+    return true;
+  }).slice(0, limit);
+}
 function dealModelTokens(modelName) {
   const normalized = compactText(modelName);
   if (!normalized) return [];
@@ -1076,7 +1095,7 @@ function buildBrandRecommendation(input, brand) {
 
 function renderModelList(recommendation, input) {
   if (!recommendation.models.length) return "<li>Aucun modele correspondant strictement a vos filtres.</li>";
-  return recommendation.models.slice(0, 14).map((entry) => {
+  return uniqueModelEntries(recommendation.models, 10).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
     const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : "";
@@ -1169,10 +1188,10 @@ function recommendationPrimaryDisplay(recommendation) {
 }
 
 function renderComparisonBrandCard(entry, input) {
-  const topModels = entry.rec.models.slice(0, 6);
+  const topModels = uniqueModelEntries(entry.rec.models, 5);
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
-      const meta = modelEntry.meta;
+        const meta = modelEntry.meta;
       const pointSetup = meta?.pointRange ? estimatePointSetup(input, meta.pointRange, meta) : null;
       const details = meta ? `spine ${modelEntry.advisedSpine || entry.rec.primary} | ${diameterLabel(meta.diameters[0] || "standard")} | pointe ${pointSetup?.recommended || meta.pointRange[0]} gr | options ${pointSetup?.pointChoices?.join("/") || `${meta.pointRange[0]}-${meta.pointRange[1]}`}` : "Meta technique locale incomplete";
       return `<li><strong>${modelEntry.model}</strong> - ${details}</li>`;
@@ -1352,7 +1371,7 @@ function renderRecommendation(input) {
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const recommendedModels = [
-    ...recommendation.models.slice(0, 4).map((entry) => entry.model),
+    ...uniqueModelEntries(recommendation.models, 5).map((entry) => entry.model),
     ...(recommendation.alternativeModels || []).slice(0, 2).map((entry) => entry.model)
   ];
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, recommendedModels);
