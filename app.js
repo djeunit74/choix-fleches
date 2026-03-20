@@ -171,6 +171,21 @@ const EASTON_RECURVE_CARBON_ROWS = [
   { range: [63, 67], label: "63-67 lbs", cells: ["720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200", "200-150"] },
   { range: [68, 73], label: "68-73 lbs", cells: ["675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200", "250-200", "200-150"] }
 ];
+const VICTORY_RECURVE_LENGTHS = [23, 24, 25, 26, 27, 28, 29, 30, 31];
+const VICTORY_RECURVE_ROWS = [
+  { range: [12, 14], label: "12-14 lbs", cells: ["", "", "", "1200", "1100", "1000", "900", "900", "800"] },
+  { range: [14, 16], label: "14-16 lbs", cells: ["1200", "1200", "1200", "1100", "1000", "900", "800", "800", "800"] },
+  { range: [16, 18], label: "16-18 lbs", cells: ["1200", "1100", "1100", "1000", "900", "800", "800", "800", "700"] },
+  { range: [18, 22], label: "18-22 lbs", cells: ["1100", "1000", "1000", "900", "800", "800", "700", "700", "700"] },
+  { range: [22, 26], label: "22-26 lbs", cells: ["1000", "900", "900", "800", "800", "700", "700", "700", "600"] },
+  { range: [27, 31], label: "27-31 lbs", cells: ["900", "800", "800", "800", "700", "700", "600", "600", "600"] },
+  { range: [32, 36], label: "32-36 lbs", cells: ["800", "800", "800", "700", "700", "600", "600", "600", "500"] },
+  { range: [37, 41], label: "37-41 lbs", cells: ["800", "700", "700", "700", "600", "600", "500", "500", "500"] },
+  { range: [42, 46], label: "42-46 lbs", cells: ["700", "700", "700", "600", "600", "500", "500", "500", "400"] },
+  { range: [47, 51], label: "47-51 lbs", cells: ["700", "600", "600", "600", "500", "500", "400", "400", "400"] },
+  { range: [52, 56], label: "52-56 lbs", cells: ["600", "600", "600", "500", "500", "400", "400", "400", "350"] },
+  { range: [57, 61], label: "57-61 lbs", cells: ["600", "500", "500", "500", "400", "400", "350", "350", "350"] }
+];
 
 const LIVE_DEALS = [
   {
@@ -1190,6 +1205,18 @@ function eastonCarbonRecommendation(input) {
   return { ok: true, rangeLabel: cell, weakChoice, normalizedChoice, rowLabel: row.label, roundedLength };
 }
 
+function victoryRecurveRecommendation(input) {
+  const roundedLength = clamp(Math.round(input.arrowLength), 23, 31);
+  const col = VICTORY_RECURVE_LENGTHS.indexOf(roundedLength);
+  if (col < 0) return { ok: false, message: "Longueur hors tableau Victory recurve (23 a 31 pouces)." };
+  const row = VICTORY_RECURVE_ROWS.find((entry) => input.drawWeight >= entry.range[0] && input.drawWeight <= entry.range[1]);
+  if (!row) return { ok: false, message: "Puissance hors plages du tableau Victory recurve." };
+  const cell = row.cells[col];
+  if (!cell) return { ok: false, message: "Case vide dans le tableau Victory recurve pour cette combinaison." };
+  const normalizedChoice = String(nearestSpine(Number(cell), getBrandSpines("victory")).main);
+  return { ok: true, spine: cell, normalizedChoice, rowLabel: row.label, roundedLength };
+}
+
 function buildBrandRecommendation(input, brand) {
   const profile = deriveTargetProfile(input);
   const base = recommendationForBrand(input, brand);
@@ -1276,6 +1303,50 @@ function buildBrandRecommendation(input, brand) {
         recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
         recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
         notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Easton carbone recurve privilegie."]
+      };
+    }
+  }
+  if (brand === "victory" && input.bowType === "recurve" && profile.preferredMaterial === "carbon") {
+    const victory = victoryRecurveRecommendation(input);
+    if (victory.ok) {
+      models = filterByBudget(arrowCatalog.victory?.[victory.normalizedChoice] || [], input.budgetLevel);
+      ranked = rankModels(models, input, profile);
+      if (!ranked.length) ranked = rankNearbyModels(brand, victory.normalizedChoice, input, profile);
+      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, victory.normalizedChoice, input, profile, 6);
+      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: victory.spine }));
+      const topMeta = ranked[0]?.meta || null;
+      const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
+      return {
+        brand,
+        mode: "victory-table",
+        primary: victory.spine,
+        comparisonSpine: victory.normalizedChoice,
+        softer: base.softer,
+        stiffer: base.stiffer,
+        load: base.load,
+        confidence: "Elevee",
+        confidenceReasons: [
+          `Tableau Victory recurve utilise (${victory.rowLabel}, ${victory.roundedLength}\").`,
+          "Base officielle Victory en version 100-125 gr front.",
+          topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."
+        ].filter(Boolean),
+        models: ranked,
+        recommendedMaterial: topMeta?.material || profile.preferredMaterial,
+        recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
+        recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+        recommendedPointWeight: pointSetup.recommended,
+        recommendedPointChoices: pointSetup.pointChoices,
+        recommendedPointProfile: pointSetup.profile,
+        recommendedPointSofter: pointSetup.softerOption,
+        recommendedPointStiffer: pointSetup.stifferOption,
+        pointWeightNote: pointSetup.note,
+        recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
+        recommendedMass: topMeta?.massClass || profile.preferredMass,
+        recommendedTolerance: topMeta?.toleranceClass || profile.preferredTolerance,
+        recommendedComponentSystem: topMeta?.componentSystem || "insert",
+        recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
+        recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
+        notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Victory recurve privilegie."]
       };
     }
   }
@@ -1439,7 +1510,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
 function recommendationPrimaryDisplay(recommendation) {
   const topModel = recommendation.models[0];
   const topSpine = topModel?.advisedSpine || recommendation.primary;
-  if (recommendation.mode === "skylon" || recommendation.mode === "easton-table") {
+  if (recommendation.mode === "skylon" || recommendation.mode === "easton-table" || recommendation.mode === "victory-table") {
     return `${topSpine} <span class="result-subvalue">base ${recommendation.primary} / eq. ${recommendation.comparisonSpine}</span>`;
   }
   return `${topSpine} <span class="result-subvalue">base ${recommendation.primary}</span>`;
