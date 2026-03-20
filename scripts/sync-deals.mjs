@@ -4,6 +4,9 @@ import path from "node:path";
 const ROOT = process.cwd();
 const DEALS_PATH = path.join(ROOT, "deals.json");
 const CONFIG_PATH = path.join(ROOT, "deals-config.json");
+const VALID_BRANDS = new Set(["skylon", "easton", "victory", "carbon"]);
+const VALID_MATERIALS = new Set(["carbon", "alu"]);
+const VALID_TIERS = new Set(["eco", "mid", "premium"]);
 
 function normalizeModelKey(value) {
   return String(value || "")
@@ -87,6 +90,26 @@ function normalizeDeals(deals) {
     }));
 }
 
+function validateDealsOrThrow(deals) {
+  const invalid = deals.filter((entry) => {
+    if (!VALID_BRANDS.has(entry.brand)) return true;
+    if (!VALID_MATERIALS.has(entry.material)) return true;
+    if (!VALID_TIERS.has(entry.tier)) return true;
+    if (!entry.modelKey) return true;
+    if (!entry.title) return true;
+    if (!entry.price) return true;
+    if (!entry.url || !entry.url.startsWith("http")) return true;
+    if (!entry.shop || !entry.shop.includes(".")) return true;
+    if (!entry.bowTypes.length) return true;
+    return false;
+  });
+
+  if (invalid.length) {
+    const sample = invalid.slice(0, 3).map((entry) => JSON.stringify(entry)).join("\n");
+    throw new Error(`Remote deals source is malformed. Invalid rows detected:\n${sample}`);
+  }
+}
+
 async function readJson(filePath) {
   return JSON.parse(await fs.readFile(filePath, "utf8"));
 }
@@ -109,6 +132,7 @@ async function fetchRemotePayload(source) {
   if (source.type === "json") {
     const payload = await response.json();
     const deals = normalizeDeals(payload.deals || []);
+    validateDealsOrThrow(deals);
     return {
       updatedAt: new Date().toISOString(),
       source: payload.source || "remote-json-sync",
@@ -118,6 +142,7 @@ async function fetchRemotePayload(source) {
 
   const text = await response.text();
   const deals = normalizeDeals(csvToDeals(text));
+  validateDealsOrThrow(deals);
   return {
     updatedAt: new Date().toISOString(),
     source: "remote-csv-sync",
