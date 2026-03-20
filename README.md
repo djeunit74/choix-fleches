@@ -102,6 +102,38 @@ Important :
 - ne donne pas l'ecriture a tout Internet si tu veux garder des donnees fiables
 - reserve l'edition a quelques responsables du club
 
+## Mise a jour quotidienne automatique
+
+Le projet contient maintenant :
+
+- [scripts/sync-deals.mjs](c:/Users/User/app choix des fleches/scripts/sync-deals.mjs)
+- [.github/workflows/update-deals.yml](c:/Users/User/app choix des fleches/.github/workflows/update-deals.yml)
+
+Ce systeme fait :
+
+1. lit une source distante `JSON` ou `CSV`
+2. regenere [deals.json](c:/Users/User/app choix des fleches/deals.json)
+3. commit et push automatiquement la mise a jour une fois par jour
+
+Pour l'activer :
+
+1. mets l'URL distante dans `deals-config.json`
+2. ou, mieux, ajoute un secret GitHub :
+   - `DEALS_REMOTE_JSON_URL`
+   - ou `DEALS_REMOTE_CSV_URL`
+3. laisse le workflow GitHub Actions tourner chaque jour
+
+Recommendation la plus simple :
+
+- un `Google Sheet` publie en CSV
+- l'URL CSV stockee dans le secret `DEALS_REMOTE_CSV_URL`
+
+Avantage :
+
+- les prix peuvent etre mis a jour quotidiennement
+- ton PC peut rester eteint
+- l'app publique continue de lire [deals.json](c:/Users/User/app choix des fleches/deals.json), donc pas de dependance directe au navigateur de l'utilisateur
+
 ## Reglage de l'arc
 
 L'app comporte aussi un module de reglage de l'arc classique.
