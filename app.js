@@ -1864,12 +1864,12 @@ function buildTillerAdjustment(actualTiller, targetTiller) {
   if (delta > 0) {
     return {
       status: "Tiller trop positif",
-      advice: "Pour reduire le tiller, vissez legerement la branche haute ou devissez legerement la branche basse, puis re-mesurez."
+      advice: "Pour reduire le tiller, detendez ou enlevez d'abord la corde, puis vissez legerement la branche haute ou devissez legerement la branche basse avant de re-corder et re-mesurer."
     };
   }
   return {
     status: "Tiller trop faible",
-    advice: "Pour augmenter le tiller, vissez legerement la branche basse ou devissez legerement la branche haute, puis re-mesurez."
+    advice: "Pour augmenter le tiller, detendez ou enlevez d'abord la corde, puis vissez legerement la branche basse ou devissez legerement la branche haute avant de re-corder et re-mesurer."
   };
 }
 
