@@ -908,9 +908,10 @@ function enrichWithNearbyModels(ranked, brand, mainSpine, input, profile, minCou
   const seen = new Set(ranked.map((entry) => normalizeModelKey(entry.model)));
   const nearby = rankNearbyModels(brand, mainSpine, input, profile)
     .filter((entry) => !seen.has(normalizeModelKey(entry.model)));
-  return [...ranked, ...nearby]
-    .sort((a, b) => b.score - a.score)
-    .slice(0, Math.max(minCount, ranked.length));
+  const combined = [...ranked, ...nearby].sort((a, b) => b.score - a.score);
+  const diversified = uniqueModelEntries(combined, Math.max(minCount, ranked.length));
+  if (diversified.length >= Math.min(minCount, combined.length)) return diversified;
+  return combined.slice(0, Math.max(minCount, ranked.length));
 }
 
 function rankCrossBrandAlternatives(input, profile, budget, excludedBrand) {
