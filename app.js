@@ -316,6 +316,128 @@ const LIVE_DEALS = [
     "price": "49,90 EUR",
     "url": "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html",
     "shop": "archerie.fr"
+  },
+  {
+    "brand": "skylon",
+    "modelKey": "radius",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve",
+      "compound"
+    ],
+    "tier": "eco",
+    "title": "Lot de 12 fleches Skylon Radius 4,2 mm en carbone",
+    "price": "46,63 EUR",
+    "url": "https://www.archerie.fr/fr/4766-lot-de-12-fleches-skylon-radius-42-mm-en-carbone.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "easton",
+    "modelKey": "superdrive micro",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "premium",
+    "title": "Lot de 12 tubes Easton Superdrive Micro en carbone",
+    "price": "228,95 EUR",
+    "url": "https://www.archerie.fr/fr/8503-lot-de-12-tubes-easton-superdrive-micro-en-carbone.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "easton",
+    "modelKey": "vector",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "mid",
+    "title": "Lot de 12 tubes Easton Vector 4 mm en carbone",
+    "price": "53,95 EUR",
+    "url": "https://www.archerie.fr/fr/9000-lot-de-12-tubes-easton-vector-4-mm-en-carbone.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "easton",
+    "modelKey": "xx75 platinum plus",
+    "material": "alu",
+    "bowTypes": [
+      "recurve",
+      "compound"
+    ],
+    "tier": "mid",
+    "title": "Tube XX75 Platinum Plus Easton",
+    "price": "77,46 EUR",
+    "url": "https://www.archerie.fr/fr/2004-tube-xx75-platinum-plus-easton.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "victory",
+    "modelKey": "vforce",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve",
+      "compound"
+    ],
+    "tier": "mid",
+    "title": "Tube Victory Vforce 245 V6 Sport",
+    "price": "109,90 EUR",
+    "url": "https://www.archerie.fr/fr/2325-tube-victory-vforce-245-v6-sport.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "victory",
+    "modelKey": "vap target",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve",
+      "compound"
+    ],
+    "tier": "premium",
+    "title": "Tube Victory VAP Target Sport",
+    "price": "189,90 EUR",
+    "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "carbon",
+    "modelKey": "medallion xr",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "mid",
+    "title": "Tube Medallion-XR (2016) Carbon Express",
+    "price": "91,58 EUR",
+    "url": "https://www.archerie.fr/fr/2343-tube-medallion-xr-2016-carbon-express.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "skylon",
+    "modelKey": "brixxon",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve",
+      "compound"
+    ],
+    "tier": "eco",
+    "title": "Lot de 12 tubes Skylon Brixxon ID4.2 en carbone",
+    "price": "49,96 EUR",
+    "url": "https://www.archerie.fr/fr/4767-lot-de-12-tubes-skylon-brixxon-id42-en-carbone.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "skylon",
+    "modelKey": "empros",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "premium",
+    "title": "Lot de 12 tubes Skylon Empros 23 ID8.0 en carbone 3K",
+    "price": "60,95 EUR",
+    "url": "https://www.archerie.fr/fr/4611-lot-de-12-tubes-skylon-empros-23-id80-en-carbone-3k.html",
+    "shop": "archerie.fr"
   }
 ];
 
@@ -338,7 +460,7 @@ const DEFAULT_CATALOG_STATE = {
   }
 };
 const DEFAULT_DEALS_STATE = {
-  updatedAt: "2026-03-12T19:00:00+01:00",
+  updatedAt: "2026-03-20T20:15:00+01:00",
   source: "embedded-fallback",
   deals: LIVE_DEALS
 };
