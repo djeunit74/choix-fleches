@@ -162,4 +162,4 @@ Tableaux officiels utiles :
 - Easton : https://eastonarchery.com/selector/
 - Victory : https://victoryarchery.com/arrow-guide/
 - Victory fitting charts : https://victoryarchery.com/fitting-charts/
-- Carbon Express : https://www.feradyne.com/brands/carbon-express/arrow-charts/
+- Carbon Express : https://thecarbonexpress.com/wp-content/uploads/2024/11/recurve-series-arrow-selection-chart.pdf

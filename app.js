@@ -1758,7 +1758,7 @@ function sourceLinksForBrand(brand) {
   if (brand === "skylon") return ['<a href="https://skylonarchery.com/" target="_blank" rel="noopener noreferrer">Skylon Archery</a>'];
   if (brand === "easton") return ['<a href="https://eastonarchery.com/selector/" target="_blank" rel="noopener noreferrer">Easton selector</a>'];
   if (brand === "victory") return ['<a href="https://victoryarchery.com/arrow-guide/" target="_blank" rel="noopener noreferrer">Victory arrow guide</a>', '<a href="https://victoryarchery.com/fitting-charts/" target="_blank" rel="noopener noreferrer">Victory fitting charts</a>'];
-  if (brand === "carbon") return ['<a href="https://www.feradyne.com/brands/carbon-express/arrow-charts/" target="_blank" rel="noopener noreferrer">Carbon Express arrow charts</a>'];
+  if (brand === "carbon") return ['<a href="https://thecarbonexpress.com/wp-content/uploads/2024/11/recurve-series-arrow-selection-chart.pdf" target="_blank" rel="noopener noreferrer">Carbon Express recurve series chart</a>'];
   return [];
 }
 
