@@ -147,7 +147,8 @@ Il donne des repères pratiques pour :
 
 Base documentaire utilisee :
 - fascicule FFTA `Je regle mon arc classique`
-- FFTA, `Carnet de reglage technique d'un arc classique` : https://www.ffta.fr/sites/ffta/files/2024-06/Carnet%20de%20r%C3%A9glage%20technique_24juin.pdf
+- FFTA, `Demarche federale d'enseignement` : https://www.ffta.fr/pratiquer/progressez/la-demarche-federale-denseignement
+- FFTA, PDF direct `Je regle mon arc classique` : https://www.ffta.fr/sites/default/files/imported-documents-files/7_arcclassique.pdf
 
 ## Limites
 
