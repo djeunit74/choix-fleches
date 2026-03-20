@@ -918,6 +918,12 @@ function resolveModelSpine(rawValue, brand) {
   return nearestSpine(rawValue, getBrandSpines(brand)).main;
 }
 
+function explicitModelSpine(modelName, brand) {
+  if (brand !== "skylon") return null;
+  const match = modelName.match(/\bR?(\d{3,4}(?:[-/]\d{3,4})?)\b/i);
+  return match ? match[1] : null;
+}
+
 function deriveTargetProfile(input) {
   let preferredMaterial = input.shaftMaterial;
   if (preferredMaterial === "all") {
@@ -1049,7 +1055,7 @@ function rankModels(models, input, profile) {
 function attachModelSpines(entries, brand, baseRaw, profile) {
   return entries.map((entry) => ({
     ...entry,
-    advisedSpine: resolveModelSpine(adjustedRawForModel(baseRaw, entry.model, entry.meta, profile), brand)
+    advisedSpine: explicitModelSpine(entry.model, brand) || resolveModelSpine(adjustedRawForModel(baseRaw, entry.model, entry.meta, profile), brand)
   }));
 }
 
