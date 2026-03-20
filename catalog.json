@@ -163,59 +163,68 @@
     },
     "skylon": {
       "300": [
-        "Bruxx 300",
-        "Empros 300",
-        "Premiens 300",
-        "Maverick 300"
+        "Premiens 350",
+        "Performa 350",
+        "Precium 350",
+        "Paragon 350"
       ],
       "340": [
-        "Bruxx 350-300",
-        "Empros 350-300",
-        "Premiens 350-300",
-        "Maverick 350-300"
+        "Premiens 350",
+        "Performa 350",
+        "Precium 350",
+        "Paragon 350"
       ],
       "400": [
         "Brixxon R400",
-        "Edge 400-350",
         "Radius 400",
-        "Premiens 400"
+        "Premiens 400",
+        "Performa 400",
+        "Precium 400",
+        "Paragon 400"
       ],
       "500": [
         "Brixxon R550-500",
-        "Edge 600-500",
         "Radius 500",
         "Premiens 500",
-        "Maverick 500"
+        "Performa 500",
+        "Precium 500",
+        "Paragon 500"
       ],
       "600": [
         "Brixxon R650-600",
-        "Edge 700-650",
         "Radius 650-600",
-        "Premiens 600"
+        "Premiens 600",
+        "Performa 600",
+        "Precium 600",
+        "Paragon 600"
       ],
       "700": [
         "Brixxon R750-700",
-        "Edge 700-650",
         "Radius 700-650",
-        "Paragon 700",
-        "Premiens 700"
+        "Premiens 700",
+        "Performa 700",
+        "Precium 700",
+        "Paragon 700"
       ],
       "800": [
         "Brixxon R850-800",
-        "Edge 800-750",
         "Radius 850-800",
-        "Paragon 800",
-        "Premiens 800"
+        "Performa 800",
+        "Precium 800",
+        "Paragon 800"
       ],
       "900": [
         "Brixxon R900-850",
-        "Edge 900-850",
         "Radius 900",
+        "Performa 900",
+        "Precium 900",
         "Paragon 900"
       ],
       "1000": [
         "Brixxon R1000-900",
         "Radius R1000-900",
+        "Performa 1000",
+        "Precium 1000",
         "Paragon 1000"
       ]
     }
@@ -898,101 +907,95 @@
     "edge 400-350": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve",
         "compound"
       ],
       "goals": [
-        "club",
         "performance"
       ],
       "pointRange": [
-        100,
-        150
+        80,
+        100
       ],
-      "note": "Profil salle.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "performance",
-      "massClass": "heavy",
+      "massClass": "medium",
       "toleranceClass": "matched",
       "componentSystem": "insert",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "edge 600-500": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve",
         "compound"
       ],
       "goals": [
-        "club",
         "performance"
       ],
       "pointRange": [
-        100,
-        150
+        80,
+        100
       ],
-      "note": "Profil salle.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "performance",
-      "massClass": "heavy",
+      "massClass": "medium",
       "toleranceClass": "matched",
       "componentSystem": "insert",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "edge 700-650": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve",
         "compound"
       ],
       "goals": [
-        "club",
         "performance"
       ],
       "pointRange": [
-        100,
-        150
+        80,
+        100
       ],
-      "note": "Profil salle.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "performance",
-      "massClass": "heavy",
+      "massClass": "medium",
       "toleranceClass": "matched",
       "componentSystem": "insert",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "maverick 300": {
       "material": "carbon",
@@ -1000,26 +1003,27 @@
         "standard"
       ],
       "environments": [
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
         "club",
         "polyvalent"
       ],
       "pointRange": [
-        90,
-        120
+        80,
+        100
       ],
-      "note": "Option club.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "club",
-      "massClass": "medium",
+      "massClass": "heavy",
       "toleranceClass": "standard",
       "componentSystem": "insert",
       "distanceBand": "mixed",
@@ -1031,26 +1035,27 @@
         "standard"
       ],
       "environments": [
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
         "club",
         "polyvalent"
       ],
       "pointRange": [
-        90,
-        120
+        80,
+        100
       ],
-      "note": "Option club.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "club",
-      "massClass": "medium",
+      "massClass": "heavy",
       "toleranceClass": "standard",
       "componentSystem": "insert",
       "distanceBand": "mixed",
@@ -1059,62 +1064,66 @@
     "bruxx 300": {
       "material": "carbon",
       "diameters": [
-        "thin"
+        "large"
       ],
       "environments": [
+        "indoor",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
         "competition"
       ],
       "pointRange": [
-        100,
-        120
+        120,
+        180
       ],
-      "note": "Competition recurve.",
+      "note": "Tube compound indoor / 3D.",
       "dataPrecision": "model",
       "seriesTier": "competition",
-      "massClass": "light",
+      "massClass": "heavy",
       "toleranceClass": "precision",
       "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "empros 300": {
       "material": "carbon",
       "diameters": [
-        "thin"
+        "large"
       ],
       "environments": [
+        "indoor",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
         "competition"
       ],
       "pointRange": [
-        100,
-        120
+        120,
+        180
       ],
-      "note": "Competition recurve.",
+      "note": "Tube compound indoor / 3D.",
       "dataPrecision": "model",
       "seriesTier": "competition",
-      "massClass": "light",
+      "massClass": "heavy",
       "toleranceClass": "precision",
       "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "superdrive micro": {
       "material": "carbon",
@@ -1527,64 +1536,66 @@
     "bruxx 350-300": {
       "material": "carbon",
       "diameters": [
-        "thin"
+        "large"
       ],
       "environments": [
+        "indoor",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "performance",
         "competition"
       ],
       "pointRange": [
-        100,
-        120
+        120,
+        180
       ],
-      "note": "Tube fin performance recurve.",
+      "note": "Tube compound indoor / 3D.",
       "dataPrecision": "model",
       "seriesTier": "competition",
-      "massClass": "light",
+      "massClass": "heavy",
       "toleranceClass": "precision",
       "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "empros 350-300": {
       "material": "carbon",
       "diameters": [
-        "thin"
+        "large"
       ],
       "environments": [
+        "indoor",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "performance",
         "competition"
       ],
       "pointRange": [
-        100,
-        120
+        120,
+        180
       ],
-      "note": "Tube fin performance recurve.",
+      "note": "Tube compound indoor / 3D.",
       "dataPrecision": "model",
       "seriesTier": "competition",
-      "massClass": "light",
+      "massClass": "heavy",
       "toleranceClass": "precision",
       "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "premiens 350-300": {
       "material": "carbon",
@@ -1784,27 +1795,27 @@
         "standard"
       ],
       "environments": [
-        "mixed",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
         "club",
         "polyvalent"
       ],
       "pointRange": [
-        90,
-        120
+        80,
+        100
       ],
-      "note": "Option club simple.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "club",
-      "massClass": "medium",
+      "massClass": "heavy",
       "toleranceClass": "standard",
       "componentSystem": "insert",
       "distanceBand": "mixed",
@@ -1910,14 +1921,14 @@
     "paragon 700": {
       "material": "carbon",
       "diameters": [
-        "standard"
+        "thin"
       ],
       "environments": [
-        "outdoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
         "recurve"
@@ -1929,7 +1940,7 @@
         90,
         120
       ],
-      "note": "Tube carbone recurve exterieur.",
+      "note": "Tube fin recurve / compound exterieur.",
       "dataPrecision": "model",
       "seriesTier": "performance",
       "massClass": "light",
@@ -2005,46 +2016,45 @@
     "edge 800-750": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "club",
         "performance"
       ],
       "pointRange": [
-        100,
-        150
+        80,
+        100
       ],
-      "note": "Profil salle recurve.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "performance",
-      "massClass": "heavy",
+      "massClass": "medium",
       "toleranceClass": "matched",
       "componentSystem": "insert",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "paragon 800": {
       "material": "carbon",
       "diameters": [
-        "standard"
+        "thin"
       ],
       "environments": [
-        "outdoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
         "recurve"
@@ -2056,7 +2066,7 @@
         90,
         120
       ],
-      "note": "Tube carbone recurve exterieur.",
+      "note": "Tube fin recurve / compound exterieur.",
       "dataPrecision": "model",
       "seriesTier": "performance",
       "massClass": "light",
@@ -2132,34 +2142,33 @@
     "edge 900-850": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "club",
         "performance"
       ],
       "pointRange": [
-        100,
-        150
+        80,
+        100
       ],
-      "note": "Profil salle recurve.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "model",
       "seriesTier": "performance",
-      "massClass": "heavy",
+      "massClass": "medium",
       "toleranceClass": "matched",
       "componentSystem": "insert",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "radius 900": {
       "material": "carbon",
@@ -2197,14 +2206,14 @@
     "paragon 900": {
       "material": "carbon",
       "diameters": [
-        "standard"
+        "thin"
       ],
       "environments": [
-        "outdoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
         "recurve"
@@ -2216,7 +2225,7 @@
         90,
         120
       ],
-      "note": "Tube carbone recurve exterieur.",
+      "note": "Tube fin recurve / compound exterieur.",
       "dataPrecision": "model",
       "seriesTier": "performance",
       "massClass": "light",
@@ -2294,14 +2303,14 @@
     "paragon 1000": {
       "material": "carbon",
       "diameters": [
-        "standard"
+        "thin"
       ],
       "environments": [
-        "outdoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
         "recurve"
@@ -2313,7 +2322,7 @@
         90,
         120
       ],
-      "note": "Tube carbone recurve exterieur.",
+      "note": "Tube fin recurve / compound exterieur.",
       "dataPrecision": "model",
       "seriesTier": "performance",
       "massClass": "light",
@@ -2321,6 +2330,1060 @@
       "componentSystem": "pin",
       "distanceBand": "long",
       "useCase": "wind"
+    },
+    "performa 1000": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 1000": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 900": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 900": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 850": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 850": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 800": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 800": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 750": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 750": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 700": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 700": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 650": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 650": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 600": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 600": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 550": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 550": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 500": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 500": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 450": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 450": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 400": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 400": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "performa 350": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium 350": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 650": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 600": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 550": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 500": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 450": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 400": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "paragon 350": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "premiens 350": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        100,
+        120
+      ],
+      "note": "Tube fin performance recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "light",
+      "toleranceClass": "precision",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "target"
     }
   },
   "families": {
@@ -2393,34 +3456,33 @@
     "edge": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "club",
         "performance"
       ],
       "pointRange": [
-        100,
-        150
+        80,
+        100
       ],
-      "note": "Profil salle recurve.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "family",
       "seriesTier": "performance",
-      "massClass": "heavy",
+      "massClass": "medium",
       "toleranceClass": "matched",
       "componentSystem": "insert",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "distanceBand": "mixed",
+      "useCase": "polyvalent"
     },
     "maverick": {
       "material": "carbon",
@@ -2428,27 +3490,27 @@
         "standard"
       ],
       "environments": [
-        "mixed",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "field",
+        "hunting"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
         "club",
         "polyvalent"
       ],
       "pointRange": [
-        90,
-        120
+        80,
+        100
       ],
-      "note": "Option club simple.",
+      "note": "Tube compound chasse / 3D.",
       "dataPrecision": "family",
       "seriesTier": "club",
-      "massClass": "medium",
+      "massClass": "heavy",
       "toleranceClass": "standard",
       "componentSystem": "insert",
       "distanceBand": "mixed",
@@ -2457,64 +3519,66 @@
     "bruxx": {
       "material": "carbon",
       "diameters": [
-        "thin"
+        "large"
       ],
       "environments": [
+        "indoor",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "performance",
         "competition"
       ],
       "pointRange": [
-        100,
-        120
+        120,
+        180
       ],
-      "note": "Tube fin performance recurve.",
+      "note": "Tube compound indoor / 3D.",
       "dataPrecision": "family",
       "seriesTier": "competition",
-      "massClass": "light",
+      "massClass": "heavy",
       "toleranceClass": "precision",
       "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "empros": {
       "material": "carbon",
       "diameters": [
-        "thin"
+        "large"
       ],
       "environments": [
+        "indoor",
         "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
-        "recurve"
+        "compound"
       ],
       "goals": [
-        "performance",
         "competition"
       ],
       "pointRange": [
-        100,
-        120
+        120,
+        180
       ],
-      "note": "Tube fin performance recurve.",
+      "note": "Tube compound indoor / 3D.",
       "dataPrecision": "family",
       "seriesTier": "competition",
-      "massClass": "light",
+      "massClass": "heavy",
       "toleranceClass": "precision",
       "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
+      "distanceBand": "indoor",
+      "useCase": "linecut"
     },
     "premiens": {
       "material": "carbon",
@@ -2550,14 +3614,14 @@
     "paragon": {
       "material": "carbon",
       "diameters": [
-        "standard"
+        "thin"
       ],
       "environments": [
-        "outdoor",
-        "mixed"
+        "outdoor"
       ],
       "disciplines": [
-        "target"
+        "target",
+        "field"
       ],
       "bowTypes": [
         "recurve"
@@ -2569,7 +3633,7 @@
         90,
         120
       ],
-      "note": "Tube carbone recurve exterieur.",
+      "note": "Tube fin recurve / compound exterieur.",
       "dataPrecision": "family",
       "seriesTier": "performance",
       "massClass": "light",
@@ -2954,6 +4018,68 @@
       "componentSystem": "pin",
       "distanceBand": "long",
       "useCase": "target"
+    },
+    "performa": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "standard",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
+    },
+    "precium": {
+      "material": "carbon",
+      "diameters": [
+        "thin"
+      ],
+      "environments": [
+        "outdoor"
+      ],
+      "disciplines": [
+        "target",
+        "field"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Tube fin recurve / compound exterieur.",
+      "dataPrecision": "family",
+      "seriesTier": "performance",
+      "massClass": "light",
+      "toleranceClass": "matched",
+      "componentSystem": "pin",
+      "distanceBand": "long",
+      "useCase": "wind"
     }
   },
   "skylon": {
@@ -3280,71 +4406,97 @@
     "groupModels": {
       "A1": [
         "Brixxon R1000/R900",
-        "Radius R900",
+        "Radius 900",
+        "Performa 1000",
+        "Precium 1000",
         "Paragon 1000"
       ],
       "A2": [
         "Brixxon R900-850",
-        "Edge 800",
         "Radius 850-800",
+        "Performa 900",
+        "Precium 900",
         "Paragon 900"
       ],
       "A3": [
         "Brixxon R850-800",
-        "Edge 800-750",
-        "Radius 750-700",
-        "Paragon 800"
+        "Radius 850-800",
+        "Performa 850",
+        "Precium 850",
+        "Paragon 850"
       ],
       "A4": [
         "Brixxon R750-700",
-        "Edge 700-650",
         "Radius 700-650",
-        "Paragon 700"
+        "Performa 750",
+        "Precium 750",
+        "Paragon 750"
       ],
       "A5": [
         "Brixxon R700-650",
-        "Edge 700-650",
-        "Radius 650-600"
+        "Radius 650-600",
+        "Performa 700",
+        "Precium 700",
+        "Paragon 700",
+        "Premiens 650"
       ],
       "A6": [
-        "Brixxon R600-550",
-        "Edge 700-600",
-        "Radius 600-550"
+        "Brixxon R650-600",
+        "Radius 650-600",
+        "Performa 600",
+        "Precium 600",
+        "Paragon 600",
+        "Premiens 600"
       ],
       "A7": [
         "Brixxon R550-500",
-        "Edge 600-500",
-        "Maverick 500"
+        "Radius 500",
+        "Performa 550",
+        "Precium 550",
+        "Paragon 550",
+        "Premiens 550"
       ],
       "A8": [
         "Brixxon R500-450",
-        "Edge 500-400",
-        "Maverick 500-400"
+        "Radius 500",
+        "Performa 500",
+        "Precium 500",
+        "Paragon 500",
+        "Premiens 500"
       ],
       "A9": [
         "Brixxon R450-400",
-        "Edge 400-350",
-        "Maverick 400"
+        "Radius 400",
+        "Performa 450",
+        "Precium 450",
+        "Paragon 450",
+        "Premiens 450"
       ],
       "A10": [
         "Brixxon R400",
-        "Edge 400-350",
-        "Radius 400"
+        "Radius 400",
+        "Performa 400",
+        "Precium 400",
+        "Paragon 400",
+        "Premiens 400"
       ],
       "A11": [
-        "Bruxx 350-300",
-        "Empros 350-300",
-        "Maverick 350-300"
+        "Performa 350",
+        "Precium 350",
+        "Paragon 350",
+        "Premiens 350"
       ],
       "A12": [
-        "Bruxx 300",
-        "Edge 350-300",
-        "Empros 330"
+        "Performa 350",
+        "Precium 350",
+        "Paragon 350",
+        "Premiens 350"
       ],
       "A13": [
-        "Bruxx 300",
-        "Empros 300",
-        "Maverick 300"
+        "Performa 350",
+        "Precium 350",
+        "Paragon 350",
+        "Premiens 350"
       ]
     }
   }

@@ -48,7 +48,6 @@
       "modelKey": "edge",
       "material": "carbon",
       "bowTypes": [
-        "recurve",
         "compound"
       ],
       "tier": "eco",

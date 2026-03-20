@@ -58,12 +58,15 @@ const CALIBRATION_ARCHETYPES = {
 const MODEL_CALIBRATION_BY_FAMILY = {
   brixxon: "skylon_standard_club",
   radius: "skylon_standard_club",
-  maverick: "skylon_standard_club",
   paragon: "skylon_standard_perf",
+  performa: "skylon_thin_performance",
+  precium: "skylon_thin_performance",
   premiens: "skylon_thin_performance",
-  bruxx: "skylon_thin_competition",
-  empros: "skylon_thin_competition",
-  edge: "skylon_indoor_large",
+  preminens: "skylon_thin_performance",
+  bruxx: "skylon_indoor_large",
+  empros: "skylon_indoor_large",
+  edge: "skylon_standard_club",
+  maverick: "skylon_standard_club",
   axis: "skylon_standard_club",
   vector: "skylon_standard_perf",
   avance: "skylon_thin_competition",
@@ -89,7 +92,7 @@ const DEFAULT_CATALOG = {
   easton: { "300": ["Axis 5mm", "Avance", "Superdrive Micro"], "340": ["Avance", "Axis 5mm", "Superdrive Micro"], "400": ["Avance", "Axis 5mm", "Superdrive Micro", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7", "XX75 Platinum Plus"], "700": ["Avance", "Superdrive Micro", "Axis 5mm", "RX7", "XX75 Platinum Plus"], "800": ["Avance", "Superdrive Micro", "Axis 5mm", "X23", "XX75 Platinum Plus"], "900": ["Avance", "Superdrive Micro", "Axis 5mm", "X23", "XX75 Platinum Plus"], "1000": ["Avance", "Axis 5mm", "Superdrive Micro", "X23", "XX75 Platinum Plus"] },
   victory: { "300": ["RIP TKO", "VAP Sport"], "340": ["VAP Sport", "RIP XV", "VXT Elite V1"], "400": ["VAP Sport", "VForce", "RIP XV", "VXT Elite V1"], "500": ["VForce", "VAP V3", "RIP XV", "VXT Elite V1"], "600": ["VAP V3", "VForce", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VForce", "VAP Target", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
   carbon: { "300": ["Maxima RED", "Hunter XT"], "340": ["Hunter XT", "Predator II", "Maxima RED"], "400": ["Predator II", "Trojan", "Maxima RED"], "500": ["Predator II", "Nano-Pro RZ", "Trojan"], "600": ["Nano-Pro RZ", "Predator II", "Trojan"], "700": ["Nano-Pro RZ", "Predator II", "Medallion XR"], "800": ["Nano-Pro Xtreme", "Nano-Pro RZ", "Medallion XR"], "900": ["Nano-Pro Xtreme", "Medallion XR"], "1000": ["Medallion XR", "Nano-Pro Xtreme"] },
-  skylon: { "300": ["Bruxx 300", "Empros 300", "Premiens 300", "Maverick 300"], "340": ["Bruxx 350-300", "Empros 350-300", "Premiens 350-300", "Maverick 350-300"], "400": ["Brixxon R400", "Edge 400-350", "Radius 400", "Premiens 400"], "500": ["Brixxon R550-500", "Edge 600-500", "Radius 500", "Premiens 500", "Maverick 500"], "600": ["Brixxon R650-600", "Edge 700-650", "Radius 650-600", "Premiens 600"], "700": ["Brixxon R750-700", "Edge 700-650", "Radius 700-650", "Paragon 700", "Premiens 700"], "800": ["Brixxon R850-800", "Edge 800-750", "Radius 850-800", "Paragon 800", "Premiens 800"], "900": ["Brixxon R900-850", "Edge 900-850", "Radius 900", "Paragon 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900", "Paragon 1000"] }
+  skylon: { "300": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "340": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "400": ["Brixxon R400", "Radius 400", "Premiens 400", "Performa 400", "Precium 400", "Paragon 400"], "500": ["Brixxon R550-500", "Radius 500", "Premiens 500", "Performa 500", "Precium 500", "Paragon 500"], "600": ["Brixxon R650-600", "Radius 650-600", "Premiens 600", "Performa 600", "Precium 600", "Paragon 600"], "700": ["Brixxon R750-700", "Radius 700-650", "Premiens 700", "Performa 700", "Precium 700", "Paragon 700"], "800": ["Brixxon R850-800", "Radius 850-800", "Performa 800", "Precium 800", "Paragon 800"], "900": ["Brixxon R900-850", "Radius 900", "Performa 900", "Precium 900", "Paragon 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900", "Performa 1000", "Precium 1000", "Paragon 1000"] }
 };
 
 const MODEL_METADATA = {
@@ -115,24 +118,26 @@ const MODEL_METADATA = {
   "radius 650-600": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube club coherent." },
   "radius 700-650": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube club coherent." },
   "radius 850-800": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [80, 110], note: "Tube club coherent." },
-  "edge 400-350": { material: "carbon", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["club", "performance"], pointRange: [100, 150], note: "Profil salle." },
-  "edge 600-500": { material: "carbon", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["club", "performance"], pointRange: [100, 150], note: "Profil salle." },
-  "edge 700-650": { material: "carbon", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["club", "performance"], pointRange: [100, 150], note: "Profil salle." },
-  "maverick 300": { material: "carbon", diameters: ["standard"], environments: ["mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Option club." },
-  "maverick 350-300": { material: "carbon", diameters: ["standard"], environments: ["mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Option club." },
-  "bruxx 300": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["competition"], pointRange: [100, 120], note: "Competition recurve." },
-  "empros 300": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["competition"], pointRange: [100, 120], note: "Competition recurve." }
+  "edge 400-350": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["performance"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "edge 600-500": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["performance"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "edge 700-650": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["performance"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "maverick 300": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["club", "polyvalent"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "maverick 350-300": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["club", "polyvalent"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "bruxx 300": { material: "carbon", diameters: ["large"], environments: ["indoor", "outdoor"], disciplines: ["field", "target"], bowTypes: ["compound"], goals: ["competition"], pointRange: [120, 180], note: "Tube compound indoor / 3D." },
+  "empros 300": { material: "carbon", diameters: ["large"], environments: ["indoor", "outdoor"], disciplines: ["field", "target"], bowTypes: ["compound"], goals: ["competition"], pointRange: [120, 180], note: "Tube compound indoor / 3D." }
 };
 
 const MODEL_FAMILY_METADATA = {
+  "performa": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin recurve / compound exterieur." },
+  "precium": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin recurve / compound exterieur." },
   "brixxon": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [80, 120], note: "Tube carbone club polyvalent." },
   "radius": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [80, 120], note: "Tube carbone club coherent." },
-  "edge": { material: "carbon", diameters: ["large"], environments: ["indoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [100, 150], note: "Profil salle recurve." },
-  "maverick": { material: "carbon", diameters: ["standard"], environments: ["mixed", "outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Option club simple." },
-  "bruxx": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [100, 120], note: "Tube fin performance recurve." },
-  "empros": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [100, 120], note: "Tube fin performance recurve." },
+  "edge": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["performance"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "maverick": { material: "carbon", diameters: ["standard"], environments: ["outdoor"], disciplines: ["field", "hunting"], bowTypes: ["compound"], goals: ["club", "polyvalent"], pointRange: [80, 100], note: "Tube compound chasse / 3D." },
+  "bruxx": { material: "carbon", diameters: ["large"], environments: ["indoor", "outdoor"], disciplines: ["field", "target"], bowTypes: ["compound"], goals: ["competition"], pointRange: [120, 180], note: "Tube compound indoor / 3D." },
+  "empros": { material: "carbon", diameters: ["large"], environments: ["indoor", "outdoor"], disciplines: ["field", "target"], bowTypes: ["compound"], goals: ["competition"], pointRange: [120, 180], note: "Tube compound indoor / 3D." },
   "premiens": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin performance recurve." },
-  "paragon": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube carbone recurve exterieur." },
+  "paragon": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin recurve / compound exterieur." },
   "rip tko": { material: "carbon", diameters: ["thin"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin oriente exterieur." },
   "rip xv": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [90, 120], note: "Carbone exterieur plus tolerant." },
   "maxima red": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube carbone polyvalent." },
@@ -150,7 +155,7 @@ const MODEL_FAMILY_METADATA = {
 const SKYLON_GRID = [["Y1","Y1","Y2","Y3","Y4","","","","",""],["Y2","Y3","Y4","A1","A2","A3","A4","A5","A6",""],["","","A1","A2","A3","A4","A5","A6","A7",""],["","A1","A2","A3","A4","A5","A6","A7","A8","A9"],["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"],["A2","A3","A4","A5","A6","A7","A8","A9","A10","A11"],["A3","A4","A5","A6","A7","A8","A9","A10","A11","A12"],["A4","A5","A6","A7","A8","A9","A10","A11","A12","A13"],["A5","A6","A7","A8","A9","A10","A11","A12","A13",""],["A6","A7","A8","A9","A10","A11","A12","A13","",""]];
 const SKYLON_COMPOUND_RANGES = { lt276: [[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70],[70,76],[76,82]], "276_300": [null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70],[70,76]], "301_340": [null,null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70]], "340_360": [null,null,null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65]] };
 const SKYLON_RECURVE_RANGES = [[16,19],[20,23],[24,29],[30,35],[36,40],[41,45],[46,50],[51,55],[56,60],[61,65],[66,70]];
-const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius R900","Paragon 1000"], A2: ["Brixxon R900-850","Edge 800","Radius 850-800","Paragon 900"], A3: ["Brixxon R850-800","Edge 800-750","Radius 750-700","Paragon 800"], A4: ["Brixxon R750-700","Edge 700-650","Radius 700-650","Paragon 700"], A5: ["Brixxon R700-650","Edge 700-650","Radius 650-600"], A6: ["Brixxon R600-550","Edge 700-600","Radius 600-550"], A7: ["Brixxon R550-500","Edge 600-500","Maverick 500"], A8: ["Brixxon R500-450","Edge 500-400","Maverick 500-400"], A9: ["Brixxon R450-400","Edge 400-350","Maverick 400"], A10: ["Brixxon R400","Edge 400-350","Radius 400"], A11: ["Bruxx 350-300","Empros 350-300","Maverick 350-300"], A12: ["Bruxx 300","Edge 350-300","Empros 330"], A13: ["Bruxx 300","Empros 300","Maverick 300"] };
+const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius 900","Performa 1000","Precium 1000","Paragon 1000"], A2: ["Brixxon R900-850","Radius 850-800","Performa 900","Precium 900","Paragon 900"], A3: ["Brixxon R850-800","Radius 850-800","Performa 850","Precium 850","Paragon 850"], A4: ["Brixxon R750-700","Radius 700-650","Performa 750","Precium 750","Paragon 750"], A5: ["Brixxon R700-650","Radius 650-600","Performa 700","Precium 700","Paragon 700","Premiens 650"], A6: ["Brixxon R650-600","Radius 650-600","Performa 600","Precium 600","Paragon 600","Premiens 600"], A7: ["Brixxon R550-500","Radius 500","Performa 550","Precium 550","Paragon 550","Premiens 550"], A8: ["Brixxon R500-450","Radius 500","Performa 500","Precium 500","Paragon 500","Premiens 500"], A9: ["Brixxon R450-400","Radius 400","Performa 450","Precium 450","Paragon 450","Premiens 450"], A10: ["Brixxon R400","Radius 400","Performa 400","Precium 400","Paragon 400","Premiens 400"], A11: ["Performa 350","Precium 350","Paragon 350","Premiens 350"], A12: ["Performa 350","Precium 350","Paragon 350","Premiens 350"], A13: ["Performa 350","Precium 350","Paragon 350","Premiens 350"] };
 
 const LIVE_DEALS = [
   {
@@ -199,7 +204,6 @@ const LIVE_DEALS = [
     "modelKey": "edge",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
       "compound"
     ],
     "tier": "eco",
