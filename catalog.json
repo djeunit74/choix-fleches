@@ -5,19 +5,19 @@
   "catalog": {
     "easton": {
       "300": [
-        "Axis 5mm",
         "Avance",
-        "Superdrive Micro"
+        "Superdrive Micro",
+        "Vector"
       ],
       "340": [
         "Avance",
-        "Axis 5mm",
-        "Superdrive Micro"
+        "Superdrive Micro",
+        "Vector"
       ],
       "400": [
         "Avance",
-        "Axis 5mm",
         "Superdrive Micro",
+        "Vector",
         "X7"
       ],
       "500": [
@@ -36,28 +36,28 @@
       "700": [
         "Avance",
         "Superdrive Micro",
-        "Axis 5mm",
+        "Vector",
         "RX7",
         "XX75 Platinum Plus"
       ],
       "800": [
         "Avance",
         "Superdrive Micro",
-        "Axis 5mm",
+        "Vector",
         "X23",
         "XX75 Platinum Plus"
       ],
       "900": [
         "Avance",
         "Superdrive Micro",
-        "Axis 5mm",
+        "Vector",
         "X23",
         "XX75 Platinum Plus"
       ],
       "1000": [
         "Avance",
-        "Axis 5mm",
         "Superdrive Micro",
+        "Vector",
         "X23",
         "XX75 Platinum Plus"
       ]
