@@ -887,7 +887,7 @@ function nearbySpineValues(brand, spine) {
   return values
     .filter((value) => value !== target)
     .sort((a, b) => Math.abs(a - target) - Math.abs(b - target))
-    .slice(0, 5);
+    .slice(0, 7);
 }
 
 function rankNearbyModels(brand, mainSpine, input, profile) {
@@ -903,7 +903,7 @@ function rankNearbyModels(brand, mainSpine, input, profile) {
     .sort((a, b) => b.score - a.score);
 }
 
-function enrichWithNearbyModels(ranked, brand, mainSpine, input, profile, minCount = 6) {
+function enrichWithNearbyModels(ranked, brand, mainSpine, input, profile, minCount = 8) {
   if (ranked.length >= minCount) return ranked;
   const seen = new Set(ranked.map((entry) => normalizeModelKey(entry.model)));
   const nearby = rankNearbyModels(brand, mainSpine, input, profile)
@@ -1096,7 +1096,7 @@ function buildBrandRecommendation(input, brand) {
 
 function renderModelList(recommendation, input) {
   if (!recommendation.models.length) return "<li>Aucun modele correspondant strictement a vos filtres.</li>";
-  return uniqueModelEntries(recommendation.models, 10).map((entry) => {
+  return uniqueModelEntries(recommendation.models, 12).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
     const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : "";
@@ -1189,7 +1189,7 @@ function recommendationPrimaryDisplay(recommendation) {
 }
 
 function renderComparisonBrandCard(entry, input) {
-  const topModels = uniqueModelEntries(entry.rec.models, 5);
+  const topModels = uniqueModelEntries(entry.rec.models, 7);
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
         const meta = modelEntry.meta;
@@ -1372,7 +1372,7 @@ function renderRecommendation(input) {
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const recommendedModels = [
-    ...uniqueModelEntries(recommendation.models, 5).map((entry) => entry.model),
+    ...uniqueModelEntries(recommendation.models, 7).map((entry) => entry.model),
     ...(recommendation.alternativeModels || []).slice(0, 2).map((entry) => entry.model)
   ];
   const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, recommendedModels);
