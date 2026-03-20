@@ -460,8 +460,8 @@ const LIVE_DEALS = [
     ],
     "tier": "eco",
     "title": "Lot de 12 tubes Skylon Brixxon ID4.2 en carbone",
-    "price": "49,96 EUR",
-    "url": "https://www.archerie.fr/fr/4767-lot-de-12-tubes-skylon-brixxon-id42-en-carbone.html",
+    "price": "59,95 EUR",
+    "url": "https://www.archerie.fr/fr/4612-lot-de-12-tubes-skylon-brixxon-id42-en-carbone.html",
     "shop": "archerie.fr"
   },
   {
