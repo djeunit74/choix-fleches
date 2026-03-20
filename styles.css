@@ -78,6 +78,15 @@ body {
   margin: 10px 0 0;
 }
 
+.danger-guide {
+  border-color: #e2c1b8;
+  background: linear-gradient(180deg, #fff8f3 0%, #fff1e8 100%);
+}
+
+.danger-guide h3 {
+  color: #9c3827;
+}
+
 .subcard {
   margin-top: 16px;
   padding: 16px;
