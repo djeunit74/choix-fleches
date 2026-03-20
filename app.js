@@ -1498,7 +1498,7 @@ function renderArcSetup(input) {
       <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
       <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
       <p>${setup.adjustment.advice}</p>
-      <p><strong>Repere utile</strong> : tiller positif de base entre +2 et +10 mm, avec un prereglage courant autour de +6 mm.</p>
+      <p><strong>Repere utile</strong> : tiller positif = tiller haut - tiller bas. Base courante : entre +2 et +10 mm, avec un prereglage autour de +6 mm.</p>
     </section>
     <section class="subcard">
       <h3>Puissance tiree estimee</h3>
