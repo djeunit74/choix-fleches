@@ -186,6 +186,25 @@ const VICTORY_RECURVE_ROWS = [
   { range: [52, 56], label: "52-56 lbs", cells: ["600", "600", "600", "500", "500", "400", "400", "400", "350"] },
   { range: [57, 61], label: "57-61 lbs", cells: ["600", "500", "500", "500", "400", "400", "350", "350", "350"] }
 ];
+const CARBON_LIGHT_RECURVE_LENGTHS = [21, 22, 23, 24, 25, 26, 27];
+const CARBON_LIGHT_RECURVE_ROWS = [
+  { range: [10, 17], label: "10-17 lbs", cells: ["MXR2000", "MXR2000", "MXR2000", "MXR2000", "MXR1800", "MXR1500", "MXR1300|NS1200"] },
+  { range: [18, 23], label: "18-23 lbs", cells: ["MXR2000", "MXR2000", "MXR1800", "MXR1500", "MXR1300|NS1200", "MXR1100|NS1100", "XYR1000|MXR1000|NS1000"] },
+  { range: [24, 28], label: "24-28 lbs", cells: ["MXR2000", "MXR1800", "MXR1500", "MXR1300|NS1200", "MXR1100|NS1100", "PT1000|MXR1000|NS1000", "PT900|MXR900"] },
+  { range: [29, 34], label: "29-34 lbs", cells: ["MXR1800", "MXR1500", "MXR1300|NS1200", "MXR1100|NS1100", "PT1000|MXR1000|NS1000", "PT900|MXR900|NS900", "PT800|MXR800|NS800"] }
+];
+const CARBON_RECURVE_SERIES_LENGTHS = [23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+const CARBON_RECURVE_SERIES_ROWS = [
+  { range: [18, 23], label: "18-23 lbs", cells: ["", "", "", "NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "", "", ""] },
+  { range: [24, 28], label: "24-28 lbs", cells: ["", "", "NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "MPR580", ""] },
+  { range: [29, 34], label: "29-34 lbs", cells: ["", "NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR580", ""] },
+  { range: [35, 39], label: "35-39 lbs", cells: ["NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NST420"] },
+  { range: [40, 45], label: "40-45 lbs", cells: ["NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST420"] },
+  { range: [46, 51], label: "46-51 lbs", cells: ["NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400", "NPX400|NSST350"] },
+  { range: [52, 57], label: "52-57 lbs", cells: ["NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400", "NPX400|NSST350", "NPX350|MPR350"] },
+  { range: [58, 63], label: "58-63 lbs", cells: ["NPX7500|NSST700|MPR650", "NPX650|NSST650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400", "NPX400|MPR350", "NPX350|MPR350", "NPX350|MPR350"] },
+  { range: [64, 69], label: "64-69 lbs", cells: ["NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400|MPR420", "NPX400|NSST400|MPR350", "NPX350|MPR350", "NPX350|MPR350", ""] }
+];
 
 const LIVE_DEALS = [
   {
@@ -1217,6 +1236,36 @@ function victoryRecurveRecommendation(input) {
   return { ok: true, spine: cell, normalizedChoice, rowLabel: row.label, roundedLength };
 }
 
+function firstCarbonExpressChoice(cell) {
+  if (!cell) return null;
+  return String(cell).split("|")[0].trim() || null;
+}
+
+function carbonExpressRecommendation(input) {
+  const isLightChart = input.drawWeight <= 34 && input.arrowLength <= 27;
+  if (isLightChart) {
+    const roundedLength = clamp(Math.round(input.arrowLength), 21, 27);
+    const col = CARBON_LIGHT_RECURVE_LENGTHS.indexOf(roundedLength);
+    const row = CARBON_LIGHT_RECURVE_ROWS.find((entry) => input.drawWeight >= entry.range[0] && input.drawWeight <= entry.range[1]);
+    if (col < 0 || !row) return { ok: false, message: "Hors tableau Carbon Express light recurve." };
+    const cell = row.cells[col];
+    if (!cell) return { ok: false, message: "Case vide dans le tableau Carbon Express light recurve." };
+    const first = firstCarbonExpressChoice(cell);
+    const normalizedChoice = first && first.includes("2000") ? "1000" : first && first.includes("1800") ? "900" : first && first.includes("1500") ? "800" : first && first.includes("1300") ? "700" : first && first.includes("1100") ? "600" : first && first.includes("1000") ? "500" : first && first.includes("900") ? "400" : first && first.includes("800") ? "350" : "500";
+    return { ok: true, chart: "light", selection: cell, modelCode: first, normalizedChoice, rowLabel: row.label, roundedLength };
+  }
+
+  const roundedLength = clamp(Math.round(input.arrowLength), 23, 32);
+  const col = CARBON_RECURVE_SERIES_LENGTHS.indexOf(roundedLength);
+  const row = CARBON_RECURVE_SERIES_ROWS.find((entry) => input.drawWeight >= entry.range[0] && input.drawWeight <= entry.range[1]);
+  if (col < 0 || !row) return { ok: false, message: "Hors tableau Carbon Express recurve series." };
+  const cell = row.cells[col];
+  if (!cell) return { ok: false, message: "Case vide dans le tableau Carbon Express recurve series." };
+  const first = firstCarbonExpressChoice(cell);
+  const normalizedChoice = first && first.includes("1000") ? "1000" : first && first.includes("900") ? "900" : first && first.includes("800") ? "800" : first && first.includes("750") ? "700" : first && first.includes("700") ? "700" : first && first.includes("650") ? "600" : first && first.includes("600") ? "600" : first && first.includes("580") ? "600" : first && first.includes("550") ? "500" : first && first.includes("500") ? "500" : first && first.includes("450") ? "400" : first && first.includes("420") ? "400" : first && first.includes("400") ? "400" : first && first.includes("350") ? "350" : "500";
+  return { ok: true, chart: "series", selection: cell, modelCode: first, normalizedChoice, rowLabel: row.label, roundedLength };
+}
+
 function buildBrandRecommendation(input, brand) {
   const profile = deriveTargetProfile(input);
   const base = recommendationForBrand(input, brand);
@@ -1347,6 +1396,50 @@ function buildBrandRecommendation(input, brand) {
         recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
         recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
         notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Victory recurve privilegie."]
+      };
+    }
+  }
+  if (brand === "carbon" && input.bowType === "recurve" && profile.preferredMaterial === "carbon") {
+    const carbonExpress = carbonExpressRecommendation(input);
+    if (carbonExpress.ok) {
+      models = filterByBudget(arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || [], input.budgetLevel);
+      ranked = rankModels(models, input, profile);
+      if (!ranked.length) ranked = rankNearbyModels(brand, carbonExpress.normalizedChoice, input, profile);
+      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, carbonExpress.normalizedChoice, input, profile, 6);
+      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: carbonExpress.modelCode || carbonExpress.normalizedChoice }));
+      const topMeta = ranked[0]?.meta || null;
+      const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
+      return {
+        brand,
+        mode: "carbon-table",
+        primary: carbonExpress.selection,
+        comparisonSpine: carbonExpress.normalizedChoice,
+        softer: base.softer,
+        stiffer: base.stiffer,
+        load: base.load,
+        confidence: "Elevee",
+        confidenceReasons: [
+          `Tableau Carbon Express ${carbonExpress.chart === "light" ? "light recurve" : "recurve series"} utilise (${carbonExpress.rowLabel}, ${carbonExpress.roundedLength}\").`,
+          "Le premier choix de la case Carbon Express est privilegie.",
+          topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."
+        ].filter(Boolean),
+        models: ranked,
+        recommendedMaterial: topMeta?.material || profile.preferredMaterial,
+        recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
+        recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+        recommendedPointWeight: pointSetup.recommended,
+        recommendedPointChoices: pointSetup.pointChoices,
+        recommendedPointProfile: pointSetup.profile,
+        recommendedPointSofter: pointSetup.softerOption,
+        recommendedPointStiffer: pointSetup.stifferOption,
+        pointWeightNote: pointSetup.note,
+        recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
+        recommendedMass: topMeta?.massClass || profile.preferredMass,
+        recommendedTolerance: topMeta?.toleranceClass || profile.preferredTolerance,
+        recommendedComponentSystem: topMeta?.componentSystem || "insert",
+        recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
+        recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
+        notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Carbon Express recurve privilegie."]
       };
     }
   }
@@ -1510,7 +1603,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
 function recommendationPrimaryDisplay(recommendation) {
   const topModel = recommendation.models[0];
   const topSpine = topModel?.advisedSpine || recommendation.primary;
-  if (recommendation.mode === "skylon" || recommendation.mode === "easton-table" || recommendation.mode === "victory-table") {
+  if (recommendation.mode === "skylon" || recommendation.mode === "easton-table" || recommendation.mode === "victory-table" || recommendation.mode === "carbon-table") {
     return `${topSpine} <span class="result-subvalue">base ${recommendation.primary} / eq. ${recommendation.comparisonSpine}</span>`;
   }
   return `${topSpine} <span class="result-subvalue">base ${recommendation.primary}</span>`;
