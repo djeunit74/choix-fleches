@@ -171,6 +171,21 @@ const EASTON_RECURVE_CARBON_ROWS = [
   { range: [63, 67], label: "63-67 lbs", cells: ["720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200", "200-150"] },
   { range: [68, 73], label: "68-73 lbs", cells: ["675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200", "250-200", "200-150"] }
 ];
+const EASTON_RECURVE_ALU_LENGTHS = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+const EASTON_RECURVE_ALU_ROWS = [
+  { range: [0, 20], label: "<20 lbs", cells: ["", "", "1214", "1214", "1416|1516|1514", "1514", "1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21"] },
+  { range: [21, 26], label: "21-26 lbs", cells: ["", "1214", "1214", "1416|1516|1514", "1514", "1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1916|2016|2013|RX7-21", "1916|2013|2014|RX7-21"] },
+  { range: [27, 31], label: "27-31 lbs", cells: ["1214", "1214", "1416|1516|1514", "1514", "1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22"] },
+  { range: [32, 35], label: "32-35 lbs", cells: ["1214", "1416|1516|1514", "1514", "1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23"] },
+  { range: [36, 39], label: "36-39 lbs", cells: ["1416|1516|1514", "1514", "1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2214|2213|2312|RX7-23", "2213|2214|2312|RX7-23"] },
+  { range: [40, 43], label: "40-43 lbs", cells: ["1514", "1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413"] },
+  { range: [44, 47], label: "44-47 lbs", cells: ["1614", "1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413", "2314|2413|2315"] },
+  { range: [48, 52], label: "48-52 lbs", cells: ["1616|1714", "1716", "1816|1814", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413", "2512|2613|2712", "2512|2613|2712"] },
+  { range: [53, 57], label: "53-57 lbs", cells: ["1716", "1816|1913", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2213|RX7-23", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413", "2314|2413|2315", "2512|2613|2712", "2512|2613|2712"] },
+  { range: [58, 62], label: "58-62 lbs", cells: ["1816|1913", "1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413", "2314|2413|2315", "2512|2613|2712", "2512|2613|2712", "2512|2613|2712"] },
+  { range: [63, 67], label: "63-67 lbs", cells: ["1914|1913", "1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413", "2314|2413|2315", "2512|2613|2712", "2512|2613|2712", "2512|2613|2712", "2613|2712"] },
+  { range: [68, 73], label: "68-73 lbs", cells: ["1914|1916|2013|RX7-21", "1916|2013|2014|RX7-21", "2114|2016|RX7-22", "2114|2213|RX7-23", "2213|2214|2312|RX7-23", "2214|2314|2413", "2314|2413|2315", "2512|2613|2712", "2512|2613|2712", "2512|2613|2712", "2613|2712", ""] }
+];
 const VICTORY_RECURVE_LENGTHS = [23, 24, 25, 26, 27, 28, 29, 30, 31];
 const VICTORY_RECURVE_ROWS = [
   { range: [12, 14], label: "12-14 lbs", cells: ["", "", "", "1200", "1100", "1000", "900", "900", "800"] },
@@ -1224,6 +1239,19 @@ function eastonCarbonRecommendation(input) {
   return { ok: true, rangeLabel: cell, weakChoice, normalizedChoice, rowLabel: row.label, roundedLength };
 }
 
+function eastonAluRecommendation(input) {
+  const roundedLength = clamp(Math.round(input.arrowLength), 21, 32);
+  const col = EASTON_RECURVE_ALU_LENGTHS.indexOf(roundedLength);
+  if (col < 0) return { ok: false, message: "Longueur hors tableau Easton alu (21 a 32 pouces)." };
+  const row = EASTON_RECURVE_ALU_ROWS.find((entry) => input.drawWeight >= entry.range[0] && input.drawWeight <= entry.range[1]);
+  if (!row) return { ok: false, message: "Puissance hors plages du tableau Easton alu." };
+  const cell = row.cells[col];
+  if (!cell) return { ok: false, message: "Case vide dans le tableau Easton alu pour cette combinaison." };
+  const weakChoice = eastonWeakChoiceFromCell(cell);
+  const normalizedChoice = weakChoice && weakChoice.includes("1214") ? "1000" : weakChoice && weakChoice.includes("1416") ? "900" : weakChoice && weakChoice.includes("1514") ? "800" : weakChoice && weakChoice.includes("1614") ? "700" : weakChoice && weakChoice.includes("1716") ? "700" : weakChoice && weakChoice.includes("1816") ? "600" : weakChoice && weakChoice.includes("1914") ? "500" : weakChoice && weakChoice.includes("2013") ? "500" : weakChoice && weakChoice.includes("2114") ? "400" : weakChoice && weakChoice.includes("2213") ? "400" : weakChoice && weakChoice.includes("2314") ? "350" : weakChoice && weakChoice.includes("2413") ? "350" : "500";
+  return { ok: true, rangeLabel: cell, weakChoice, normalizedChoice, rowLabel: row.label, roundedLength };
+}
+
 function victoryRecurveRecommendation(input) {
   const roundedLength = clamp(Math.round(input.arrowLength), 23, 31);
   const col = VICTORY_RECURVE_LENGTHS.indexOf(roundedLength);
@@ -1352,6 +1380,50 @@ function buildBrandRecommendation(input, brand) {
         recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
         recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
         notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Easton carbone recurve privilegie."]
+      };
+    }
+  }
+  if (brand === "easton" && input.bowType === "recurve" && input.shootingEnvironment === "indoor" && profile.preferredMaterial === "alu") {
+    const easton = eastonAluRecommendation(input);
+    if (easton.ok) {
+      models = filterByBudget(arrowCatalog.easton?.[easton.normalizedChoice] || [], input.budgetLevel);
+      ranked = rankModels(models, input, profile);
+      if (!ranked.length) ranked = rankNearbyModels(brand, easton.normalizedChoice, input, profile);
+      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, easton.normalizedChoice, input, profile, 6);
+      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: easton.weakChoice || easton.normalizedChoice }));
+      const topMeta = ranked[0]?.meta || null;
+      const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
+      return {
+        brand,
+        mode: "easton-table",
+        primary: easton.rangeLabel,
+        comparisonSpine: easton.normalizedChoice,
+        softer: base.softer,
+        stiffer: base.stiffer,
+        load: base.load,
+        confidence: "Elevee",
+        confidenceReasons: [
+          `Tableau Easton alu recurve utilise (${easton.rowLabel}, ${easton.roundedLength}\").`,
+          "Pour le recurve, le cote plus souple de la plage Easton est privilegie.",
+          topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."
+        ].filter(Boolean),
+        models: ranked,
+        recommendedMaterial: topMeta?.material || profile.preferredMaterial,
+        recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
+        recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+        recommendedPointWeight: pointSetup.recommended,
+        recommendedPointChoices: pointSetup.pointChoices,
+        recommendedPointProfile: pointSetup.profile,
+        recommendedPointSofter: pointSetup.softerOption,
+        recommendedPointStiffer: pointSetup.stifferOption,
+        pointWeightNote: pointSetup.note,
+        recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
+        recommendedMass: topMeta?.massClass || profile.preferredMass,
+        recommendedTolerance: topMeta?.toleranceClass || profile.preferredTolerance,
+        recommendedComponentSystem: topMeta?.componentSystem || "insert",
+        recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
+        recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
+        notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Easton alu recurve privilegie."]
       };
     }
   }
