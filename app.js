@@ -156,6 +156,21 @@ const SKYLON_GRID = [["Y1","Y1","Y2","Y3","Y4","","","","",""],["Y2","Y3","Y4","
 const SKYLON_COMPOUND_RANGES = { lt276: [[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70],[70,76],[76,82]], "276_300": [null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70],[70,76]], "301_340": [null,null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70]], "340_360": [null,null,null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65]] };
 const SKYLON_RECURVE_RANGES = [[16,19],[20,23],[24,29],[30,35],[36,40],[41,45],[46,50],[51,55],[56,60],[61,65],[66,70]];
 const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius 900","Performa 1000","Precium 1000","Paragon 1000"], A2: ["Brixxon R900-850","Radius 850-800","Performa 900","Precium 900","Paragon 900"], A3: ["Brixxon R850-800","Radius 850-800","Performa 850","Precium 850","Paragon 850"], A4: ["Brixxon R750-700","Radius 700-650","Performa 750","Precium 750","Paragon 750"], A5: ["Brixxon R700-650","Radius 650-600","Performa 700","Precium 700","Paragon 700","Premiens 650"], A6: ["Brixxon R650-600","Radius 650-600","Performa 600","Precium 600","Paragon 600","Premiens 600"], A7: ["Brixxon R550-500","Radius 500","Performa 550","Precium 550","Paragon 550","Premiens 550"], A8: ["Brixxon R500-450","Radius 500","Performa 500","Precium 500","Paragon 500","Premiens 500"], A9: ["Brixxon R450-400","Radius 400","Performa 450","Precium 450","Paragon 450","Premiens 450"], A10: ["Brixxon R400","Radius 400","Performa 400","Precium 400","Paragon 400","Premiens 400"], A11: ["Performa 350","Precium 350","Paragon 350","Premiens 350"], A12: ["Performa 350","Precium 350","Paragon 350","Premiens 350"], A13: ["Performa 350","Precium 350","Paragon 350","Premiens 350"] };
+const EASTON_RECURVE_CARBON_LENGTHS = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
+const EASTON_RECURVE_CARBON_ROWS = [
+  { range: [0, 20], label: "<20 lbs", cells: ["2000", "2000", "2000-1800", "1800-1700", "1750-1400", "1450-1200", "1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500"] },
+  { range: [21, 26], label: "21-26 lbs", cells: ["2000", "2000-1800", "1800-1700", "1750-1400", "1450-1200", "1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450"] },
+  { range: [27, 31], label: "27-31 lbs", cells: ["2000-1800", "1800-1700", "1750-1400", "1450-1200", "1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400"] },
+  { range: [32, 35], label: "32-35 lbs", cells: ["1800-1700", "1750-1400", "1450-1200", "1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370"] },
+  { range: [36, 39], label: "36-39 lbs", cells: ["1750-1400", "1450-1200", "1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340"] },
+  { range: [40, 43], label: "40-43 lbs", cells: ["1450-1200", "1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310"] },
+  { range: [44, 47], label: "44-47 lbs", cells: ["1250-1050", "1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300"] },
+  { range: [48, 52], label: "48-52 lbs", cells: ["1080-880", "900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250"] },
+  { range: [53, 57], label: "53-57 lbs", cells: ["900-750", "800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200"] },
+  { range: [58, 62], label: "58-62 lbs", cells: ["800-700", "720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200"] },
+  { range: [63, 67], label: "63-67 lbs", cells: ["720-625", "675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200", "200-150"] },
+  { range: [68, 73], label: "68-73 lbs", cells: ["675-600", "640-570", "575-500", "525-450", "475-400", "440-370", "400-340", "370-310", "340-300", "300-250", "250-200", "250-200", "250-200", "200-150"] }
+];
 
 const LIVE_DEALS = [
   {
@@ -1155,6 +1170,26 @@ function skylonRecommendation(input) {
   return { ok: true, group, models: groupModels[group] || [], warning: group.startsWith("Y") };
 }
 
+function eastonWeakChoiceFromCell(cell) {
+  if (!cell) return null;
+  const firstChunk = String(cell).split(",")[0].trim();
+  const weak = firstChunk.split("-")[0].trim();
+  return weak || null;
+}
+
+function eastonCarbonRecommendation(input) {
+  const roundedLength = clamp(Math.round(input.arrowLength), 21, 34);
+  const col = EASTON_RECURVE_CARBON_LENGTHS.indexOf(roundedLength);
+  if (col < 0) return { ok: false, message: "Longueur hors tableau Easton carbone (21 a 34 pouces)." };
+  const row = EASTON_RECURVE_CARBON_ROWS.find((entry) => input.drawWeight >= entry.range[0] && input.drawWeight <= entry.range[1]);
+  if (!row) return { ok: false, message: "Puissance hors plages du tableau Easton carbone." };
+  const cell = row.cells[col];
+  if (!cell) return { ok: false, message: "Case vide dans le tableau Easton carbone pour cette combinaison." };
+  const weakChoice = eastonWeakChoiceFromCell(cell);
+  const normalizedChoice = weakChoice ? String(nearestSpine(Number(weakChoice), getBrandSpines("easton")).main) : null;
+  return { ok: true, rangeLabel: cell, weakChoice, normalizedChoice, rowLabel: row.label, roundedLength };
+}
+
 function buildBrandRecommendation(input, brand) {
   const profile = deriveTargetProfile(input);
   const base = recommendationForBrand(input, brand);
@@ -1197,6 +1232,50 @@ function buildBrandRecommendation(input, brand) {
         recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
         recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
         notes: [topMeta?.note || "Controle final au tir requis."]
+      };
+    }
+  }
+  if (brand === "easton" && input.bowType === "recurve" && input.shootingEnvironment === "outdoor" && profile.preferredMaterial === "carbon") {
+    const easton = eastonCarbonRecommendation(input);
+    if (easton.ok) {
+      models = filterByBudget(arrowCatalog.easton?.[easton.normalizedChoice] || [], input.budgetLevel);
+      ranked = rankModels(models, input, profile);
+      if (!ranked.length) ranked = rankNearbyModels(brand, easton.normalizedChoice, input, profile);
+      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, easton.normalizedChoice, input, profile, 6);
+      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: easton.weakChoice || easton.normalizedChoice }));
+      const topMeta = ranked[0]?.meta || null;
+      const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
+      return {
+        brand,
+        mode: "easton-table",
+        primary: easton.rangeLabel,
+        comparisonSpine: easton.normalizedChoice,
+        softer: base.softer,
+        stiffer: base.stiffer,
+        load: base.load,
+        confidence: "Elevee",
+        confidenceReasons: [
+          `Tableau Easton carbone recurve utilise (${easton.rowLabel}, ${easton.roundedLength}\").`,
+          "Pour le recurve, le cote plus souple de la plage Easton est privilegie.",
+          topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."
+        ].filter(Boolean),
+        models: ranked,
+        recommendedMaterial: topMeta?.material || profile.preferredMaterial,
+        recommendedDiameter: topMeta?.diameters?.[0] || profile.preferredDiameter,
+        recommendedPointRange: topMeta?.pointRange || profile.pointRange,
+        recommendedPointWeight: pointSetup.recommended,
+        recommendedPointChoices: pointSetup.pointChoices,
+        recommendedPointProfile: pointSetup.profile,
+        recommendedPointSofter: pointSetup.softerOption,
+        recommendedPointStiffer: pointSetup.stifferOption,
+        pointWeightNote: pointSetup.note,
+        recommendedSeries: topMeta?.seriesTier || profile.preferredSeries,
+        recommendedMass: topMeta?.massClass || profile.preferredMass,
+        recommendedTolerance: topMeta?.toleranceClass || profile.preferredTolerance,
+        recommendedComponentSystem: topMeta?.componentSystem || "insert",
+        recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
+        recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
+        notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Easton carbone recurve privilegie."]
       };
     }
   }
@@ -1360,7 +1439,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
 function recommendationPrimaryDisplay(recommendation) {
   const topModel = recommendation.models[0];
   const topSpine = topModel?.advisedSpine || recommendation.primary;
-  if (recommendation.mode === "skylon") {
+  if (recommendation.mode === "skylon" || recommendation.mode === "easton-table") {
     return `${topSpine} <span class="result-subvalue">base ${recommendation.primary} / eq. ${recommendation.comparisonSpine}</span>`;
   }
   return `${topSpine} <span class="result-subvalue">base ${recommendation.primary}</span>`;
