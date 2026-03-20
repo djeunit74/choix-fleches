@@ -47,6 +47,44 @@ const BRAND_REFERENCE = {
   skylon: { compoundBoost: 4, lengthFactor: 3.0, pointFactor: 0.10, fieldBoost: 2, huntingBoost: 4, indoorBoost: 0, outdoorBoost: 1, rawAdjust: -10 }
 };
 
+const CALIBRATION_ARCHETYPES = {
+  skylon_standard_club: { rawShift: -5, pointShift: 0, label: "Reference Skylon type Brixxon / Radius" },
+  skylon_standard_perf: { rawShift: 10, pointShift: 0, label: "Reference Skylon type Paragon" },
+  skylon_thin_performance: { rawShift: 35, pointShift: 5, label: "Reference Skylon type Premiens" },
+  skylon_thin_competition: { rawShift: 55, pointShift: 10, label: "Reference Skylon type Bruxx / Empros" },
+  skylon_indoor_large: { rawShift: -45, pointShift: -5, label: "Reference Skylon type Edge" }
+};
+
+const MODEL_CALIBRATION_BY_FAMILY = {
+  brixxon: "skylon_standard_club",
+  radius: "skylon_standard_club",
+  maverick: "skylon_standard_club",
+  paragon: "skylon_standard_perf",
+  premiens: "skylon_thin_performance",
+  bruxx: "skylon_thin_competition",
+  empros: "skylon_thin_competition",
+  edge: "skylon_indoor_large",
+  axis: "skylon_standard_club",
+  vector: "skylon_standard_perf",
+  avance: "skylon_thin_competition",
+  "superdrive micro": "skylon_thin_competition",
+  vap: "skylon_thin_performance",
+  rip: "skylon_standard_perf",
+  vforce: "skylon_standard_club",
+  vft: "skylon_standard_club",
+  predator: "skylon_standard_club",
+  trojan: "skylon_standard_club",
+  "maxima red": "skylon_standard_perf",
+  "nano-pro rz": "skylon_thin_performance",
+  "nano-pro xtreme": "skylon_thin_competition",
+  x7: "skylon_indoor_large",
+  rx7: "skylon_indoor_large",
+  x23: "skylon_indoor_large",
+  xx75: "skylon_indoor_large",
+  "medallion xr": "skylon_indoor_large",
+  "v-tac 23 elite": "skylon_indoor_large"
+};
+
 const DEFAULT_CATALOG = {
   easton: { "300": ["Axis 5mm", "Avance", "Superdrive Micro"], "340": ["Avance", "Axis 5mm", "Superdrive Micro"], "400": ["Avance", "Axis 5mm", "Superdrive Micro", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7", "XX75 Platinum Plus"], "700": ["Avance", "Superdrive Micro", "Axis 5mm", "RX7", "XX75 Platinum Plus"], "800": ["Avance", "Superdrive Micro", "Axis 5mm", "X23", "XX75 Platinum Plus"], "900": ["Avance", "Superdrive Micro", "Axis 5mm", "X23", "XX75 Platinum Plus"], "1000": ["Avance", "Axis 5mm", "Superdrive Micro", "X23", "XX75 Platinum Plus"] },
   victory: { "300": ["RIP TKO", "VAP Sport"], "340": ["VAP Sport", "RIP XV", "VXT Elite V1"], "400": ["VAP Sport", "VForce", "RIP XV", "VXT Elite V1"], "500": ["VForce", "VAP V3", "RIP XV", "VXT Elite V1"], "600": ["VAP V3", "VForce", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VForce", "VAP Target", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
@@ -483,6 +521,16 @@ function modelSeriesKey(modelName) {
   if (family) return family;
   return key.split(" ")[0] || key;
 }
+function calibrationArchetypeForModel(modelName, meta = null) {
+  const seriesKey = modelSeriesKey(modelName);
+  const directMatch = Object.entries(MODEL_CALIBRATION_BY_FAMILY).find(([token]) => seriesKey.includes(token));
+  if (directMatch) return directMatch[1];
+  if (meta?.diameters?.includes("large")) return "skylon_indoor_large";
+  if (meta?.diameters?.includes("thin") && meta?.seriesTier === "competition") return "skylon_thin_competition";
+  if (meta?.diameters?.includes("thin")) return "skylon_thin_performance";
+  if (meta?.seriesTier === "performance") return "skylon_standard_perf";
+  return "skylon_standard_club";
+}
 function uniqueModelEntries(entries, limit = entries.length) {
   const seen = new Set();
   return entries.filter((entry) => {
@@ -847,18 +895,16 @@ function recommendationForBrand(input, brand) {
   return { brand, raw, load, ...nearestSpine(raw, getBrandSpines(brand)) };
 }
 
-function adjustedRawForModel(baseRaw, meta, profile) {
+function adjustedRawForModel(baseRaw, modelName, meta, profile) {
   let adjusted = baseRaw;
   if (!meta) return adjusted;
-  if (meta.diameters?.includes("thin")) adjusted += 35;
-  if (meta.diameters?.includes("large")) adjusted -= 35;
-  if (meta.seriesTier === "competition") adjusted += 20;
-  if (meta.seriesTier === "club") adjusted -= 20;
-  if (meta.massClass === "light") adjusted += 20;
-  if (meta.massClass === "heavy") adjusted -= 20;
-  if (meta.toleranceClass === "precision") adjusted += 10;
-  if (meta.useCase === "wind") adjusted += 15;
-  if (meta.useCase === "linecut") adjusted -= 15;
+  const archetype = CALIBRATION_ARCHETYPES[calibrationArchetypeForModel(modelName, meta)] || CALIBRATION_ARCHETYPES.skylon_standard_club;
+  adjusted += archetype.rawShift;
+  if (meta.massClass === "light") adjusted += 10;
+  if (meta.massClass === "heavy") adjusted -= 10;
+  if (meta.toleranceClass === "precision") adjusted += 5;
+  if (meta.useCase === "wind") adjusted += 10;
+  if (meta.useCase === "linecut") adjusted -= 10;
   if (profile.preferredDiameter === "thin" && meta.diameters?.includes("thin")) adjusted += 10;
   if (profile.preferredDiameter === "large" && meta.diameters?.includes("large")) adjusted -= 10;
   return adjusted;
@@ -999,7 +1045,7 @@ function rankModels(models, input, profile) {
 function attachModelSpines(entries, brand, baseRaw, profile) {
   return entries.map((entry) => ({
     ...entry,
-    advisedSpine: resolveModelSpine(adjustedRawForModel(baseRaw, entry.meta, profile), brand)
+    advisedSpine: resolveModelSpine(adjustedRawForModel(baseRaw, entry.model, entry.meta, profile), brand)
   }));
 }
 
@@ -1181,9 +1227,9 @@ function buildBrandRecommendation(input, brand) {
 
   ranked = attachModelSpines(ranked, brand, base.raw, profile);
   alternatives = alternatives.map((entry) => ({
-    ...entry,
-    advisedSpine: resolveModelSpine(adjustedRawForModel(recommendationForBrand(input, entry.brand).raw, entry.meta, profile), entry.brand)
-  }));
+      ...entry,
+      advisedSpine: resolveModelSpine(adjustedRawForModel(recommendationForBrand(input, entry.brand).raw, entry.model, entry.meta, profile), entry.brand)
+    }));
 
   return {
     brand,
