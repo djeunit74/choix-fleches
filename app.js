@@ -466,10 +466,10 @@ const LIVE_DEALS = [
   },
   {
     "brand": "skylon",
-    "modelKey": "empros",
+    "modelKey": "empros 23",
     "material": "carbon",
     "bowTypes": [
-      "recurve"
+      "compound"
     ],
     "tier": "premium",
     "title": "Lot de 12 tubes Skylon Empros 23 ID8.0 en carbone 3K",
