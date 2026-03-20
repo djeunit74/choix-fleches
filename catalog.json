@@ -30,31 +30,36 @@
         "Avance",
         "Superdrive Micro",
         "Vector",
-        "X7"
+        "X7",
+        "XX75 Platinum Plus"
       ],
       "700": [
         "Avance",
         "Superdrive Micro",
         "Axis 5mm",
-        "RX7"
+        "RX7",
+        "XX75 Platinum Plus"
       ],
       "800": [
         "Avance",
         "Superdrive Micro",
         "Axis 5mm",
-        "X23"
+        "X23",
+        "XX75 Platinum Plus"
       ],
       "900": [
         "Avance",
         "Superdrive Micro",
         "Axis 5mm",
-        "X23"
+        "X23",
+        "XX75 Platinum Plus"
       ],
       "1000": [
         "Avance",
         "Axis 5mm",
         "Superdrive Micro",
-        "X23"
+        "X23",
+        "XX75 Platinum Plus"
       ]
     },
     "victory": {

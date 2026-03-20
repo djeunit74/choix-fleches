@@ -48,7 +48,7 @@ const BRAND_REFERENCE = {
 };
 
 const DEFAULT_CATALOG = {
-  easton: { "300": ["Axis 5mm", "Avance", "Superdrive Micro"], "340": ["Avance", "Axis 5mm", "Superdrive Micro"], "400": ["Avance", "Axis 5mm", "Superdrive Micro", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7"], "700": ["Avance", "Superdrive Micro", "Axis 5mm", "RX7"], "800": ["Avance", "Superdrive Micro", "Axis 5mm", "X23"], "900": ["Avance", "Superdrive Micro", "Axis 5mm", "X23"], "1000": ["Avance", "Axis 5mm", "Superdrive Micro", "X23"] },
+  easton: { "300": ["Axis 5mm", "Avance", "Superdrive Micro"], "340": ["Avance", "Axis 5mm", "Superdrive Micro"], "400": ["Avance", "Axis 5mm", "Superdrive Micro", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7", "XX75 Platinum Plus"], "700": ["Avance", "Superdrive Micro", "Axis 5mm", "RX7", "XX75 Platinum Plus"], "800": ["Avance", "Superdrive Micro", "Axis 5mm", "X23", "XX75 Platinum Plus"], "900": ["Avance", "Superdrive Micro", "Axis 5mm", "X23", "XX75 Platinum Plus"], "1000": ["Avance", "Axis 5mm", "Superdrive Micro", "X23", "XX75 Platinum Plus"] },
   victory: { "300": ["RIP TKO", "VAP Sport"], "340": ["VAP Sport", "RIP XV", "VXT Elite V1"], "400": ["VAP Sport", "VForce", "RIP XV", "VXT Elite V1"], "500": ["VForce", "VAP V3", "RIP XV", "VXT Elite V1"], "600": ["VAP V3", "VForce", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VForce", "VAP Target", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
   carbon: { "300": ["Maxima RED", "Hunter XT"], "340": ["Hunter XT", "Predator II", "Maxima RED"], "400": ["Predator II", "Trojan", "Maxima RED"], "500": ["Predator II", "Nano-Pro RZ", "Trojan"], "600": ["Nano-Pro RZ", "Predator II", "Trojan"], "700": ["Nano-Pro RZ", "Predator II", "Medallion XR"], "800": ["Nano-Pro Xtreme", "Nano-Pro RZ", "Medallion XR"], "900": ["Nano-Pro Xtreme", "Medallion XR"], "1000": ["Medallion XR", "Nano-Pro Xtreme"] },
   skylon: { "300": ["Bruxx 300", "Empros 300", "Premiens 300", "Maverick 300"], "340": ["Bruxx 350-300", "Empros 350-300", "Premiens 350-300", "Maverick 350-300"], "400": ["Brixxon R400", "Edge 400-350", "Radius 400", "Premiens 400"], "500": ["Brixxon R550-500", "Edge 600-500", "Radius 500", "Premiens 500", "Maverick 500"], "600": ["Brixxon R650-600", "Edge 700-650", "Radius 650-600", "Premiens 600"], "700": ["Brixxon R750-700", "Edge 700-650", "Radius 700-650", "Paragon 700", "Premiens 700"], "800": ["Brixxon R850-800", "Edge 800-750", "Radius 850-800", "Paragon 800", "Premiens 800"], "900": ["Brixxon R900-850", "Edge 900-850", "Radius 900", "Paragon 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900", "Paragon 1000"] }
@@ -868,7 +868,7 @@ function nearbySpineValues(brand, spine) {
   return values
     .filter((value) => value !== target)
     .sort((a, b) => Math.abs(a - target) - Math.abs(b - target))
-    .slice(0, 3);
+    .slice(0, 5);
 }
 
 function rankNearbyModels(brand, mainSpine, input, profile) {
@@ -882,6 +882,16 @@ function rankNearbyModels(brand, mainSpine, input, profile) {
     })
     .filter((entry) => entry.score > -1000)
     .sort((a, b) => b.score - a.score);
+}
+
+function enrichWithNearbyModels(ranked, brand, mainSpine, input, profile, minCount = 6) {
+  if (ranked.length >= minCount) return ranked;
+  const seen = new Set(ranked.map((entry) => normalizeModelKey(entry.model)));
+  const nearby = rankNearbyModels(brand, mainSpine, input, profile)
+    .filter((entry) => !seen.has(normalizeModelKey(entry.model)));
+  return [...ranked, ...nearby]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, Math.max(minCount, ranked.length));
 }
 
 function rankCrossBrandAlternatives(input, profile, budget, excludedBrand) {
@@ -958,6 +968,7 @@ function buildBrandRecommendation(input, brand) {
     if (skylon.ok) {
       models = filterByBudget(skylon.models, input.budgetLevel);
       ranked = rankModels(models, input, profile);
+      ranked = enrichWithNearbyModels(ranked, brand, base.main, input, profile, 6);
       ranked = attachModelSpines(ranked, brand, base.raw, profile);
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
@@ -991,15 +1002,11 @@ function buildBrandRecommendation(input, brand) {
       };
     }
   }
-
-  const topMeta = ranked[0]?.meta || null;
-  const pointSetup = estimatePointSetup(input, (ranked[0]?.meta || topMeta)?.pointRange || profile.pointRange, ranked[0]?.meta || topMeta || null);
   const reasons = [];
   if (input.shaftMaterial !== "all") reasons.push("Filtre de construction impose.");
   if (input.shootingEnvironment === "outdoor") reasons.push("Contexte exterieur pris en compte.");
   if (ranked.length >= 2) reasons.push("Plusieurs modeles coherents trouves dans la marque.");
   if (input.arrowLength < 24 || input.arrowLength > 31) reasons.push("Longueur hors plage centrale: verification fabricant imperative.");
-  if ((ranked[0]?.meta || topMeta)?.dataPrecision === "model") reasons.push("Fiche modele directe utilisee.");
 
   const notes = [];
   let fallbackLabel = "";
@@ -1018,8 +1025,16 @@ function buildBrandRecommendation(input, brand) {
       }
     }
   }
+  if (ranked.length) {
+    const initialCount = ranked.length;
+    ranked = enrichWithNearbyModels(ranked, brand, base.main, input, profile, 6);
+    if (ranked.length > initialCount) reasons.push("Modeles voisins du spine principal ajoutes pour elargir le choix dans la marque.");
+  }
+  const topMeta = ranked[0]?.meta || null;
+  const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
+  if (topMeta?.dataPrecision === "model") reasons.push("Fiche modele directe utilisee.");
   if (input.shootingEnvironment === "indoor" && profile.preferredMaterial === "alu") notes.push("Pour la salle recurve, verifier ensuite le tableau alu dedie du fabricant.");
-  if ((ranked[0]?.meta || topMeta)?.note) notes.push((ranked[0]?.meta || topMeta).note);
+  if (topMeta?.note) notes.push(topMeta.note);
   if (!ranked.length && !alternatives.length) notes.push("Aucun modele strictement conforme aux filtres. Elargir les contraintes peut etre utile.");
 
   ranked = attachModelSpines(ranked, brand, base.raw, profile);
@@ -1061,7 +1076,7 @@ function buildBrandRecommendation(input, brand) {
 
 function renderModelList(recommendation, input) {
   if (!recommendation.models.length) return "<li>Aucun modele correspondant strictement a vos filtres.</li>";
-  return recommendation.models.slice(0, 8).map((entry) => {
+  return recommendation.models.slice(0, 14).map((entry) => {
     const meta = entry.meta;
     const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : "";
     const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : "";
@@ -1154,7 +1169,7 @@ function recommendationPrimaryDisplay(recommendation) {
 }
 
 function renderComparisonBrandCard(entry, input) {
-  const topModels = entry.rec.models.slice(0, 3);
+  const topModels = entry.rec.models.slice(0, 6);
   const modelList = topModels.length
     ? `<ul>${topModels.map((modelEntry) => {
       const meta = modelEntry.meta;
