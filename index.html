@@ -130,7 +130,7 @@
     <section class="tab-panel" data-panel="arc-setup" hidden>
       <section class="card">
         <h2>Reglage de l'arc classique</h2>
-        <p>Outil simple de depart : tiller, band et estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.</p>
+        <p>Deux outils separes : d'un cote les mesures pour le tiller et la plage de band, de l'autre l'estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.</p>
         <div class="measurement-guide">
           <h3>Mesures a prendre</h3>
           <ul class="measurement-list">
@@ -141,41 +141,52 @@
           </ul>
         </div>
         <form id="arc-setup-form" novalidate autocomplete="off">
-          <label>
-            Taille d'arc (AMO)
-            <select id="arcLength">
-              <option value="66">66"</option>
-              <option value="68" selected>68"</option>
-              <option value="70">70"</option>
-              <option value="72">72"</option>
-            </select>
-          </label>
+          <section class="subcard">
+            <h3>Band et tiller</h3>
+            <div class="field-grid">
+              <label>
+                Taille d'arc (AMO)
+                <select id="arcLength">
+                  <option value="66">66"</option>
+                  <option value="68" selected>68"</option>
+                  <option value="70">70"</option>
+                  <option value="72">72"</option>
+                </select>
+              </label>
+              <label>
+                Distance corde / branche haute (mm)
+                <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
+              </label>
+              <label>
+                Distance corde / branche basse mesuree (mm)
+                <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
+              </label>
+            </div>
+            <p>Le <strong>band</strong> depend surtout de la taille d'arc. Le <strong>tiller</strong> se calcule avec la mesure haute et la mesure basse. Exemple : <strong>222 mm</strong>. Ne saisissez pas directement le tiller positif.</p>
+          </section>
 
-          <label>
-            Distance corde / branche haute (mm)
-            <input id="upperTiller" type="number" min="150" max="260" step="0.5" value="222" required />
-          </label>
-          <label>
-            Distance corde / branche basse mesuree (mm)
-            <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
-          </label>
-          <label>
-            Puissance marquee des branches (lbs)
-            <input id="limbMarkedWeight" type="number" min="10" max="60" step="1" value="30" required />
-          </label>
-          <label>
-            Taille de poignee (")
-            <select id="riserLength">
-              <option value="23">23"</option>
-              <option value="25" selected>25"</option>
-              <option value="27">27"</option>
-            </select>
-          </label>
-          <label>
-            Allonge reelle (")
-            <input id="drawLengthForWeight" type="number" min="22" max="34" step="0.25" value="28" required />
-          </label>
-          <p>Exemple : <strong>222 mm</strong>. Ne saisissez pas le tiller positif ici.</p>
+          <section class="subcard">
+            <h3>Puissance tiree estimee</h3>
+            <div class="field-grid">
+              <label>
+                Taille de poignee (")
+                <select id="riserLength">
+                  <option value="23">23"</option>
+                  <option value="25" selected>25"</option>
+                  <option value="27">27"</option>
+                </select>
+              </label>
+              <label>
+                Puissance marquee des branches (lbs)
+                <input id="limbMarkedWeight" type="number" min="10" max="60" step="1" value="30" required />
+              </label>
+              <label>
+                Allonge reelle (")
+                <input id="drawLengthForWeight" type="number" min="22" max="34" step="0.25" value="28" required />
+              </label>
+            </div>
+            <p>Le calcul de puissance utilise la <strong>poignee</strong>, la <strong>puissance marquee</strong> et l'<strong>allonge</strong>. Le <strong>band</strong> n'entre pas dans ce calcul. Le <strong>tiller</strong> n'y entre pas directement non plus, sauf si vous changez le reglage des vis de branches.</p>
+          </section>
 
           <button type="submit">Calculer le reglage</button>
         </form>
@@ -188,7 +199,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260319h"></script>
+  <script src="app.js?v=20260320a"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

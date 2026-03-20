@@ -78,6 +78,34 @@ body {
   margin: 10px 0 0;
 }
 
+.subcard {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #d8d2c8;
+  border-radius: 14px;
+  background: #fffdfa;
+}
+
+.subcard h3 {
+  margin: 0 0 12px;
+  color: var(--accent-2);
+}
+
+.subcard p {
+  margin: 12px 0 0;
+}
+
+.field-grid {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 760px) {
+  .field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .measurement-list {
   margin: 0;
   padding-left: 18px;

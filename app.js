@@ -1490,15 +1490,22 @@ function renderArcSetup(input) {
   const setup = computeArcSetup(input);
   els.arcSetupResult.innerHTML = `
     <h2>Reglage de l'arc</h2>
-    <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
-    <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
-    <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
-    <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
-    <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
-    <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
-    <p>${setup.adjustment.advice}</p>
-    <p><strong>Repere utile</strong> : tiller positif de base entre +2 et +10 mm, avec un prereglage courant autour de +6 mm.</p>
-    <p><strong>Note</strong> : le tiller n'est pas un indicateur direct de puissance tiree.</p>
+    <section class="subcard">
+      <h3>Band et tiller</h3>
+      <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
+      <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
+      <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
+      <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
+      <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
+      <p>${setup.adjustment.advice}</p>
+      <p><strong>Repere utile</strong> : tiller positif de base entre +2 et +10 mm, avec un prereglage courant autour de +6 mm.</p>
+    </section>
+    <section class="subcard">
+      <h3>Puissance tiree estimee</h3>
+      <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
+      <p><strong>Base du calcul</strong> : poignee ${input.riserLength}" + branches ${input.limbMarkedWeight} lbs + allonge ${input.drawLengthForWeight.toFixed(2)}".</p>
+      <p><strong>Note</strong> : le band n'entre pas dans ce calcul. Le tiller n'entre pas directement dans ce calcul non plus. En revanche, toucher aux vis de branches peut faire bouger a la fois le tiller et la puissance ressentie.</p>
+    </section>
   `;
 }
 
