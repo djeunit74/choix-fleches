@@ -1672,6 +1672,20 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   return `<p>Offres correspondant aux modeles resultats :</p><ul>${content}</ul>`;
 }
 
+function sourceLinksForBrand(brand) {
+  if (brand === "skylon") return ['<a href="https://skylonarchery.com/" target="_blank" rel="noopener noreferrer">Skylon Archery</a>'];
+  if (brand === "easton") return ['<a href="https://eastonarchery.com/selector/" target="_blank" rel="noopener noreferrer">Easton selector</a>'];
+  if (brand === "victory") return ['<a href="https://victoryarchery.com/arrow-guide/" target="_blank" rel="noopener noreferrer">Victory arrow guide</a>', '<a href="https://victoryarchery.com/fitting-charts/" target="_blank" rel="noopener noreferrer">Victory fitting charts</a>'];
+  if (brand === "carbon") return ['<a href="https://www.feradyne.com/brands/carbon-express/arrow-charts/" target="_blank" rel="noopener noreferrer">Carbon Express arrow charts</a>'];
+  return [];
+}
+
+function renderSourcesSection(brands) {
+  const links = [...new Set(brands.flatMap(sourceLinksForBrand))];
+  if (!links.length) return "";
+  return `<p>Sources des tableaux :</p><ul>${links.map((link) => `<li>${link}</li>`).join("")}</ul>`;
+}
+
 function recommendationPrimaryDisplay(recommendation) {
   const topModel = recommendation.models[0];
   const topSpine = topModel?.advisedSpine || recommendation.primary;
@@ -1698,6 +1712,7 @@ function renderComparisonBrandCard(entry, input) {
       <p class="mini-card-subtitle">Modeles coherents</p>
       ${modelList}
       ${brandDeals}
+      ${renderSourcesSection([entry.brand])}
     </article>
   `;
 }
@@ -1908,6 +1923,7 @@ function renderRecommendation(input) {
     ${renderAlternativeModelList(recommendation)}
     <p>Notes techniques:</p>
     ${notesList}
+    ${renderSourcesSection([recommendation.brand])}
     <p>Offres chez les marchands (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise) :</p>
     ${dealsList}
   `;
