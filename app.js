@@ -84,7 +84,7 @@ const MODEL_CALIBRATION_BY_FAMILY = {
   rx7: "skylon_indoor_large",
   x23: "skylon_indoor_large",
   xx75: "skylon_indoor_large",
-  "medallion xr": "skylon_indoor_large",
+  "medallion xr": "skylon_standard_perf",
   "v-tac 23 elite": "skylon_indoor_large"
 };
 
@@ -113,7 +113,7 @@ const MODEL_METADATA = {
   "predator ii": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Budget polyvalent." },
   "nano-pro rz": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin exterieur." },
   "nano-pro xtreme": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["competition"], pointRange: [100, 120], note: "Competition exterieure." },
-  "medallion xr": { material: "carbon", diameters: ["large"], environments: ["indoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [100, 150], note: "Gros diametre salle." },
+  "medallion xr": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Carbone cible pour petites et moyennes puissances." },
   "radius 400": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [100, 120], note: "Tube club coherent." },
   "radius 650-600": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube club coherent." },
   "radius 700-650": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube club coherent." },
@@ -152,7 +152,21 @@ const MODEL_FAMILY_METADATA = {
   "vxt elite v1": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin exterieur." }
 };
 
-const SKYLON_GRID = [["Y1","Y1","Y2","Y3","Y4","","","","",""],["Y2","Y3","Y4","A1","A2","A3","A4","A5","A6",""],["","","A1","A2","A3","A4","A5","A6","A7",""],["","A1","A2","A3","A4","A5","A6","A7","A8","A9"],["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"],["A2","A3","A4","A5","A6","A7","A8","A9","A10","A11"],["A3","A4","A5","A6","A7","A8","A9","A10","A11","A12"],["A4","A5","A6","A7","A8","A9","A10","A11","A12","A13"],["A5","A6","A7","A8","A9","A10","A11","A12","A13",""],["A6","A7","A8","A9","A10","A11","A12","A13","",""]];
+// Recurve rows are transcribed from the Skylon 2023 chart page 31.
+// Columns map to 23" -> 32", rows map to 16-19 lbs -> 66-70 lbs.
+const SKYLON_GRID = [
+  ["Y1","Y1","Y2","Y3","Y4","","","","",""],
+  ["Y1","Y2","Y3","Y4","A1","A2","A3","A4","",""],
+  ["Y2","Y3","Y4","A1","A2","A3","A4","A5","A6",""],
+  ["","","A1","A2","A3","A4","A5","A6","A7",""],
+  ["","A1","A2","A3","A4","A5","A6","A7","A8","A9"],
+  ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10"],
+  ["A2","A3","A4","A5","A6","A7","A8","A9","A10","A11"],
+  ["A3","A4","A5","A6","A7","A8","A9","A10","A11","A12"],
+  ["A4","A5","A6","A7","A8","A9","A10","A11","A12","A13"],
+  ["A5","A6","A7","A8","A9","A10","A11","A12","A13",""],
+  ["A6","A7","A8","A9","A10","A11","A12","A13","",""]
+];
 const SKYLON_COMPOUND_RANGES = { lt276: [[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70],[70,76],[76,82]], "276_300": [null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70],[70,76]], "301_340": [null,null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65],[65,70]], "340_360": [null,null,null,[29,35],[35,40],[40,45],[45,50],[50,55],[55,60],[60,65]] };
 const SKYLON_RECURVE_RANGES = [[16,19],[20,23],[24,29],[30,35],[36,40],[41,45],[46,50],[51,55],[56,60],[61,65],[66,70]];
 const SKYLON_GROUP_MODELS = { A1: ["Brixxon R1000/R900","Radius 900","Performa 1000","Precium 1000","Paragon 1000"], A2: ["Brixxon R900-850","Radius 850-800","Performa 900","Precium 900","Paragon 900"], A3: ["Brixxon R850-800","Radius 850-800","Performa 850","Precium 850","Paragon 850"], A4: ["Brixxon R750-700","Radius 700-650","Performa 750","Precium 750","Paragon 750"], A5: ["Brixxon R700-650","Radius 650-600","Performa 700","Precium 700","Paragon 700","Premiens 650"], A6: ["Brixxon R650-600","Radius 650-600","Performa 600","Precium 600","Paragon 600","Premiens 600"], A7: ["Brixxon R550-500","Radius 500","Performa 550","Precium 550","Paragon 550","Premiens 550"], A8: ["Brixxon R500-450","Radius 500","Performa 500","Precium 500","Paragon 500","Premiens 500"], A9: ["Brixxon R450-400","Radius 400","Performa 450","Precium 450","Paragon 450","Premiens 450"], A10: ["Brixxon R400","Radius 400","Performa 400","Precium 400","Paragon 400","Premiens 400"], A11: ["Performa 350","Precium 350","Paragon 350","Premiens 350"], A12: ["Performa 350","Precium 350","Paragon 350","Premiens 350"], A13: ["Performa 350","Precium 350","Paragon 350","Premiens 350"] };
@@ -1310,6 +1324,18 @@ function firstCarbonExpressChoice(cell) {
   return String(cell).split("|")[0].trim() || null;
 }
 
+function carbonExpressModelsFromCode(modelCode) {
+  const code = String(modelCode || "").toUpperCase();
+  if (!code) return [];
+  if (code.startsWith("PT")) return ["Predator II"];
+  if (code.startsWith("MXR")) return ["Medallion XR"];
+  if (code.startsWith("NPX")) return ["Nano-Pro Xtreme"];
+  if (code.startsWith("NSST") || code.startsWith("NS")) return ["Nano-Pro RZ"];
+  if (code.startsWith("MPR")) return ["Nano-Pro RZ", "Maxima RED"];
+  if (code.startsWith("XYR")) return ["Predator II"];
+  return [];
+}
+
 function carbonExpressRecommendation(input) {
   const isLightChart = input.drawWeight <= 34 && input.arrowLength <= 27;
   if (isLightChart) {
@@ -1515,7 +1541,8 @@ function buildBrandRecommendation(input, brand) {
   if (brand === "carbon" && input.bowType === "recurve" && profile.preferredMaterial === "carbon") {
     const carbonExpress = carbonExpressRecommendation(input);
     if (carbonExpress.ok) {
-      models = arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || [];
+      const manufacturerModels = carbonExpressModelsFromCode(carbonExpress.modelCode);
+      models = manufacturerModels.length ? manufacturerModels : (arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || []);
       ranked = rankModels(models, input, profile);
       if (!ranked.length) ranked = rankNearbyModels(brand, carbonExpress.normalizedChoice, input, profile);
       if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, carbonExpress.normalizedChoice, input, profile, 6);
@@ -1534,6 +1561,7 @@ function buildBrandRecommendation(input, brand) {
         confidenceReasons: [
           `Tableau Carbon Express ${carbonExpress.chart === "light" ? "light recurve" : "recurve series"} utilise (${carbonExpress.rowLabel}, ${carbonExpress.roundedLength}\").`,
           "Le premier choix de la case Carbon Express est privilegie.",
+          manufacturerModels.length ? `Famille fabricant ${carbonExpress.modelCode} reliee directement au modele conseille.` : "Fallback sur le bucket interne le plus proche.",
           topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."
         ].filter(Boolean),
         models: ranked,

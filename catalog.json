@@ -740,10 +740,11 @@
     "medallion xr": {
       "material": "carbon",
       "diameters": [
-        "large"
+        "standard"
       ],
       "environments": [
-        "indoor"
+        "outdoor",
+        "mixed"
       ],
       "disciplines": [
         "target"
@@ -752,21 +753,20 @@
         "recurve"
       ],
       "goals": [
-        "performance",
-        "competition"
+        "performance"
       ],
       "pointRange": [
-        100,
-        150
+        90,
+        120
       ],
-      "note": "Gros diametre salle.",
+      "note": "Carbone cible pour petites et moyennes puissances.",
       "dataPrecision": "model",
-      "seriesTier": "competition",
-      "massClass": "heavy",
+      "seriesTier": "performance",
+      "massClass": "medium",
       "toleranceClass": "precision",
-      "componentSystem": "large-nock",
-      "distanceBand": "indoor",
-      "useCase": "linecut"
+      "componentSystem": "insert",
+      "distanceBand": "mixed",
+      "useCase": "target"
     },
     "radius 400": {
       "material": "carbon",
@@ -4080,7 +4080,8 @@
       "componentSystem": "pin",
       "distanceBand": "long",
       "useCase": "wind"
-    }
+    },
+    "medallion xr": "skylon_standard_perf"
   },
   "skylon": {
     "grid": [
@@ -4093,6 +4094,18 @@
         "",
         "",
         "",
+        "",
+        ""
+      ],
+      [
+        "Y1",
+        "Y2",
+        "Y3",
+        "Y4",
+        "A1",
+        "A2",
+        "A3",
+        "A4",
         "",
         ""
       ],
