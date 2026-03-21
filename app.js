@@ -1372,7 +1372,6 @@ function buildBrandRecommendation(input, brand) {
     if (skylon.ok) {
       models = skylon.models;
       ranked = rankModels(models, input, profile);
-      ranked = enrichWithNearbyModels(ranked, brand, base.main, input, profile, 6);
       ranked = attachModelSpines(ranked, brand, base.raw, profile);
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
@@ -1411,8 +1410,6 @@ function buildBrandRecommendation(input, brand) {
     if (easton.ok) {
       models = arrowCatalog.easton?.[easton.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
-      if (!ranked.length) ranked = rankNearbyModels(brand, easton.normalizedChoice, input, profile);
-      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, easton.normalizedChoice, input, profile, 6);
       ranked = ranked.map((entry) => ({ ...entry, advisedSpine: easton.weakChoice || easton.normalizedChoice }));
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
@@ -1455,8 +1452,6 @@ function buildBrandRecommendation(input, brand) {
     if (easton.ok) {
       models = arrowCatalog.easton?.[easton.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
-      if (!ranked.length) ranked = rankNearbyModels(brand, easton.normalizedChoice, input, profile);
-      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, easton.normalizedChoice, input, profile, 6);
       ranked = ranked.map((entry) => ({ ...entry, advisedSpine: easton.weakChoice || easton.normalizedChoice }));
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
@@ -1499,8 +1494,6 @@ function buildBrandRecommendation(input, brand) {
     if (victory.ok) {
       models = arrowCatalog.victory?.[victory.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
-      if (!ranked.length) ranked = rankNearbyModels(brand, victory.normalizedChoice, input, profile);
-      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, victory.normalizedChoice, input, profile, 6);
       ranked = ranked.map((entry) => ({ ...entry, advisedSpine: victory.spine }));
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
@@ -1544,8 +1537,6 @@ function buildBrandRecommendation(input, brand) {
       const manufacturerModels = carbonExpressModelsFromCode(carbonExpress.modelCode);
       models = manufacturerModels.length ? manufacturerModels : (arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || []);
       ranked = rankModels(models, input, profile);
-      if (!ranked.length) ranked = rankNearbyModels(brand, carbonExpress.normalizedChoice, input, profile);
-      if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, carbonExpress.normalizedChoice, input, profile, 6);
       ranked = ranked.map((entry) => ({ ...entry, advisedSpine: carbonExpress.modelCode || carbonExpress.normalizedChoice }));
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
