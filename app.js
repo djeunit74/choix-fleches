@@ -1354,9 +1354,9 @@ function buildBrandRecommendation(input, brand) {
         brand,
         mode: "skylon",
         primary: skylon.group,
-        comparisonSpine: base.main,
-        softer: base.softer,
-        stiffer: base.stiffer,
+        comparisonSpine: null,
+        softer: null,
+        stiffer: null,
         load: base.load,
         confidence: skylon.warning ? "Moyenne" : "Elevee",
         confidenceReasons: skylon.warning ? ["Zone Y: confirmation par entraineur recommandee.", topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."] : ["Groupe issu du tableau Skylon.", "Modeles tries selon usage et construction.", topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."].filter(Boolean),
@@ -1733,7 +1733,10 @@ function renderSourcesSection(brands) {
 function recommendationPrimaryDisplay(recommendation) {
   const topModel = recommendation.models[0];
   const topSpine = topModel?.advisedSpine || recommendation.primary;
-  if (recommendation.mode === "skylon" || recommendation.mode === "easton-table" || recommendation.mode === "victory-table" || recommendation.mode === "carbon-table") {
+  if (recommendation.mode === "skylon") {
+    return `${topSpine} <span class="result-subvalue">groupe ${recommendation.primary}</span>`;
+  }
+  if (recommendation.mode === "easton-table" || recommendation.mode === "victory-table" || recommendation.mode === "carbon-table") {
     return `${topSpine} <span class="result-subvalue">base ${recommendation.primary} / eq. ${recommendation.comparisonSpine}</span>`;
   }
   return `${topSpine} <span class="result-subvalue">base ${recommendation.primary}</span>`;
@@ -1953,7 +1956,7 @@ function renderRecommendation(input) {
     <p>Options de pointes plausibles: <strong>${recommendation.recommendedPointChoices?.join(" / ") || recommendation.recommendedPointRange.join(" - ")}</strong></p>
     <p>${recommendation.pointWeightNote}</p>
     <p>Ajustement rapide: <strong>assouplir</strong> -> ${recommendation.recommendedPointSofter ? `${recommendation.recommendedPointSofter} gr` : "pas d'option plus lourde"} | <strong>raidir</strong> -> ${recommendation.recommendedPointStiffer ? `${recommendation.recommendedPointStiffer} gr` : "pas d'option plus legere"}</p>
-    <p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>
+    ${recommendation.softer && recommendation.stiffer ? `<p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>` : ""}
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
     ${confidenceList}
