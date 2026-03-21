@@ -14,7 +14,6 @@ const els = {
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
   materialGuidance: document.getElementById("materialGuidance"),
-  budgetLevel: document.getElementById("budgetLevel"),
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   arcLength: document.getElementById("arcLength"),
@@ -1076,10 +1075,7 @@ function deriveTargetProfile(input) {
   if (input.discipline === "hunting") pointRange = [100, input.bowType === "compound" ? 150 : 125];
   if (input.shootingEnvironment === "indoor" && input.discipline === "target") pointRange = [input.bowType === "compound" ? 120 : 100, input.bowType === "compound" ? 150 : 120];
 
-  let preferredSeries = "performance";
-  if (input.budgetLevel === "eco") preferredSeries = "club";
-  if (input.budgetLevel === "premium") preferredSeries = "competition";
-  if (input.shootingEnvironment === "indoor" && input.budgetLevel === "all") preferredSeries = "performance";
+  let preferredSeries = input.shootingEnvironment === "indoor" ? "performance" : "performance";
 
   let preferredMass = "medium";
   if (input.shootingEnvironment === "indoor") preferredMass = "heavy";
@@ -1087,8 +1083,6 @@ function deriveTargetProfile(input) {
   if (input.shootingEnvironment === "outdoor" && input.pointWeight >= 110) preferredMass = "medium";
 
   let preferredTolerance = "matched";
-  if (input.budgetLevel === "eco") preferredTolerance = "standard";
-  if (input.budgetLevel === "premium") preferredTolerance = "precision";
 
   const preferredDistanceBand = input.shootingEnvironment === "indoor" ? "indoor" : "long";
   const preferredUseCase = input.shootingEnvironment === "indoor" ? "linecut" : preferredDiameter === "thin" ? "wind" : "target";
@@ -1173,7 +1167,6 @@ function scoreModel(modelName, input, profile) {
   if (meta.distanceBand === profile.preferredDistanceBand) score += 2;
   if (meta.useCase === profile.preferredUseCase) score += 2;
   if (meta.dataPrecision === "model") score += 1;
-  score += budgetScore(modelName, input.budgetLevel);
   return { score, meta };
 }
 
@@ -1227,12 +1220,12 @@ function enrichWithNearbyModels(ranked, brand, mainSpine, input, profile, minCou
   return combined.slice(0, Math.max(minCount, ranked.length));
 }
 
-function rankCrossBrandAlternatives(input, profile, budget, excludedBrand) {
+function rankCrossBrandAlternatives(input, profile, excludedBrand) {
   return BRAND_ORDER
     .filter((brand) => brand !== excludedBrand)
     .flatMap((brand) =>
       Object.entries(arrowCatalog[brand] || {}).flatMap(([spine, models]) =>
-        filterByBudget(models, budget).map((model) => ({ brand, spine, model }))
+        models.map((model) => ({ brand, spine, model }))
       )
     )
     .map((candidate) => {
@@ -1242,29 +1235,6 @@ function rankCrossBrandAlternatives(input, profile, budget, excludedBrand) {
     .filter((entry) => entry.score > -1000)
     .sort((a, b) => b.score - a.score)
     .slice(0, 4);
-}
-
-function modelBudgetTier(modelName) {
-  const name = normalizeModelKey(modelName);
-  const premiumKeys = ["x10", "a/c/e", "nano-pro", "bruxx", "empros"];
-  const ecoKeys = ["jazz", "xx75", "vap jr", "predator ii", "radius", "edge", "maverick", "brixxon", "inspire"];
-  if (premiumKeys.some((key) => name.includes(key))) return "premium";
-  if (ecoKeys.some((key) => name.includes(key))) return "eco";
-  return "mid";
-}
-
-function filterByBudget(models, budget) {
-  if (budget === "all") return models;
-  const exactMatches = models.filter((model) => modelBudgetTier(model) === budget);
-  return exactMatches.length ? exactMatches : models;
-}
-
-function budgetScore(modelName, budget) {
-  if (budget === "all") return 0;
-  const tier = modelBudgetTier(modelName);
-  if (tier === budget) return 3;
-  if ((budget === "eco" && tier === "mid") || (budget === "premium" && tier === "mid")) return 1;
-  return 0;
 }
 
 function findRangeRow(ranges, value) {
@@ -1368,13 +1338,13 @@ function carbonExpressRecommendation(input) {
 function buildBrandRecommendation(input, brand) {
   const profile = deriveTargetProfile(input);
   const base = recommendationForBrand(input, brand);
-  let models = filterByBudget(arrowCatalog[brand]?.[base.main] || [], input.budgetLevel);
+  let models = arrowCatalog[brand]?.[base.main] || [];
   let ranked = rankModels(models, input, profile);
 
   if (brand === "skylon") {
     const skylon = skylonRecommendation(input);
     if (skylon.ok) {
-      models = filterByBudget(skylon.models, input.budgetLevel);
+      models = skylon.models;
       ranked = rankModels(models, input, profile);
       ranked = enrichWithNearbyModels(ranked, brand, base.main, input, profile, 6);
       ranked = attachModelSpines(ranked, brand, base.raw, profile);
@@ -1413,7 +1383,7 @@ function buildBrandRecommendation(input, brand) {
   if (brand === "easton" && input.bowType === "recurve" && input.shootingEnvironment === "outdoor" && profile.preferredMaterial === "carbon") {
     const easton = eastonCarbonRecommendation(input);
     if (easton.ok) {
-      models = filterByBudget(arrowCatalog.easton?.[easton.normalizedChoice] || [], input.budgetLevel);
+      models = arrowCatalog.easton?.[easton.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
       if (!ranked.length) ranked = rankNearbyModels(brand, easton.normalizedChoice, input, profile);
       if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, easton.normalizedChoice, input, profile, 6);
@@ -1457,7 +1427,7 @@ function buildBrandRecommendation(input, brand) {
   if (brand === "easton" && input.bowType === "recurve" && input.shootingEnvironment === "indoor" && profile.preferredMaterial === "alu") {
     const easton = eastonAluRecommendation(input);
     if (easton.ok) {
-      models = filterByBudget(arrowCatalog.easton?.[easton.normalizedChoice] || [], input.budgetLevel);
+      models = arrowCatalog.easton?.[easton.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
       if (!ranked.length) ranked = rankNearbyModels(brand, easton.normalizedChoice, input, profile);
       if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, easton.normalizedChoice, input, profile, 6);
@@ -1501,7 +1471,7 @@ function buildBrandRecommendation(input, brand) {
   if (brand === "victory" && input.bowType === "recurve" && profile.preferredMaterial === "carbon") {
     const victory = victoryRecurveRecommendation(input);
     if (victory.ok) {
-      models = filterByBudget(arrowCatalog.victory?.[victory.normalizedChoice] || [], input.budgetLevel);
+      models = arrowCatalog.victory?.[victory.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
       if (!ranked.length) ranked = rankNearbyModels(brand, victory.normalizedChoice, input, profile);
       if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, victory.normalizedChoice, input, profile, 6);
@@ -1545,7 +1515,7 @@ function buildBrandRecommendation(input, brand) {
   if (brand === "carbon" && input.bowType === "recurve" && profile.preferredMaterial === "carbon") {
     const carbonExpress = carbonExpressRecommendation(input);
     if (carbonExpress.ok) {
-      models = filterByBudget(arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || [], input.budgetLevel);
+      models = arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
       if (!ranked.length) ranked = rankNearbyModels(brand, carbonExpress.normalizedChoice, input, profile);
       if (ranked.length) ranked = enrichWithNearbyModels(ranked, brand, carbonExpress.normalizedChoice, input, profile, 6);
@@ -1602,7 +1572,7 @@ function buildBrandRecommendation(input, brand) {
       fallbackLabel = "modeles proches";
       notes.push("Aucune correspondance exacte sur le spine principal; proposition de references voisines de la marque.");
     } else {
-      alternatives = rankCrossBrandAlternatives(input, profile, input.budgetLevel, brand);
+      alternatives = rankCrossBrandAlternatives(input, profile, brand);
       if (alternatives.length) {
         fallbackLabel = "alternatives marque";
         notes.push("Aucune reference exploitable dans cette marque pour ce filtre; alternatives compatibles proposees sur d'autres marques.");
@@ -1699,10 +1669,15 @@ function rankDealsAgainstModels(deals, modelNames) {
       return { deal, score: 0, matchedModel: "" };
     })
     .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score || a.deal.shop.localeCompare(b.deal.shop));
+    .sort((a, b) => b.score - a.score || parseDealPrice(a.deal.price) - parseDealPrice(b.deal.price) || a.deal.shop.localeCompare(b.deal.shop));
 }
 
-function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingProfile, allowedBrands = null, recommendedModels = []) {
+function parseDealPrice(price) {
+  const normalized = String(price || "").replace(/\s/g, "").replace(",", ".").match(/(\d+(?:\.\d+)?)/);
+  return normalized ? Number(normalized[1]) : Number.POSITIVE_INFINITY;
+}
+
+function renderDeals(preferredBrand, shaftMaterial, bowType, shootingProfile, allowedBrands = null, recommendedModels = []) {
   const baseDeals = dealsState.deals.filter((deal) => {
     const brandOk = preferredBrand === "all" || deal.brand === preferredBrand;
     const visibleBrandOk = !allowedBrands || allowedBrands.includes(deal.brand);
@@ -1712,10 +1687,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
     const outdoorRecurveOk = shootingProfile !== "recurve_outdoor" || deal.material === "carbon";
     return brandOk && visibleBrandOk && allowedMaterialOk && materialOk && bowTypeOk && outdoorRecurveOk;
   });
-  let finalDeals = budget === "all" ? baseDeals : baseDeals.filter((deal) => deal.tier === budget);
-  if (!finalDeals.length && budget !== "all") {
-    finalDeals = baseDeals;
-  }
+  const finalDeals = baseDeals;
   if (!finalDeals.length) return "<p>Aucune offre correspondant au filtre actuel.</p>";
 
   const displayedDeals = rankDealsAgainstModels(finalDeals, recommendedModels);
@@ -1730,6 +1702,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
   const content = Object.entries(groups)
     .map(([shop, shopDeals]) => {
       const lines = shopDeals
+        .sort((a, b) => parseDealPrice(a.deal.price) - parseDealPrice(b.deal.price))
         .map(({ deal, matchedModel, score }) => {
           const link = `<a href="${deal.url}" target="_blank" rel="noopener noreferrer">${deal.title}</a> - ${deal.price}`;
           const relation = score > 0 && matchedModel ? ` <span class="result-subvalue">modele lie: ${matchedModel}</span>` : "";
@@ -1740,7 +1713,7 @@ function renderDeals(preferredBrand, budget, shaftMaterial, bowType, shootingPro
     })
     .join("");
 
-  return `<p>Offres correspondant aux modeles resultats :</p><ul>${content}</ul>`;
+  return `<p>Offres correspondant aux modeles resultats (classees par prix croissant) :</p><ul>${content}</ul>`;
 }
 
 function sourceLinksForBrand(brand) {
@@ -1776,7 +1749,7 @@ function renderComparisonBrandCard(entry, input) {
       return `<li><strong>${modelEntry.model}</strong> - ${details}</li>`;
     }).join("")}</ul>`
     : "<p>Aucun modele detaille pour cette marque.</p>";
-  const brandDeals = renderDeals(entry.brand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, topModels.map((modelEntry) => modelEntry.model));
+  const brandDeals = renderDeals(entry.brand, input.shaftMaterial, input.bowType, input.shootingProfile, null, topModels.map((modelEntry) => modelEntry.model));
   return `
     <article class="mini-card">
       <p class="mini-card-brand">${brandLabel(entry.brand)}</p>
@@ -1956,7 +1929,7 @@ function renderRecommendation(input) {
     ...uniqueModelEntries(recommendation.models, 7).map((entry) => entry.model),
     ...(recommendation.alternativeModels || []).slice(0, 2).map((entry) => entry.model)
   ];
-  const dealsList = renderDeals(input.preferredBrand, input.budgetLevel, input.shaftMaterial, input.bowType, input.shootingProfile, null, recommendedModels);
+  const dealsList = renderDeals(input.preferredBrand, input.shaftMaterial, input.bowType, input.shootingProfile, null, recommendedModels);
   const topMeta = recommendation.models[0]?.meta || null;
   const primaryLabel = recommendationPrimaryDisplay(recommendation);
   const modelTitle = recommendation.fallbackLabel === "modeles proches"
@@ -2017,7 +1990,6 @@ els.form.addEventListener("submit", async (event) => {
     preferredBrand: els.preferredBrand.value,
     shootingEnvironment: els.shootingEnvironment.value,
     shaftMaterial: els.shaftMaterial.value,
-    budgetLevel: els.budgetLevel.value,
     drawWeight: converted.drawWeight,
     arrowLength: converted.arrowLength,
     discipline: els.discipline.value
