@@ -8,6 +8,7 @@ const els = {
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
   clearHistoryBtn: document.getElementById("clearHistoryBtn"),
   preferredBrand: document.getElementById("preferredBrand"),
+  shootingProfileWrap: document.getElementById("shootingProfileWrap"),
   shootingProfile: document.getElementById("shootingProfile"),
   shootingEnvironmentWrap: document.getElementById("shootingEnvironmentWrap"),
   shootingEnvironment: document.getElementById("shootingEnvironment"),
@@ -919,6 +920,10 @@ function applyUnitConstraints() {
 }
 
 function updateVisibility() {
+  if (els.shootingProfileWrap) {
+    els.shootingProfileWrap.hidden = true;
+    els.shootingProfileWrap.style.display = "none";
+  }
   els.shootingEnvironmentWrap.hidden = true;
   els.shootingEnvironmentWrap.style.display = "none";
   els.disciplineWrap.hidden = true;
@@ -926,61 +931,45 @@ function updateVisibility() {
 }
 
 function updateMaterialOptions() {
-  const profileKey = els.shootingProfile.value;
-
-  if (profileKey === "recurve_outdoor") {
-    els.shaftMaterial.innerHTML = '<option value="carbon">Carbone</option>';
-    els.shaftMaterial.value = "carbon";
-    els.shaftMaterial.disabled = true;
-    return;
-  }
-
   els.shaftMaterial.innerHTML = `
     <option value="all">Toutes</option>
     <option value="carbon">Carbone</option>
     <option value="alu">Alu</option>
   `;
-  els.shaftMaterial.value = SHOOTING_PROFILES[profileKey]?.shaftMaterial || "all";
+  if (!["all", "carbon", "alu"].includes(els.shaftMaterial.value)) {
+    els.shaftMaterial.value = "all";
+  }
   els.shaftMaterial.disabled = false;
 }
 
 function updateMaterialGuidance() {
   if (!els.materialGuidance) return;
-  const profileKey = els.shootingProfile.value;
   const materialValue = els.shaftMaterial.value;
 
-  if (profileKey === "recurve_outdoor") {
-    els.materialGuidance.innerHTML = `Repere FFTA : en <strong>exterieur</strong>, on privilegie surtout le <strong>carbone</strong>.`;
+  if (materialValue === "alu") {
+    els.materialGuidance.innerHTML = `Repere FFTA : l'<strong>aluminium</strong> est surtout utilise en <strong>salle</strong>.`;
     return;
   }
-  if (profileKey === "recurve_indoor" && materialValue === "alu") {
-    els.materialGuidance.innerHTML = `Repere FFTA : en <strong>salle</strong>, l'<strong>alu</strong> est souvent le choix de base.`;
+  if (materialValue === "carbon") {
+    els.materialGuidance.innerHTML = `Repere FFTA : le <strong>carbone</strong> convient a toutes les disciplines et a l'initiation.`;
     return;
   }
-  if (profileKey === "recurve_indoor" && materialValue === "carbon") {
-    els.materialGuidance.innerHTML = `Repere FFTA : en <strong>salle</strong>, le <strong>carbone</strong> reste possible, mais l'<strong>alu</strong> est la base la plus classique.`;
-    return;
-  }
-  els.materialGuidance.innerHTML = "Repere debutant : carbone pour l'exterieur, alu surtout pour la salle.";
+  els.materialGuidance.innerHTML = "Repere FFTA : l'aluminium est surtout utilise en salle, le carbone convient a toutes les disciplines et a l'initiation.";
 }
 
 function normalizeInput(input) {
-  if (input.shootingProfile === "recurve_outdoor") {
-    return { ...input, shaftMaterial: "carbon", shootingEnvironment: "outdoor", discipline: "target" };
+  if (input.shaftMaterial === "alu") {
+    return { ...input, shootingProfile: "recurve_indoor", shootingEnvironment: "indoor", discipline: "target" };
   }
-  if (input.shootingProfile === "recurve_indoor") {
-    return { ...input, shootingEnvironment: "indoor", discipline: "target" };
+  if (input.shaftMaterial === "carbon" || input.shaftMaterial === "all") {
+    return { ...input, shootingProfile: "recurve_outdoor", shootingEnvironment: "outdoor", discipline: "target" };
   }
   return input;
 }
 
 function applyProfileDefaults() {
-  const profile = SHOOTING_PROFILES[els.shootingProfile.value];
-  if (profile) {
-    els.shootingEnvironment.value = profile.shootingEnvironment;
-    els.shaftMaterial.value = profile.shaftMaterial;
-    els.discipline.value = profile.discipline;
-  }
+  els.shootingEnvironment.value = "outdoor";
+  els.discipline.value = "target";
   updateMaterialOptions();
   updateMaterialGuidance();
   updateVisibility();
@@ -1931,7 +1920,6 @@ function renderArcSetup(input) {
 }
 
 function renderComparison(input) {
-  const contextLine = `<p>Configuration cible deduite du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
   const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
   const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
@@ -1946,9 +1934,7 @@ function renderComparison(input) {
     <h2>Comparaison par marque</h2>
     <p>Chaque marque garde sa propre logique de reference.</p>
     <p class="result-value">Choisissez une marque</p>
-    <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
-    ${contextLine}
-    <p>Construction recherchee: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
+    <p>Materiau recherche: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
     ${emptyState}
     ${hiddenState}
     <p>Offres marchands reliees aux resultats (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise).</p>
@@ -1964,7 +1950,6 @@ function renderRecommendation(input) {
   }
 
   const recommendation = buildBrandRecommendation(input, input.preferredBrand);
-  const contextLine = `<p>Contexte deduit du profil <strong>${profileLabel(input.shootingProfile)}</strong>.</p>`;
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const recommendedModels = [
@@ -1982,8 +1967,7 @@ function renderRecommendation(input) {
     <h2>Recommandation ${brandLabel(recommendation.brand)}</h2>
     <p>Sortie orientee club: spine, construction, diametre et modele.</p>
     <p class="result-value">${primaryLabel}</p>
-    <p>Profil actif: <strong>${profileLabel(input.shootingProfile)}</strong></p>
-    ${contextLine}
+    <p>Materiau retenu: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
     <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
     <p>Poids de pointe conseille pour le tube retenu: <strong>${recommendation.recommendedPointWeight} gr</strong> (${recommendation.recommendedPointProfile})</p>
