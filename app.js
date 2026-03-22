@@ -256,7 +256,7 @@ const LIVE_DEALS = [
     ],
     "tier": "eco",
     "title": "Skylon Brixxon carbone 4,2 lot de 12 tubes",
-    "price": "73,90 EUR",
+    "price": "67,50 EUR",
     "url": "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes",
     "shop": "erhart-sports.com"
   },
@@ -269,7 +269,7 @@ const LIVE_DEALS = [
     ],
     "tier": "premium",
     "title": "Skylon Paragon lot de 12 tubes",
-    "price": "149,90 EUR",
+    "price": "134,90 EUR",
     "url": "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html",
     "shop": "erhart-sports.com"
   },
@@ -375,7 +375,7 @@ const LIVE_DEALS = [
     ],
     "tier": "premium",
     "title": "Victory VAP Target V1 lot de 12 tubes",
-    "price": "159,00 EUR",
+    "price": "161,40 EUR",
     "url": "https://www.erhart-sports.com/tubes-nus/2143-443507-victory-vap-target-v1-lot-de-12-tubes.html",
     "shop": "erhart-sports.com"
   },
@@ -403,7 +403,7 @@ const LIVE_DEALS = [
     ],
     "tier": "premium",
     "title": "Tube VAP Target Elite Victory",
-    "price": "216,58 EUR",
+    "price": "259,90 EUR",
     "url": "https://www.archerie.fr/fr/2375-tube-vap-target-elite-victory.html",
     "shop": "archerie.fr"
   },
@@ -548,7 +548,7 @@ const LIVE_DEALS = [
     ],
     "tier": "mid",
     "title": "Tube Medallion-XR (2016) Carbon Express",
-    "price": "91,58 EUR",
+    "price": "109,90 EUR",
     "url": "https://www.archerie.fr/fr/2343-tube-medallion-xr-2016-carbon-express.html",
     "shop": "archerie.fr"
   },
@@ -574,7 +574,7 @@ const LIVE_DEALS = [
     ],
     "tier": "premium",
     "title": "Lot de 12 tubes Skylon Paragon ID3.2 en carbone",
-    "price": "108,29 EUR",
+    "price": "129,95 EUR",
     "url": "https://www.archerie.fr/fr/4616-lot-de-12-tubes-skylon-paragon-id32-en-carbone.html",
     "shop": "archerie.fr"
   },
@@ -587,7 +587,7 @@ const LIVE_DEALS = [
     ],
     "tier": "premium",
     "title": "Lot de 12 tubes Skylon Precium ID3.2 en carbone",
-    "price": "99,96 EUR",
+    "price": "119,95 EUR",
     "url": "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html",
     "shop": "archerie.fr"
   },
@@ -600,7 +600,7 @@ const LIVE_DEALS = [
     ],
     "tier": "mid",
     "title": "Lot de 12 tubes Skylon Performa ID3.2 en carbone",
-    "price": "69,96 EUR",
+    "price": "83,95 EUR",
     "url": "https://www.archerie.fr/fr/4614-lot-de-12-tubes-skylon-performa-id32-en-carbone.html",
     "shop": "archerie.fr"
   },
@@ -613,7 +613,7 @@ const LIVE_DEALS = [
     ],
     "tier": "premium",
     "title": "Tube Nano-SST Carbon Express",
-    "price": "422,95 EUR",
+    "price": "323,95 EUR",
     "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
     "shop": "archerie.fr"
   },
