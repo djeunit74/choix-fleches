@@ -140,25 +140,33 @@
       "600": [
         "Nano-Pro RZ",
         "Predator II",
-        "Trojan"
+        "Trojan",
+        "Nano SST",
+        "Maxima Pro Recurve RZ"
       ],
       "700": [
         "Nano-Pro RZ",
         "Predator II",
-        "Medallion XR"
+        "Medallion XR",
+        "Nano SST",
+        "Maxima Pro Recurve RZ"
       ],
       "800": [
         "Nano-Pro Xtreme",
         "Nano-Pro RZ",
-        "Medallion XR"
+        "Medallion XR",
+        "Nano SST",
+        "Maxima Pro Recurve RZ"
       ],
       "900": [
         "Nano-Pro Xtreme",
-        "Medallion XR"
+        "Medallion XR",
+        "Nano SST"
       ],
       "1000": [
         "Medallion XR",
-        "Nano-Pro Xtreme"
+        "Nano-Pro Xtreme",
+        "Nano SST"
       ]
     },
     "skylon": {
@@ -3384,6 +3392,81 @@
       "componentSystem": "pin",
       "distanceBand": "long",
       "useCase": "target"
+    },
+    "nano sst": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Serie Carbon Express Nano SST du tableau recurve.",
+      "dataPrecision": "model",
+      "seriesTier": "performance",
+      "massClass": "medium",
+      "toleranceClass": "matched",
+      "componentSystem": "insert",
+      "distanceBand": "long",
+      "useCase": "target",
+      "pointChoices": [
+        90,
+        100,
+        110,
+        120
+      ]
+    },
+    "maxima pro recurve rz": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Serie Maxima Pro Recurve RZ du tableau Carbon Express.",
+      "dataPrecision": "model",
+      "seriesTier": "competition",
+      "massClass": "medium",
+      "toleranceClass": "precision",
+      "componentSystem": "insert",
+      "distanceBand": "long",
+      "useCase": "target",
+      "pointChoices": [
+        90,
+        100,
+        110,
+        120
+      ]
     }
   },
   "families": {
@@ -4081,7 +4164,56 @@
       "distanceBand": "long",
       "useCase": "wind"
     },
-    "medallion xr": "skylon_standard_perf"
+    "medallion xr": "skylon_standard_perf",
+    "nano sst": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Serie Carbon Express Nano SST du tableau recurve."
+    },
+    "maxima pro recurve rz": {
+      "material": "carbon",
+      "diameters": [
+        "standard"
+      ],
+      "environments": [
+        "outdoor",
+        "mixed"
+      ],
+      "disciplines": [
+        "target"
+      ],
+      "bowTypes": [
+        "recurve"
+      ],
+      "goals": [
+        "performance",
+        "competition"
+      ],
+      "pointRange": [
+        90,
+        120
+      ],
+      "note": "Serie Maxima Pro Recurve RZ du tableau Carbon Express."
+    }
   },
   "skylon": {
     "grid": [

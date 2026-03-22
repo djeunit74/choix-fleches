@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-03-22T13:29:34.796Z",
-  "source": "remote-csv-sync",
+  "updatedAt": "2026-03-22T13:45:17.827Z",
+  "source": "local-curated",
   "deals": [
     {
       "brand": "skylon",
@@ -371,6 +371,19 @@
       "title": "Lot de 12 tubes Skylon Performa ID3.2 en carbone",
       "price": "69,96 EUR",
       "url": "https://www.archerie.fr/fr/4614-lot-de-12-tubes-skylon-performa-id32-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "nano sst",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Tube Nano-SST Carbon Express",
+      "price": "422,95 EUR",
+      "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
       "shop": "archerie.fr"
     }
   ]

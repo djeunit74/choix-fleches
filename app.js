@@ -114,6 +114,8 @@ const MODEL_METADATA = {
   "nano-pro rz": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin exterieur." },
   "nano-pro xtreme": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["competition"], pointRange: [100, 120], note: "Competition exterieure." },
   "medallion xr": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Carbone cible pour petites et moyennes puissances." },
+  "nano sst": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Serie Carbon Express Nano SST du tableau recurve." },
+  "maxima pro recurve rz": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Serie Maxima Pro Recurve RZ du tableau Carbon Express." },
   "radius 400": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [100, 120], note: "Tube club coherent." },
   "radius 650-600": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube club coherent." },
   "radius 700-650": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube club coherent." },
@@ -141,6 +143,8 @@ const MODEL_FAMILY_METADATA = {
   "rip tko": { material: "carbon", diameters: ["thin"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin oriente exterieur." },
   "rip xv": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [90, 120], note: "Carbone exterieur plus tolerant." },
   "maxima red": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube carbone polyvalent." },
+  "nano sst": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Serie Carbon Express Nano SST du tableau recurve." },
+  "maxima pro recurve rz": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Serie Maxima Pro Recurve RZ du tableau Carbon Express." },
   "hunter xt": { material: "carbon", diameters: ["standard"], environments: ["mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club"], pointRange: [90, 120], note: "Option carbone accessible." },
   "trojan": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Carbone club exterieur." },
   "superdrive micro": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin exterieur." },
@@ -605,6 +609,19 @@ const LIVE_DEALS = [
     "title": "Lot de 12 tubes Skylon Performa ID3.2 en carbone",
     "price": "69,96 EUR",
     "url": "https://www.archerie.fr/fr/4614-lot-de-12-tubes-skylon-performa-id32-en-carbone.html",
+    "shop": "archerie.fr"
+  },
+  {
+    "brand": "carbon",
+    "modelKey": "nano sst",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "premium",
+    "title": "Tube Nano-SST Carbon Express",
+    "price": "422,95 EUR",
+    "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
     "shop": "archerie.fr"
   }
 ];
