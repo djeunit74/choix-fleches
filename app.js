@@ -1319,8 +1319,8 @@ function carbonExpressModelsFromCode(modelCode) {
   if (code.startsWith("PT")) return ["Predator II"];
   if (code.startsWith("MXR")) return ["Medallion XR"];
   if (code.startsWith("NPX")) return ["Nano-Pro Xtreme"];
-  if (code.startsWith("NSST") || code.startsWith("NS")) return ["Nano-Pro RZ"];
-  if (code.startsWith("MPR")) return ["Nano-Pro RZ", "Maxima RED"];
+  if (code.startsWith("NSST") || code.startsWith("NS")) return ["Nano SST"];
+  if (code.startsWith("MPR")) return ["Maxima Pro Recurve RZ"];
   if (code.startsWith("XYR")) return ["Predator II"];
   return [];
 }
