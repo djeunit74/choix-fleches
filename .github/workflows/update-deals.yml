@@ -26,14 +26,17 @@ jobs:
           DEALS_REMOTE_CSV_URL: ${{ secrets.DEALS_REMOTE_CSV_URL }}
         run: node scripts/sync-deals.mjs
 
+      - name: Refresh prices
+        run: node scripts/refresh-prices.mjs
+
       - name: Commit changes
         run: |
-          if git diff --quiet -- deals.json; then
+          if git diff --quiet -- deals.json google-sheet-deals-template.csv google-sheet-deals-template.tsv; then
             echo "No changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add deals.json
-          git commit -m "Update merchant deals"
+          git add deals.json google-sheet-deals-template.csv google-sheet-deals-template.tsv
+          git commit -m "Update merchant deals and prices"
           git push
