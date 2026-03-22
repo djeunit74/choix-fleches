@@ -1527,7 +1527,11 @@ function buildBrandRecommendation(input, brand) {
         recommendedComponentSystem: topMeta?.componentSystem || "insert",
         recommendedUseCase: topMeta?.useCase || profile.preferredUseCase,
         recommendedDistanceBand: topMeta?.distanceBand || profile.preferredDistanceBand,
-        notes: [topMeta?.note || "Controle final au tir requis.", "Tableau officiel Victory recurve privilegie."]
+        notes: [
+          topMeta?.note || "Controle final au tir requis.",
+          "Tableau officiel Victory recurve privilegie.",
+          "Pour Victory, le tableau donne une bonne base de depart, mais un avis d'entraineur reste recommande pour confirmer le bon spine."
+        ]
       };
     }
   }
