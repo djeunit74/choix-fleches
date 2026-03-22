@@ -241,8 +241,7 @@ const LIVE_DEALS = [
     "modelKey": "brixxon",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "eco",
     "title": "Skylon Brixxon carbone 4,2 lot de 12 tubes",
@@ -268,26 +267,12 @@ const LIVE_DEALS = [
     "modelKey": "premiens",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "premium",
     "title": "Skylon Preminens lot de 12 tubes",
     "price": "179,90 EUR",
     "url": "https://www.erhart-sports.com/tubes-nus/2689-skylon-preminens-lot-de-12-tubes.html",
-    "shop": "erhart-sports.com"
-  },
-  {
-    "brand": "skylon",
-    "modelKey": "edge",
-    "material": "carbon",
-    "bowTypes": [
-      "compound"
-    ],
-    "tier": "eco",
-    "title": "Skylon Edge tube carbone 6,2",
-    "price": "4,50 EUR",
-    "url": "https://www.erhart-sports.com/tubes-nus-et-futs-en-bois-de-chasse/skylon-edge-tube-carbone-62",
     "shop": "erhart-sports.com"
   },
   {
@@ -455,8 +440,7 @@ const LIVE_DEALS = [
     "modelKey": "predator ii",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "eco",
     "title": "Carbon Express Predator II",
@@ -469,8 +453,7 @@ const LIVE_DEALS = [
     "modelKey": "radius",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "eco",
     "title": "Lot de 12 fleches Skylon Radius 4,2 mm en carbone",
@@ -483,8 +466,7 @@ const LIVE_DEALS = [
     "modelKey": "radius",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "eco",
     "title": "Lot de 12 tubes Skylon Radius ID4.2 en carbone",
@@ -578,8 +560,7 @@ const LIVE_DEALS = [
     "modelKey": "brixxon",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "eco",
     "title": "Lot de 12 tubes Skylon Brixxon ID4.2 en carbone",
@@ -605,8 +586,7 @@ const LIVE_DEALS = [
     "modelKey": "precium",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "premium",
     "title": "Lot de 12 tubes Skylon Precium ID3.2 en carbone",
@@ -619,30 +599,15 @@ const LIVE_DEALS = [
     "modelKey": "performa",
     "material": "carbon",
     "bowTypes": [
-      "recurve",
-      "compound"
+      "recurve"
     ],
     "tier": "mid",
     "title": "Lot de 12 tubes Skylon Performa ID3.2 en carbone",
     "price": "69,96 EUR",
     "url": "https://www.archerie.fr/fr/4614-lot-de-12-tubes-skylon-performa-id32-en-carbone.html",
     "shop": "archerie.fr"
-  },
-  {
-    "brand": "skylon",
-    "modelKey": "empros 23",
-    "material": "carbon",
-    "bowTypes": [
-      "compound"
-    ],
-    "tier": "premium",
-    "title": "Lot de 12 tubes Skylon Empros 23 ID8.0 en carbone 3K",
-    "price": "60,95 EUR",
-    "url": "https://www.archerie.fr/fr/4611-lot-de-12-tubes-skylon-empros-23-id80-en-carbone-3k.html",
-    "shop": "archerie.fr"
   }
 ];
-
 
 const CATALOG_ENDPOINT = "catalog.json";
 const DEALS_ENDPOINT = "deals.json";
