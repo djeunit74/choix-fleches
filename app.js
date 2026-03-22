@@ -1,4 +1,4 @@
-const els = {
+﻿const els = {
   form: document.getElementById("spine-form"),
   result: document.getElementById("result"),
   arcSetupForm: document.getElementById("arc-setup-form"),
@@ -1732,11 +1732,11 @@ function renderDeals(preferredBrand, shaftMaterial, bowType, shootingProfile, al
           return `<li>${link}${relation}</li>`;
         })
         .join("");
-      return `<li><strong>${shop}</strong><ul>${lines}</ul></li>`;
+      return `<li class="merchant-shop"><p class="merchant-shop-name">${shop}</p><ul class="merchant-deals">${lines}</ul></li>`;
     })
     .join("");
 
-  return `<p>Offres correspondant aux modeles resultats (classees par prix croissant) :</p><ul>${content}</ul>`;
+  return `<section class="merchant-block"><p class="merchant-intro">Offres correspondant aux modeles resultats (classees par prix croissant) :</p><ul class="merchant-shops">${content}</ul></section>`;
 }
 
 function sourceLinksForBrand(brand) {
@@ -1976,8 +1976,11 @@ function renderRecommendation(input) {
     <ul>${renderModelList(recommendation, input)}</ul>
     ${renderAlternativeModelList(recommendation)}
     ${renderSourcesSection([recommendation.brand])}
-    <p>Offres chez les marchands (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise) :</p>
-    ${dealsList}
+    <section class="merchant-panel">
+      <h3>Offres chez les marchands</h3>
+      <p class="merchant-panel-meta">Mise a jour ${dealsUpdatedLabel()}. Verification manuelle requise.</p>
+      ${dealsList}
+    </section>
   `;
 
   writeHistory({ date: new Date().toLocaleString("fr-FR"), profile: brandLabel(recommendation.brand), primary: recommendation.mode === "skylon" ? `Groupe ${recommendation.primary}` : `Spine ${recommendation.primary}`, bowType: input.bowType, drawWeight: input.drawWeight.toFixed(1), arrowLength: input.arrowLength.toFixed(2) });
@@ -2074,3 +2077,5 @@ if (initialArcSetupError) {
 } else {
   renderArcSetup(initialArcSetup);
 }
+
+
