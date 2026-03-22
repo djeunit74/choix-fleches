@@ -1301,9 +1301,16 @@ function victoryRecurveRecommendation(input) {
   return { ok: true, spine: cell, normalizedChoice, rowLabel: row.label, roundedLength };
 }
 
+function carbonExpressChoices(cell) {
+  if (!cell) return [];
+  return String(cell)
+    .split("|")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
 function firstCarbonExpressChoice(cell) {
-  if (!cell) return null;
-  return String(cell).split("|")[0].trim() || null;
+  return carbonExpressChoices(cell)[0] || null;
 }
 
 function carbonExpressModelsFromCode(modelCode) {
@@ -1327,9 +1334,10 @@ function carbonExpressRecommendation(input) {
     if (col < 0 || !row) return { ok: false, message: "Hors tableau Carbon Express light recurve." };
     const cell = row.cells[col];
     if (!cell) return { ok: false, message: "Case vide dans le tableau Carbon Express light recurve." };
-    const first = firstCarbonExpressChoice(cell);
+    const choices = carbonExpressChoices(cell);
+    const first = choices[0];
     const normalizedChoice = first && first.includes("2000") ? "1000" : first && first.includes("1800") ? "900" : first && first.includes("1500") ? "800" : first && first.includes("1300") ? "700" : first && first.includes("1100") ? "600" : first && first.includes("1000") ? "500" : first && first.includes("900") ? "400" : first && first.includes("800") ? "350" : "500";
-    return { ok: true, chart: "light", selection: cell, modelCode: first, normalizedChoice, rowLabel: row.label, roundedLength };
+    return { ok: true, chart: "light", selection: cell, modelCode: first, modelCodes: choices, normalizedChoice, rowLabel: row.label, roundedLength };
   }
 
   const roundedLength = clamp(Math.round(input.arrowLength), 23, 32);
@@ -1338,9 +1346,10 @@ function carbonExpressRecommendation(input) {
   if (col < 0 || !row) return { ok: false, message: "Hors tableau Carbon Express recurve series." };
   const cell = row.cells[col];
   if (!cell) return { ok: false, message: "Case vide dans le tableau Carbon Express recurve series." };
-  const first = firstCarbonExpressChoice(cell);
+  const choices = carbonExpressChoices(cell);
+  const first = choices[0];
   const normalizedChoice = first && first.includes("1000") ? "1000" : first && first.includes("900") ? "900" : first && first.includes("800") ? "800" : first && first.includes("750") ? "700" : first && first.includes("700") ? "700" : first && first.includes("650") ? "600" : first && first.includes("600") ? "600" : first && first.includes("580") ? "600" : first && first.includes("550") ? "500" : first && first.includes("500") ? "500" : first && first.includes("450") ? "400" : first && first.includes("420") ? "400" : first && first.includes("400") ? "400" : first && first.includes("350") ? "350" : "500";
-  return { ok: true, chart: "series", selection: cell, modelCode: first, normalizedChoice, rowLabel: row.label, roundedLength };
+  return { ok: true, chart: "series", selection: cell, modelCode: first, modelCodes: choices, normalizedChoice, rowLabel: row.label, roundedLength };
 }
 
 function buildBrandRecommendation(input, brand) {
@@ -1520,10 +1529,17 @@ function buildBrandRecommendation(input, brand) {
   if (brand === "carbon" && input.bowType === "recurve" && profile.preferredMaterial === "carbon") {
     const carbonExpress = carbonExpressRecommendation(input);
     if (carbonExpress.ok) {
-      const manufacturerModels = carbonExpressModelsFromCode(carbonExpress.modelCode);
+      const choiceCodes = carbonExpress.modelCodes?.length ? carbonExpress.modelCodes : [carbonExpress.modelCode].filter(Boolean);
+      const manufacturerModels = [...new Set(choiceCodes.flatMap((code) => carbonExpressModelsFromCode(code)))];
       models = manufacturerModels.length ? manufacturerModels : (arrowCatalog.carbon?.[carbonExpress.normalizedChoice] || []);
       ranked = rankModels(models, input, profile);
-      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: carbonExpress.modelCode || carbonExpress.normalizedChoice }));
+      const codeByModel = new Map();
+      choiceCodes.forEach((code) => {
+        carbonExpressModelsFromCode(code).forEach((modelName) => {
+          if (!codeByModel.has(modelName)) codeByModel.set(modelName, code);
+        });
+      });
+      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: codeByModel.get(entry.model) || carbonExpress.modelCode || carbonExpress.normalizedChoice }));
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
       return {
@@ -1537,8 +1553,8 @@ function buildBrandRecommendation(input, brand) {
         confidence: "Elevee",
         confidenceReasons: [
           `Tableau Carbon Express ${carbonExpress.chart === "light" ? "light recurve" : "recurve series"} utilise (${carbonExpress.rowLabel}, ${carbonExpress.roundedLength}\").`,
-          "Le premier choix de la case Carbon Express est privilegie.",
-          manufacturerModels.length ? `Famille fabricant ${carbonExpress.modelCode} reliee directement au modele conseille.` : "Fallback sur le bucket interne le plus proche.",
+          "Toutes les references de la case Carbon Express sont prises en compte.",
+          manufacturerModels.length ? `Codes fabricant lus dans la case : ${(carbonExpress.modelCodes || [carbonExpress.modelCode]).join(" / ")}.` : "Fallback sur le bucket interne le plus proche.",
           topMeta?.dataPrecision === "model" ? "Fiche modele directe utilisee." : "Fiche famille utilisee sur ce modele."
         ].filter(Boolean),
         models: ranked,
