@@ -64,24 +64,20 @@
     },
     "victory": {
       "300": [
-        "RIP TKO",
         "VAP Sport"
       ],
       "340": [
         "VAP Sport",
-        "RIP XV",
         "VXT Elite V1"
       ],
       "400": [
         "VAP Sport",
         "VForce",
-        "RIP XV",
         "VXT Elite V1"
       ],
       "500": [
         "VForce",
         "VAP V3",
-        "RIP XV",
         "VXT Elite V1"
       ],
       "600": [
@@ -118,42 +114,25 @@
       ]
     },
     "carbon": {
-      "300": [
-        "Maxima RED",
-        "Hunter XT"
-      ],
-      "340": [
-        "Hunter XT",
-        "Predator II",
-        "Maxima RED"
-      ],
       "400": [
-        "Predator II",
-        "Trojan",
-        "Maxima RED"
+        "Predator II"
       ],
       "500": [
-        "Predator II",
-        "Nano-Pro RZ",
-        "Trojan"
+        "Predator II"
       ],
       "600": [
-        "Nano-Pro RZ",
-        "Predator II",
-        "Trojan",
+        "Medallion XR",
         "Nano SST",
         "Maxima Pro Recurve RZ"
       ],
       "700": [
-        "Nano-Pro RZ",
-        "Predator II",
+        "Nano-Pro Xtreme",
         "Medallion XR",
         "Nano SST",
         "Maxima Pro Recurve RZ"
       ],
       "800": [
         "Nano-Pro Xtreme",
-        "Nano-Pro RZ",
         "Medallion XR",
         "Nano SST",
         "Maxima Pro Recurve RZ"
@@ -165,7 +144,6 @@
       ],
       "1000": [
         "Medallion XR",
-        "Nano-Pro Xtreme",
         "Nano SST"
       ]
     },

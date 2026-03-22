@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-03-22T13:59:46.697Z",
-  "source": "remote-csv-sync",
+  "updatedAt": "2026-03-22T15:17:51.755Z",
+  "source": "local-curated",
   "deals": [
     {
       "brand": "skylon",
@@ -385,6 +385,58 @@
       "price": "422,95 EUR",
       "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
       "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vxt elite v1",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Douzaine tubes Victory VXT Elite V1",
+      "price": "285,00 EUR",
+      "url": "https://www.bourgognearcherie.com/tube-carbone-cible/2494-douzaine-tubes-victory-vxt-elite-v1.html",
+      "shop": "bourgognearcherie.com"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap gamer v3",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Douzaine tubes Victory Target VAP 3 Target Gamer",
+      "price": "145,00 EUR",
+      "url": "https://www.bourgognearcherie.com/tube-carbone-cible/2016-douzaine-victory-vap-1.html",
+      "shop": "bourgognearcherie.com"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "maxima pro recurve rz",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Carbon Express Shaft Maxima Pro RZ",
+      "price": "188,04 EUR",
+      "url": "https://www.archers-delight.com/shop/carbon-express-shaft-maxima-pro-rz/",
+      "shop": "archers-delight.com"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "nano-pro xtreme",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Carbon Express Shaft Nano-Pro Series X-Treme 800 12/Pk ID 3",
+      "price": "354,98 EUR",
+      "url": "https://hristo.hr/proizvod/carbon-express-shaft-nano-pro-series-x-treme-800-12-pk-id-3/",
+      "shop": "hristo.hr"
     }
   ]
 }

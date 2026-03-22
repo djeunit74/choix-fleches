@@ -232,7 +232,7 @@ const CARBON_RECURVE_SERIES_ROWS = [
   { range: [24, 28], label: "24-28 lbs", cells: ["", "", "NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "MPR580", ""] },
   { range: [29, 34], label: "29-34 lbs", cells: ["", "NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR580", ""] },
   { range: [35, 39], label: "35-39 lbs", cells: ["NSST1000", "NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NST420"] },
-  { range: [40, 45], label: "40-45 lbs", cells: ["NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST420"] },
+  { range: [40, 45], label: "40-45 lbs", cells: ["NPX900|NSST900", "NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500|MPR500", "NPX450|NSST420|MPR420", "NPX400|NSST420"] },
   { range: [46, 51], label: "46-51 lbs", cells: ["NPX800|NSST800", "NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650|MPR650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400", "NPX400|NSST350"] },
   { range: [52, 57], label: "52-57 lbs", cells: ["NPX750|NSST750", "NPX7500|NSST700|MPR650", "NPX650|NSST650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400", "NPX400|NSST350", "NPX350|MPR350"] },
   { range: [58, 63], label: "58-63 lbs", cells: ["NPX7500|NSST700|MPR650", "NPX650|NSST650", "NPX600|NSST600|MPR580", "NPX550|NSST550|MPR500", "NPX500|NSST500", "NPX450|NSST420", "NPX400|NSST400", "NPX400|MPR350", "NPX350|MPR350", "NPX350|MPR350"] },
@@ -623,6 +623,58 @@ const LIVE_DEALS = [
     "price": "422,95 EUR",
     "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
     "shop": "archerie.fr"
+  },
+  {
+    "brand": "victory",
+    "modelKey": "vxt elite v1",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "premium",
+    "title": "Douzaine tubes Victory VXT Elite V1",
+    "price": "285,00 EUR",
+    "url": "https://www.bourgognearcherie.com/tube-carbone-cible/2494-douzaine-tubes-victory-vxt-elite-v1.html",
+    "shop": "bourgognearcherie.com"
+  },
+  {
+    "brand": "victory",
+    "modelKey": "vap gamer v3",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "mid",
+    "title": "Douzaine tubes Victory Target VAP 3 Target Gamer",
+    "price": "145,00 EUR",
+    "url": "https://www.bourgognearcherie.com/tube-carbone-cible/2016-douzaine-victory-vap-1.html",
+    "shop": "bourgognearcherie.com"
+  },
+  {
+    "brand": "carbon",
+    "modelKey": "maxima pro recurve rz",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "premium",
+    "title": "Carbon Express Shaft Maxima Pro RZ",
+    "price": "188,04 EUR",
+    "url": "https://www.archers-delight.com/shop/carbon-express-shaft-maxima-pro-rz/",
+    "shop": "archers-delight.com"
+  },
+  {
+    "brand": "carbon",
+    "modelKey": "nano-pro xtreme",
+    "material": "carbon",
+    "bowTypes": [
+      "recurve"
+    ],
+    "tier": "premium",
+    "title": "Carbon Express Shaft Nano-Pro Series X-Treme 800 12/Pk ID 3",
+    "price": "354,98 EUR",
+    "url": "https://hristo.hr/proizvod/carbon-express-shaft-nano-pro-series-x-treme-800-12-pk-id-3/",
+    "shop": "hristo.hr"
   }
 ];
 
