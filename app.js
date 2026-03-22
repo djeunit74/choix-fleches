@@ -88,7 +88,7 @@ const MODEL_CALIBRATION_BY_FAMILY = {
 
 const DEFAULT_CATALOG = {
   easton: { "300": ["Avance", "Superdrive Micro", "Vector"], "340": ["Avance", "Superdrive Micro", "Vector"], "400": ["Avance", "Superdrive Micro", "Vector", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7", "XX75 Platinum Plus"], "700": ["Avance", "Superdrive Micro", "Vector", "RX7", "XX75 Platinum Plus"], "800": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"], "900": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"], "1000": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"] },
-  victory: { "300": ["VAP Sport"], "340": ["VAP Sport", "VXT Elite V1"], "400": ["VAP Sport", "VXT Elite V1"], "500": ["VAP V3", "VXT Elite V1"], "600": ["VAP V3", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VAP Target", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
+  victory: { "300": ["VAP Sport"], "340": ["VAP Sport", "VXT Elite V1"], "400": ["VAP Sport", "VXT Elite V1"], "500": ["VAP V3", "VXT Elite V1"], "600": ["VAP V3", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VAP Target", "VXT Elite V1", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
   carbon: { "300": ["Maxima RED", "Hunter XT"], "340": ["Hunter XT", "Predator II", "Maxima RED"], "400": ["Predator II", "Trojan", "Maxima RED"], "500": ["Predator II", "Nano-Pro RZ", "Trojan"], "600": ["Nano-Pro RZ", "Predator II", "Trojan"], "700": ["Nano-Pro RZ", "Predator II", "Medallion XR"], "800": ["Nano-Pro Xtreme", "Nano-Pro RZ", "Medallion XR"], "900": ["Nano-Pro Xtreme", "Medallion XR"], "1000": ["Medallion XR", "Nano-Pro Xtreme"] },
   skylon: { "300": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "340": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "400": ["Brixxon R400", "Radius 400", "Premiens 400", "Performa 400", "Precium 400", "Paragon 400"], "500": ["Brixxon R550-500", "Radius 500", "Premiens 500", "Performa 500", "Precium 500", "Paragon 500"], "600": ["Brixxon R650-600", "Radius 650-600", "Premiens 600", "Performa 600", "Precium 600", "Paragon 600"], "700": ["Brixxon R750-700", "Radius 700-650", "Premiens 700", "Performa 700", "Precium 700", "Paragon 700"], "800": ["Brixxon R850-800", "Radius 850-800", "Performa 800", "Precium 800", "Paragon 800"], "900": ["Brixxon R900-850", "Radius 900", "Performa 900", "Precium 900", "Paragon 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900", "Performa 1000", "Precium 1000", "Paragon 1000"] }
 };
@@ -213,6 +213,18 @@ const VICTORY_RECURVE_ROWS = [
   { range: [47, 51], label: "47-51 lbs", cells: ["700", "600", "600", "600", "500", "500", "400", "400", "400"] },
   { range: [52, 56], label: "52-56 lbs", cells: ["600", "600", "600", "500", "500", "400", "400", "400", "350"] },
   { range: [57, 61], label: "57-61 lbs", cells: ["600", "500", "500", "500", "400", "400", "350", "350", "350"] }
+];
+const VICTORY_VXT_LENGTHS = [23, 24, 25, 26, 27, 28, 29, 30, 31];
+const VICTORY_VXT_ROWS = [
+  { range: [22, 26], label: "22-26 lbs", cells: ["", "", "", "", "", "", "", "630", "630"] },
+  { range: [27, 31], label: "27-31 lbs", cells: ["", "", "", "", "", "630", "630", "630", "550"] },
+  { range: [32, 36], label: "32-36 lbs", cells: ["", "", "630", "630", "630", "630", "550", "550", "550"] },
+  { range: [37, 41], label: "37-41 lbs", cells: ["630", "630", "550", "550", "550", "550", "450", "450", "450"] },
+  { range: [42, 46], label: "42-46 lbs", cells: ["550", "550", "550", "550", "450", "450", "450", "355", "355"] },
+  { range: [47, 51], label: "47-51 lbs", cells: ["550", "550", "450", "450", "450", "450", "355", "355", "355"] },
+  { range: [52, 56], label: "52-56 lbs", cells: ["450", "450", "450", "450", "355", "355", "355", "300", "300"] },
+  { range: [57, 61], label: "57-61 lbs", cells: ["450", "450", "355", "355", "355", "355", "300", "300", "300"] },
+  { range: [62, 66], label: "62-66 lbs", cells: ["355", "355", "355", "355", "300", "300", "300", "300", ""] }
 ];
 const CARBON_LIGHT_RECURVE_LENGTHS = [21, 22, 23, 24, 25, 26, 27];
 const CARBON_LIGHT_RECURVE_ROWS = [
@@ -1334,6 +1346,16 @@ function victoryRecurveRecommendation(input) {
   return { ok: true, spine: cell, normalizedChoice, rowLabel: row.label, roundedLength };
 }
 
+function victoryVxtRecommendation(input) {
+  const roundedLength = clamp(Math.round(input.arrowLength), 23, 31);
+  const col = VICTORY_VXT_LENGTHS.indexOf(roundedLength);
+  if (col < 0) return null;
+  const row = VICTORY_VXT_ROWS.find((entry) => input.drawWeight >= entry.range[0] && input.drawWeight <= entry.range[1]);
+  if (!row) return null;
+  const cell = row.cells[col];
+  return cell ? { spine: cell, rowLabel: row.label, roundedLength } : null;
+}
+
 function carbonExpressChoices(cell) {
   if (!cell) return [];
   return String(cell)
@@ -1518,7 +1540,10 @@ function buildBrandRecommendation(input, brand) {
     if (victory.ok) {
       models = arrowCatalog.victory?.[victory.normalizedChoice] || [];
       ranked = rankModels(models, input, profile);
-      ranked = ranked.map((entry) => ({ ...entry, advisedSpine: victory.spine }));
+      ranked = ranked.map((entry) => {
+        const vxt = normalizeModelKey(entry.model) === "vxt elite v1" ? victoryVxtRecommendation(input) : null;
+        return { ...entry, advisedSpine: vxt?.spine || victory.spine };
+      });
       const topMeta = ranked[0]?.meta || null;
       const pointSetup = estimatePointSetup(input, topMeta?.pointRange || profile.pointRange, topMeta);
       return {
