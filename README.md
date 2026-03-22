@@ -177,6 +177,6 @@ Base documentaire utilisee :
 Tableaux officiels utiles :
 - Skylon : https://skylonarchery.com/
 - Easton : https://eastonarchery.com/selector/
-- Victory : https://victoryarchery.com/arrow-guide/
+- Victory target catalog 2026 : https://issuu.com/rublinemarketing/docs/victory_archery_2026_digital_catalog_-_target?fr=sZDY2Mjg4NDU2OTI
 - Victory fitting charts : https://victoryarchery.com/fitting-charts/
 - Carbon Express : https://thecarbonexpress.com/wp-content/uploads/2024/11/recurve-series-arrow-selection-chart.pdf
