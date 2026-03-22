@@ -88,7 +88,7 @@ const MODEL_CALIBRATION_BY_FAMILY = {
 
 const DEFAULT_CATALOG = {
   easton: { "300": ["Avance", "Superdrive Micro", "Vector"], "340": ["Avance", "Superdrive Micro", "Vector"], "400": ["Avance", "Superdrive Micro", "Vector", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7", "XX75 Platinum Plus"], "700": ["Avance", "Superdrive Micro", "Vector", "RX7", "XX75 Platinum Plus"], "800": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"], "900": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"], "1000": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"] },
-  victory: { "300": ["VAP Sport"], "340": ["VAP Sport", "VXT Elite V1"], "400": ["VAP Sport", "VXT Elite V1"], "500": ["VAP V3", "VXT Elite V1"], "600": ["VAP V3", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VAP Target", "VXT Elite V1", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
+  victory: { "300": ["VAP Sport"], "340": ["VAP Sport", "VXT Elite V1"], "400": ["VAP Sport", "VXT Elite V1"], "500": ["VAP V3", "VXT Elite V1"], "600": ["VAP V3", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VAP Target", "VXT Elite V1", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VFT Gamer V3", "V-TAC 23 Elite"] },
   carbon: { "300": ["Maxima RED", "Hunter XT"], "340": ["Hunter XT", "Predator II", "Maxima RED"], "400": ["Predator II", "Trojan", "Maxima RED"], "500": ["Predator II", "Nano-Pro RZ", "Trojan"], "600": ["Nano-Pro RZ", "Predator II", "Trojan"], "700": ["Nano-Pro RZ", "Predator II", "Medallion XR"], "800": ["Nano-Pro Xtreme", "Nano-Pro RZ", "Medallion XR"], "900": ["Nano-Pro Xtreme", "Medallion XR"], "1000": ["Medallion XR", "Nano-Pro Xtreme"] },
   skylon: { "300": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "340": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "400": ["Brixxon R400", "Radius 400", "Premiens 400", "Performa 400", "Precium 400", "Paragon 400"], "500": ["Brixxon R550-500", "Radius 500", "Premiens 500", "Performa 500", "Precium 500", "Paragon 500"], "600": ["Brixxon R650-600", "Radius 650-600", "Premiens 600", "Performa 600", "Precium 600", "Paragon 600"], "700": ["Brixxon R750-700", "Radius 700-650", "Premiens 700", "Performa 700", "Precium 700", "Paragon 700"], "800": ["Brixxon R850-800", "Radius 850-800", "Performa 800", "Precium 800", "Paragon 800"], "900": ["Brixxon R900-850", "Radius 900", "Performa 900", "Precium 900", "Paragon 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900", "Performa 1000", "Precium 1000", "Paragon 1000"] }
 };
@@ -365,13 +365,13 @@ const LIVE_DEALS = [
     "url": "https://www.erhart-sports.com/tubes-nus/easton-rx7-tube-aluminium",
     "shop": "erhart-sports.com"
   },
-  {
-    "brand": "victory",
-    "modelKey": "vap target",
-    "material": "carbon",
-    "bowTypes": [
-      "recurve",
-      "compound"
+    {
+      "brand": "victory",
+      "modelKey": "vap sport",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
     ],
     "tier": "premium",
     "title": "Victory VAP Target V1 lot de 12 tubes",
@@ -534,15 +534,29 @@ const LIVE_DEALS = [
       "compound"
     ],
     "tier": "premium",
-    "title": "Tube Victory VAP Target Sport",
-    "price": "189,90 EUR",
-    "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
-    "shop": "archerie.fr"
-  },
-  {
-    "brand": "carbon",
-    "modelKey": "medallion xr",
-    "material": "carbon",
+      "title": "Tube Victory VAP Target Sport",
+      "price": "189,90 EUR",
+      "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap v3",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "premium",
+      "title": "Victory VAP V3",
+      "price": "11,95 EUR",
+      "url": "https://www.shadow-archery.com/en/product/victory-vap-v3/",
+      "shop": "shadow-archery.com"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "medallion xr",
+      "material": "carbon",
     "bowTypes": [
       "recurve"
     ],

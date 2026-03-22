@@ -122,7 +122,7 @@
     },
     {
       "brand": "victory",
-      "modelKey": "vap target",
+      "modelKey": "vap sport",
       "material": "carbon",
       "bowTypes": [
         "recurve",
@@ -293,6 +293,20 @@
       "price": "189,90 EUR",
       "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
       "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap v3",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "premium",
+      "title": "Victory VAP V3",
+      "price": "11,95 EUR",
+      "url": "https://www.shadow-archery.com/en/product/victory-vap-v3/",
+      "shop": "shadow-archery.com"
     },
     {
       "brand": "carbon",
