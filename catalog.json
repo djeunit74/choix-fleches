@@ -72,23 +72,19 @@
       ],
       "400": [
         "VAP Sport",
-        "VForce",
         "VXT Elite V1"
       ],
       "500": [
-        "VForce",
         "VAP V3",
         "VXT Elite V1"
       ],
       "600": [
         "VAP V3",
-        "VForce",
         "VAP Target",
         "VXT Elite V1"
       ],
       "700": [
         "VAP V3",
-        "VForce",
         "VAP Target",
         "VAP Gamer V3"
       ],
@@ -498,39 +494,6 @@
       "componentSystem": "pin",
       "distanceBand": "long",
       "useCase": "wind"
-    },
-    "vforce": {
-      "material": "carbon",
-      "diameters": [
-        "standard"
-      ],
-      "environments": [
-        "outdoor",
-        "mixed"
-      ],
-      "disciplines": [
-        "target"
-      ],
-      "bowTypes": [
-        "recurve",
-        "compound"
-      ],
-      "goals": [
-        "club",
-        "polyvalent"
-      ],
-      "pointRange": [
-        90,
-        120
-      ],
-      "note": "Polyvalent club/exterieur.",
-      "dataPrecision": "model",
-      "seriesTier": "club",
-      "massClass": "medium",
-      "toleranceClass": "standard",
-      "componentSystem": "insert",
-      "distanceBand": "mixed",
-      "useCase": "polyvalent"
     },
     "vap v3": {
       "material": "carbon",
@@ -1203,70 +1166,6 @@
       "componentSystem": "large-nock",
       "distanceBand": "indoor",
       "useCase": "linecut"
-    },
-    "rip tko": {
-      "material": "carbon",
-      "diameters": [
-        "thin"
-      ],
-      "environments": [
-        "outdoor",
-        "mixed"
-      ],
-      "disciplines": [
-        "target",
-        "field"
-      ],
-      "bowTypes": [
-        "recurve"
-      ],
-      "goals": [
-        "performance"
-      ],
-      "pointRange": [
-        90,
-        120
-      ],
-      "note": "Tube fin oriente exterieur.",
-      "dataPrecision": "model",
-      "seriesTier": "performance",
-      "massClass": "light",
-      "toleranceClass": "matched",
-      "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
-    },
-    "rip xv": {
-      "material": "carbon",
-      "diameters": [
-        "standard"
-      ],
-      "environments": [
-        "outdoor",
-        "mixed"
-      ],
-      "disciplines": [
-        "target"
-      ],
-      "bowTypes": [
-        "recurve"
-      ],
-      "goals": [
-        "club",
-        "performance"
-      ],
-      "pointRange": [
-        90,
-        120
-      ],
-      "note": "Carbone exterieur plus tolerant.",
-      "dataPrecision": "model",
-      "seriesTier": "performance",
-      "massClass": "medium",
-      "toleranceClass": "matched",
-      "componentSystem": "insert",
-      "distanceBand": "long",
-      "useCase": "polyvalent"
     },
     "vxt elite v1": {
       "material": "carbon",
@@ -3702,70 +3601,6 @@
       "componentSystem": "pin",
       "distanceBand": "long",
       "useCase": "wind"
-    },
-    "rip tko": {
-      "material": "carbon",
-      "diameters": [
-        "thin"
-      ],
-      "environments": [
-        "outdoor",
-        "mixed"
-      ],
-      "disciplines": [
-        "target",
-        "field"
-      ],
-      "bowTypes": [
-        "recurve"
-      ],
-      "goals": [
-        "performance"
-      ],
-      "pointRange": [
-        90,
-        120
-      ],
-      "note": "Tube fin oriente exterieur.",
-      "dataPrecision": "family",
-      "seriesTier": "performance",
-      "massClass": "light",
-      "toleranceClass": "matched",
-      "componentSystem": "pin",
-      "distanceBand": "long",
-      "useCase": "wind"
-    },
-    "rip xv": {
-      "material": "carbon",
-      "diameters": [
-        "standard"
-      ],
-      "environments": [
-        "outdoor",
-        "mixed"
-      ],
-      "disciplines": [
-        "target"
-      ],
-      "bowTypes": [
-        "recurve"
-      ],
-      "goals": [
-        "club",
-        "performance"
-      ],
-      "pointRange": [
-        90,
-        120
-      ],
-      "note": "Carbone exterieur plus tolerant.",
-      "dataPrecision": "family",
-      "seriesTier": "performance",
-      "massClass": "medium",
-      "toleranceClass": "matched",
-      "componentSystem": "insert",
-      "distanceBand": "long",
-      "useCase": "polyvalent"
     },
     "maxima red": {
       "material": "carbon",

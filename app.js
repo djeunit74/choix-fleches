@@ -72,8 +72,6 @@ const MODEL_CALIBRATION_BY_FAMILY = {
   avance: "skylon_thin_competition",
   "superdrive micro": "skylon_thin_competition",
   vap: "skylon_thin_performance",
-  rip: "skylon_standard_perf",
-  vforce: "skylon_standard_club",
   vft: "skylon_standard_club",
   predator: "skylon_standard_club",
   trojan: "skylon_standard_club",
@@ -90,7 +88,7 @@ const MODEL_CALIBRATION_BY_FAMILY = {
 
 const DEFAULT_CATALOG = {
   easton: { "300": ["Avance", "Superdrive Micro", "Vector"], "340": ["Avance", "Superdrive Micro", "Vector"], "400": ["Avance", "Superdrive Micro", "Vector", "X7"], "500": ["Avance", "Superdrive Micro", "Vector", "X7"], "600": ["Avance", "Superdrive Micro", "Vector", "X7", "XX75 Platinum Plus"], "700": ["Avance", "Superdrive Micro", "Vector", "RX7", "XX75 Platinum Plus"], "800": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"], "900": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"], "1000": ["Avance", "Superdrive Micro", "Vector", "X23", "XX75 Platinum Plus"] },
-  victory: { "300": ["RIP TKO", "VAP Sport"], "340": ["VAP Sport", "RIP XV", "VXT Elite V1"], "400": ["VAP Sport", "VForce", "RIP XV", "VXT Elite V1"], "500": ["VForce", "VAP V3", "RIP XV", "VXT Elite V1"], "600": ["VAP V3", "VForce", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VForce", "VAP Target", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
+  victory: { "300": ["VAP Sport"], "340": ["VAP Sport", "VXT Elite V1"], "400": ["VAP Sport", "VXT Elite V1"], "500": ["VAP V3", "VXT Elite V1"], "600": ["VAP V3", "VAP Target", "VXT Elite V1"], "700": ["VAP V3", "VAP Target", "VAP Gamer V3"], "800": ["VAP Target", "VAP V3", "VAP JR", "VAP Gamer V3", "V-TAC 23 Elite"], "900": ["VAP Target", "VAP V3", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"], "1000": ["VAP Target", "VAP JR", "VFT Gamer V3", "V-TAC 23 Elite"] },
   carbon: { "300": ["Maxima RED", "Hunter XT"], "340": ["Hunter XT", "Predator II", "Maxima RED"], "400": ["Predator II", "Trojan", "Maxima RED"], "500": ["Predator II", "Nano-Pro RZ", "Trojan"], "600": ["Nano-Pro RZ", "Predator II", "Trojan"], "700": ["Nano-Pro RZ", "Predator II", "Medallion XR"], "800": ["Nano-Pro Xtreme", "Nano-Pro RZ", "Medallion XR"], "900": ["Nano-Pro Xtreme", "Medallion XR"], "1000": ["Medallion XR", "Nano-Pro Xtreme"] },
   skylon: { "300": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "340": ["Premiens 350", "Performa 350", "Precium 350", "Paragon 350"], "400": ["Brixxon R400", "Radius 400", "Premiens 400", "Performa 400", "Precium 400", "Paragon 400"], "500": ["Brixxon R550-500", "Radius 500", "Premiens 500", "Performa 500", "Precium 500", "Paragon 500"], "600": ["Brixxon R650-600", "Radius 650-600", "Premiens 600", "Performa 600", "Precium 600", "Paragon 600"], "700": ["Brixxon R750-700", "Radius 700-650", "Premiens 700", "Performa 700", "Precium 700", "Paragon 700"], "800": ["Brixxon R850-800", "Radius 850-800", "Performa 800", "Precium 800", "Paragon 800"], "900": ["Brixxon R900-850", "Radius 900", "Performa 900", "Precium 900", "Paragon 900"], "1000": ["Brixxon R1000-900", "Radius R1000-900", "Performa 1000", "Precium 1000", "Paragon 1000"] }
 };
@@ -106,7 +104,6 @@ const MODEL_METADATA = {
   "a/c/e": { material: "hybrid", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Classique exterieur recurve." },
   "xx75 platinum plus": { material: "alu", diameters: ["large"], environments: ["indoor"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["club", "performance"], pointRange: [100, 150], note: "Tube salle classique." },
   "vap sport": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["club", "performance"], pointRange: [90, 120], note: "Fine et accessible." },
-  "vforce": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Polyvalent club/exterieur." },
   "vap v3": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target", "field"], bowTypes: ["recurve", "compound"], goals: ["performance"], pointRange: [90, 120], note: "Profil vent." },
   "vap target": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve", "compound"], goals: ["performance", "competition"], pointRange: [100, 120], note: "Cible exterieure." },
   "vap jr": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club"], pointRange: [70, 100], note: "Petites puissances." },
@@ -140,8 +137,6 @@ const MODEL_FAMILY_METADATA = {
   "empros": { material: "carbon", diameters: ["large"], environments: ["indoor", "outdoor"], disciplines: ["field", "target"], bowTypes: ["compound"], goals: ["competition"], pointRange: [120, 180], note: "Tube compound indoor / 3D." },
   "premiens": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Tube fin performance recurve." },
   "paragon": { material: "carbon", diameters: ["thin"], environments: ["outdoor"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin recurve / compound exterieur." },
-  "rip tko": { material: "carbon", diameters: ["thin"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Tube fin oriente exterieur." },
-  "rip xv": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["club", "performance"], pointRange: [90, 120], note: "Carbone exterieur plus tolerant." },
   "maxima red": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target", "field"], bowTypes: ["recurve"], goals: ["club", "polyvalent"], pointRange: [90, 120], note: "Tube carbone polyvalent." },
   "nano sst": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance"], pointRange: [90, 120], note: "Serie Carbon Express Nano SST du tableau recurve." },
   "maxima pro recurve rz": { material: "carbon", diameters: ["standard"], environments: ["outdoor", "mixed"], disciplines: ["target"], bowTypes: ["recurve"], goals: ["performance", "competition"], pointRange: [90, 120], note: "Serie Maxima Pro Recurve RZ du tableau Carbon Express." },
@@ -516,20 +511,6 @@ const LIVE_DEALS = [
     "title": "Tube XX75 Platinum Plus Easton",
     "price": "77,46 EUR",
     "url": "https://www.archerie.fr/fr/2004-tube-xx75-platinum-plus-easton.html",
-    "shop": "archerie.fr"
-  },
-  {
-    "brand": "victory",
-    "modelKey": "vforce",
-    "material": "carbon",
-    "bowTypes": [
-      "recurve",
-      "compound"
-    ],
-    "tier": "mid",
-    "title": "Tube Victory Vforce 245 V6 Sport",
-    "price": "109,90 EUR",
-    "url": "https://www.archerie.fr/fr/2325-tube-victory-vforce-245-v6-sport.html",
     "shop": "archerie.fr"
   },
   {

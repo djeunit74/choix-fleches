@@ -282,20 +282,6 @@
     },
     {
       "brand": "victory",
-      "modelKey": "vforce",
-      "material": "carbon",
-      "bowTypes": [
-        "recurve",
-        "compound"
-      ],
-      "tier": "mid",
-      "title": "Tube Victory Vforce 245 V6 Sport",
-      "price": "109,90 EUR",
-      "url": "https://www.archerie.fr/fr/2325-tube-victory-vforce-245-v6-sport.html",
-      "shop": "archerie.fr"
-    },
-    {
-      "brand": "victory",
       "modelKey": "vap target",
       "material": "carbon",
       "bowTypes": [
