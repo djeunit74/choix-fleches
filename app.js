@@ -1950,7 +1950,6 @@ function renderRecommendation(input) {
 
   const recommendation = buildBrandRecommendation(input, input.preferredBrand);
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
-  const notesList = recommendation.notes.length ? `<ul>${recommendation.notes.map((note) => `<li>${note}</li>`).join("")}</ul>` : "<p>Aucune note complementaire.</p>";
   const recommendedModels = [
     ...uniqueModelEntries(recommendation.models, 7).map((entry) => entry.model),
     ...(recommendation.alternativeModels || []).slice(0, 2).map((entry) => entry.model)
@@ -1976,8 +1975,6 @@ function renderRecommendation(input) {
     <p>${modelTitle}</p>
     <ul>${renderModelList(recommendation, input)}</ul>
     ${renderAlternativeModelList(recommendation)}
-    <p>Notes techniques:</p>
-    ${notesList}
     ${renderSourcesSection([recommendation.brand])}
     <p>Offres chez les marchands (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise) :</p>
     ${dealsList}
