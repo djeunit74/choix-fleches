@@ -1964,21 +1964,11 @@ function renderRecommendation(input) {
 
   els.result.innerHTML = `
     <h2>Recommandation ${brandLabel(recommendation.brand)}</h2>
-    <p>Sortie orientee club: spine, construction, diametre et modele.</p>
+    <p>Base de depart issue du tableau fabricant.</p>
     <p class="result-value">${primaryLabel}</p>
-    <p>Materiau retenu: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
-    <p>Construction conseillee: <strong>${materialLabel(recommendation.recommendedMaterial)}</strong></p>
-    <p>Diametre conseille: <strong>${diameterLabel(recommendation.recommendedDiameter)}</strong></p>
-    <p>Poids de pointe conseille pour le tube retenu: <strong>${recommendation.recommendedPointWeight} gr</strong> (${recommendation.recommendedPointProfile})</p>
-    <p>Positionnement serie: <strong>${seriesLabel(recommendation.recommendedSeries)}</strong></p>
-    <p>Masse lineique cible: <strong>${massLabel(recommendation.recommendedMass)}</strong></p>
-    <p>Niveau de tri conseille: <strong>${toleranceLabel(recommendation.recommendedTolerance)}</strong></p>
-    <p>Systeme de composants: <strong>${componentSystemLabel(recommendation.recommendedComponentSystem)}</strong></p>
-    <p>Orientation cible: <strong>${distanceBandLabel(recommendation.recommendedDistanceBand)} / ${useCaseLabel(recommendation.recommendedUseCase)}</strong></p>
-    <p>Plage de pointe recommandee: <strong>${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr</strong></p>
-    <p>Options de pointes plausibles: <strong>${recommendation.recommendedPointChoices?.join(" / ") || recommendation.recommendedPointRange.join(" - ")}</strong></p>
-    <p>${recommendation.pointWeightNote}</p>
-    <p>Ajustement rapide: <strong>assouplir</strong> -> ${recommendation.recommendedPointSofter ? `${recommendation.recommendedPointSofter} gr` : "pas d'option plus lourde"} | <strong>raidir</strong> -> ${recommendation.recommendedPointStiffer ? `${recommendation.recommendedPointStiffer} gr` : "pas d'option plus legere"}</p>
+    <p><strong>Tube conseille</strong> : ${materialLabel(recommendation.recommendedMaterial)} - ${diameterLabel(recommendation.recommendedDiameter)}</p>
+    <p><strong>Pointe conseillee</strong> : ${recommendation.recommendedPointWeight} gr (plage utile ${recommendation.recommendedPointRange[0]}-${recommendation.recommendedPointRange[1]} gr)</p>
+    <p><strong>Ajustement rapide</strong> : assouplir -> ${recommendation.recommendedPointSofter ? `${recommendation.recommendedPointSofter} gr` : "pas d'option"} | raidir -> ${recommendation.recommendedPointStiffer ? `${recommendation.recommendedPointStiffer} gr` : "pas d'option"}</p>
     ${recommendation.softer && recommendation.stiffer ? `<p>Alternatives spine: plus souple <strong>${recommendation.softer}</strong>, plus rigide <strong>${recommendation.stiffer}</strong></p>` : ""}
     <p>Niveau de confiance: <strong>${recommendation.confidence}</strong></p>
     <p>Pourquoi ce niveau:</p>
