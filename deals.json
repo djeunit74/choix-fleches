@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-03-22T15:17:51.755Z",
-  "source": "local-curated",
+  "updatedAt": "2026-03-23T05:48:49.013Z",
+  "source": "remote-csv-sync",
   "deals": [
     {
       "brand": "skylon",
@@ -122,7 +122,7 @@
     },
     {
       "brand": "victory",
-      "modelKey": "vap sport",
+      "modelKey": "vap target",
       "material": "carbon",
       "bowTypes": [
         "recurve",
@@ -130,7 +130,7 @@
       ],
       "tier": "premium",
       "title": "Victory VAP Target V1 lot de 12 tubes",
-      "price": "161,40 EUR",
+      "price": "161,39 EUR",
       "url": "https://www.erhart-sports.com/tubes-nus/2143-443507-victory-vap-target-v1-lot-de-12-tubes.html",
       "shop": "erhart-sports.com"
     },
@@ -144,7 +144,7 @@
       ],
       "tier": "premium",
       "title": "Victory VAP Target V1 unite",
-      "price": "14,65 EUR",
+      "price": "14,99 EUR",
       "url": "https://www.erhart-sports.com/tubes-nus/victory-vap-target-v1-2017-unit2",
       "shop": "erhart-sports.com"
     },
@@ -197,7 +197,7 @@
       ],
       "tier": "eco",
       "title": "Victory VFT Gamer V3 Target tube carbone",
-      "price": "8,90 EUR",
+      "price": "9,50 EUR",
       "url": "https://www.erhart-sports.com/tubes-nus/3953-victory-vft-target-tube-carbone.html",
       "shop": "erhart-sports.com"
     },
@@ -210,7 +210,7 @@
       ],
       "tier": "eco",
       "title": "Carbon Express Predator II",
-      "price": "49,90 EUR",
+      "price": "34,95 EUR",
       "url": "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html",
       "shop": "archerie.fr"
     },
@@ -223,7 +223,7 @@
       ],
       "tier": "eco",
       "title": "Lot de 12 fleches Skylon Radius 4,2 mm en carbone",
-      "price": "46,63 EUR",
+      "price": "55,95 EUR",
       "url": "https://www.archerie.fr/fr/4766-lot-de-12-fleches-skylon-radius-42-mm-en-carbone.html",
       "shop": "archerie.fr"
     },
@@ -236,7 +236,7 @@
       ],
       "tier": "eco",
       "title": "Lot de 12 tubes Skylon Radius ID4.2 en carbone",
-      "price": "33,29 EUR",
+      "price": "39,95 EUR",
       "url": "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html",
       "shop": "archerie.fr"
     },
@@ -276,8 +276,22 @@
       ],
       "tier": "mid",
       "title": "Tube XX75 Platinum Plus Easton",
-      "price": "77,46 EUR",
+      "price": "92,95 EUR",
       "url": "https://www.archerie.fr/fr/2004-tube-xx75-platinum-plus-easton.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vforce",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "mid",
+      "title": "Tube Victory Vforce 245 V6 Sport",
+      "price": "109,90 EUR",
+      "url": "https://www.archerie.fr/fr/2325-tube-victory-vforce-245-v6-sport.html",
       "shop": "archerie.fr"
     },
     {
@@ -293,20 +307,6 @@
       "price": "189,90 EUR",
       "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
       "shop": "archerie.fr"
-    },
-    {
-      "brand": "victory",
-      "modelKey": "vap v3",
-      "material": "carbon",
-      "bowTypes": [
-        "recurve",
-        "compound"
-      ],
-      "tier": "premium",
-      "title": "Victory VAP V3",
-      "price": "11,95 EUR",
-      "url": "https://www.shadow-archery.com/en/product/victory-vap-v3/",
-      "shop": "shadow-archery.com"
     },
     {
       "brand": "carbon",
@@ -385,58 +385,6 @@
       "price": "323,95 EUR",
       "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
       "shop": "archerie.fr"
-    },
-    {
-      "brand": "victory",
-      "modelKey": "vxt elite v1",
-      "material": "carbon",
-      "bowTypes": [
-        "recurve"
-      ],
-      "tier": "premium",
-      "title": "Douzaine tubes Victory VXT Elite V1",
-      "price": "285,00 EUR",
-      "url": "https://www.bourgognearcherie.com/tube-carbone-cible/2494-douzaine-tubes-victory-vxt-elite-v1.html",
-      "shop": "bourgognearcherie.com"
-    },
-    {
-      "brand": "victory",
-      "modelKey": "vap gamer v3",
-      "material": "carbon",
-      "bowTypes": [
-        "recurve"
-      ],
-      "tier": "mid",
-      "title": "Douzaine tubes Victory Target VAP 3 Target Gamer",
-      "price": "145,00 EUR",
-      "url": "https://www.bourgognearcherie.com/tube-carbone-cible/2016-douzaine-victory-vap-1.html",
-      "shop": "bourgognearcherie.com"
-    },
-    {
-      "brand": "carbon",
-      "modelKey": "maxima pro recurve rz",
-      "material": "carbon",
-      "bowTypes": [
-        "recurve"
-      ],
-      "tier": "premium",
-      "title": "Carbon Express Shaft Maxima Pro RZ",
-      "price": "188,04 EUR",
-      "url": "https://www.archers-delight.com/shop/carbon-express-shaft-maxima-pro-rz/",
-      "shop": "archers-delight.com"
-    },
-    {
-      "brand": "carbon",
-      "modelKey": "nano-pro xtreme",
-      "material": "carbon",
-      "bowTypes": [
-        "recurve"
-      ],
-      "tier": "premium",
-      "title": "Carbon Express Shaft Nano-Pro Series X-Treme 800 12/Pk ID 3",
-      "price": "354,98 EUR",
-      "url": "https://hristo.hr/proizvod/carbon-express-shaft-nano-pro-series-x-treme-800-12-pk-id-3/",
-      "shop": "hristo.hr"
     }
   ]
 }
