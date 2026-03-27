@@ -20,6 +20,7 @@
     <nav class="tab-nav" aria-label="Navigation principale">
       <button type="button" class="tab-button is-active" data-tab="spine">Choix des fleches</button>
       <button type="button" class="tab-button" data-tab="arc-setup">Reglage de l'arc</button>
+      <button type="button" class="tab-button" data-tab="notebook">Carnet de reglage</button>
     </nav>
 
     <section class="tab-panel is-active" data-panel="spine">
@@ -199,9 +200,138 @@
         <p>Renseignez vos mesures puis lancez le calcul.</p>
       </section>
     </section>
+
+    <section class="tab-panel" data-panel="notebook" hidden>
+      <section class="card">
+        <h2>Carnet de reglage</h2>
+        <p>Enregistrez une fiche simple par archer pour garder une trace du materiel, des reglages et des fleches utilisees.</p>
+        <form id="notebook-form" novalidate autocomplete="off">
+          <section class="subcard">
+            <h3>Archer</h3>
+            <div class="field-grid">
+              <label>
+                Nom ou pseudo
+                <input id="notebookArcherName" type="text" maxlength="80" placeholder="Ex : Paul / Arc Club" required />
+              </label>
+              <label>
+                Date
+                <input id="notebookDate" type="date" required />
+              </label>
+              <label>
+                Club
+                <input id="notebookClub" type="text" maxlength="100" placeholder="Optionnel" />
+              </label>
+            </div>
+          </section>
+
+          <section class="subcard">
+            <h3>Materiel</h3>
+            <div class="field-grid">
+              <label>
+                Arc / modele
+                <input id="notebookArcModel" type="text" maxlength="100" placeholder="Ex : WNS / Hoyt / autre" />
+              </label>
+              <label>
+                Taille d'arc
+                <input id="notebookArcLength" type="text" maxlength="20" placeholder='Ex : 68"' />
+              </label>
+              <label>
+                Poignee
+                <input id="notebookRiserLength" type="text" maxlength="20" placeholder='Ex : 25"' />
+              </label>
+              <label>
+                Branches
+                <input id="notebookLimbs" type="text" maxlength="100" placeholder="Ex : WNS / Uukha / autre" />
+              </label>
+              <label>
+                Puissance marquee
+                <input id="notebookLimbWeight" type="text" maxlength="20" placeholder="Ex : 30 lbs" />
+              </label>
+              <label>
+                Allonge
+                <input id="notebookDrawLength" type="text" maxlength="20" placeholder='Ex : 28"' />
+              </label>
+            </div>
+          </section>
+
+          <section class="subcard">
+            <h3>Reglage</h3>
+            <div class="field-grid">
+              <label>
+                Band
+                <input id="notebookBrace" type="text" maxlength="20" placeholder="Ex : 22,5 cm" />
+              </label>
+              <label>
+                Tiller haut
+                <input id="notebookUpperTiller" type="text" maxlength="20" placeholder="Ex : 222 mm" />
+              </label>
+              <label>
+                Tiller bas
+                <input id="notebookLowerTiller" type="text" maxlength="20" placeholder="Ex : 216 mm" />
+              </label>
+              <label>
+                Tiller positif
+                <input id="notebookPositiveTiller" type="text" maxlength="20" placeholder="Ex : +6 mm" />
+              </label>
+              <label>
+                Puissance tiree estimee
+                <input id="notebookEstimatedWeight" type="text" maxlength="20" placeholder="Ex : 31 lbs" />
+              </label>
+            </div>
+          </section>
+
+          <section class="subcard">
+            <h3>Fleches</h3>
+            <div class="field-grid">
+              <label>
+                Marque
+                <input id="notebookArrowBrand" type="text" maxlength="80" placeholder="Ex : Skylon" />
+              </label>
+              <label>
+                Modele
+                <input id="notebookArrowModel" type="text" maxlength="100" placeholder="Ex : Paragon 800" />
+              </label>
+              <label>
+                Spine
+                <input id="notebookArrowSpine" type="text" maxlength="40" placeholder="Ex : 800 / A3 / NPX7500" />
+              </label>
+              <label>
+                Longueur
+                <input id="notebookArrowLength" type="text" maxlength="20" placeholder='Ex : 28"' />
+              </label>
+              <label>
+                Pointe
+                <input id="notebookPointWeight" type="text" maxlength="20" placeholder="Ex : 100 gr" />
+              </label>
+            </div>
+          </section>
+
+          <section class="subcard">
+            <h3>Notes</h3>
+            <label>
+              Remarques / sensations / conseil entraineur
+              <textarea id="notebookNotes" rows="5" maxlength="1000" placeholder="Ex : bon ressenti, a re-tester avec 110 gr, avis entraineur..."></textarea>
+            </label>
+          </section>
+
+          <div class="row-actions">
+            <button id="prefillNotebookBtn" type="button">Pre-remplir avec les calculs actuels</button>
+            <button id="saveNotebookBtn" type="submit">Enregistrer la fiche</button>
+            <button id="resetNotebookBtn" type="button">Vider</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card result" id="notebookResult" aria-live="polite">
+        <h2>Fiches enregistrees</h2>
+        <p id="notebookStatus">Aucune fiche pour le moment.</p>
+        <div id="notebookContent">
+        </div>
+      </section>
+    </section>
   </main>
 
-  <script src="app.js?v=20260320b"></script>
+  <script src="app.js?v=20260327b"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

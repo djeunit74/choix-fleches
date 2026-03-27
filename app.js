@@ -22,13 +22,39 @@
   limbMarkedWeight: document.getElementById("limbMarkedWeight"),
   riserLength: document.getElementById("riserLength"),
   drawLengthForWeight: document.getElementById("drawLengthForWeight"),
+  notebookForm: document.getElementById("notebook-form"),
+  notebookResult: document.getElementById("notebookResult"),
+  notebookStatus: document.getElementById("notebookStatus"),
+  notebookContent: document.getElementById("notebookContent"),
+  prefillNotebookBtn: document.getElementById("prefillNotebookBtn"),
+  resetNotebookBtn: document.getElementById("resetNotebookBtn"),
+  notebookArcherName: document.getElementById("notebookArcherName"),
+  notebookDate: document.getElementById("notebookDate"),
+  notebookClub: document.getElementById("notebookClub"),
+  notebookArcModel: document.getElementById("notebookArcModel"),
+  notebookArcLength: document.getElementById("notebookArcLength"),
+  notebookRiserLength: document.getElementById("notebookRiserLength"),
+  notebookLimbs: document.getElementById("notebookLimbs"),
+  notebookLimbWeight: document.getElementById("notebookLimbWeight"),
+  notebookDrawLength: document.getElementById("notebookDrawLength"),
+  notebookBrace: document.getElementById("notebookBrace"),
+  notebookUpperTiller: document.getElementById("notebookUpperTiller"),
+  notebookLowerTiller: document.getElementById("notebookLowerTiller"),
+  notebookPositiveTiller: document.getElementById("notebookPositiveTiller"),
+  notebookEstimatedWeight: document.getElementById("notebookEstimatedWeight"),
+  notebookArrowBrand: document.getElementById("notebookArrowBrand"),
+  notebookArrowModel: document.getElementById("notebookArrowModel"),
+  notebookArrowSpine: document.getElementById("notebookArrowSpine"),
+  notebookArrowLength: document.getElementById("notebookArrowLength"),
+  notebookPointWeight: document.getElementById("notebookPointWeight"),
+  notebookNotes: document.getElementById("notebookNotes"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory", activeTab: "activeMainTab" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook" };
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const ALLOWED_SHAFT_MATERIALS = ["carbon", "alu"];
 const BOW_LIMITS = {
@@ -711,6 +737,9 @@ const DEFAULT_DEALS_STATE = {
 let catalogState = cloneCatalog(DEFAULT_CATALOG_STATE);
 let arrowCatalog = cloneCatalog(catalogState.catalog);
 let dealsState = { ...DEFAULT_DEALS_STATE };
+let currentNotebookId = null;
+let lastRecommendationSnapshot = null;
+let lastArcSetupSnapshot = null;
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength }; }
@@ -1866,6 +1895,143 @@ function renderHistory() {
   els.historyContent.innerHTML = `<ul class="history-list">${entries.map((entry) => `<li>${entry.date} - ${entry.profile} - ${entry.primary} (${entry.bowType}, ${entry.drawWeight} lbs, ${entry.arrowLength}")</li>`).join("")}</ul>`;
 }
 
+function todayIsoDate() {
+  return new Date().toLocaleDateString("en-CA");
+}
+
+function readNotebook() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE.notebook) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function writeNotebook(entries) {
+  localStorage.setItem(STORAGE.notebook, JSON.stringify(entries));
+  renderNotebook();
+}
+
+function notebookFormData() {
+  return {
+    archerName: els.notebookArcherName.value.trim(),
+    date: els.notebookDate.value,
+    club: els.notebookClub.value.trim(),
+    arcModel: els.notebookArcModel.value.trim(),
+    arcLength: els.notebookArcLength.value.trim(),
+    riserLength: els.notebookRiserLength.value.trim(),
+    limbs: els.notebookLimbs.value.trim(),
+    limbWeight: els.notebookLimbWeight.value.trim(),
+    drawLength: els.notebookDrawLength.value.trim(),
+    brace: els.notebookBrace.value.trim(),
+    upperTiller: els.notebookUpperTiller.value.trim(),
+    lowerTiller: els.notebookLowerTiller.value.trim(),
+    positiveTiller: els.notebookPositiveTiller.value.trim(),
+    estimatedWeight: els.notebookEstimatedWeight.value.trim(),
+    arrowBrand: els.notebookArrowBrand.value.trim(),
+    arrowModel: els.notebookArrowModel.value.trim(),
+    arrowSpine: els.notebookArrowSpine.value.trim(),
+    arrowLength: els.notebookArrowLength.value.trim(),
+    pointWeight: els.notebookPointWeight.value.trim(),
+    notes: els.notebookNotes.value.trim()
+  };
+}
+
+function fillNotebookForm(entry = {}) {
+  els.notebookArcherName.value = entry.archerName || "";
+  els.notebookDate.value = entry.date || todayIsoDate();
+  els.notebookClub.value = entry.club || "";
+  els.notebookArcModel.value = entry.arcModel || "";
+  els.notebookArcLength.value = entry.arcLength || "";
+  els.notebookRiserLength.value = entry.riserLength || "";
+  els.notebookLimbs.value = entry.limbs || "";
+  els.notebookLimbWeight.value = entry.limbWeight || "";
+  els.notebookDrawLength.value = entry.drawLength || "";
+  els.notebookBrace.value = entry.brace || "";
+  els.notebookUpperTiller.value = entry.upperTiller || "";
+  els.notebookLowerTiller.value = entry.lowerTiller || "";
+  els.notebookPositiveTiller.value = entry.positiveTiller || "";
+  els.notebookEstimatedWeight.value = entry.estimatedWeight || "";
+  els.notebookArrowBrand.value = entry.arrowBrand || "";
+  els.notebookArrowModel.value = entry.arrowModel || "";
+  els.notebookArrowSpine.value = entry.arrowSpine || "";
+  els.notebookArrowLength.value = entry.arrowLength || "";
+  els.notebookPointWeight.value = entry.pointWeight || "";
+  els.notebookNotes.value = entry.notes || "";
+}
+
+function resetNotebookForm() {
+  currentNotebookId = null;
+  fillNotebookForm({ date: todayIsoDate() });
+}
+
+function recommendationBrandLabel(snapshot) {
+  return snapshot?.brand ? brandLabel(snapshot.brand) : "";
+}
+
+function buildNotebookPrefill() {
+  const arc = lastArcSetupSnapshot;
+  const rec = lastRecommendationSnapshot;
+  return {
+    archerName: els.notebookArcherName.value.trim(),
+    date: els.notebookDate.value || todayIsoDate(),
+    club: els.notebookClub.value.trim(),
+    arcModel: els.notebookArcModel.value.trim(),
+    arcLength: arc ? `${arc.input.arcLength}"` : "",
+    riserLength: arc ? `${arc.input.riserLength}"` : "",
+    limbs: els.notebookLimbs.value.trim(),
+    limbWeight: arc ? `${arc.input.limbMarkedWeight} lbs` : "",
+    drawLength: arc ? `${arc.input.drawLengthForWeight}"` : `${Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "")}"`,
+    brace: arc ? `${arc.setup.braceTarget.toFixed(1)} cm` : "",
+    upperTiller: arc ? `${arc.input.upperTiller} mm` : "",
+    lowerTiller: arc ? `${arc.input.lowerTillerMeasured} mm` : "",
+    positiveTiller: arc ? `+${arc.setup.actualTiller.toFixed(1)} mm` : "",
+    estimatedWeight: arc ? `${arc.setup.drawWeightEstimate.estimated.toFixed(1)} lbs` : "",
+    arrowBrand: recommendationBrandLabel(rec),
+    arrowModel: rec?.models?.[0]?.model || "",
+    arrowSpine: rec ? recommendationPrimaryDisplay(rec).replace(/<[^>]+>/g, "").trim() : "",
+    arrowLength: `${Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "")}"`,
+    pointWeight: rec ? `${rec.recommendedPointWeight} gr` : "",
+    notes: els.notebookNotes.value.trim()
+  };
+}
+
+function renderNotebook() {
+  const entries = readNotebook();
+  if (!entries.length) {
+    els.notebookStatus.textContent = "Aucune fiche pour le moment.";
+    els.notebookContent.innerHTML = "";
+    return;
+  }
+  els.notebookStatus.textContent = `${entries.length} fiche${entries.length > 1 ? "s" : ""} enregistree${entries.length > 1 ? "s" : ""}.`;
+
+  const items = entries
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+    .map((entry) => {
+      const title = entry.archerName || "Fiche sans nom";
+      const summary = [
+        entry.arcModel || entry.arcLength || entry.riserLength ? `${entry.arcModel || "Arc"} ${entry.arcLength ? `- ${entry.arcLength}` : ""} ${entry.riserLength ? `/ poignee ${entry.riserLength}` : ""}`.trim() : "",
+        entry.arrowBrand || entry.arrowModel ? `${entry.arrowBrand || ""} ${entry.arrowModel || ""}`.trim() : "",
+        entry.arrowSpine || entry.pointWeight ? `${entry.arrowSpine || ""}${entry.pointWeight ? ` / ${entry.pointWeight}` : ""}`.trim() : ""
+      ].filter(Boolean).join(" | ");
+      return `
+        <li class="notebook-item">
+          <div class="notebook-item-copy">
+            <p class="notebook-item-title">${title}</p>
+            <p class="notebook-item-meta">${entry.date || "Date non renseignee"}${entry.club ? ` - ${entry.club}` : ""}</p>
+            ${summary ? `<p class="notebook-item-summary">${summary}</p>` : ""}
+          </div>
+          <div class="notebook-item-actions">
+            <button type="button" class="notebook-load" data-entry-id="${entry.id}">Charger</button>
+            <button type="button" class="notebook-delete" data-entry-id="${entry.id}">Supprimer</button>
+          </div>
+        </li>
+      `;
+    }).join("");
+
+  els.notebookContent.innerHTML = `<ul class="notebook-list">${items}</ul>`;
+}
+
 function validateInput(input) {
   if (!Number.isFinite(input.drawWeight) || !Number.isFinite(input.arrowLength)) return "Valeurs numeriques invalides.";
   const limits = BOW_LIMITS.recurve;
@@ -1968,6 +2134,7 @@ function computeArcSetup(input) {
 
 function renderArcSetup(input) {
   const setup = computeArcSetup(input);
+  lastArcSetupSnapshot = { input: cloneCatalog(input), setup: cloneCatalog(setup) };
   els.arcSetupResult.innerHTML = `
     <h2>Reglage de l'arc</h2>
     <section class="subcard">
@@ -1989,6 +2156,7 @@ function renderArcSetup(input) {
 }
 
 function renderComparison(input) {
+  lastRecommendationSnapshot = null;
   const entries = BRAND_ORDER.map((brand) => ({ brand, rec: buildBrandRecommendation(input, brand) }));
   const comparisons = entries.filter((entry) => entry.rec.models.length > 0);
   const hiddenBrands = entries.filter((entry) => entry.rec.models.length === 0).map((entry) => brandLabel(entry.brand));
@@ -2019,6 +2187,7 @@ function renderRecommendation(input) {
   }
 
   const recommendation = buildBrandRecommendation(input, input.preferredBrand);
+  lastRecommendationSnapshot = cloneCatalog(recommendation);
   const confidenceList = recommendation.confidenceReasons.length ? `<ul>${recommendation.confidenceReasons.map((reason) => `<li>${reason}</li>`).join("")}</ul>` : "<p>Aucune precision supplementaire.</p>";
   const recommendedModels = [
     ...uniqueModelEntries(recommendation.models, 7).map((entry) => entry.model),
@@ -2065,6 +2234,59 @@ els.tabButtons.forEach((button) => {
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
+});
+
+els.prefillNotebookBtn.addEventListener("click", () => {
+  fillNotebookForm({ ...notebookFormData(), ...buildNotebookPrefill() });
+});
+
+els.resetNotebookBtn.addEventListener("click", () => {
+  resetNotebookForm();
+});
+
+els.notebookForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const entry = notebookFormData();
+  if (!entry.archerName) {
+    els.notebookStatus.textContent = "Entrez au moins un nom ou pseudo pour enregistrer la fiche.";
+    return;
+  }
+
+  const entries = readNotebook();
+  const record = {
+    id: currentNotebookId || `notebook-${Date.now()}`,
+    ...entry,
+    updatedAt: new Date().toISOString()
+  };
+  const nextEntries = currentNotebookId
+    ? entries.map((existing) => (existing.id === currentNotebookId ? record : existing))
+    : [record, ...entries];
+
+  currentNotebookId = record.id;
+  writeNotebook(nextEntries.slice(0, 50));
+  els.notebookStatus.textContent = `Fiche enregistree pour ${record.archerName}.`;
+});
+
+els.notebookContent.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+  const entryId = target.dataset.entryId;
+  if (!entryId) return;
+
+  if (target.classList.contains("notebook-load")) {
+    const entry = readNotebook().find((item) => item.id === entryId);
+    if (!entry) return;
+    currentNotebookId = entry.id;
+    fillNotebookForm(entry);
+    setActiveTab("notebook");
+    return;
+  }
+
+  if (target.classList.contains("notebook-delete")) {
+    const nextEntries = readNotebook().filter((item) => item.id !== entryId);
+    if (currentNotebookId === entryId) resetNotebookForm();
+    writeNotebook(nextEntries);
+  }
 });
 
 els.form.addEventListener("submit", async (event) => {
@@ -2118,6 +2340,8 @@ applyUnitConstraints();
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
+resetNotebookForm();
+renderNotebook();
 setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
 refreshCatalogState();
 refreshDealsCatalog();
