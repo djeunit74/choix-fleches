@@ -1982,9 +1982,46 @@ function recommendationBrandLabel(snapshot) {
   return snapshot?.brand ? brandLabel(snapshot.brand) : "";
 }
 
+function getCurrentSpineInputForNotebook() {
+  const converted = toImperial(Number(els.drawWeight.value), Number(els.arrowLength.value));
+  const input = {
+    bowType: "recurve",
+    shootingProfile: els.shootingProfile.value,
+    preferredBrand: els.preferredBrand.value,
+    shootingEnvironment: els.shootingEnvironment.value,
+    shaftMaterial: els.shaftMaterial.value,
+    drawWeight: converted.drawWeight,
+    arrowLength: converted.arrowLength,
+    discipline: els.discipline.value
+  };
+  const normalizedInput = normalizeInput(input);
+  normalizedInput.pointWeight = defaultPointWeightForInput(normalizedInput);
+  return validateInput(normalizedInput) ? null : normalizedInput;
+}
+
+function buildNotebookRecommendationFallback() {
+  const input = getCurrentSpineInputForNotebook();
+  if (!input) return null;
+  if (input.preferredBrand !== "all") return buildBrandRecommendation(input, input.preferredBrand);
+  return BRAND_ORDER.map((brand) => buildBrandRecommendation(input, brand)).find((rec) => rec.models.length > 0) || null;
+}
+
+function buildNotebookArcFallback() {
+  const input = {
+    arcLength: Number(els.arcLength.value),
+    upperTiller: Number(els.upperTiller.value),
+    lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
+    limbMarkedWeight: Number(els.limbMarkedWeight.value),
+    riserLength: Number(els.riserLength.value),
+    drawLengthForWeight: Number(els.drawLengthForWeight.value)
+  };
+  return validateArcSetupInput(input) ? null : { input: cloneCatalog(input), setup: cloneCatalog(computeArcSetup(input)) };
+}
+
 function buildNotebookPrefill() {
-  const arc = lastArcSetupSnapshot;
-  const rec = lastRecommendationSnapshot;
+  const arc = lastArcSetupSnapshot || buildNotebookArcFallback();
+  const rec = lastRecommendationSnapshot || buildNotebookRecommendationFallback();
+  const currentArrowLength = Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "");
   return {
     date: els.notebookDate.value || todayIsoDate(),
     title: els.notebookTitle.value.trim(),
@@ -1993,17 +2030,17 @@ function buildNotebookPrefill() {
     riserLength: arc ? `${arc.input.riserLength}"` : "",
     limbs: els.notebookLimbs.value.trim(),
     limbWeight: arc ? `${arc.input.limbMarkedWeight} lbs` : "",
-    drawLength: arc ? `${arc.input.drawLengthForWeight}"` : `${Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "")}"`,
+    drawLength: arc ? `${arc.input.drawLengthForWeight}"` : `${currentArrowLength}"`,
     brace: arc ? `${arc.setup.braceTarget.toFixed(1)} cm` : "",
     upperTiller: arc ? `${arc.input.upperTiller} mm` : "",
     lowerTiller: arc ? `${arc.input.lowerTillerMeasured} mm` : "",
     positiveTiller: arc ? `+${arc.setup.actualTiller.toFixed(1)} mm` : "",
     estimatedWeight: arc ? `${arc.setup.drawWeightEstimate.estimated.toFixed(1)} lbs` : "",
-    arrowBrand: recommendationBrandLabel(rec),
-    arrowModel: rec?.models?.[0]?.model || "",
-    arrowSpine: rec ? recommendationPrimaryDisplay(rec).replace(/<[^>]+>/g, "").trim() : "",
-    arrowLength: `${Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "")}"`,
-    pointWeight: rec ? `${rec.recommendedPointWeight} gr` : "",
+    arrowBrand: recommendationBrandLabel(rec) || els.notebookArrowBrand.value.trim(),
+    arrowModel: rec?.models?.[0]?.model || els.notebookArrowModel.value.trim(),
+    arrowSpine: rec ? recommendationPrimaryDisplay(rec).replace(/<[^>]+>/g, "").trim() : els.notebookArrowSpine.value.trim(),
+    arrowLength: `${currentArrowLength}"`,
+    pointWeight: rec ? `${rec.recommendedPointWeight} gr` : els.notebookPointWeight.value.trim(),
     notes: els.notebookNotes.value.trim()
   };
 }
@@ -2251,6 +2288,7 @@ els.clearHistoryBtn.addEventListener("click", () => {
 
 els.prefillNotebookBtn.addEventListener("click", () => {
   fillNotebookForm({ ...notebookFormData(), ...buildNotebookPrefill() });
+  els.notebookStatus.textContent = "Dernier calcul reinjecte dans la fiche.";
 });
 
 els.resetNotebookBtn.addEventListener("click", () => {
