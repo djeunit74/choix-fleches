@@ -909,13 +909,7 @@ function feedbackFormUrl() {
   const params = new URLSearchParams();
   params.set("usp", "pp_url");
   params.set(FEEDBACK_FORM.categoryField, payload.category || "");
-  const enrichedMessage = [
-    payload.message || "",
-    "",
-    `[Onglet: ${payload.tab}]`,
-    `[Theme: ${payload.theme}]`
-  ].join("\n").trim();
-  params.set(FEEDBACK_FORM.messageField, enrichedMessage);
+  params.set(FEEDBACK_FORM.messageField, payload.message || "");
   return `${FEEDBACK_FORM.baseUrl}?${params.toString()}`;
 }
 function renderFeedbackDraft() {
