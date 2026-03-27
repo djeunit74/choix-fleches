@@ -47,6 +47,13 @@
   notebookArrowLength: document.getElementById("notebookArrowLength"),
   notebookPointWeight: document.getElementById("notebookPointWeight"),
   notebookNotes: document.getElementById("notebookNotes"),
+  feedbackToggleBtn: document.getElementById("feedbackToggleBtn"),
+  feedbackPanel: document.getElementById("feedbackPanel"),
+  feedbackCloseBtn: document.getElementById("feedbackCloseBtn"),
+  feedbackForm: document.getElementById("feedbackForm"),
+  feedbackMessage: document.getElementById("feedbackMessage"),
+  feedbackResetBtn: document.getElementById("feedbackResetBtn"),
+  feedbackStatus: document.getElementById("feedbackStatus"),
   themeSelect: document.getElementById("themeSelect"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
@@ -54,7 +61,7 @@
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", theme: "appTheme" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", theme: "appTheme", feedback: "feedbackDraft" };
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const ALLOWED_SHAFT_MATERIALS = ["carbon", "alu"];
 const BOW_LIMITS = {
@@ -850,6 +857,64 @@ function applyTheme(theme) {
   localStorage.setItem(STORAGE.theme, nextTheme);
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta) themeMeta.setAttribute("content", themeMetaColor(nextTheme));
+}
+function readFeedbackDraft() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE.feedback) || "{}");
+  } catch {
+    return {};
+  }
+}
+function writeFeedbackDraft(draft) {
+  localStorage.setItem(STORAGE.feedback, JSON.stringify(draft));
+}
+function selectedFeedbackCategory() {
+  return document.querySelector('input[name="feedbackCategory"]:checked')?.value || "";
+}
+function setSelectedFeedbackCategory(category) {
+  document.querySelectorAll('input[name="feedbackCategory"]').forEach((input) => {
+    input.checked = input.value === category;
+  });
+}
+function activeTabLabel() {
+  const active = els.tabButtons.find((button) => button.classList.contains("is-active"));
+  return active ? active.textContent.trim() : "Choix des fleches";
+}
+function feedbackPayload() {
+  return {
+    category: selectedFeedbackCategory(),
+    message: els.feedbackMessage?.value.trim() || "",
+    tab: activeTabLabel(),
+    theme: els.themeSelect?.value || "cible"
+  };
+}
+function feedbackSummary() {
+  const payload = feedbackPayload();
+  const lines = [
+    `Categorie : ${payload.category || "non renseignee"}`,
+    `Onglet : ${payload.tab}`,
+    `Theme : ${payload.theme}`,
+    payload.message ? `Avis : ${payload.message}` : "Avis : "
+  ];
+  return lines.join("\n");
+}
+function renderFeedbackDraft() {
+  const draft = readFeedbackDraft();
+  setSelectedFeedbackCategory(draft.category || "");
+  if (els.feedbackMessage) els.feedbackMessage.value = draft.message || "";
+}
+function persistFeedbackDraft() {
+  writeFeedbackDraft({
+    category: selectedFeedbackCategory(),
+    message: els.feedbackMessage?.value || ""
+  });
+}
+function toggleFeedbackPanel(forceOpen = null) {
+  if (!els.feedbackPanel || !els.feedbackToggleBtn) return;
+  const nextOpen = forceOpen === null ? els.feedbackPanel.hidden : forceOpen;
+  els.feedbackPanel.hidden = !nextOpen;
+  els.feedbackToggleBtn.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+  if (nextOpen) renderFeedbackDraft();
 }
 function dealsUpdatedLabel() {
   const date = new Date(dealsState.updatedAt);
@@ -2290,6 +2355,37 @@ els.prefillNotebookBtn.addEventListener("click", () => {
   fillNotebookForm({ ...notebookFormData(), ...buildNotebookPrefill() });
   els.notebookStatus.textContent = "Dernier calcul reinjecte dans la fiche.";
 });
+els.feedbackToggleBtn.addEventListener("click", () => {
+  toggleFeedbackPanel(true);
+  els.feedbackStatus.textContent = "";
+});
+els.feedbackCloseBtn.addEventListener("click", () => {
+  toggleFeedbackPanel(false);
+});
+document.querySelectorAll('input[name="feedbackCategory"]').forEach((input) => {
+  input.addEventListener("change", persistFeedbackDraft);
+});
+els.feedbackMessage.addEventListener("input", persistFeedbackDraft);
+els.feedbackResetBtn.addEventListener("click", () => {
+  setSelectedFeedbackCategory("");
+  els.feedbackMessage.value = "";
+  persistFeedbackDraft();
+  els.feedbackStatus.textContent = "Avis vide.";
+});
+els.feedbackForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!selectedFeedbackCategory()) {
+    els.feedbackStatus.textContent = "Choisissez d'abord une categorie.";
+    return;
+  }
+  const summary = feedbackSummary();
+  try {
+    await navigator.clipboard.writeText(summary);
+    els.feedbackStatus.textContent = "Avis copie. Vous pouvez le coller dans un message.";
+  } catch {
+    els.feedbackStatus.textContent = "Copie automatique indisponible. Selectionnez puis copiez le texte manuellement.";
+  }
+});
 
 els.resetNotebookBtn.addEventListener("click", () => {
   resetNotebookForm();
@@ -2394,6 +2490,7 @@ updateVisibility();
 renderHistory();
 resetNotebookForm();
 renderNotebook();
+renderFeedbackDraft();
 setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
 refreshCatalogState();
 refreshDealsCatalog();

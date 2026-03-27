@@ -339,7 +339,41 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260327c"></script>
+  <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">
+    Je donne mon avis
+  </button>
+
+  <section id="feedbackPanel" class="feedback-panel" hidden aria-label="Donner son avis">
+    <div class="feedback-panel-card">
+      <div class="feedback-panel-head">
+        <h2>Je donne mon avis</h2>
+        <button id="feedbackCloseBtn" type="button" class="feedback-close" aria-label="Fermer">Fermer</button>
+      </div>
+      <p>Choisissez une categorie, ajoutez un commentaire si besoin, puis copiez le message.</p>
+      <form id="feedbackForm" novalidate autocomplete="off">
+        <fieldset class="feedback-categories">
+          <legend>Categorie</legend>
+          <label><input type="radio" name="feedbackCategory" value="ca manque" /> Ca manque</label>
+          <label><input type="radio" name="feedbackCategory" value="c'est faux" /> C'est faux</label>
+          <label><input type="radio" name="feedbackCategory" value="c'est confus" /> C'est confus</label>
+          <label><input type="radio" name="feedbackCategory" value="c'est utile" /> C'est utile</label>
+        </fieldset>
+
+        <label>
+          Mon avis
+          <textarea id="feedbackMessage" rows="4" maxlength="600" placeholder="Ex : la recommandation Victory sur 30 lbs / 28 pouces me semble trop rigide."></textarea>
+        </label>
+
+        <div class="row-actions">
+          <button id="feedbackCopyBtn" type="submit">Copier mon avis</button>
+          <button id="feedbackResetBtn" type="button">Vider</button>
+        </div>
+      </form>
+      <p id="feedbackStatus" class="feedback-status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <script src="app.js?v=20260327d"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
