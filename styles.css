@@ -124,15 +124,6 @@ body {
   margin: 8px 0;
 }
 
-.step-list {
-  margin: 8px 0 0;
-  padding-left: 20px;
-}
-
-.step-list li {
-  margin: 8px 0;
-}
-
 .card {
   background: var(--card);
   border: 1px solid var(--line);
