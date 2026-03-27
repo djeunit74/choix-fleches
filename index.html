@@ -212,22 +212,28 @@
     <section class="tab-panel" data-panel="notebook" hidden>
       <section class="card">
         <h2>Carnet de reglage</h2>
-        <p>Enregistrez une fiche simple par archer pour garder une trace du materiel, des reglages et des fleches utilisees.</p>
+        <p>Enregistrez une fiche personnelle pour garder une trace du materiel, des reglages et des fleches utilisees.</p>
         <form id="notebook-form" novalidate autocomplete="off">
           <section class="subcard">
-            <h3>Archer</h3>
+            <h3>Demarrage rapide</h3>
+            <p>Le plus simple est de repartir du dernier calcul deja fait dans l'app.</p>
+            <div class="row-actions">
+              <button id="prefillNotebookBtn" type="button">Pre-remplir avec le dernier calcul</button>
+              <button id="saveNotebookBtn" type="submit">Enregistrer la fiche</button>
+              <button id="resetNotebookBtn" type="button">Vider</button>
+            </div>
+          </section>
+
+          <section class="subcard">
+            <h3>Fiche</h3>
             <div class="field-grid">
-              <label>
-                Nom ou pseudo
-                <input id="notebookArcherName" type="text" maxlength="80" placeholder="Ex : Paul / Arc Club" required />
-              </label>
               <label>
                 Date
                 <input id="notebookDate" type="date" required />
               </label>
               <label>
-                Club
-                <input id="notebookClub" type="text" maxlength="100" placeholder="Optionnel" />
+                Titre libre
+                <input id="notebookTitle" type="text" maxlength="100" placeholder="Ex : reglages salle mars / setup exterieur" />
               </label>
             </div>
           </section>
@@ -321,12 +327,6 @@
               <textarea id="notebookNotes" rows="5" maxlength="1000" placeholder="Ex : bon ressenti, a re-tester avec 110 gr, avis entraineur..."></textarea>
             </label>
           </section>
-
-          <div class="row-actions">
-            <button id="prefillNotebookBtn" type="button">Pre-remplir avec les calculs actuels</button>
-            <button id="saveNotebookBtn" type="submit">Enregistrer la fiche</button>
-            <button id="resetNotebookBtn" type="button">Vider</button>
-          </div>
         </form>
       </section>
 

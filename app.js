@@ -28,9 +28,8 @@
   notebookContent: document.getElementById("notebookContent"),
   prefillNotebookBtn: document.getElementById("prefillNotebookBtn"),
   resetNotebookBtn: document.getElementById("resetNotebookBtn"),
-  notebookArcherName: document.getElementById("notebookArcherName"),
   notebookDate: document.getElementById("notebookDate"),
-  notebookClub: document.getElementById("notebookClub"),
+  notebookTitle: document.getElementById("notebookTitle"),
   notebookArcModel: document.getElementById("notebookArcModel"),
   notebookArcLength: document.getElementById("notebookArcLength"),
   notebookRiserLength: document.getElementById("notebookRiserLength"),
@@ -1930,9 +1929,8 @@ function writeNotebook(entries) {
 
 function notebookFormData() {
   return {
-    archerName: els.notebookArcherName.value.trim(),
     date: els.notebookDate.value,
-    club: els.notebookClub.value.trim(),
+    title: els.notebookTitle.value.trim(),
     arcModel: els.notebookArcModel.value.trim(),
     arcLength: els.notebookArcLength.value.trim(),
     riserLength: els.notebookRiserLength.value.trim(),
@@ -1954,9 +1952,8 @@ function notebookFormData() {
 }
 
 function fillNotebookForm(entry = {}) {
-  els.notebookArcherName.value = entry.archerName || "";
   els.notebookDate.value = entry.date || todayIsoDate();
-  els.notebookClub.value = entry.club || "";
+  els.notebookTitle.value = entry.title || "";
   els.notebookArcModel.value = entry.arcModel || "";
   els.notebookArcLength.value = entry.arcLength || "";
   els.notebookRiserLength.value = entry.riserLength || "";
@@ -1989,9 +1986,8 @@ function buildNotebookPrefill() {
   const arc = lastArcSetupSnapshot;
   const rec = lastRecommendationSnapshot;
   return {
-    archerName: els.notebookArcherName.value.trim(),
     date: els.notebookDate.value || todayIsoDate(),
-    club: els.notebookClub.value.trim(),
+    title: els.notebookTitle.value.trim(),
     arcModel: els.notebookArcModel.value.trim(),
     arcLength: arc ? `${arc.input.arcLength}"` : "",
     riserLength: arc ? `${arc.input.riserLength}"` : "",
@@ -2024,7 +2020,7 @@ function renderNotebook() {
   const items = entries
     .sort((a, b) => String(b.date).localeCompare(String(a.date)))
     .map((entry) => {
-      const title = entry.archerName || "Fiche sans nom";
+      const title = entry.title || "Fiche sans titre";
       const summary = [
         entry.arcModel || entry.arcLength || entry.riserLength ? `${entry.arcModel || "Arc"} ${entry.arcLength ? `- ${entry.arcLength}` : ""} ${entry.riserLength ? `/ poignee ${entry.riserLength}` : ""}`.trim() : "",
         entry.arrowBrand || entry.arrowModel ? `${entry.arrowBrand || ""} ${entry.arrowModel || ""}`.trim() : "",
@@ -2034,7 +2030,7 @@ function renderNotebook() {
         <li class="notebook-item">
           <div class="notebook-item-copy">
             <p class="notebook-item-title">${title}</p>
-            <p class="notebook-item-meta">${entry.date || "Date non renseignee"}${entry.club ? ` - ${entry.club}` : ""}</p>
+            <p class="notebook-item-meta">${entry.date || "Date non renseignee"}</p>
             ${summary ? `<p class="notebook-item-summary">${summary}</p>` : ""}
           </div>
           <div class="notebook-item-actions">
@@ -2264,8 +2260,8 @@ els.resetNotebookBtn.addEventListener("click", () => {
 els.notebookForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const entry = notebookFormData();
-  if (!entry.archerName) {
-    els.notebookStatus.textContent = "Entrez au moins un nom ou pseudo pour enregistrer la fiche.";
+  if (!entry.title && !entry.arcModel && !entry.arrowModel) {
+    els.notebookStatus.textContent = "Ajoutez au moins un titre, un arc ou une fleche pour enregistrer la fiche.";
     return;
   }
 
@@ -2281,7 +2277,7 @@ els.notebookForm.addEventListener("submit", (event) => {
 
   currentNotebookId = record.id;
   writeNotebook(nextEntries.slice(0, 50));
-  els.notebookStatus.textContent = `Fiche enregistree pour ${record.archerName}.`;
+  els.notebookStatus.textContent = `Fiche enregistree${record.title ? ` : ${record.title}` : ""}.`;
 });
 
 els.notebookContent.addEventListener("click", (event) => {
