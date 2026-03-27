@@ -1099,7 +1099,7 @@ function updateVisibility() {
 
 function updateMaterialOptions() {
   els.shaftMaterial.innerHTML = `
-    <option value="all">Toutes</option>
+    <option value="all">Tous</option>
     <option value="carbon">Carbone</option>
     <option value="alu">Alu</option>
   `;
