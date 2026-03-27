@@ -349,7 +349,7 @@
         <h2>Je donne mon avis</h2>
         <button id="feedbackCloseBtn" type="button" class="feedback-close" aria-label="Fermer">Fermer</button>
       </div>
-      <p>Choisissez une categorie, ajoutez un commentaire si besoin, puis copiez le message.</p>
+      <p>Choisissez une categorie, ajoutez un commentaire si besoin, puis envoyez-le directement.</p>
       <form id="feedbackForm" novalidate autocomplete="off">
         <fieldset class="feedback-categories">
           <legend>Categorie</legend>
@@ -366,7 +366,7 @@
 
         <div class="row-actions">
           <button id="feedbackSendBtn" type="button">Envoyer mon avis</button>
-          <button id="feedbackCopyBtn" type="submit">Copier mon avis</button>
+          <button id="feedbackCopyBtn" type="button">Copier mon avis</button>
           <button id="feedbackResetBtn" type="button">Vider</button>
         </div>
       </form>
@@ -374,7 +374,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260327e"></script>
+  <script src="app.js?v=20260327f"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

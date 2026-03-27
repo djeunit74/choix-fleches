@@ -64,7 +64,7 @@
 
 const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", theme: "appTheme", feedback: "feedbackDraft" };
 const FEEDBACK_FORM = {
-  baseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc1Pp7JKPm90GKUasJxFrPi8fs4YO37Smb2s8MtbPPVDKVWuA/viewform",
+  responseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc1Pp7JKPm90GKUasJxFrPi8fs4YO37Smb2s8MtbPPVDKVWuA/formResponse",
   categoryField: "entry.1394735982",
   messageField: "entry.1482482325"
 };
@@ -898,19 +898,17 @@ function feedbackSummary() {
   const payload = feedbackPayload();
   const lines = [
     `Categorie : ${payload.category || "non renseignee"}`,
-    `Onglet : ${payload.tab}`,
-    `Theme : ${payload.theme}`,
     payload.message ? `Avis : ${payload.message}` : "Avis : "
   ];
   return lines.join("\n");
 }
-function feedbackFormUrl() {
+function feedbackRequestBody() {
   const payload = feedbackPayload();
   const params = new URLSearchParams();
-  params.set("usp", "pp_url");
   params.set(FEEDBACK_FORM.categoryField, payload.category || "");
   params.set(FEEDBACK_FORM.messageField, payload.message || "");
-  return `${FEEDBACK_FORM.baseUrl}?${params.toString()}`;
+  params.set("pageHistory", "0");
+  return params;
 }
 function renderFeedbackDraft() {
   const draft = readFeedbackDraft();
@@ -2380,14 +2378,30 @@ document.querySelectorAll('input[name="feedbackCategory"]').forEach((input) => {
   input.addEventListener("change", persistFeedbackDraft);
 });
 els.feedbackMessage.addEventListener("input", persistFeedbackDraft);
-els.feedbackSendBtn.addEventListener("click", () => {
+els.feedbackSendBtn.addEventListener("click", async () => {
   if (!selectedFeedbackCategory()) {
     els.feedbackStatus.textContent = "Choisissez d'abord une categorie.";
     return;
   }
   persistFeedbackDraft();
-  window.open(feedbackFormUrl(), "_blank", "noopener");
-  els.feedbackStatus.textContent = "Formulaire ouvert avec les champs pre-remplis.";
+  els.feedbackSendBtn.disabled = true;
+  els.feedbackStatus.textContent = "Envoi en cours...";
+  try {
+    await fetch(FEEDBACK_FORM.responseUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: feedbackRequestBody().toString()
+    });
+    setSelectedFeedbackCategory("");
+    els.feedbackMessage.value = "";
+    persistFeedbackDraft();
+    els.feedbackStatus.textContent = "Avis envoye. Merci.";
+  } catch {
+    els.feedbackStatus.textContent = "Envoi direct indisponible. Utilisez Copier mon avis.";
+  } finally {
+    els.feedbackSendBtn.disabled = false;
+  }
 });
 els.feedbackResetBtn.addEventListener("click", () => {
   setSelectedFeedbackCategory("");
@@ -2395,8 +2409,7 @@ els.feedbackResetBtn.addEventListener("click", () => {
   persistFeedbackDraft();
   els.feedbackStatus.textContent = "Avis vide.";
 });
-els.feedbackForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+els.feedbackCopyBtn.addEventListener("click", async () => {
   if (!selectedFeedbackCategory()) {
     els.feedbackStatus.textContent = "Choisissez d'abord une categorie.";
     return;
