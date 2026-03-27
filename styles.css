@@ -8,6 +8,7 @@
   --theme-glow-1: #fff6dd;
   --theme-glow-2: #e8f1ff;
   --theme-art: radial-gradient(circle at 88% 14%, rgba(255, 255, 255, 0.14) 0 36px, transparent 37px);
+  --hero-badge: radial-gradient(circle at center, rgba(255, 255, 255, 0.7) 0 26%, transparent 27%);
 }
 
 * {
@@ -26,6 +27,8 @@
   --theme-art:
     radial-gradient(circle at 88% 14%, #f7d32a 0 18px, #cf2e2e 18px 32px, #1d63b2 32px 46px, #111111 46px 60px, #f9f9f9 60px 64px, transparent 64px),
     radial-gradient(circle at 92% 18%, #f7d32a 0 12px, #cf2e2e 12px 22px, #1d63b2 22px 32px, #111111 32px 42px, #f9f9f9 42px 46px, transparent 46px);
+  --hero-badge:
+    radial-gradient(circle at center, #f7d32a 0 18%, #cf2e2e 19% 33%, #1d63b2 34% 48%, #111111 49% 63%, #f9f9f9 64% 67%, transparent 68%);
 }
 
 :root[data-theme="campagne"] {
@@ -41,6 +44,8 @@
     radial-gradient(circle at 88% 14%, #f3dd34 0 18px, #111111 18px 34px, #111111 34px 52px, #f4f1eb 52px 56px, transparent 56px),
     radial-gradient(circle at 90% 16%, rgba(243, 221, 52, 0.18) 0 72px, transparent 73px),
     linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 40%);
+  --hero-badge:
+    radial-gradient(circle at center, #f3dd34 0 17%, #111111 18% 31%, #f4f1eb 32% 35%, #111111 36% 49%, #f4f1eb 50% 53%, #111111 54% 67%, transparent 68%);
 }
 
 :root[data-theme="3d"] {
@@ -55,6 +60,8 @@
   --theme-art:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cellipse cx='112' cy='135' rx='54' ry='34' fill='%236c5b3b' fill-opacity='.18'/%3E%3Cellipse cx='154' cy='112' rx='14' ry='18' fill='%236c5b3b' fill-opacity='.18'/%3E%3Cpath d='M147 78c0-25 10-44 20-44 7 0 9 17 3 39-4 14-11 24-16 24-4 0-7-7-7-19Z' fill='%236c5b3b' fill-opacity='.18'/%3E%3Cpath d='M129 80c-3-25 3-45 13-46 7 0 12 16 11 39-1 15-6 26-11 27-5 0-10-6-13-20Z' fill='%236c5b3b' fill-opacity='.18'/%3E%3Ccircle cx='83' cy='122' r='10' fill='%23f5f0e6' fill-opacity='.5'/%3E%3Ccircle cx='83' cy='122' r='6' fill='%23a65a2a' fill-opacity='.35'/%3E%3Ccircle cx='133' cy='138' r='8' fill='%23f5f0e6' fill-opacity='.5'/%3E%3Ccircle cx='133' cy='138' r='4' fill='%23a65a2a' fill-opacity='.35'/%3E%3C/g%3E%3C/svg%3E"),
     radial-gradient(circle at 90% 16%, rgba(179, 79, 29, 0.16) 0 44px, transparent 45px);
+  --hero-badge:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cellipse cx='88' cy='112' rx='42' ry='24' fill='%236b5d40' fill-opacity='.95'/%3E%3Cellipse cx='121' cy='95' rx='12' ry='15' fill='%236b5d40' fill-opacity='.95'/%3E%3Cpath d='M118 67c0-22 8-38 16-38 6 0 8 15 3 34-3 12-9 21-13 21-4 0-6-6-6-17Z' fill='%236b5d40' fill-opacity='.95'/%3E%3Cpath d='M104 68c-2-22 3-38 11-39 6 0 9 14 9 33-1 13-5 23-9 23-4 0-8-5-11-17Z' fill='%236b5d40' fill-opacity='.95'/%3E%3Ccircle cx='66' cy='103' r='8' fill='%23f5f0e6' fill-opacity='.92'/%3E%3Ccircle cx='66' cy='103' r='4' fill='%23b55b23' fill-opacity='.9'/%3E%3Ccircle cx='106' cy='115' r='6' fill='%23f5f0e6' fill-opacity='.92'/%3E%3Ccircle cx='106' cy='115' r='3' fill='%23b55b23' fill-opacity='.9'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 body {
@@ -92,15 +99,15 @@ body {
 .hero::after {
   content: "";
   position: absolute;
-  inset: auto -36px -36px auto;
-  width: 168px;
-  height: 168px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.96) 0 18%, var(--theme-glow-1) 19% 46%, transparent 47%),
-    radial-gradient(circle at 68% 68%, var(--theme-glow-2) 0 22%, transparent 23%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0));
-  opacity: 0.7;
+  right: 18px;
+  bottom: 16px;
+  width: 92px;
+  height: 92px;
+  background: var(--hero-badge);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.98;
   pointer-events: none;
 }
 
@@ -436,11 +443,10 @@ ul {
   }
 
   .hero::after {
-    width: 126px;
-    height: 126px;
-    right: -26px;
-    bottom: -20px;
-    opacity: 0.92;
+    width: 78px;
+    height: 78px;
+    right: 12px;
+    bottom: 12px;
   }
 
   .hero h1 {
