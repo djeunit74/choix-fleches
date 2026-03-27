@@ -2098,7 +2098,7 @@ function buildNotebookRecommendationFallback() {
   const input = getCurrentSpineInputForNotebook();
   if (!input) return null;
   if (input.preferredBrand !== "all") return buildBrandRecommendation(input, input.preferredBrand);
-  return BRAND_ORDER.map((brand) => buildBrandRecommendation(input, brand)).find((rec) => rec.models.length > 0) || null;
+  return null;
 }
 
 function buildNotebookArcFallback() {
@@ -2115,6 +2115,8 @@ function buildNotebookArcFallback() {
 
 function buildNotebookPrefill() {
   const arc = lastArcSetupSnapshot || buildNotebookArcFallback();
+  const currentSpineInput = getCurrentSpineInputForNotebook();
+  const isMultiBrandSearch = currentSpineInput?.preferredBrand === "all";
   const rec = lastRecommendationSnapshot || buildNotebookRecommendationFallback();
   const currentArrowLength = Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "");
   const suggestedModels = notebookModelSuggestionsFromRecommendation(rec);
@@ -2136,13 +2138,13 @@ function buildNotebookPrefill() {
     lowerTiller: arc ? `${arc.input.lowerTillerMeasured} mm` : "",
     positiveTiller: arc ? `+${arc.setup.actualTiller.toFixed(1)} mm` : "",
     estimatedWeight: arc ? `${arc.setup.drawWeightEstimate.estimated.toFixed(1)} lbs` : "",
-    arrowBrand: recommendationBrandLabel(rec) || els.notebookArrowBrand.value.trim(),
-    arrowModel: chosenModel,
-    arrowSpine: rec ? recommendationPrimaryDisplay(rec).replace(/<[^>]+>/g, "").trim() : els.notebookArrowSpine.value.trim(),
+    arrowBrand: isMultiBrandSearch ? els.notebookArrowBrand.value.trim() : (recommendationBrandLabel(rec) || els.notebookArrowBrand.value.trim()),
+    arrowModel: isMultiBrandSearch ? currentNotebookModel : chosenModel,
+    arrowSpine: isMultiBrandSearch ? els.notebookArrowSpine.value.trim() : (rec ? recommendationPrimaryDisplay(rec).replace(/<[^>]+>/g, "").trim() : els.notebookArrowSpine.value.trim()),
     arrowLength: `${currentArrowLength}"`,
-    pointWeight: rec ? `${rec.recommendedPointWeight} gr` : els.notebookPointWeight.value.trim(),
+    pointWeight: isMultiBrandSearch ? els.notebookPointWeight.value.trim() : (rec ? `${rec.recommendedPointWeight} gr` : els.notebookPointWeight.value.trim()),
     notes: els.notebookNotes.value.trim(),
-    _modelSuggestions: suggestedModels
+    _modelSuggestions: isMultiBrandSearch ? [] : suggestedModels
   };
 }
 
