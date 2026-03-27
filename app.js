@@ -894,14 +894,6 @@ function feedbackPayload() {
     theme: els.themeSelect?.value || "cible"
   };
 }
-function feedbackSummary() {
-  const payload = feedbackPayload();
-  const lines = [
-    `Categorie : ${payload.category || "non renseignee"}`,
-    payload.message ? `Avis : ${payload.message}` : "Avis : "
-  ];
-  return lines.join("\n");
-}
 function feedbackRequestBody() {
   const payload = feedbackPayload();
   const params = new URLSearchParams();
@@ -2398,7 +2390,7 @@ els.feedbackSendBtn.addEventListener("click", async () => {
     persistFeedbackDraft();
     els.feedbackStatus.textContent = "Avis envoye. Merci.";
   } catch {
-    els.feedbackStatus.textContent = "Envoi direct indisponible. Utilisez Copier mon avis.";
+    els.feedbackStatus.textContent = "Envoi direct indisponible pour le moment.";
   } finally {
     els.feedbackSendBtn.disabled = false;
   }
@@ -2408,19 +2400,6 @@ els.feedbackResetBtn.addEventListener("click", () => {
   els.feedbackMessage.value = "";
   persistFeedbackDraft();
   els.feedbackStatus.textContent = "Avis vide.";
-});
-els.feedbackCopyBtn.addEventListener("click", async () => {
-  if (!selectedFeedbackCategory()) {
-    els.feedbackStatus.textContent = "Choisissez d'abord une categorie.";
-    return;
-  }
-  const summary = feedbackSummary();
-  try {
-    await navigator.clipboard.writeText(summary);
-    els.feedbackStatus.textContent = "Avis copie. Vous pouvez le coller dans un message.";
-  } catch {
-    els.feedbackStatus.textContent = "Copie automatique indisponible. Selectionnez puis copiez le texte manuellement.";
-  }
 });
 
 els.resetNotebookBtn.addEventListener("click", () => {
