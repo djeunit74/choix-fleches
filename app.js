@@ -25,7 +25,8 @@
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
-  discipline: document.getElementById("discipline")
+  discipline: document.getElementById("discipline"),
+  braceMeasured: document.getElementById("braceMeasured")
 };
 
 const STORAGE = { history: "spineHistory", activeTab: "activeMainTab" };
@@ -1886,6 +1887,7 @@ function defaultBraceRangeCm(arcLength) {
 
 function validateArcSetupInput(input) {
   if (![66, 68, 70, 72].includes(input.arcLength)) return "Taille d'arc invalide.";
+  if (!Number.isFinite(input.braceMeasured) || input.braceMeasured < 18 || input.braceMeasured > 28) return "Band mesure invalide.";
   if (!Number.isFinite(input.upperTiller)) return "Mesure haute invalide.";
   if (!Number.isFinite(input.lowerTillerMeasured)) return "Mesure basse invalide.";
   if (![23, 25, 27].includes(input.riserLength)) return "Taille de poignee invalide.";
@@ -1931,37 +1933,55 @@ function buildTillerAdjustment(actualTiller, targetTiller) {
   };
 }
 
+function buildBraceAdjustment(braceMeasured, braceRange, braceTarget) {
+  const [minBrace, maxBrace] = braceRange;
+  const gapToTarget = Math.round((braceMeasured - braceTarget) * 10) / 10;
+
+  if (braceMeasured < minBrace) {
+    return {
+      status: "Band trop bas",
+      advice: `Le band mesure est trop bas d'environ ${Math.abs(gapToTarget).toFixed(1)} cm. Vrillez legerement la corde, re-cordez puis re-mesurez.`
+    };
+  }
+
+  if (braceMeasured > maxBrace) {
+    return {
+      status: "Band trop haut",
+      advice: `Le band mesure est trop haut d'environ ${Math.abs(gapToTarget).toFixed(1)} cm. De-vrillez legerement la corde, re-cordez puis re-mesurez.`
+    };
+  }
+
+  return {
+    status: "Band dans la plage",
+    advice: `Le band mesure reste dans la plage utile. Gardez cette base et affinez seulement si l'arc le demande au tir.`
+  };
+}
+
 function computeArcSetup(input) {
   const braceRange = defaultBraceRangeCm(input.arcLength);
   const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
+  const braceAdjustment = buildBraceAdjustment(input.braceMeasured, braceRange, braceTarget);
   const recommendedTiller = 6;
   const expectedLowerDistance = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
   const actualTiller = Math.round((input.upperTiller - input.lowerTillerMeasured) * 10) / 10;
-  const lowerGap = Math.round((input.lowerTillerMeasured - expectedLowerDistance) * 10) / 10;
   const adjustment = buildTillerAdjustment(actualTiller, recommendedTiller);
   const drawWeightEstimate = estimateDrawWeight(input);
-  let tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
-  if (input.arcLength >= 70) tillerAction = `Sur un arc long, garder un tiller positif de depart autour de +4 mm reste une bonne base. Distance basse attendue : ${expectedLowerDistance.toFixed(1)} mm.`;
-  else tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
 
   return {
     braceRange,
     braceTarget,
+    braceMeasured: input.braceMeasured,
+    braceAdjustment,
     upperTiller: input.upperTiller,
     lowerTillerMeasured: input.lowerTillerMeasured,
-    lowerTiller: expectedLowerDistance,
     actualTiller,
-    lowerGap,
     tillerTarget: recommendedTiller,
-    tillerAction,
     adjustment,
     drawWeightEstimate,
-    checks: [
-      "Band : commencer dans la plage de depart du constructeur. La valeur cible ici est une base pratique.",
-      "Tiller : base carnet de reglage, tiller positif entre +2 et +10 mm, prereglage autour de +6 mm.",
-      "Toute modification des vis de branches agit aussi sur la puissance ressentie de l'arc.",
-      "Le tiller n'est pas un indicateur direct de puissance tiree.",
-      "Re-mesurez le haut et le bas apres chaque micro-ajustement."
+    steps: [
+      "1. Reglez d'abord le band pour entrer dans la bonne plage.",
+      "2. Reglez ensuite le tiller avec de petites corrections.",
+      "3. Verifiez la puissance tiree seulement apres ces bases."
     ]
   };
 }
@@ -1974,9 +1994,12 @@ function renderArcSetup(input) {
       <h3>Band et tiller</h3>
       <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
       <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
+      <p><strong>Band mesure</strong> : ${setup.braceMeasured.toFixed(1)} cm</p>
+      <p><strong>Diagnostic band</strong> : ${setup.braceAdjustment.status}</p>
+      <p>${setup.braceAdjustment.advice}</p>
       <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
       <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
-      <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
+      <p><strong>Diagnostic tiller</strong> : ${setup.adjustment.status}</p>
       <p>${setup.adjustment.advice}</p>
     </section>
     <section class="subcard">
@@ -1984,6 +2007,10 @@ function renderArcSetup(input) {
       <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
       <p><strong>Base du calcul</strong> : poignee ${input.riserLength}" + branches ${input.limbMarkedWeight} lbs + allonge ${input.drawLengthForWeight.toFixed(2)}".</p>
       <p><strong>Note</strong> : le band n'entre pas dans ce calcul. Le tiller n'entre pas directement dans ce calcul non plus. En revanche, toucher aux vis de branches peut faire bouger a la fois le tiller et la puissance ressentie.</p>
+    </section>
+    <section class="subcard">
+      <h3>Ordre conseille</h3>
+      <ol class="step-list">${setup.steps.map((step) => `<li>${step.replace(/^\d+\.\s*/, "")}</li>`).join("")}</ol>
     </section>
   `;
 }
@@ -2098,6 +2125,7 @@ els.arcSetupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = {
     arcLength: Number(els.arcLength.value),
+    braceMeasured: Number(els.braceMeasured.value),
     upperTiller: Number(els.upperTiller.value),
     lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
     limbMarkedWeight: Number(els.limbMarkedWeight.value),
@@ -2114,6 +2142,12 @@ els.arcSetupForm.addEventListener("submit", (event) => {
   renderArcSetup(input);
 });
 
+els.arcLength.addEventListener("change", () => {
+  const braceRange = defaultBraceRangeCm(Number(els.arcLength.value));
+  const braceTarget = Math.round(((braceRange[0] + braceRange[1]) / 2) * 10) / 10;
+  els.braceMeasured.value = braceTarget.toFixed(1);
+});
+
 applyUnitConstraints();
 applyProfileDefaults();
 updateVisibility();
@@ -2123,6 +2157,7 @@ refreshCatalogState();
 refreshDealsCatalog();
 const initialArcSetup = {
   arcLength: Number(els.arcLength.value),
+  braceMeasured: Number(els.braceMeasured.value),
   upperTiller: Number(els.upperTiller.value),
   lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
   limbMarkedWeight: Number(els.limbMarkedWeight.value),
@@ -2131,6 +2166,7 @@ const initialArcSetup = {
 };
 const initialArcSetupError = validateArcSetupInput(initialArcSetup);
 if (initialArcSetupError) {
+  els.braceMeasured.value = "22.8";
   els.upperTiller.value = "222";
   els.lowerTillerMeasured.value = "218";
   els.limbMarkedWeight.value = "30";
@@ -2138,6 +2174,7 @@ if (initialArcSetupError) {
   els.drawLengthForWeight.value = "28";
   renderArcSetup({
     arcLength: Number(els.arcLength.value),
+    braceMeasured: Number(els.braceMeasured.value),
     upperTiller: Number(els.upperTiller.value),
     lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
     limbMarkedWeight: Number(els.limbMarkedWeight.value),
