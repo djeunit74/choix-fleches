@@ -51,6 +51,7 @@
   feedbackPanel: document.getElementById("feedbackPanel"),
   feedbackCloseBtn: document.getElementById("feedbackCloseBtn"),
   feedbackForm: document.getElementById("feedbackForm"),
+  feedbackSendBtn: document.getElementById("feedbackSendBtn"),
   feedbackMessage: document.getElementById("feedbackMessage"),
   feedbackResetBtn: document.getElementById("feedbackResetBtn"),
   feedbackStatus: document.getElementById("feedbackStatus"),
@@ -62,6 +63,11 @@
 };
 
 const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", theme: "appTheme", feedback: "feedbackDraft" };
+const FEEDBACK_FORM = {
+  baseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc1Pp7JKPm90GKUasJxFrPi8fs4YO37Smb2s8MtbPPVDKVWuA/viewform",
+  categoryField: "entry.1394735982",
+  messageField: "entry.1482482325"
+};
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const ALLOWED_SHAFT_MATERIALS = ["carbon", "alu"];
 const BOW_LIMITS = {
@@ -897,6 +903,20 @@ function feedbackSummary() {
     payload.message ? `Avis : ${payload.message}` : "Avis : "
   ];
   return lines.join("\n");
+}
+function feedbackFormUrl() {
+  const payload = feedbackPayload();
+  const params = new URLSearchParams();
+  params.set("usp", "pp_url");
+  params.set(FEEDBACK_FORM.categoryField, payload.category || "");
+  const enrichedMessage = [
+    payload.message || "",
+    "",
+    `[Onglet: ${payload.tab}]`,
+    `[Theme: ${payload.theme}]`
+  ].join("\n").trim();
+  params.set(FEEDBACK_FORM.messageField, enrichedMessage);
+  return `${FEEDBACK_FORM.baseUrl}?${params.toString()}`;
 }
 function renderFeedbackDraft() {
   const draft = readFeedbackDraft();
@@ -2366,6 +2386,15 @@ document.querySelectorAll('input[name="feedbackCategory"]').forEach((input) => {
   input.addEventListener("change", persistFeedbackDraft);
 });
 els.feedbackMessage.addEventListener("input", persistFeedbackDraft);
+els.feedbackSendBtn.addEventListener("click", () => {
+  if (!selectedFeedbackCategory()) {
+    els.feedbackStatus.textContent = "Choisissez d'abord une categorie.";
+    return;
+  }
+  persistFeedbackDraft();
+  window.open(feedbackFormUrl(), "_blank", "noopener");
+  els.feedbackStatus.textContent = "Formulaire ouvert avec les champs pre-remplis.";
+});
 els.feedbackResetBtn.addEventListener("click", () => {
   setSelectedFeedbackCategory("");
   els.feedbackMessage.value = "";
