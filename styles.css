@@ -61,7 +61,7 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cellipse cx='112' cy='135' rx='54' ry='34' fill='%236c5b3b' fill-opacity='.18'/%3E%3Cellipse cx='154' cy='112' rx='14' ry='18' fill='%236c5b3b' fill-opacity='.18'/%3E%3Cpath d='M147 78c0-25 10-44 20-44 7 0 9 17 3 39-4 14-11 24-16 24-4 0-7-7-7-19Z' fill='%236c5b3b' fill-opacity='.18'/%3E%3Cpath d='M129 80c-3-25 3-45 13-46 7 0 12 16 11 39-1 15-6 26-11 27-5 0-10-6-13-20Z' fill='%236c5b3b' fill-opacity='.18'/%3E%3Ccircle cx='83' cy='122' r='10' fill='%23f5f0e6' fill-opacity='.5'/%3E%3Ccircle cx='83' cy='122' r='6' fill='%23a65a2a' fill-opacity='.35'/%3E%3Ccircle cx='133' cy='138' r='8' fill='%23f5f0e6' fill-opacity='.5'/%3E%3Ccircle cx='133' cy='138' r='4' fill='%23a65a2a' fill-opacity='.35'/%3E%3C/g%3E%3C/svg%3E"),
     radial-gradient(circle at 90% 16%, rgba(179, 79, 29, 0.16) 0 44px, transparent 45px);
   --hero-badge:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cellipse cx='88' cy='112' rx='42' ry='24' fill='%236b5d40' fill-opacity='.95'/%3E%3Cellipse cx='121' cy='95' rx='12' ry='15' fill='%236b5d40' fill-opacity='.95'/%3E%3Cpath d='M118 67c0-22 8-38 16-38 6 0 8 15 3 34-3 12-9 21-13 21-4 0-6-6-6-17Z' fill='%236b5d40' fill-opacity='.95'/%3E%3Cpath d='M104 68c-2-22 3-38 11-39 6 0 9 14 9 33-1 13-5 23-9 23-4 0-8-5-11-17Z' fill='%236b5d40' fill-opacity='.95'/%3E%3Ccircle cx='66' cy='103' r='8' fill='%23f5f0e6' fill-opacity='.92'/%3E%3Ccircle cx='66' cy='103' r='4' fill='%23b55b23' fill-opacity='.9'/%3E%3Ccircle cx='106' cy='115' r='6' fill='%23f5f0e6' fill-opacity='.92'/%3E%3Ccircle cx='106' cy='115' r='3' fill='%23b55b23' fill-opacity='.9'/%3E%3C/g%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cellipse cx='83' cy='108' rx='40' ry='24' fill='%23645137'/%3E%3Cellipse cx='120' cy='93' rx='14' ry='16' fill='%23645137'/%3E%3Cpath d='M118 64c0-20 7-35 14-35 5 0 8 14 4 31-3 11-8 19-12 19-4 0-6-5-6-15Z' fill='%23645137'/%3E%3Cpath d='M102 67c-1-20 4-35 11-36 5-1 9 13 9 31 0 12-3 21-7 22-5 0-10-5-13-17Z' fill='%23645137'/%3E%3Ccircle cx='67' cy='101' r='10' fill='%23f5f0e6'/%3E%3Ccircle cx='67' cy='101' r='5' fill='%23c96a2b'/%3E%3Ccircle cx='105' cy='114' r='7' fill='%23f5f0e6'/%3E%3Ccircle cx='105' cy='114' r='3.5' fill='%23c96a2b'/%3E%3Cpath d='M39 121c8 0 14 4 18 10' stroke='%23645137' stroke-width='6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 body {
@@ -69,13 +69,12 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--ink);
   background:
-    var(--theme-art),
     radial-gradient(circle at 10% 10%, var(--theme-glow-1) 0 15%, transparent 30%),
     radial-gradient(circle at 90% 90%, var(--theme-glow-2) 0 15%, transparent 30%),
     var(--bg);
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
-  background-size: 280px 280px, auto, auto, auto;
-  background-position: top right, 0 0, 100% 100%, 0 0;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: auto, auto, auto;
+  background-position: 0 0, 100% 100%, 0 0;
 }
 
 .app {
@@ -433,8 +432,8 @@ ul {
   }
 
   body {
-    background-size: 190px 190px, auto, auto, auto;
-    background-position: 122% -18px, 0 0, 100% 100%, 0 0;
+    background-size: auto, auto, auto;
+    background-position: 0 0, 100% 100%, 0 0;
   }
 
   .hero {
