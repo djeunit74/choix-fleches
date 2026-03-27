@@ -29,17 +29,18 @@
 }
 
 :root[data-theme="campagne"] {
-  --bg: #ece8de;
-  --card: #fffdf8;
-  --ink: #1d1d1d;
-  --accent: #232323;
-  --accent-2: #6b6b6b;
-  --line: #d8d2c6;
-  --theme-glow-1: #f2efe7;
-  --theme-glow-2: #d9d6d0;
+  --bg: #eee8dd;
+  --card: #fffdfa;
+  --ink: #181512;
+  --accent: #111111;
+  --accent-2: #8a7446;
+  --line: #d9cfbf;
+  --theme-glow-1: #f7f1e3;
+  --theme-glow-2: #e2d7bd;
   --theme-art:
-    radial-gradient(circle at 88% 14%, #ffffff 0 16px, #111111 16px 28px, #f6f6f6 28px 38px, #111111 38px 50px, #f6f6f6 50px 54px, transparent 54px),
-    radial-gradient(circle at 12% 86%, rgba(17, 17, 17, 0.08) 0 26px, transparent 27px);
+    radial-gradient(circle at 88% 14%, #f3dd34 0 18px, #111111 18px 34px, #111111 34px 52px, #f4f1eb 52px 56px, transparent 56px),
+    radial-gradient(circle at 90% 16%, rgba(243, 221, 52, 0.18) 0 72px, transparent 73px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 40%);
 }
 
 :root[data-theme="3d"] {
@@ -190,6 +191,28 @@ body {
   padding: 16px;
   margin-top: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="campagne"] .card,
+:root[data-theme="campagne"] .subcard,
+:root[data-theme="campagne"] .measurement-guide,
+:root[data-theme="campagne"] .mini-card,
+:root[data-theme="campagne"] .merchant-panel,
+:root[data-theme="campagne"] .merchant-block,
+:root[data-theme="campagne"] .merchant-shop,
+:root[data-theme="campagne"] .notebook-item {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 241, 227, 0.96) 100%);
+  border-color: #d4c5aa;
+}
+
+:root[data-theme="campagne"] .tab-button {
+  background: linear-gradient(180deg, #f7f2e8 0%, #e9dfcc 100%);
+}
+
+:root[data-theme="campagne"] .tab-button.is-active,
+:root[data-theme="campagne"] button {
+  background: linear-gradient(90deg, #111111, #8a7446);
 }
 
 form {
