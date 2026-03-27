@@ -43,6 +43,8 @@
   notebookEstimatedWeight: document.getElementById("notebookEstimatedWeight"),
   notebookArrowBrand: document.getElementById("notebookArrowBrand"),
   notebookArrowModel: document.getElementById("notebookArrowModel"),
+  notebookArrowModelOptions: document.getElementById("notebookArrowModelOptions"),
+  notebookArrowModelHint: document.getElementById("notebookArrowModelHint"),
   notebookArrowSpine: document.getElementById("notebookArrowSpine"),
   notebookArrowLength: document.getElementById("notebookArrowLength"),
   notebookPointWeight: document.getElementById("notebookPointWeight"),
@@ -2020,6 +2022,29 @@ function notebookFormData() {
   };
 }
 
+function notebookModelSuggestionsFromRecommendation(rec) {
+  if (!rec) return [];
+  return [...new Set([
+    ...uniqueModelEntries(rec.models || [], 7).map((entry) => entry.model).filter(Boolean),
+    ...((rec.alternativeModels || []).slice(0, 4).map((entry) => entry.model).filter(Boolean))
+  ])];
+}
+
+function renderNotebookArrowModelSuggestions(models = [], selectedModel = "") {
+  if (els.notebookArrowModelOptions) {
+    els.notebookArrowModelOptions.innerHTML = models.map((model) => `<option value="${escapeHtml(model)}"></option>`).join("");
+  }
+  if (!els.notebookArrowModelHint) return;
+  if (!models.length) {
+    els.notebookArrowModelHint.textContent = "";
+    return;
+  }
+  const intro = models.length === 1 ? "Modele suggere par le dernier calcul :" : "Modeles suggérés par le dernier calcul :";
+  const list = models.join(" / ");
+  const suffix = selectedModel && models.includes(selectedModel) ? " Selection actuelle conservee." : "";
+  els.notebookArrowModelHint.textContent = `${intro} ${list}.${suffix}`;
+}
+
 function fillNotebookForm(entry = {}) {
   els.notebookDate.value = entry.date || todayIsoDate();
   els.notebookTitle.value = entry.title || "";
@@ -2040,6 +2065,7 @@ function fillNotebookForm(entry = {}) {
   els.notebookArrowLength.value = entry.arrowLength || "";
   els.notebookPointWeight.value = entry.pointWeight || "";
   els.notebookNotes.value = entry.notes || "";
+  renderNotebookArrowModelSuggestions(entry._modelSuggestions || [], entry.arrowModel || "");
 }
 
 function resetNotebookForm() {
@@ -2091,6 +2117,11 @@ function buildNotebookPrefill() {
   const arc = lastArcSetupSnapshot || buildNotebookArcFallback();
   const rec = lastRecommendationSnapshot || buildNotebookRecommendationFallback();
   const currentArrowLength = Number(els.arrowLength.value).toFixed(2).replace(/\.00$/, "");
+  const suggestedModels = notebookModelSuggestionsFromRecommendation(rec);
+  const currentNotebookModel = els.notebookArrowModel.value.trim();
+  const chosenModel = suggestedModels.length === 1
+    ? suggestedModels[0]
+    : (currentNotebookModel && suggestedModels.includes(currentNotebookModel) ? currentNotebookModel : "");
   return {
     date: els.notebookDate.value || todayIsoDate(),
     title: els.notebookTitle.value.trim(),
@@ -2106,11 +2137,12 @@ function buildNotebookPrefill() {
     positiveTiller: arc ? `+${arc.setup.actualTiller.toFixed(1)} mm` : "",
     estimatedWeight: arc ? `${arc.setup.drawWeightEstimate.estimated.toFixed(1)} lbs` : "",
     arrowBrand: recommendationBrandLabel(rec) || els.notebookArrowBrand.value.trim(),
-    arrowModel: rec?.models?.[0]?.model || els.notebookArrowModel.value.trim(),
+    arrowModel: chosenModel,
     arrowSpine: rec ? recommendationPrimaryDisplay(rec).replace(/<[^>]+>/g, "").trim() : els.notebookArrowSpine.value.trim(),
     arrowLength: `${currentArrowLength}"`,
     pointWeight: rec ? `${rec.recommendedPointWeight} gr` : els.notebookPointWeight.value.trim(),
-    notes: els.notebookNotes.value.trim()
+    notes: els.notebookNotes.value.trim(),
+    _modelSuggestions: suggestedModels
   };
 }
 
