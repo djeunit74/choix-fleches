@@ -5,10 +5,45 @@
   --accent: #b23b2f;
   --accent-2: #1f4e79;
   --line: #ddd6c9;
+  --theme-glow-1: #fff6dd;
+  --theme-glow-2: #e8f1ff;
 }
 
 * {
   box-sizing: border-box;
+}
+
+:root[data-theme="cible"] {
+  --bg: #f4f5f7;
+  --card: #fffefe;
+  --ink: #101820;
+  --accent: #d62828;
+  --accent-2: #1d5fa7;
+  --line: #d9dee8;
+  --theme-glow-1: #ffe884;
+  --theme-glow-2: #d9ecff;
+}
+
+:root[data-theme="campagne"] {
+  --bg: #efe7d7;
+  --card: #fffaf0;
+  --ink: #1d2617;
+  --accent: #5f6f3a;
+  --accent-2: #8a5d37;
+  --line: #d7ccb8;
+  --theme-glow-1: #f6edc8;
+  --theme-glow-2: #dbe6ca;
+}
+
+:root[data-theme="3d"] {
+  --bg: #eadfce;
+  --card: #fffaf3;
+  --ink: #241911;
+  --accent: #b34f1d;
+  --accent-2: #5c6b2f;
+  --line: #d9c7b2;
+  --theme-glow-1: #ffd29a;
+  --theme-glow-2: #d9e2ba;
 }
 
 body {
@@ -16,8 +51,8 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at 10% 10%, #fff6dd 0 15%, transparent 30%),
-    radial-gradient(circle at 90% 90%, #e8f1ff 0 15%, transparent 30%),
+    radial-gradient(circle at 10% 10%, var(--theme-glow-1) 0 15%, transparent 30%),
+    radial-gradient(circle at 90% 90%, var(--theme-glow-2) 0 15%, transparent 30%),
     var(--bg);
 }
 
@@ -35,6 +70,16 @@ body {
 
 .hero p {
   margin: 8px 0 0;
+}
+
+.theme-picker {
+  margin-top: 14px;
+  max-width: 220px;
+}
+
+.theme-picker label {
+  font-size: 0.9rem;
+  color: #5d5447;
 }
 
 .tab-nav {

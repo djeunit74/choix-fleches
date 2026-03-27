@@ -15,6 +15,14 @@
     <header class="hero">
       <h1>Assistant Fleches et Reglages</h1>
       <p>Aide au choix des fleches et aux reglages de base de l'arc classique.</p>
+      <div class="theme-picker">
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect" aria-label="Choix du theme visuel">
+          <option value="cible">Cible</option>
+          <option value="campagne">Campagne</option>
+          <option value="3d">3D</option>
+        </select>
+      </div>
     </header>
 
     <nav class="tab-nav" aria-label="Navigation principale">
@@ -331,7 +339,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260327b"></script>
+  <script src="app.js?v=20260327c"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

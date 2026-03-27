@@ -48,13 +48,14 @@
   notebookArrowLength: document.getElementById("notebookArrowLength"),
   notebookPointWeight: document.getElementById("notebookPointWeight"),
   notebookNotes: document.getElementById("notebookNotes"),
+  themeSelect: document.getElementById("themeSelect"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", theme: "appTheme" };
 const BRAND_ORDER = ["easton", "victory", "carbon", "skylon"];
 const ALLOWED_SHAFT_MATERIALS = ["carbon", "alu"];
 const BOW_LIMITS = {
@@ -835,6 +836,21 @@ function setActiveTab(tabName) {
     panel.hidden = !isActive;
   });
   localStorage.setItem(STORAGE.activeTab, tabName);
+}
+
+function themeMetaColor(theme) {
+  if (theme === "campagne") return "#5f6f3a";
+  if (theme === "3d") return "#b34f1d";
+  return "#d62828";
+}
+
+function applyTheme(theme) {
+  const nextTheme = ["cible", "campagne", "3d"].includes(theme) ? theme : "cible";
+  document.documentElement.dataset.theme = nextTheme;
+  if (els.themeSelect) els.themeSelect.value = nextTheme;
+  localStorage.setItem(STORAGE.theme, nextTheme);
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute("content", themeMetaColor(nextTheme));
 }
 function dealsUpdatedLabel() {
   const date = new Date(dealsState.updatedAt);
@@ -2231,6 +2247,7 @@ window.addEventListener("pageshow", applyProfileDefaults);
 els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setActiveTab(button.dataset.tab || "spine"));
 });
+els.themeSelect.addEventListener("change", () => applyTheme(els.themeSelect.value));
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
@@ -2337,6 +2354,7 @@ els.arcSetupForm.addEventListener("submit", (event) => {
 });
 
 applyUnitConstraints();
+applyTheme(localStorage.getItem(STORAGE.theme) || "cible");
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
