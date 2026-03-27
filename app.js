@@ -2289,7 +2289,7 @@ function renderComparison(input) {
     <h2>Comparaison par marque</h2>
     <p>Chaque marque garde sa propre logique de reference.</p>
     <p class="result-value">Choisissez une marque</p>
-    <p>Materiau recherche: <strong>${input.shaftMaterial === "all" ? "Toutes" : materialLabel(input.shaftMaterial)}</strong></p>
+    <p>Materiaux: <strong>${input.shaftMaterial === "all" ? "Tous" : materialLabel(input.shaftMaterial)}</strong></p>
     ${emptyState}
     ${hiddenState}
     <p>Offres marchands reliees aux resultats (mise a jour ${dealsUpdatedLabel()}, verification manuelle requise).</p>
