@@ -2373,10 +2373,12 @@ function renderSightVisual() {
     const label = entry.configured ? `${entry.distance} m - ${formatSightValue(entry.value)}` : `${entry.distance} m`;
     const markerClass = entry.configured ? "sight-marker" : "sight-marker is-placeholder";
     const labelClass = entry.configured ? "sight-marker-label" : "sight-marker-label is-placeholder";
+    const leadClass = entry.configured ? "sight-marker-lead" : "sight-marker-lead is-placeholder";
     return `
       <button type="button" class="${markerClass}" data-distance="${entry.distance}" style="top: ${entry.position.toFixed(2)}%" aria-label="Regler ${entry.distance} metres">
         <span class="sight-marker-dot"></span>
       </button>
+      <span class="${leadClass}" style="top: ${entry.position.toFixed(2)}%; --label-top: ${labelPositions[entry.distance].toFixed(2)}%"></span>
       <span class="${labelClass}" style="top: ${labelPositions[entry.distance].toFixed(2)}%" data-distance="${entry.distance}">
         ${label}
       </span>
