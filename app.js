@@ -48,16 +48,24 @@
   notebookArrowSpine: document.getElementById("notebookArrowSpine"),
   notebookArrowLength: document.getElementById("notebookArrowLength"),
   notebookPointWeight: document.getElementById("notebookPointWeight"),
-  notebookSight10: document.getElementById("notebookSight10"),
-  notebookSight18: document.getElementById("notebookSight18"),
-  notebookSight20: document.getElementById("notebookSight20"),
-  notebookSight30: document.getElementById("notebookSight30"),
-  notebookSight40: document.getElementById("notebookSight40"),
-  notebookSight50: document.getElementById("notebookSight50"),
-  notebookSight60: document.getElementById("notebookSight60"),
-  notebookSight70: document.getElementById("notebookSight70"),
-  notebookSightNotes: document.getElementById("notebookSightNotes"),
   notebookNotes: document.getElementById("notebookNotes"),
+  sightForm: document.getElementById("sight-form"),
+  sightDate: document.getElementById("sightDate"),
+  sightTitle: document.getElementById("sightTitle"),
+  sightEquipment: document.getElementById("sightEquipment"),
+  sightArrows: document.getElementById("sightArrows"),
+  sightMark18: document.getElementById("sightMark18"),
+  sightMark30: document.getElementById("sightMark30"),
+  sightMark40: document.getElementById("sightMark40"),
+  sightMark50: document.getElementById("sightMark50"),
+  sightMark60: document.getElementById("sightMark60"),
+  sightMark70: document.getElementById("sightMark70"),
+  sightNotes: document.getElementById("sightNotes"),
+  sightMarkers: document.getElementById("sightMarkers"),
+  sightResult: document.getElementById("sightResult"),
+  sightStatus: document.getElementById("sightStatus"),
+  sightContent: document.getElementById("sightContent"),
+  resetSightBtn: document.getElementById("resetSightBtn"),
   feedbackToggleBtn: document.getElementById("feedbackToggleBtn"),
   feedbackPanel: document.getElementById("feedbackPanel"),
   feedbackCloseBtn: document.getElementById("feedbackCloseBtn"),
@@ -74,7 +82,7 @@
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", theme: "appTheme", feedback: "feedbackDraft" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", sight: "sightNotebook", theme: "appTheme", feedback: "feedbackDraft" };
 const FEEDBACK_FORM = {
   responseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc1Pp7JKPm90GKUasJxFrPi8fs4YO37Smb2s8MtbPPVDKVWuA/formResponse",
   categoryField: "entry.1394735982",
@@ -763,6 +771,7 @@ let catalogState = cloneCatalog(DEFAULT_CATALOG_STATE);
 let arrowCatalog = cloneCatalog(catalogState.catalog);
 let dealsState = { ...DEFAULT_DEALS_STATE };
 let currentNotebookId = null;
+let currentSightId = null;
 let lastRecommendationSnapshot = null;
 let lastArcSetupSnapshot = null;
 let dataLoadPromise = null;
@@ -2050,28 +2059,8 @@ function notebookFormData() {
     arrowSpine: els.notebookArrowSpine.value.trim(),
     arrowLength: els.notebookArrowLength.value.trim(),
     pointWeight: els.notebookPointWeight.value.trim(),
-    sightMarks: {
-      "10m": els.notebookSight10.value.trim(),
-      "18m": els.notebookSight18.value.trim(),
-      "20m": els.notebookSight20.value.trim(),
-      "30m": els.notebookSight30.value.trim(),
-      "40m": els.notebookSight40.value.trim(),
-      "50m": els.notebookSight50.value.trim(),
-      "60m": els.notebookSight60.value.trim(),
-      "70m": els.notebookSight70.value.trim()
-    },
-    sightNotes: els.notebookSightNotes.value.trim(),
     notes: els.notebookNotes.value.trim()
   };
-}
-
-function sightMarksSummary(entry) {
-  const marks = entry?.sightMarks || {};
-  return ["10m", "18m", "20m", "30m", "40m", "50m", "60m", "70m"]
-    .filter((distance) => marks[distance])
-    .map((distance) => `${distance} ${marks[distance]}`)
-    .slice(0, 4)
-    .join(" / ");
 }
 
 function notebookModelSuggestionsFromRecommendation(rec) {
@@ -2116,16 +2105,6 @@ function fillNotebookForm(entry = {}) {
   els.notebookArrowSpine.value = entry.arrowSpine || "";
   els.notebookArrowLength.value = entry.arrowLength || "";
   els.notebookPointWeight.value = entry.pointWeight || "";
-  const sightMarks = entry.sightMarks || {};
-  els.notebookSight10.value = sightMarks["10m"] || "";
-  els.notebookSight18.value = sightMarks["18m"] || "";
-  els.notebookSight20.value = sightMarks["20m"] || "";
-  els.notebookSight30.value = sightMarks["30m"] || "";
-  els.notebookSight40.value = sightMarks["40m"] || "";
-  els.notebookSight50.value = sightMarks["50m"] || "";
-  els.notebookSight60.value = sightMarks["60m"] || "";
-  els.notebookSight70.value = sightMarks["70m"] || "";
-  els.notebookSightNotes.value = entry.sightNotes || "";
   els.notebookNotes.value = entry.notes || "";
   renderNotebookArrowModelSuggestions(entry._modelSuggestions || [], entry.arrowModel || "");
 }
@@ -2226,11 +2205,7 @@ function renderNotebook() {
       const summary = [
         entry.arcModel || entry.arcLength || entry.riserLength ? `${entry.arcModel || "Arc"} ${entry.arcLength ? `- ${entry.arcLength}` : ""} ${entry.riserLength ? `/ poignee ${entry.riserLength}` : ""}`.trim() : "",
         entry.arrowBrand || entry.arrowModel ? `${entry.arrowBrand || ""} ${entry.arrowModel || ""}`.trim() : "",
-        entry.arrowSpine || entry.pointWeight ? `${entry.arrowSpine || ""}${entry.pointWeight ? ` / ${entry.pointWeight}` : ""}`.trim() : "",
-        (() => {
-          const sightSummary = sightMarksSummary(entry);
-          return sightSummary ? `Viseur: ${sightSummary}` : "";
-        })()
+        entry.arrowSpine || entry.pointWeight ? `${entry.arrowSpine || ""}${entry.pointWeight ? ` / ${entry.pointWeight}` : ""}`.trim() : ""
       ].filter(Boolean).join(" | ");
       return `
         <li class="notebook-item">
@@ -2248,6 +2223,130 @@ function renderNotebook() {
     }).join("");
 
   els.notebookContent.innerHTML = `<ul class="notebook-list">${items}</ul>`;
+}
+
+const SIGHT_DISTANCES = ["18", "30", "40", "50", "60", "70"];
+
+function readSightEntries() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE.sight) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function writeSightEntries(entries) {
+  localStorage.setItem(STORAGE.sight, JSON.stringify(entries));
+  renderSightEntries();
+}
+
+function sightFormData() {
+  return {
+    date: els.sightDate.value,
+    title: els.sightTitle.value.trim(),
+    equipment: els.sightEquipment.value.trim(),
+    arrows: els.sightArrows.value.trim(),
+    marks: {
+      "18": els.sightMark18.value.trim(),
+      "30": els.sightMark30.value.trim(),
+      "40": els.sightMark40.value.trim(),
+      "50": els.sightMark50.value.trim(),
+      "60": els.sightMark60.value.trim(),
+      "70": els.sightMark70.value.trim()
+    },
+    notes: els.sightNotes.value.trim()
+  };
+}
+
+function sightMarksSummary(entry) {
+  const marks = entry?.marks || {};
+  return SIGHT_DISTANCES
+    .filter((distance) => marks[distance])
+    .map((distance) => `${distance}m ${marks[distance]}`)
+    .join(" / ");
+}
+
+function resetSightForm() {
+  currentSightId = null;
+  fillSightForm({ date: todayIsoDate() });
+}
+
+function fillSightForm(entry = {}) {
+  const marks = entry.marks || {};
+  els.sightDate.value = entry.date || todayIsoDate();
+  els.sightTitle.value = entry.title || "";
+  els.sightEquipment.value = entry.equipment || "";
+  els.sightArrows.value = entry.arrows || "";
+  els.sightMark18.value = marks["18"] || "";
+  els.sightMark30.value = marks["30"] || "";
+  els.sightMark40.value = marks["40"] || "";
+  els.sightMark50.value = marks["50"] || "";
+  els.sightMark60.value = marks["60"] || "";
+  els.sightMark70.value = marks["70"] || "";
+  els.sightNotes.value = entry.notes || "";
+  renderSightVisual();
+}
+
+function numericSightMarks() {
+  const data = sightFormData();
+  return SIGHT_DISTANCES
+    .map((distance) => ({ distance, value: Number(String(data.marks[distance]).replace(",", ".")) }))
+    .filter((entry) => Number.isFinite(entry.value));
+}
+
+function renderSightVisual() {
+  const marks = numericSightMarks();
+  if (!els.sightMarkers) return;
+  if (!marks.length) {
+    els.sightMarkers.innerHTML = `<p class="sight-empty">Entrez vos reperes pour placer les distances.</p>`;
+    return;
+  }
+  const values = marks.map((entry) => entry.value);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = Math.max(0.01, max - min);
+  els.sightMarkers.innerHTML = marks.map((entry) => {
+    const position = values.length === 1 ? 50 : 8 + ((max - entry.value) / span) * 84;
+    return `
+      <span class="sight-marker" style="top: ${position.toFixed(2)}%">
+        <span class="sight-marker-dot"></span>
+        <span class="sight-marker-label">${entry.distance} m - ${entry.value.toFixed(2).replace(".", ",")}</span>
+      </span>
+    `;
+  }).join("");
+}
+
+function renderSightEntries() {
+  const entries = readSightEntries();
+  if (!entries.length) {
+    els.sightStatus.textContent = "Aucun reglage viseur pour le moment.";
+    els.sightContent.innerHTML = "";
+    return;
+  }
+  els.sightStatus.textContent = `${entries.length} reglage${entries.length > 1 ? "s" : ""} viseur enregistre${entries.length > 1 ? "s" : ""}.`;
+  const items = entries
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+    .map((entry) => {
+      const summary = [
+        entry.equipment || "",
+        entry.arrows || "",
+        sightMarksSummary(entry)
+      ].filter(Boolean).join(" | ");
+      return `
+        <li class="notebook-item">
+          <div class="notebook-item-copy">
+            <p class="notebook-item-title">${escapeHtml(entry.title || "Reglage viseur")}</p>
+            <p class="notebook-item-meta">${escapeHtml(entry.date || "Date non renseignee")}</p>
+            ${summary ? `<p class="notebook-item-summary">${escapeHtml(summary)}</p>` : ""}
+          </div>
+          <div class="notebook-item-actions">
+            <button type="button" class="sight-load" data-entry-id="${escapeHtml(entry.id)}">Charger</button>
+            <button type="button" class="sight-delete" data-entry-id="${escapeHtml(entry.id)}">Supprimer</button>
+          </div>
+        </li>
+      `;
+    }).join("");
+  els.sightContent.innerHTML = `<ul class="notebook-list">${items}</ul>`;
 }
 
 function validateInput(input) {
@@ -2509,8 +2608,8 @@ els.resetNotebookBtn.addEventListener("click", () => {
 els.notebookForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const entry = notebookFormData();
-  if (!entry.title && !entry.arcModel && !entry.arrowModel && !sightMarksSummary(entry) && !entry.sightNotes) {
-    els.notebookStatus.textContent = "Ajoutez au moins un titre, un arc, une fleche ou un repere viseur pour enregistrer la fiche.";
+  if (!entry.title && !entry.arcModel && !entry.arrowModel) {
+    els.notebookStatus.textContent = "Ajoutez au moins un titre, un arc ou une fleche pour enregistrer la fiche.";
     return;
   }
 
@@ -2548,6 +2647,57 @@ els.notebookContent.addEventListener("click", (event) => {
     const nextEntries = readNotebook().filter((item) => item.id !== entryId);
     if (currentNotebookId === entryId) resetNotebookForm();
     writeNotebook(nextEntries);
+  }
+});
+
+document.querySelectorAll(".sight-mark-input").forEach((input) => {
+  input.addEventListener("input", renderSightVisual);
+});
+
+els.resetSightBtn.addEventListener("click", () => {
+  resetSightForm();
+  els.sightStatus.textContent = "Fiche viseur vide.";
+});
+
+els.sightForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const entry = sightFormData();
+  if (!entry.title && !entry.equipment && !entry.arrows && !sightMarksSummary(entry)) {
+    els.sightStatus.textContent = "Ajoutez au moins un titre, un materiel, une fleche ou un repere de distance.";
+    return;
+  }
+  const entries = readSightEntries();
+  const record = {
+    ...entry,
+    id: currentSightId || `sight-${Date.now()}`
+  };
+  const nextEntries = currentSightId
+    ? entries.map((existing) => (existing.id === currentSightId ? record : existing))
+    : [record, ...entries].slice(0, 30);
+  writeSightEntries(nextEntries);
+  currentSightId = record.id;
+  els.sightStatus.textContent = `Reglage viseur enregistre${record.title ? ` : ${record.title}` : ""}.`;
+});
+
+els.sightContent.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+  const entryId = target.dataset.entryId;
+  if (!entryId) return;
+
+  if (target.classList.contains("sight-load")) {
+    const entry = readSightEntries().find((item) => item.id === entryId);
+    if (!entry) return;
+    currentSightId = entry.id;
+    fillSightForm(entry);
+    setActiveTab("sight");
+    els.sightStatus.textContent = "Reglage viseur charge.";
+  }
+
+  if (target.classList.contains("sight-delete")) {
+    const nextEntries = readSightEntries().filter((item) => item.id !== entryId);
+    if (currentSightId === entryId) resetSightForm();
+    writeSightEntries(nextEntries);
   }
 });
 
@@ -2604,6 +2754,8 @@ updateVisibility();
 renderHistory();
 resetNotebookForm();
 renderNotebook();
+resetSightForm();
+renderSightEntries();
 renderFeedbackDraft();
 setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
 loadAppData();

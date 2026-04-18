@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -28,6 +28,7 @@
     <nav class="tab-nav" aria-label="Navigation principale">
       <button type="button" class="tab-button is-active" data-tab="spine">Choix des fleches</button>
       <button type="button" class="tab-button" data-tab="arc-setup">Reglage de l'arc</button>
+      <button type="button" class="tab-button" data-tab="sight">Reglage du viseur</button>
       <button type="button" class="tab-button" data-tab="notebook">Carnet de reglage</button>
     </nav>
 
@@ -209,6 +210,103 @@
       </section>
     </section>
 
+    <section class="tab-panel" data-panel="sight" hidden>
+      <section class="card sight-card">
+        <div class="sight-header">
+          <div>
+            <h2>Reglage du viseur</h2>
+            <p>Enregistrez vos reperes de viseur par distance et visualisez-les sur une reglette.</p>
+          </div>
+          <div class="sight-logo" aria-hidden="true">
+            <span class="sight-logo-ring"></span>
+            <span class="sight-logo-pin"></span>
+          </div>
+        </div>
+
+        <form id="sight-form" novalidate autocomplete="off">
+          <section class="subcard">
+            <h3>Fiche viseur</h3>
+            <div class="field-grid">
+              <label>
+                Date
+                <input id="sightDate" type="date" required />
+              </label>
+              <label>
+                Titre
+                <input id="sightTitle" type="text" maxlength="100" placeholder="Ex : exterieur carbone / salle alu" />
+              </label>
+              <label>
+                Viseur / arc
+                <input id="sightEquipment" type="text" maxlength="100" placeholder="Ex : Shibuya / viseur club / WNS" />
+              </label>
+              <label>
+                Fleches utilisees
+                <input id="sightArrows" type="text" maxlength="100" placeholder="Ex : Skylon Paragon 700, pointe 100 gr" />
+              </label>
+            </div>
+          </section>
+
+          <section class="subcard">
+            <h3>Reperes par distance</h3>
+            <div class="sight-layout">
+              <div class="sight-mark-grid">
+                <label>
+                  18 m
+                  <input id="sightMark18" class="sight-mark-input" data-distance="18" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 6,20" />
+                </label>
+                <label>
+                  30 m
+                  <input id="sightMark30" class="sight-mark-input" data-distance="30" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 5,10" />
+                </label>
+                <label>
+                  40 m
+                  <input id="sightMark40" class="sight-mark-input" data-distance="40" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 4,35" />
+                </label>
+                <label>
+                  50 m
+                  <input id="sightMark50" class="sight-mark-input" data-distance="50" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 3,70" />
+                </label>
+                <label>
+                  60 m
+                  <input id="sightMark60" class="sight-mark-input" data-distance="60" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 3,05" />
+                </label>
+                <label>
+                  70 m
+                  <input id="sightMark70" class="sight-mark-input" data-distance="70" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 2,55" />
+                </label>
+              </div>
+
+              <div class="sight-visual" aria-label="Representation des reperes de viseur">
+                <div class="sight-rail">
+                  <span class="sight-tick" style="top: 0%"></span>
+                  <span class="sight-tick" style="top: 20%"></span>
+                  <span class="sight-tick" style="top: 40%"></span>
+                  <span class="sight-tick" style="top: 60%"></span>
+                  <span class="sight-tick" style="top: 80%"></span>
+                  <span class="sight-tick" style="top: 100%"></span>
+                  <div id="sightMarkers" class="sight-markers"></div>
+                </div>
+              </div>
+            </div>
+            <label>
+              Notes viseur
+              <textarea id="sightNotes" rows="3" maxlength="700" placeholder="Ex : verifier 50 m avec vent de face, lumiere faible, changement de pointe..."></textarea>
+            </label>
+            <div class="row-actions">
+              <button type="submit">Enregistrer le reglage viseur</button>
+              <button id="resetSightBtn" type="button">Vider</button>
+            </div>
+          </section>
+        </form>
+      </section>
+
+      <section class="card result" id="sightResult" aria-live="polite">
+        <h2>Reglages viseur enregistres</h2>
+        <p id="sightStatus">Aucun reglage viseur pour le moment.</p>
+        <div id="sightContent"></div>
+      </section>
+    </section>
+
     <section class="tab-panel" data-panel="notebook" hidden>
       <section class="card">
         <h2>Carnet de reglage</h2>
@@ -323,49 +421,6 @@
           </section>
 
           <section class="subcard">
-            <h3>Viseur / distances</h3>
-            <p>Notez vos reperes de viseur pour retrouver rapidement vos reglages selon la distance.</p>
-            <div class="field-grid">
-              <label>
-                10 m
-                <input id="notebookSight10" type="text" maxlength="30" placeholder="Ex : 6.2 / repere haut" />
-              </label>
-              <label>
-                18 m
-                <input id="notebookSight18" type="text" maxlength="30" placeholder="Ex : 5.8" />
-              </label>
-              <label>
-                20 m
-                <input id="notebookSight20" type="text" maxlength="30" placeholder="Ex : 5.5" />
-              </label>
-              <label>
-                30 m
-                <input id="notebookSight30" type="text" maxlength="30" placeholder="Ex : 4.7" />
-              </label>
-              <label>
-                40 m
-                <input id="notebookSight40" type="text" maxlength="30" placeholder="Ex : 3.9" />
-              </label>
-              <label>
-                50 m
-                <input id="notebookSight50" type="text" maxlength="30" placeholder="Ex : 3.2" />
-              </label>
-              <label>
-                60 m
-                <input id="notebookSight60" type="text" maxlength="30" placeholder="Ex : 2.6" />
-              </label>
-              <label>
-                70 m
-                <input id="notebookSight70" type="text" maxlength="30" placeholder="Ex : 2.1" />
-              </label>
-            </div>
-            <label>
-              Notes viseur
-              <textarea id="notebookSightNotes" rows="3" maxlength="600" placeholder="Ex : vent de face, lumiere faible, verifier 50 m avec pointes 110 gr..."></textarea>
-            </label>
-          </section>
-
-          <section class="subcard">
             <h3>Notes</h3>
             <label>
               Remarques / sensations / conseil entraineur
@@ -418,7 +473,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260418b"></script>
+  <script src="app.js?v=20260418c"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
