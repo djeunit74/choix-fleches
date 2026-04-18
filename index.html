@@ -323,6 +323,49 @@
           </section>
 
           <section class="subcard">
+            <h3>Viseur / distances</h3>
+            <p>Notez vos reperes de viseur pour retrouver rapidement vos reglages selon la distance.</p>
+            <div class="field-grid">
+              <label>
+                10 m
+                <input id="notebookSight10" type="text" maxlength="30" placeholder="Ex : 6.2 / repere haut" />
+              </label>
+              <label>
+                18 m
+                <input id="notebookSight18" type="text" maxlength="30" placeholder="Ex : 5.8" />
+              </label>
+              <label>
+                20 m
+                <input id="notebookSight20" type="text" maxlength="30" placeholder="Ex : 5.5" />
+              </label>
+              <label>
+                30 m
+                <input id="notebookSight30" type="text" maxlength="30" placeholder="Ex : 4.7" />
+              </label>
+              <label>
+                40 m
+                <input id="notebookSight40" type="text" maxlength="30" placeholder="Ex : 3.9" />
+              </label>
+              <label>
+                50 m
+                <input id="notebookSight50" type="text" maxlength="30" placeholder="Ex : 3.2" />
+              </label>
+              <label>
+                60 m
+                <input id="notebookSight60" type="text" maxlength="30" placeholder="Ex : 2.6" />
+              </label>
+              <label>
+                70 m
+                <input id="notebookSight70" type="text" maxlength="30" placeholder="Ex : 2.1" />
+              </label>
+            </div>
+            <label>
+              Notes viseur
+              <textarea id="notebookSightNotes" rows="3" maxlength="600" placeholder="Ex : vent de face, lumiere faible, verifier 50 m avec pointes 110 gr..."></textarea>
+            </label>
+          </section>
+
+          <section class="subcard">
             <h3>Notes</h3>
             <label>
               Remarques / sensations / conseil entraineur
@@ -375,7 +418,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260418a"></script>
+  <script src="app.js?v=20260418b"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

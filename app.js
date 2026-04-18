@@ -48,6 +48,15 @@
   notebookArrowSpine: document.getElementById("notebookArrowSpine"),
   notebookArrowLength: document.getElementById("notebookArrowLength"),
   notebookPointWeight: document.getElementById("notebookPointWeight"),
+  notebookSight10: document.getElementById("notebookSight10"),
+  notebookSight18: document.getElementById("notebookSight18"),
+  notebookSight20: document.getElementById("notebookSight20"),
+  notebookSight30: document.getElementById("notebookSight30"),
+  notebookSight40: document.getElementById("notebookSight40"),
+  notebookSight50: document.getElementById("notebookSight50"),
+  notebookSight60: document.getElementById("notebookSight60"),
+  notebookSight70: document.getElementById("notebookSight70"),
+  notebookSightNotes: document.getElementById("notebookSightNotes"),
   notebookNotes: document.getElementById("notebookNotes"),
   feedbackToggleBtn: document.getElementById("feedbackToggleBtn"),
   feedbackPanel: document.getElementById("feedbackPanel"),
@@ -2041,8 +2050,28 @@ function notebookFormData() {
     arrowSpine: els.notebookArrowSpine.value.trim(),
     arrowLength: els.notebookArrowLength.value.trim(),
     pointWeight: els.notebookPointWeight.value.trim(),
+    sightMarks: {
+      "10m": els.notebookSight10.value.trim(),
+      "18m": els.notebookSight18.value.trim(),
+      "20m": els.notebookSight20.value.trim(),
+      "30m": els.notebookSight30.value.trim(),
+      "40m": els.notebookSight40.value.trim(),
+      "50m": els.notebookSight50.value.trim(),
+      "60m": els.notebookSight60.value.trim(),
+      "70m": els.notebookSight70.value.trim()
+    },
+    sightNotes: els.notebookSightNotes.value.trim(),
     notes: els.notebookNotes.value.trim()
   };
+}
+
+function sightMarksSummary(entry) {
+  const marks = entry?.sightMarks || {};
+  return ["10m", "18m", "20m", "30m", "40m", "50m", "60m", "70m"]
+    .filter((distance) => marks[distance])
+    .map((distance) => `${distance} ${marks[distance]}`)
+    .slice(0, 4)
+    .join(" / ");
 }
 
 function notebookModelSuggestionsFromRecommendation(rec) {
@@ -2087,6 +2116,16 @@ function fillNotebookForm(entry = {}) {
   els.notebookArrowSpine.value = entry.arrowSpine || "";
   els.notebookArrowLength.value = entry.arrowLength || "";
   els.notebookPointWeight.value = entry.pointWeight || "";
+  const sightMarks = entry.sightMarks || {};
+  els.notebookSight10.value = sightMarks["10m"] || "";
+  els.notebookSight18.value = sightMarks["18m"] || "";
+  els.notebookSight20.value = sightMarks["20m"] || "";
+  els.notebookSight30.value = sightMarks["30m"] || "";
+  els.notebookSight40.value = sightMarks["40m"] || "";
+  els.notebookSight50.value = sightMarks["50m"] || "";
+  els.notebookSight60.value = sightMarks["60m"] || "";
+  els.notebookSight70.value = sightMarks["70m"] || "";
+  els.notebookSightNotes.value = entry.sightNotes || "";
   els.notebookNotes.value = entry.notes || "";
   renderNotebookArrowModelSuggestions(entry._modelSuggestions || [], entry.arrowModel || "");
 }
@@ -2187,7 +2226,11 @@ function renderNotebook() {
       const summary = [
         entry.arcModel || entry.arcLength || entry.riserLength ? `${entry.arcModel || "Arc"} ${entry.arcLength ? `- ${entry.arcLength}` : ""} ${entry.riserLength ? `/ poignee ${entry.riserLength}` : ""}`.trim() : "",
         entry.arrowBrand || entry.arrowModel ? `${entry.arrowBrand || ""} ${entry.arrowModel || ""}`.trim() : "",
-        entry.arrowSpine || entry.pointWeight ? `${entry.arrowSpine || ""}${entry.pointWeight ? ` / ${entry.pointWeight}` : ""}`.trim() : ""
+        entry.arrowSpine || entry.pointWeight ? `${entry.arrowSpine || ""}${entry.pointWeight ? ` / ${entry.pointWeight}` : ""}`.trim() : "",
+        (() => {
+          const sightSummary = sightMarksSummary(entry);
+          return sightSummary ? `Viseur: ${sightSummary}` : "";
+        })()
       ].filter(Boolean).join(" | ");
       return `
         <li class="notebook-item">
@@ -2466,8 +2509,8 @@ els.resetNotebookBtn.addEventListener("click", () => {
 els.notebookForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const entry = notebookFormData();
-  if (!entry.title && !entry.arcModel && !entry.arrowModel) {
-    els.notebookStatus.textContent = "Ajoutez au moins un titre, un arc ou une fleche pour enregistrer la fiche.";
+  if (!entry.title && !entry.arcModel && !entry.arrowModel && !sightMarksSummary(entry) && !entry.sightNotes) {
+    els.notebookStatus.textContent = "Ajoutez au moins un titre, un arc, une fleche ou un repere viseur pour enregistrer la fiche.";
     return;
   }
 
