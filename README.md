@@ -114,23 +114,25 @@ Le workflow quotidien fait :
 
 1. lit une source distante `JSON` ou `CSV`
 2. regenere [deals.json](c:/Users/User/app choix des fleches/deals.json)
-3. commit et push automatiquement la mise a jour une fois par jour
+3. relit les pages marchands connues avec [refresh-prices.mjs](c:/Users/User/app choix des fleches/scripts/refresh-prices.mjs)
+4. commit et push automatiquement la mise a jour une fois par jour si les donnees changent
 
-Le script [refresh-prices.mjs](c:/Users/User/app choix des fleches/scripts/refresh-prices.mjs) existe aussi pour relire certaines pages marchands et proposer des prix mis a jour.
+Le script [refresh-prices.mjs](c:/Users/User/app choix des fleches/scripts/refresh-prices.mjs) est donc lance par GitHub Actions. Il peut aussi etre lance manuellement pour controler les prix avant publication.
 
-Usage recommande :
+Usage manuel recommande :
 
 1. lancer `node scripts/refresh-prices.mjs`
 2. relire le diff
 3. valider seulement les prix clairement plausibles
-4. ensuite mettre a jour le Google Sheet si tu veux conserver ces corrections au prochain sync
+4. ensuite mettre a jour le Google Sheet si tu veux conserver ces corrections au prochain sync distant
 
 Important :
 
 - cette mise a jour prix est `best effort`
 - elle fonctionne bien sur les marchands deja integres quand la page expose un prix clair
 - elle ne remplace pas totalement un controle humain si un marchand change sa structure ou affiche des prix par variantes
-- elle n'est pas branchee automatiquement au workflow quotidien tant qu'on n'a pas fini de la fiabiliser
+- elle contient un garde-fou : une variation superieure a `+50%` ou inferieure a `-50%` est ignoree et signalee dans les logs
+- les premiers runs automatiques doivent rester surveilles pour verifier qu'aucun marchand ne renvoie un prix ambigu
 
 Pour l'activer :
 

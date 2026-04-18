@@ -760,6 +760,14 @@ function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength }; }
 function normalizeModelKey(modelName) { return String(modelName || "").toLowerCase().replace(/\s*\([^)]*\)/g, "").trim(); }
 function compactText(value) { return normalizeModelKey(value).replace(/[^a-z0-9]+/g, " ").trim(); }
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 function modelSeriesKey(modelName) {
   const key = normalizeModelKey(modelName)
     .replace(/\br?\d{3,4}(?:\s*[-/]\s*\d{3,4})?\b/g, " ")

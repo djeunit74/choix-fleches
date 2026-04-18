@@ -7,6 +7,8 @@ const CSV_TEMPLATE_PATH = path.join(ROOT, "google-sheet-deals-template.csv");
 const TSV_TEMPLATE_PATH = path.join(ROOT, "google-sheet-deals-template.tsv");
 
 const USER_AGENT = "Mozilla/5.0 (compatible; Assistant-Fleches-Reglages/1.0; +https://djeunit74.github.io/choix-fleches/)";
+const MAX_AUTOMATIC_PRICE_DROP_RATIO = 0.5;
+const MAX_AUTOMATIC_PRICE_RISE_RATIO = 1.5;
 
 function normalizePriceValue(value) {
   const raw = String(value || "").trim().replace(/\s+/g, "");
@@ -95,6 +97,22 @@ function chooseCandidate(deal, candidates) {
   return firstReasonable || first;
 }
 
+function priceChangeGuard(deal, selected) {
+  const current = priceFromDeal(deal.price);
+  if (current == null) return { accepted: true };
+
+  const minAllowed = current * MAX_AUTOMATIC_PRICE_DROP_RATIO;
+  const maxAllowed = current * MAX_AUTOMATIC_PRICE_RISE_RATIO;
+  if (selected < minAllowed || selected > maxAllowed) {
+    return {
+      accepted: false,
+      reason: `Suspicious price change ${formatEur(current)} -> ${formatEur(selected)}`
+    };
+  }
+
+  return { accepted: true };
+}
+
 async function fetchHtml(url) {
   const response = await fetch(url, {
     headers: {
@@ -167,6 +185,13 @@ async function main() {
       const selected = chooseCandidate(deal, candidates);
       if (!selected) {
         errors.push({ title: deal.title, url: deal.url, reason: "No price candidate found" });
+        nextDeals.push(deal);
+        continue;
+      }
+
+      const guard = priceChangeGuard(deal, selected);
+      if (!guard.accepted) {
+        errors.push({ title: deal.title, url: deal.url, reason: guard.reason });
         nextDeals.push(deal);
         continue;
       }
