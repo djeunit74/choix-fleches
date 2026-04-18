@@ -249,34 +249,35 @@
           <section class="subcard">
             <h3>Reperes par distance</h3>
             <div class="sight-layout">
-              <div class="sight-mark-grid">
+              <div class="sight-mark-grid sight-mark-fields" aria-hidden="true">
                 <label>
                   18 m
-                  <input id="sightMark18" class="sight-mark-input" data-distance="18" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 6,20" />
+                  <input id="sightMark18" class="sight-mark-input" data-distance="18" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   30 m
-                  <input id="sightMark30" class="sight-mark-input" data-distance="30" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 5,10" />
+                  <input id="sightMark30" class="sight-mark-input" data-distance="30" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   40 m
-                  <input id="sightMark40" class="sight-mark-input" data-distance="40" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 4,35" />
+                  <input id="sightMark40" class="sight-mark-input" data-distance="40" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   50 m
-                  <input id="sightMark50" class="sight-mark-input" data-distance="50" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 3,70" />
+                  <input id="sightMark50" class="sight-mark-input" data-distance="50" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   60 m
-                  <input id="sightMark60" class="sight-mark-input" data-distance="60" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 3,05" />
+                  <input id="sightMark60" class="sight-mark-input" data-distance="60" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   70 m
-                  <input id="sightMark70" class="sight-mark-input" data-distance="70" type="text" inputmode="decimal" maxlength="20" placeholder="Ex : 2,55" />
+                  <input id="sightMark70" class="sight-mark-input" data-distance="70" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
               </div>
 
               <div class="sight-visual" aria-label="Representation des reperes de viseur">
+                <p class="sight-help">Glissez les pastilles directement sur la reglette.</p>
                 <div class="sight-rail">
                   <span class="sight-tick" style="top: 0%"></span>
                   <span class="sight-tick" style="top: 20%"></span>
@@ -286,6 +287,7 @@
                   <span class="sight-tick" style="top: 100%"></span>
                   <div id="sightMarkers" class="sight-markers"></div>
                 </div>
+                <p class="sight-scale-note">Valeur haute en haut, valeur basse en bas. Ajustez puis enregistrez.</p>
               </div>
             </div>
             <label>
@@ -473,7 +475,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260418c"></script>
+  <script src="app.js?v=20260418d"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
