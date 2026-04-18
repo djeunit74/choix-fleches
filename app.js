@@ -57,6 +57,7 @@
   feedbackMessage: document.getElementById("feedbackMessage"),
   feedbackResetBtn: document.getElementById("feedbackResetBtn"),
   feedbackStatus: document.getElementById("feedbackStatus"),
+  feedbackCategoryInputs: Array.from(document.querySelectorAll('input[name="feedbackCategory"]')),
   themeSelect: document.getElementById("themeSelect"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
@@ -755,6 +756,9 @@ let dealsState = { ...DEFAULT_DEALS_STATE };
 let currentNotebookId = null;
 let lastRecommendationSnapshot = null;
 let lastArcSetupSnapshot = null;
+let dataLoadPromise = null;
+let dataLoadedAt = 0;
+const DATA_CACHE_MS = 5 * 60 * 1000;
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function toImperial(drawWeight, arrowLength) { return { drawWeight, arrowLength }; }
@@ -885,10 +889,10 @@ function writeFeedbackDraft(draft) {
   localStorage.setItem(STORAGE.feedback, JSON.stringify(draft));
 }
 function selectedFeedbackCategory() {
-  return document.querySelector('input[name="feedbackCategory"]:checked')?.value || "";
+  return els.feedbackCategoryInputs.find((input) => input.checked)?.value || "";
 }
 function setSelectedFeedbackCategory(category) {
-  document.querySelectorAll('input[name="feedbackCategory"]').forEach((input) => {
+  els.feedbackCategoryInputs.forEach((input) => {
     input.checked = input.value === category;
   });
 }
@@ -1083,6 +1087,17 @@ async function refreshDealsCatalog() {
   } catch {
     dealsState = { ...DEFAULT_DEALS_STATE };
   }
+}
+
+async function loadAppData({ force = false } = {}) {
+  const now = Date.now();
+  if (!force && dataLoadPromise && now - dataLoadedAt < DATA_CACHE_MS) return dataLoadPromise;
+
+  dataLoadPromise = Promise.all([refreshCatalogState(), refreshDealsCatalog()])
+    .finally(() => {
+      dataLoadedAt = Date.now();
+    });
+  return dataLoadPromise;
 }
 
 function applyUnitConstraints() {
@@ -2408,7 +2423,7 @@ els.feedbackToggleBtn.addEventListener("click", () => {
 els.feedbackCloseBtn.addEventListener("click", () => {
   toggleFeedbackPanel(false);
 });
-document.querySelectorAll('input[name="feedbackCategory"]').forEach((input) => {
+els.feedbackCategoryInputs.forEach((input) => {
   input.addEventListener("change", persistFeedbackDraft);
 });
 els.feedbackMessage.addEventListener("input", persistFeedbackDraft);
@@ -2515,8 +2530,7 @@ els.form.addEventListener("submit", async (event) => {
     return;
   }
 
-  await refreshCatalogState();
-  await refreshDealsCatalog();
+  await loadAppData();
   renderRecommendation(normalizedInput);
 });
 
@@ -2549,8 +2563,7 @@ resetNotebookForm();
 renderNotebook();
 renderFeedbackDraft();
 setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
-refreshCatalogState();
-refreshDealsCatalog();
+loadAppData();
 const initialArcSetup = {
   arcLength: Number(els.arcLength.value),
   upperTiller: Number(els.upperTiller.value),
