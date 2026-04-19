@@ -2227,9 +2227,9 @@ function renderNotebook() {
   els.notebookContent.innerHTML = `<ul class="notebook-list">${items}</ul>`;
 }
 
-const SIGHT_DISTANCES = ["18", "30", "40", "50", "60", "70"];
+const SIGHT_DISTANCES = ["18", "25", "30", "40", "50", "60", "70"];
 const SIGHT_MAX_CM = 16;
-const SIGHT_DEFAULT_MARKS = { "18": 2, "30": 4, "40": 6, "50": 8, "60": 10, "70": 12 };
+const SIGHT_DEFAULT_MARKS = { "18": 2, "25": 3.2, "30": 4, "40": 6, "50": 8, "60": 10, "70": 12 };
 let activeSightDistance = null;
 
 function readSightEntries() {
@@ -2361,6 +2361,7 @@ function sightDistanceColor(distance) {
   const palette = ["#d92d2d", "#e48222", "#d1ad16", "#178f55", "#1f6fd1", "#7b43c5", "#c13d8a", "#008a8a"];
   const numericDistance = Number(distance);
   if (numericDistance === 18) return palette[0];
+  if (numericDistance === 25) return "#f05a28";
   if (numericDistance === 30) return palette[1];
   if (numericDistance === 40) return palette[2];
   if (numericDistance === 50) return palette[3];

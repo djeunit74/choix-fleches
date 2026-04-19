@@ -426,6 +426,9 @@ button {
 .sight-distance-btn[data-distance="18"],
 .sight-distance-18 { --distance-color: #d92d2d; }
 
+.sight-distance-btn[data-distance="25"],
+.sight-distance-25 { --distance-color: #f05a28; }
+
 .sight-distance-btn[data-distance="30"],
 .sight-distance-30 { --distance-color: #e48222; }
 
