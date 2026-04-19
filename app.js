@@ -2028,6 +2028,14 @@ function todayIsoDate() {
   return new Date().toLocaleDateString("en-CA");
 }
 
+function formatDateFr(dateValue) {
+  if (!dateValue) return "Date non renseignee";
+  const raw = String(dateValue).trim();
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return raw;
+  return `${match[3]}/${match[2]}/${match[1]}`;
+}
+
 function readNotebook() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE.notebook) || "[]");
@@ -2470,7 +2478,7 @@ function renderSightEntries() {
         <li class="notebook-item">
           <div class="notebook-item-copy">
             <p class="notebook-item-title">${escapeHtml(entry.title || "Reglage viseur")}</p>
-            <p class="notebook-item-meta">${escapeHtml(entry.date || "Date non renseignee")}</p>
+            <p class="notebook-item-meta">${escapeHtml(formatDateFr(entry.date))}</p>
             ${summary ? `<p class="notebook-item-summary">${escapeHtml(summary)}</p>` : ""}
           </div>
           <div class="notebook-item-actions">
