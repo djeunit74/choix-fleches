@@ -130,26 +130,59 @@ body {
 
 .theme-picker {
   margin-top: 2px;
-  width: min(220px, 100%);
+  width: 100%;
+}
+
+:root[data-sun-mode="on"] {
+  --line: #6e7784;
+  --muted: #1d2735;
+}
+
+:root[data-sun-mode="on"] .card,
+:root[data-sun-mode="on"] .subcard,
+:root[data-sun-mode="on"] .measurement-guide,
+:root[data-sun-mode="on"] .mini-card,
+:root[data-sun-mode="on"] .merchant-panel,
+:root[data-sun-mode="on"] .merchant-block,
+:root[data-sun-mode="on"] .merchant-shop,
+:root[data-sun-mode="on"] .notebook-item {
+  background: #ffffff;
+  border-color: #6e7784;
+}
+
+:root[data-sun-mode="on"] .tab-nav {
+  background: #ffffff;
+  border-color: #6e7784;
+}
+
+:root[data-sun-mode="on"] .tab-button {
+  background: #ffffff;
+  border-color: #6e7784;
+  color: #0f1b2b;
 }
 
 .app-settings {
-  width: min(260px, 100%);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: auto;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.82);
   overflow: hidden;
+  z-index: 4;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .app-settings-toggle {
   list-style: none;
   cursor: pointer;
-  font-weight: 900;
-  color: var(--accent-2);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.8rem;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
 }
 
 .app-settings-toggle::-webkit-details-marker {
@@ -157,7 +190,38 @@ body {
 }
 
 .app-settings-body {
-  padding: 0 0.8rem 0.8rem;
+  padding: 0 0.75rem 0.75rem;
+  width: min(260px, calc(100vw - 40px));
+}
+
+.app-settings-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.inline-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  color: var(--accent-2);
+}
+
+.inline-check input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .theme-picker label {
@@ -546,6 +610,12 @@ button {
   letter-spacing: 0.02em;
   text-align: right;
   width: 42px;
+}
+
+:root[data-scale-side="right"] .sight-scale-label {
+  left: auto;
+  right: 10%;
+  text-align: left;
 }
 
 .sight-marker {

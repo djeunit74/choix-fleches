@@ -16,15 +16,31 @@
       <h1>Assistant Fleches et Reglages</h1>
       <p>Aide au choix des fleches et aux reglages de base de l'arc classique.</p>
       <details class="app-settings">
-        <summary class="app-settings-toggle"><span class="gear-icon" aria-hidden="true">&#9881;</span> Parametres</summary>
+        <summary class="app-settings-toggle" aria-label="Ouvrir les parametres">
+          <span class="gear-icon" aria-hidden="true">&#9881;</span>
+          <span class="sr-only">Parametres</span>
+        </summary>
         <div class="app-settings-body">
-          <div class="theme-picker">
-            <label for="themeSelect">Theme</label>
-            <select id="themeSelect" aria-label="Choix du theme visuel">
-              <option value="cible">Cible</option>
-              <option value="campagne">Campagne</option>
-              <option value="3d">3D</option>
-            </select>
+          <div class="app-settings-grid">
+            <div class="theme-picker">
+              <label for="themeSelect">Theme</label>
+              <select id="themeSelect" aria-label="Choix du theme visuel">
+                <option value="cible">Cible</option>
+                <option value="campagne">Campagne</option>
+                <option value="3d">3D</option>
+              </select>
+            </div>
+            <label>
+              Ecriture reglette
+              <select id="scaleLabelSide" aria-label="Position des mesures de reglette">
+                <option value="left">Gauche</option>
+                <option value="right">Droite</option>
+              </select>
+            </label>
+            <label class="inline-check">
+              <input id="sunMode" type="checkbox" />
+              <span>Mode plein soleil</span>
+            </label>
           </div>
         </div>
       </details>
@@ -491,7 +507,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260419g"></script>
+  <script src="app.js?v=20260419h"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

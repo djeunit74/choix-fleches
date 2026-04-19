@@ -78,13 +78,15 @@
   feedbackStatus: document.getElementById("feedbackStatus"),
   feedbackCategoryInputs: Array.from(document.querySelectorAll('input[name="feedbackCategory"]')),
   themeSelect: document.getElementById("themeSelect"),
+  scaleLabelSide: document.getElementById("scaleLabelSide"),
+  sunMode: document.getElementById("sunMode"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", sight: "sightNotebook", theme: "appTheme", feedback: "feedbackDraft" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", sight: "sightNotebook", theme: "appTheme", scaleSide: "sightScaleSide", sunMode: "sunMode", feedback: "feedbackDraft" };
 const FEEDBACK_FORM = {
   responseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc1Pp7JKPm90GKUasJxFrPi8fs4YO37Smb2s8MtbPPVDKVWuA/formResponse",
   categoryField: "entry.1394735982",
@@ -897,6 +899,20 @@ function applyTheme(theme) {
   localStorage.setItem(STORAGE.theme, nextTheme);
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta) themeMeta.setAttribute("content", themeMetaColor(nextTheme));
+}
+
+function applyScaleLabelSide(side) {
+  const nextSide = side === "right" ? "right" : "left";
+  document.documentElement.dataset.scaleSide = nextSide;
+  if (els.scaleLabelSide) els.scaleLabelSide.value = nextSide;
+  localStorage.setItem(STORAGE.scaleSide, nextSide);
+}
+
+function applySunMode(enabled) {
+  const isOn = Boolean(enabled);
+  document.documentElement.dataset.sunMode = isOn ? "on" : "off";
+  if (els.sunMode) els.sunMode.checked = isOn;
+  localStorage.setItem(STORAGE.sunMode, isOn ? "1" : "0");
 }
 function readFeedbackDraft() {
   try {
@@ -2691,6 +2707,8 @@ els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setActiveTab(button.dataset.tab || "spine"));
 });
 els.themeSelect.addEventListener("change", () => applyTheme(els.themeSelect.value));
+els.scaleLabelSide.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSide.value));
+els.sunMode.addEventListener("change", () => applySunMode(els.sunMode.checked));
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
@@ -2945,6 +2963,8 @@ els.arcSetupForm.addEventListener("submit", (event) => {
 
 applyUnitConstraints();
 applyTheme(localStorage.getItem(STORAGE.theme) || "cible");
+applyScaleLabelSide(localStorage.getItem(STORAGE.scaleSide) || "left");
+applySunMode(localStorage.getItem(STORAGE.sunMode) === "1");
 applyProfileDefaults();
 updateVisibility();
 renderHistory();
