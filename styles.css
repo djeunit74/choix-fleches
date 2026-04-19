@@ -652,6 +652,18 @@ button {
   text-align: left;
 }
 
+:root[data-scale-side="left"] .sight-marker-label {
+  left: auto;
+  right: calc(50% + 46px);
+  text-align: right;
+}
+
+:root[data-scale-side="left"] .sight-marker-lead {
+  left: auto;
+  right: calc(50% + 14px);
+  transform-origin: right center;
+}
+
 .sight-marker {
   position: absolute;
   left: 50%;
