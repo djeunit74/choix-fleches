@@ -277,30 +277,21 @@
               </div>
 
               <div class="sight-visual" aria-label="Representation des reperes de viseur">
-                <p class="sight-help">Glissez les pastilles directement sur la reglette.</p>
-                <div class="sight-device">
-                  <div class="sight-arm" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span><span></span>
-                  </div>
-                  <div class="sight-rail">
-                    <span class="sight-tick" style="top: 0%"></span>
-                    <span class="sight-tick" style="top: 10%"></span>
-                    <span class="sight-tick" style="top: 20%"></span>
-                    <span class="sight-tick" style="top: 30%"></span>
-                    <span class="sight-tick" style="top: 40%"></span>
-                    <span class="sight-tick" style="top: 50%"></span>
-                    <span class="sight-tick" style="top: 60%"></span>
-                    <span class="sight-tick" style="top: 70%"></span>
-                    <span class="sight-tick" style="top: 80%"></span>
-                    <span class="sight-tick" style="top: 90%"></span>
-                    <span class="sight-tick" style="top: 100%"></span>
-                    <div class="sight-carriage" aria-hidden="true">
-                      <span class="sight-aperture"></span>
-                    </div>
-                    <div id="sightMarkers" class="sight-markers"></div>
-                  </div>
+                <p class="sight-help">Glissez les pastilles sur la reglette, graduation au millimetre.</p>
+                <div class="sight-rail" aria-label="Reglette de viseur de 0 a 16 centimetres">
+                  <span class="sight-scale-label" style="top: 8%">0 cm</span>
+                  <span class="sight-scale-label" style="top: 29%">4</span>
+                  <span class="sight-scale-label" style="top: 50%">8</span>
+                  <span class="sight-scale-label" style="top: 71%">12</span>
+                  <span class="sight-scale-label" style="top: 92%">16 cm</span>
+                  <span class="sight-tick is-major" style="top: 8%"></span>
+                  <span class="sight-tick is-major" style="top: 29%"></span>
+                  <span class="sight-tick is-major" style="top: 50%"></span>
+                  <span class="sight-tick is-major" style="top: 71%"></span>
+                  <span class="sight-tick is-major" style="top: 92%"></span>
+                  <div id="sightMarkers" class="sight-markers"></div>
                 </div>
-                <p class="sight-scale-note">Valeur haute en haut, valeur basse en bas. Ajustez puis enregistrez.</p>
+                <p class="sight-scale-note">0 cm en haut, 16 cm en bas. Fleches clavier : 1 mm, Page : 1 cm.</p>
               </div>
             </div>
             <label>
@@ -488,7 +479,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260418e"></script>
+  <script src="app.js?v=20260419a"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

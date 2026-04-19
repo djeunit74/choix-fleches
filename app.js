@@ -2226,7 +2226,8 @@ function renderNotebook() {
 }
 
 const SIGHT_DISTANCES = ["18", "30", "40", "50", "60", "70"];
-const SIGHT_DEFAULT_MARKS = { "18": 9, "30": 7.5, "40": 6.2, "50": 4.8, "60": 3.4, "70": 2 };
+const SIGHT_MAX_CM = 16;
+const SIGHT_DEFAULT_MARKS = { "18": 2, "30": 4, "40": 6, "50": 8, "60": 10, "70": 12 };
 let activeSightDistance = null;
 
 function readSightEntries() {
@@ -2309,16 +2310,16 @@ function clampSightTop(value) {
 }
 
 function sightValueToTop(value) {
-  return clampSightTop(8 + ((10 - value) / 10) * 84);
+  return clampSightTop(8 + (value / SIGHT_MAX_CM) * 84);
 }
 
 function sightTopToValue(top) {
   const boundedTop = clampSightTop(top);
-  return Math.max(0, Math.min(10, 10 - ((boundedTop - 8) / 84) * 10));
+  return Math.max(0, Math.min(SIGHT_MAX_CM, ((boundedTop - 8) / 84) * SIGHT_MAX_CM));
 }
 
 function formatSightValue(value) {
-  return value.toFixed(2).replace(".", ",");
+  return value.toFixed(1).replace(".", ",");
 }
 
 function sightMarkerEntries() {
@@ -2370,7 +2371,7 @@ function renderSightVisual() {
   const marks = sightMarkerEntries();
   const labelPositions = spreadSightLabels(marks);
   els.sightMarkers.innerHTML = marks.map((entry) => {
-    const label = entry.configured ? `${entry.distance} m - ${formatSightValue(entry.value)}` : `${entry.distance} m`;
+    const label = entry.configured ? `${entry.distance} m - ${formatSightValue(entry.value)} cm` : `${entry.distance} m`;
     const markerClass = entry.configured ? "sight-marker" : "sight-marker is-placeholder";
     const labelClass = entry.configured ? "sight-marker-label" : "sight-marker-label is-placeholder";
     const leadClass = entry.configured ? "sight-marker-lead" : "sight-marker-lead is-placeholder";
@@ -2763,9 +2764,9 @@ els.sightMarkers.addEventListener("keydown", (event) => {
   if (!distance || !input) return;
   const currentValue = parseSightMark(input.value);
   const baseValue = Number.isFinite(currentValue) ? currentValue : SIGHT_DEFAULT_MARKS[distance];
-  const step = event.key.startsWith("Page") ? 0.5 : 0.1;
-  const nextValue = event.key === "ArrowUp" || event.key === "PageUp" ? baseValue + step : baseValue - step;
-  input.value = formatSightValue(Math.max(0, Math.min(10, nextValue)));
+  const step = event.key.startsWith("Page") ? 1 : 0.1;
+  const nextValue = event.key === "ArrowUp" || event.key === "PageUp" ? baseValue - step : baseValue + step;
+  input.value = formatSightValue(Math.max(0, Math.min(SIGHT_MAX_CM, nextValue)));
   renderSightVisual();
 });
 
