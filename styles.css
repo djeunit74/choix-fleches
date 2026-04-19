@@ -133,6 +133,33 @@ body {
   width: min(220px, 100%);
 }
 
+.app-settings {
+  width: min(260px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.76);
+  overflow: hidden;
+}
+
+.app-settings-toggle {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 900;
+  color: var(--accent-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.app-settings-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.app-settings-body {
+  padding: 0 0.8rem 0.8rem;
+}
+
 .theme-picker label {
   display: block;
   margin-bottom: 6px;
@@ -384,28 +411,6 @@ button {
   display: none;
 }
 
-.sight-settings {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.76);
-  overflow: hidden;
-}
-
-.sight-settings-toggle {
-  list-style: none;
-  cursor: pointer;
-  font-weight: 900;
-  color: var(--accent-2);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.8rem;
-}
-
-.sight-settings-toggle::-webkit-details-marker {
-  display: none;
-}
-
 .gear-icon {
   width: 1.3rem;
   height: 1.3rem;
@@ -416,15 +421,11 @@ button {
   background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(227,236,247,0.95));
 }
 
-.sight-settings[open] .gear-icon {
+.app-settings[open] .gear-icon {
   transform: rotate(25deg);
 }
 
-.sight-settings-body {
-  padding: 0 0.8rem 0.8rem;
-}
-
-.sight-settings-row {
+.sight-custom-distance {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.6rem;
@@ -435,7 +436,7 @@ button {
   border: 1px solid color-mix(in srgb, var(--accent-2) 12%, var(--line));
 }
 
-.sight-settings-row button {
+.sight-custom-distance button {
   white-space: nowrap;
 }
 
@@ -644,7 +645,7 @@ button {
     align-items: start;
   }
 
-  .sight-settings-row {
+  .sight-custom-distance {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 

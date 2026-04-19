@@ -15,14 +15,19 @@
     <header class="hero">
       <h1>Assistant Fleches et Reglages</h1>
       <p>Aide au choix des fleches et aux reglages de base de l'arc classique.</p>
-      <div class="theme-picker">
-        <label for="themeSelect">Theme</label>
-        <select id="themeSelect" aria-label="Choix du theme visuel">
-          <option value="cible">Cible</option>
-          <option value="campagne">Campagne</option>
-          <option value="3d">3D</option>
-        </select>
-      </div>
+      <details class="app-settings">
+        <summary class="app-settings-toggle"><span class="gear-icon" aria-hidden="true">&#9881;</span> Parametres</summary>
+        <div class="app-settings-body">
+          <div class="theme-picker">
+            <label for="themeSelect">Theme</label>
+            <select id="themeSelect" aria-label="Choix du theme visuel">
+              <option value="cible">Cible</option>
+              <option value="campagne">Campagne</option>
+              <option value="3d">3D</option>
+            </select>
+          </div>
+        </div>
+      </details>
     </header>
 
     <nav class="tab-nav" aria-label="Navigation principale">
@@ -275,21 +280,16 @@
                   <input id="sightMark70" class="sight-mark-input" data-distance="70" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
               </div>
-              <details class="sight-settings">
-                <summary class="sight-settings-toggle"><span class="gear-icon" aria-hidden="true">&#9881;</span> Reglages</summary>
-                <div class="sight-settings-body">
-                  <div class="sight-settings-row">
-                    <label>
-                      Distance a reperer (m)
-                      <input id="sightCustomDistance" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="Ex : 25" />
-                    </label>
-                    <button id="addSightDistanceBtn" type="button">Ajouter le curseur</button>
-                  </div>
-                </div>
-              </details>
+              <div class="sight-custom-distance">
+                <label>
+                  Distance a reperer (m)
+                  <input id="sightCustomDistance" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="Ex : 25" />
+                </label>
+                <button id="addSightDistanceBtn" type="button">Ajouter le curseur</button>
+              </div>
 
               <div class="sight-visual" aria-label="Representation des reperes de viseur">
-                <p class="sight-help">Ouvrez le menu Reglages (⚙), ajoutez une distance, puis glissez le curseur sur la reglette.</p>
+                <p class="sight-help">Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette.</p>
                 <div class="sight-rail" aria-label="Reglette de viseur de 0 a 16 centimetres">
                   <span class="sight-scale-label" style="top: 8%">0 cm</span>
                   <span class="sight-scale-label" style="top: 29%">4</span>
@@ -491,7 +491,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260419f"></script>
+  <script src="app.js?v=20260419g"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {
