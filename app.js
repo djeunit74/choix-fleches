@@ -2322,18 +2322,33 @@ function formatSightValue(value) {
   return value.toFixed(1).replace(".", ",");
 }
 
+function defaultSightMarkForDistance(distance) {
+  return SIGHT_DEFAULT_MARKS[distance] ?? 8;
+}
+
 function sightMarkerEntries() {
   const data = sightFormData();
-  return SIGHT_DISTANCES.map((distance) => {
-    const savedValue = parseSightMark(data.marks[distance]);
-    const configured = Number.isFinite(savedValue);
-    const value = configured ? savedValue : SIGHT_DEFAULT_MARKS[distance];
-    return {
-      distance,
-      value,
-      configured,
-      position: sightValueToTop(value)
-    };
+  return SIGHT_DISTANCES
+    .map((distance) => {
+      const savedValue = parseSightMark(data.marks[distance]);
+      if (!Number.isFinite(savedValue)) return null;
+      return {
+        distance,
+        value: savedValue,
+        configured: true,
+        position: sightValueToTop(savedValue)
+      };
+    })
+    .filter(Boolean);
+}
+
+function updateSightDistanceButtons() {
+  document.querySelectorAll(".sight-distance-btn").forEach((button) => {
+    const distance = button.dataset.distance;
+    const input = distance ? sightInputForDistance(distance) : null;
+    const active = Boolean(input?.value);
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
   });
 }
 
@@ -2369,18 +2384,20 @@ function spreadSightLabels(entries) {
 function renderSightVisual() {
   if (!els.sightMarkers) return;
   const marks = sightMarkerEntries();
+  updateSightDistanceButtons();
+  if (!marks.length) {
+    els.sightMarkers.innerHTML = `<p class="sight-empty">Choisissez une distance a reperer.</p>`;
+    return;
+  }
   const labelPositions = spreadSightLabels(marks);
   els.sightMarkers.innerHTML = marks.map((entry) => {
-    const label = entry.configured ? `${entry.distance} m - ${formatSightValue(entry.value)} cm` : `${entry.distance} m`;
-    const markerClass = entry.configured ? "sight-marker" : "sight-marker is-placeholder";
-    const labelClass = entry.configured ? "sight-marker-label" : "sight-marker-label is-placeholder";
-    const leadClass = entry.configured ? "sight-marker-lead" : "sight-marker-lead is-placeholder";
+    const label = `${entry.distance} m - ${formatSightValue(entry.value)} cm`;
     return `
-      <button type="button" class="${markerClass}" data-distance="${entry.distance}" style="top: ${entry.position.toFixed(2)}%" aria-label="Regler ${entry.distance} metres">
+      <button type="button" class="sight-marker sight-distance-${entry.distance}" data-distance="${entry.distance}" style="top: ${entry.position.toFixed(2)}%" aria-label="Regler ${entry.distance} metres">
         <span class="sight-marker-dot"></span>
       </button>
-      <span class="${leadClass}" style="top: ${entry.position.toFixed(2)}%; --label-top: ${labelPositions[entry.distance].toFixed(2)}%"></span>
-      <span class="${labelClass}" style="top: ${labelPositions[entry.distance].toFixed(2)}%" data-distance="${entry.distance}">
+      <span class="sight-marker-lead sight-distance-${entry.distance}" style="top: ${entry.position.toFixed(2)}%; --label-top: ${labelPositions[entry.distance].toFixed(2)}%"></span>
+      <span class="sight-marker-label sight-distance-${entry.distance}" style="top: ${labelPositions[entry.distance].toFixed(2)}%" data-distance="${entry.distance}">
         ${label}
       </span>
     `;
@@ -2733,6 +2750,16 @@ els.notebookContent.addEventListener("click", (event) => {
 
 document.querySelectorAll(".sight-mark-input").forEach((input) => {
   input.addEventListener("input", renderSightVisual);
+});
+
+document.querySelectorAll(".sight-distance-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const distance = button.dataset.distance;
+    const input = distance ? sightInputForDistance(distance) : null;
+    if (!distance || !input) return;
+    input.value = input.value ? "" : formatSightValue(defaultSightMarkForDistance(distance));
+    renderSightVisual();
+  });
 });
 
 els.sightMarkers.addEventListener("pointerdown", (event) => {

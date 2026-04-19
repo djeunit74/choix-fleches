@@ -275,9 +275,17 @@
                   <input id="sightMark70" class="sight-mark-input" data-distance="70" type="hidden" inputmode="decimal" maxlength="20" />
                 </label>
               </div>
+              <div class="sight-distance-picker" aria-label="Distances a reperer">
+                <button type="button" class="sight-distance-btn" data-distance="18">18 m</button>
+                <button type="button" class="sight-distance-btn" data-distance="30">30 m</button>
+                <button type="button" class="sight-distance-btn" data-distance="40">40 m</button>
+                <button type="button" class="sight-distance-btn" data-distance="50">50 m</button>
+                <button type="button" class="sight-distance-btn" data-distance="60">60 m</button>
+                <button type="button" class="sight-distance-btn" data-distance="70">70 m</button>
+              </div>
 
               <div class="sight-visual" aria-label="Representation des reperes de viseur">
-                <p class="sight-help">Glissez les pastilles sur la reglette, graduation au millimetre.</p>
+                <p class="sight-help">Choisissez une distance, puis glissez son curseur sur la reglette.</p>
                 <div class="sight-rail" aria-label="Reglette de viseur de 0 a 16 centimetres">
                   <span class="sight-scale-label" style="top: 8%">0 cm</span>
                   <span class="sight-scale-label" style="top: 29%">4</span>
@@ -479,7 +487,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260419a"></script>
+  <script src="app.js?v=20260419b"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

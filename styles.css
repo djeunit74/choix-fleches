@@ -384,6 +384,47 @@ button {
   display: none;
 }
 
+.sight-distance-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.sight-distance-btn {
+  --distance-color: var(--accent-2);
+  border: 1px solid color-mix(in srgb, var(--distance-color) 38%, var(--line));
+  border-radius: 999px;
+  background: rgba(255,255,255,0.8);
+  color: color-mix(in srgb, var(--distance-color) 72%, #111);
+  font-weight: 900;
+  padding: 0.55rem 0.65rem;
+}
+
+.sight-distance-btn.is-active {
+  background: var(--distance-color);
+  border-color: var(--distance-color);
+  color: white;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--distance-color) 25%, transparent);
+}
+
+.sight-distance-btn[data-distance="18"],
+.sight-distance-18 { --distance-color: #d92d2d; }
+
+.sight-distance-btn[data-distance="30"],
+.sight-distance-30 { --distance-color: #e48222; }
+
+.sight-distance-btn[data-distance="40"],
+.sight-distance-40 { --distance-color: #d1ad16; }
+
+.sight-distance-btn[data-distance="50"],
+.sight-distance-50 { --distance-color: #178f55; }
+
+.sight-distance-btn[data-distance="60"],
+.sight-distance-60 { --distance-color: #1f6fd1; }
+
+.sight-distance-btn[data-distance="70"],
+.sight-distance-70 { --distance-color: #7b43c5; }
+
 .sight-visual {
   min-height: 430px;
   border-radius: 18px;
@@ -493,10 +534,10 @@ button {
   width: 16px;
   height: 16px;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--distance-color, var(--accent));
   box-shadow:
     0 0 0 4px rgba(255,255,255,0.86),
-    0 0 0 7px var(--accent-2),
+    0 0 0 7px color-mix(in srgb, var(--distance-color, var(--accent-2)) 88%, black),
     0 6px 15px rgba(20,28,38,0.25);
 }
 
@@ -514,9 +555,9 @@ button {
   padding: 0.28rem 0.5rem;
   border-radius: 999px;
   background: rgba(255,255,255,0.92);
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--distance-color, var(--accent-2)) 38%, var(--line));
   font-weight: 800;
-  color: var(--accent-2);
+  color: color-mix(in srgb, var(--distance-color, var(--accent-2)) 78%, #111);
   white-space: nowrap;
   box-shadow: 0 6px 16px rgba(20,28,38,0.08);
   pointer-events: none;
@@ -529,7 +570,7 @@ button {
   width: 32px;
   height: 1px;
   transform-origin: left center;
-  background: rgba(20,28,38,0.28);
+  background: color-mix(in srgb, var(--distance-color, var(--accent-2)) 58%, rgba(20,28,38,0.22));
   pointer-events: none;
   z-index: 1;
 }
