@@ -384,12 +384,6 @@ button {
   display: none;
 }
 
-.sight-distance-picker {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
 .sight-custom-distance {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -406,42 +400,12 @@ button {
   white-space: nowrap;
 }
 
-.sight-distance-btn {
-  --distance-color: var(--accent-2);
-  border: 1px solid color-mix(in srgb, var(--distance-color) 38%, var(--line));
-  border-radius: 999px;
-  background: rgba(255,255,255,0.8);
-  color: color-mix(in srgb, var(--distance-color) 72%, #111);
-  font-weight: 900;
-  padding: 0.55rem 0.65rem;
-}
-
-.sight-distance-btn.is-active {
-  background: var(--distance-color);
-  border-color: var(--distance-color);
-  color: white;
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--distance-color) 25%, transparent);
-}
-
-.sight-distance-btn[data-distance="18"],
 .sight-distance-18 { --distance-color: #d92d2d; }
-
-.sight-distance-btn[data-distance="25"],
 .sight-distance-25 { --distance-color: #f05a28; }
-
-.sight-distance-btn[data-distance="30"],
 .sight-distance-30 { --distance-color: #e48222; }
-
-.sight-distance-btn[data-distance="40"],
 .sight-distance-40 { --distance-color: #d1ad16; }
-
-.sight-distance-btn[data-distance="50"],
 .sight-distance-50 { --distance-color: #178f55; }
-
-.sight-distance-btn[data-distance="60"],
 .sight-distance-60 { --distance-color: #1f6fd1; }
-
-.sight-distance-btn[data-distance="70"],
 .sight-distance-70 { --distance-color: #7b43c5; }
 
 .sight-visual {
@@ -534,12 +498,14 @@ button {
 
 .sight-scale-label {
   position: absolute;
-  right: calc(50% + 38px);
+  left: 10%;
   transform: translateY(-50%);
   font-size: 0.78rem;
   font-weight: 800;
   color: rgba(20,28,38,0.72);
   letter-spacing: 0.02em;
+  text-align: right;
+  width: 42px;
 }
 
 .sight-marker {

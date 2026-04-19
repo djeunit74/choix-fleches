@@ -2388,16 +2388,6 @@ function sightMarkerEntries() {
     .filter(Boolean);
 }
 
-function updateSightDistanceButtons() {
-  document.querySelectorAll(".sight-distance-btn").forEach((button) => {
-    const distance = button.dataset.distance;
-    const input = distance ? sightInputForDistance(distance) : null;
-    const active = Boolean(input?.value);
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", active ? "true" : "false");
-  });
-}
-
 function spreadSightLabels(entries) {
   const minGap = 10.5;
   const sorted = entries
@@ -2430,7 +2420,6 @@ function spreadSightLabels(entries) {
 function renderSightVisual() {
   if (!els.sightMarkers) return;
   const marks = sightMarkerEntries();
-  updateSightDistanceButtons();
   if (!marks.length) {
     els.sightMarkers.innerHTML = `<p class="sight-empty">Choisissez une distance a reperer.</p>`;
     return;
@@ -2797,16 +2786,6 @@ els.notebookContent.addEventListener("click", (event) => {
 
 document.querySelectorAll(".sight-mark-input").forEach((input) => {
   input.addEventListener("input", renderSightVisual);
-});
-
-document.querySelectorAll(".sight-distance-btn").forEach((button) => {
-  button.addEventListener("click", () => {
-    const distance = button.dataset.distance;
-    const input = distance ? ensureSightInput(distance) : null;
-    if (!distance || !input) return;
-    input.value = input.value ? "" : formatSightValue(defaultSightMarkForDistance(distance));
-    renderSightVisual();
-  });
 });
 
 els.addSightDistanceBtn.addEventListener("click", () => {
