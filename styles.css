@@ -384,19 +384,58 @@ button {
   display: none;
 }
 
-.sight-custom-distance {
+.sight-settings {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.76);
+  overflow: hidden;
+}
+
+.sight-settings-toggle {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 900;
+  color: var(--accent-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.sight-settings-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.gear-icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(227,236,247,0.95));
+}
+
+.sight-settings[open] .gear-icon {
+  transform: rotate(25deg);
+}
+
+.sight-settings-body {
+  padding: 0 0.8rem 0.8rem;
+}
+
+.sight-settings-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.6rem;
   align-items: end;
-  padding: 0.75rem;
-  border-radius: 16px;
-  background:
-    linear-gradient(135deg, rgba(20,28,38,0.06), rgba(255,255,255,0.74));
-  border: 1px solid var(--line);
+  padding: 0.7rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(20,28,38,0.06), rgba(255,255,255,0.74));
+  border: 1px solid color-mix(in srgb, var(--accent-2) 12%, var(--line));
 }
 
-.sight-custom-distance button {
+.sight-settings-row button {
   white-space: nowrap;
 }
 
@@ -605,7 +644,7 @@ button {
     align-items: start;
   }
 
-  .sight-custom-distance {
+  .sight-settings-row {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
