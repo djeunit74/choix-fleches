@@ -390,6 +390,22 @@ button {
   gap: 0.5rem;
 }
 
+.sight-custom-distance {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: end;
+  padding: 0.75rem;
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(20,28,38,0.06), rgba(255,255,255,0.74));
+  border: 1px solid var(--line);
+}
+
+.sight-custom-distance button {
+  white-space: nowrap;
+}
+
 .sight-distance-btn {
   --distance-color: var(--accent-2);
   border: 1px solid color-mix(in srgb, var(--distance-color) 38%, var(--line));
@@ -426,13 +442,13 @@ button {
 .sight-distance-70 { --distance-color: #7b43c5; }
 
 .sight-visual {
-  min-height: 430px;
+  min-height: 450px;
   border-radius: 18px;
   border: 1px solid var(--line);
   background:
-    radial-gradient(circle at 82% 18%, rgba(255,255,255,0.9), transparent 24%),
-    radial-gradient(circle at 10% 92%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 32%),
-    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(245,239,226,0.78));
+    radial-gradient(circle at 82% 14%, rgba(255,255,255,0.85), transparent 22%),
+    radial-gradient(circle at 12% 88%, rgba(31,111,209,0.18), transparent 34%),
+    linear-gradient(135deg, #fdfaf1, #eaf2fb 72%, #f7fbff);
   display: grid;
   gap: 0.75rem;
   place-items: center;
@@ -454,17 +470,18 @@ button {
 }
 
 .sight-rail {
-  width: min(320px, calc(100vw - 52px));
-  height: 390px;
+  width: min(340px, calc(100vw - 52px));
+  height: 410px;
   position: relative;
-  border-radius: 28px;
+  border-radius: 30px;
   background:
-    linear-gradient(90deg, transparent 0 18%, rgba(20,28,38,0.12) 18% 19%, transparent 19% 38%, #1f5eaa 38% 54%, #184d8c 54% 60%, transparent 60% 100%),
+    linear-gradient(90deg, transparent 0 15%, rgba(20,28,38,0.16) 15% 16%, transparent 16% 34%, #121a27 34% 38%, #1f6fd1 38% 58%, #0f1724 58% 63%, transparent 63% 100%),
     repeating-linear-gradient(180deg, transparent 0 9px, rgba(20,28,38,0.12) 9px 10px),
-    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(245,239,226,0.78));
+    linear-gradient(135deg, rgba(255,255,255,0.94), rgba(230,238,248,0.86));
   box-shadow:
-    inset 0 0 0 1px rgba(20,28,38,0.08),
-    0 24px 50px rgba(20,28,38,0.1);
+    inset 0 0 0 1px rgba(20,28,38,0.09),
+    inset 0 0 0 8px rgba(255,255,255,0.46),
+    0 26px 54px rgba(20,28,38,0.14);
   touch-action: none;
 }
 
@@ -477,23 +494,39 @@ button {
   width: 22%;
   border-radius: 16px;
   background:
-    repeating-linear-gradient(180deg, rgba(255,255,255,0.92) 0 1px, transparent 1px 19px),
-    linear-gradient(90deg, rgba(255,255,255,0.18), transparent);
-  opacity: 0.7;
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.96) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.76) 0 2px, transparent 2px 41px),
+    linear-gradient(90deg, rgba(255,255,255,0.22), transparent);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.sight-rail::after {
+  content: "";
+  position: absolute;
+  left: 34%;
+  top: 8%;
+  bottom: 8%;
+  width: 3px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, #d72d2d, #e48222, #d1ad16, #178f55, #1f6fd1, #7b43c5);
+  box-shadow: 0 0 16px rgba(31,111,209,0.25);
   pointer-events: none;
 }
 
 .sight-tick {
   position: absolute;
-  left: 49%;
-  width: 72px;
+  left: 45%;
+  width: 88px;
   height: 2px;
   transform: translateY(-50%);
-  background: rgba(20, 28, 38, 0.32);
+  background: rgba(255,255,255,0.72);
+  box-shadow: 0 0 0 1px rgba(20,28,38,0.14);
 }
 
 .sight-tick.is-major {
-  background: rgba(20, 28, 38, 0.48);
+  height: 3px;
+  background: rgba(255,255,255,0.95);
 }
 
 .sight-scale-label {
@@ -502,7 +535,8 @@ button {
   transform: translateY(-50%);
   font-size: 0.78rem;
   font-weight: 800;
-  color: rgba(20,28,38,0.62);
+  color: rgba(20,28,38,0.72);
+  letter-spacing: 0.02em;
 }
 
 .sight-marker {
@@ -536,8 +570,8 @@ button {
   border-radius: 999px;
   background: var(--distance-color, var(--accent));
   box-shadow:
-    0 0 0 4px rgba(255,255,255,0.86),
-    0 0 0 7px color-mix(in srgb, var(--distance-color, var(--accent-2)) 88%, black),
+    0 0 0 4px rgba(255,255,255,0.92),
+    0 0 0 8px color-mix(in srgb, var(--distance-color, var(--accent-2)) 84%, black),
     0 6px 15px rgba(20,28,38,0.25);
 }
 
@@ -600,6 +634,10 @@ button {
   .sight-layout {
     grid-template-columns: 1fr;
     align-items: start;
+  }
+
+  .sight-custom-distance {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .sight-mark-grid {

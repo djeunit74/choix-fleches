@@ -283,6 +283,13 @@
                 <button type="button" class="sight-distance-btn" data-distance="60">60 m</button>
                 <button type="button" class="sight-distance-btn" data-distance="70">70 m</button>
               </div>
+              <div class="sight-custom-distance">
+                <label>
+                  Autre distance a reperer (m)
+                  <input id="sightCustomDistance" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="Ex : 25" />
+                </label>
+                <button id="addSightDistanceBtn" type="button">Ajouter le curseur</button>
+              </div>
 
               <div class="sight-visual" aria-label="Representation des reperes de viseur">
                 <p class="sight-help">Choisissez une distance, puis glissez son curseur sur la reglette.</p>
@@ -487,7 +494,7 @@
     </div>
   </section>
 
-  <script src="app.js?v=20260419b"></script>
+  <script src="app.js?v=20260419c"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async () => {

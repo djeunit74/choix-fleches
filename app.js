@@ -65,6 +65,8 @@
   sightResult: document.getElementById("sightResult"),
   sightStatus: document.getElementById("sightStatus"),
   sightContent: document.getElementById("sightContent"),
+  sightCustomDistance: document.getElementById("sightCustomDistance"),
+  addSightDistanceBtn: document.getElementById("addSightDistanceBtn"),
   resetSightBtn: document.getElementById("resetSightBtn"),
   feedbackToggleBtn: document.getElementById("feedbackToggleBtn"),
   feedbackPanel: document.getElementById("feedbackPanel"),
@@ -2244,26 +2246,26 @@ function writeSightEntries(entries) {
 }
 
 function sightFormData() {
+  const marks = {};
+  document.querySelectorAll(".sight-mark-input").forEach((input) => {
+    if (!(input instanceof HTMLInputElement)) return;
+    const distance = input.dataset.distance;
+    if (distance && input.value.trim()) marks[distance] = input.value.trim();
+  });
   return {
     date: els.sightDate.value,
     title: els.sightTitle.value.trim(),
     equipment: els.sightEquipment.value.trim(),
     arrows: els.sightArrows.value.trim(),
-    marks: {
-      "18": els.sightMark18.value.trim(),
-      "30": els.sightMark30.value.trim(),
-      "40": els.sightMark40.value.trim(),
-      "50": els.sightMark50.value.trim(),
-      "60": els.sightMark60.value.trim(),
-      "70": els.sightMark70.value.trim()
-    },
+    marks,
     notes: els.sightNotes.value.trim()
   };
 }
 
 function sightMarksSummary(entry) {
   const marks = entry?.marks || {};
-  return SIGHT_DISTANCES
+  return Object.keys(marks)
+    .sort((a, b) => Number(a) - Number(b))
     .filter((distance) => marks[distance])
     .map((distance) => `${distance}m ${marks[distance]}`)
     .join(" / ");
@@ -2276,16 +2278,14 @@ function resetSightForm() {
 
 function fillSightForm(entry = {}) {
   const marks = entry.marks || {};
+  clearCustomSightInputs();
   els.sightDate.value = entry.date || todayIsoDate();
   els.sightTitle.value = entry.title || "";
   els.sightEquipment.value = entry.equipment || "";
   els.sightArrows.value = entry.arrows || "";
-  els.sightMark18.value = marks["18"] || "";
-  els.sightMark30.value = marks["30"] || "";
-  els.sightMark40.value = marks["40"] || "";
-  els.sightMark50.value = marks["50"] || "";
-  els.sightMark60.value = marks["60"] || "";
-  els.sightMark70.value = marks["70"] || "";
+  Object.keys(marks).forEach((distance) => {
+    ensureSightInput(distance).value = marks[distance] || "";
+  });
   els.sightNotes.value = entry.notes || "";
   renderSightVisual();
 }
@@ -2302,7 +2302,35 @@ function parseSightMark(value) {
 }
 
 function sightInputForDistance(distance) {
-  return els[`sightMark${distance}`];
+  return document.querySelector(`.sight-mark-input[data-distance="${CSS.escape(String(distance))}"]`);
+}
+
+function clearCustomSightInputs() {
+  document.querySelectorAll(".sight-mark-input[data-custom='true']").forEach((input) => input.remove());
+  SIGHT_DISTANCES.forEach((distance) => {
+    const input = sightInputForDistance(distance);
+    if (input) input.value = "";
+  });
+}
+
+function normalizeSightDistance(value) {
+  const parsed = Math.round(Number(String(value || "").replace(",", ".")));
+  if (!Number.isFinite(parsed) || parsed < 1 || parsed > 120) return "";
+  return String(parsed);
+}
+
+function ensureSightInput(distance) {
+  const normalized = normalizeSightDistance(distance);
+  const existing = normalized ? sightInputForDistance(normalized) : null;
+  if (existing instanceof HTMLInputElement) return existing;
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.className = "sight-mark-input";
+  input.dataset.distance = normalized;
+  input.dataset.custom = "true";
+  document.querySelector(".sight-mark-fields")?.appendChild(input);
+  input.addEventListener("input", renderSightVisual);
+  return input;
 }
 
 function clampSightTop(value) {
@@ -2323,12 +2351,29 @@ function formatSightValue(value) {
 }
 
 function defaultSightMarkForDistance(distance) {
-  return SIGHT_DEFAULT_MARKS[distance] ?? 8;
+  const numericDistance = Number(distance);
+  if (SIGHT_DEFAULT_MARKS[distance]) return SIGHT_DEFAULT_MARKS[distance];
+  if (!Number.isFinite(numericDistance)) return 8;
+  return Math.max(0, Math.min(SIGHT_MAX_CM, 1.5 + (numericDistance / 120) * 13));
+}
+
+function sightDistanceColor(distance) {
+  const palette = ["#d92d2d", "#e48222", "#d1ad16", "#178f55", "#1f6fd1", "#7b43c5", "#c13d8a", "#008a8a"];
+  const numericDistance = Number(distance);
+  if (numericDistance === 18) return palette[0];
+  if (numericDistance === 30) return palette[1];
+  if (numericDistance === 40) return palette[2];
+  if (numericDistance === 50) return palette[3];
+  if (numericDistance === 60) return palette[4];
+  if (numericDistance === 70) return palette[5];
+  const index = Number.isFinite(numericDistance) ? Math.abs(numericDistance) % palette.length : 6;
+  return palette[index];
 }
 
 function sightMarkerEntries() {
   const data = sightFormData();
-  return SIGHT_DISTANCES
+  return Object.keys(data.marks)
+    .sort((a, b) => Number(a) - Number(b))
     .map((distance) => {
       const savedValue = parseSightMark(data.marks[distance]);
       if (!Number.isFinite(savedValue)) return null;
@@ -2392,12 +2437,13 @@ function renderSightVisual() {
   const labelPositions = spreadSightLabels(marks);
   els.sightMarkers.innerHTML = marks.map((entry) => {
     const label = `${entry.distance} m - ${formatSightValue(entry.value)} cm`;
+    const colorStyle = `--distance-color: ${sightDistanceColor(entry.distance)}`;
     return `
-      <button type="button" class="sight-marker sight-distance-${entry.distance}" data-distance="${entry.distance}" style="top: ${entry.position.toFixed(2)}%" aria-label="Regler ${entry.distance} metres">
+      <button type="button" class="sight-marker sight-distance-${entry.distance}" data-distance="${entry.distance}" style="top: ${entry.position.toFixed(2)}%; ${colorStyle}" aria-label="Regler ${entry.distance} metres">
         <span class="sight-marker-dot"></span>
       </button>
-      <span class="sight-marker-lead sight-distance-${entry.distance}" style="top: ${entry.position.toFixed(2)}%; --label-top: ${labelPositions[entry.distance].toFixed(2)}%"></span>
-      <span class="sight-marker-label sight-distance-${entry.distance}" style="top: ${labelPositions[entry.distance].toFixed(2)}%" data-distance="${entry.distance}">
+      <span class="sight-marker-lead sight-distance-${entry.distance}" style="top: ${entry.position.toFixed(2)}%; --label-top: ${labelPositions[entry.distance].toFixed(2)}%; ${colorStyle}"></span>
+      <span class="sight-marker-label sight-distance-${entry.distance}" style="top: ${labelPositions[entry.distance].toFixed(2)}%; ${colorStyle}" data-distance="${entry.distance}">
         ${label}
       </span>
     `;
@@ -2755,11 +2801,30 @@ document.querySelectorAll(".sight-mark-input").forEach((input) => {
 document.querySelectorAll(".sight-distance-btn").forEach((button) => {
   button.addEventListener("click", () => {
     const distance = button.dataset.distance;
-    const input = distance ? sightInputForDistance(distance) : null;
+    const input = distance ? ensureSightInput(distance) : null;
     if (!distance || !input) return;
     input.value = input.value ? "" : formatSightValue(defaultSightMarkForDistance(distance));
     renderSightVisual();
   });
+});
+
+els.addSightDistanceBtn.addEventListener("click", () => {
+  const distance = normalizeSightDistance(els.sightCustomDistance.value);
+  if (!distance) {
+    els.sightStatus.textContent = "Indiquez une distance entre 1 et 120 m.";
+    return;
+  }
+  const input = ensureSightInput(distance);
+  input.value = input.value || formatSightValue(defaultSightMarkForDistance(distance));
+  els.sightCustomDistance.value = "";
+  els.sightStatus.textContent = `Curseur ${distance} m ajoute.`;
+  renderSightVisual();
+});
+
+els.sightCustomDistance.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  els.addSightDistanceBtn.click();
 });
 
 els.sightMarkers.addEventListener("pointerdown", (event) => {
@@ -2790,7 +2855,7 @@ els.sightMarkers.addEventListener("keydown", (event) => {
   const input = distance ? sightInputForDistance(distance) : null;
   if (!distance || !input) return;
   const currentValue = parseSightMark(input.value);
-  const baseValue = Number.isFinite(currentValue) ? currentValue : SIGHT_DEFAULT_MARKS[distance];
+  const baseValue = Number.isFinite(currentValue) ? currentValue : defaultSightMarkForDistance(distance);
   const step = event.key.startsWith("Page") ? 1 : 0.1;
   const nextValue = event.key === "ArrowUp" || event.key === "PageUp" ? baseValue - step : baseValue + step;
   input.value = formatSightValue(Math.max(0, Math.min(SIGHT_MAX_CM, nextValue)));
