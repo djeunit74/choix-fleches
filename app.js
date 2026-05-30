@@ -21,6 +21,7 @@
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   arcLength: document.getElementById("arcLength"),
+  braceMeasured: document.getElementById("braceMeasured"),
   upperTiller: document.getElementById("upperTiller"),
   lowerTillerMeasured: document.getElementById("lowerTillerMeasured"),
   limbMarkedWeight: document.getElementById("limbMarkedWeight"),
@@ -83,7 +84,6 @@
   feedbackCategoryInputs: Array.from(document.querySelectorAll('input[name="feedbackCategory"]')),
   themeSelect: document.getElementById("themeSelect"),
   scaleLabelSideSight: document.getElementById("scaleLabelSideSight"),
-  scaleLabelSideBarebow: document.getElementById("scaleLabelSideBarebow"),
   bowStyle: document.getElementById("bowStyle"),
   sightHeading: document.getElementById("sightHeading"),
   sightIntro: document.getElementById("sightIntro"),
@@ -930,7 +930,6 @@ function applyScaleLabelSide(side) {
   const nextSide = side === "right" ? "right" : "left";
   document.documentElement.dataset.scaleSide = nextSide;
   if (els.scaleLabelSideSight) els.scaleLabelSideSight.value = nextSide;
-  if (els.scaleLabelSideBarebow) els.scaleLabelSideBarebow.value = nextSide;
   localStorage.setItem(STORAGE.scaleSide, nextSide);
 }
 
@@ -2639,6 +2638,9 @@ function validateArcSetupInput(input) {
   if (input.lowerTillerMeasured < 150 || input.lowerTillerMeasured > 260) {
     return "Entrez la distance corde / branche basse en mm, par exemple 218.";
   }
+  if (input.braceMeasured !== null && (input.braceMeasured < 18 || input.braceMeasured > 28)) {
+    return "Band mesure hors plage plausible (18 a 28 cm).";
+  }
   return "";
 }
 
@@ -2776,6 +2778,14 @@ function renderArcSetup(input) {
     : lowerDelta > 0
       ? `Mesure basse trop grande de ${Math.abs(lowerDelta).toFixed(1)} mm, corriger pour reduire le tiller.`
       : `Mesure basse trop faible de ${Math.abs(lowerDelta).toFixed(1)} mm, corriger pour augmenter le tiller.`;
+  const braceMeasured = input.braceMeasured;
+  const braceAdvice = !Number.isFinite(braceMeasured)
+    ? "Band non renseigne : mesurez-le pour confirmer le reglage."
+    : braceMeasured < setup.braceRange[0]
+      ? `Band trop bas (${braceMeasured.toFixed(1)} cm) : augmentez progressivement.`
+      : braceMeasured > setup.braceRange[1]
+        ? `Band trop haut (${braceMeasured.toFixed(1)} cm) : diminuez progressivement.`
+        : `Band dans la plage (${braceMeasured.toFixed(1)} cm) : conserver puis affiner.`;
   lastArcSetupSnapshot = { input: cloneCatalog(input), setup: cloneCatalog(setup) };
   els.arcSetupResult.innerHTML = `
     <h2>Reglage de l'arc classique</h2>
@@ -2788,6 +2798,7 @@ function renderArcSetup(input) {
       <h3>Band et tiller</h3>
       <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
       <p><strong>Band cible</strong> : ${setup.braceTarget.toFixed(1)} cm</p>
+      <p><strong>Band mesure</strong> : ${Number.isFinite(braceMeasured) ? `${braceMeasured.toFixed(1)} cm` : "non renseigne"}</p>
       <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
       <p><strong>Tiller positif vise</strong> : +${setup.tillerTarget.toFixed(1)} mm</p>
       <p><strong>Orientation de reglage</strong> : ${setup.adjustment.status}</p>
@@ -2795,7 +2806,7 @@ function renderArcSetup(input) {
     </section>
     <section class="subcard">
       <h3>Orientation claire des reglages</h3>
-      <p><strong>Band</strong> : regler dans la plage ${setup.braceRange[0].toFixed(1)} - ${setup.braceRange[1].toFixed(1)} cm, puis affiner au groupement.</p>
+      <p><strong>Band</strong> : ${braceAdvice}</p>
       <p><strong>Tiller</strong> : base visee +${setup.tillerTarget.toFixed(1)} mm | ${lowerAdvice}</p>
       <p><strong>Action</strong> : corriger une seule variable a la fois, puis re-corder et re-mesurer.</p>
     </section>
@@ -2925,7 +2936,6 @@ els.tabButtons.forEach((button) => {
 });
 els.themeSelect.addEventListener("change", () => applyTheme(els.themeSelect.value));
 els.scaleLabelSideSight?.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSideSight.value));
-els.scaleLabelSideBarebow?.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSideBarebow.value));
 els.bowStyle.addEventListener("change", () => applyBowStyle(els.bowStyle.value));
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
@@ -3177,6 +3187,7 @@ els.arcSetupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const input = {
     arcLength: Number(els.arcLength.value),
+    braceMeasured: parseLooseNumber(els.braceMeasured.value),
     upperTiller: Number(els.upperTiller.value),
     lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
     limbMarkedWeight: Number(els.limbMarkedWeight.value),
@@ -3213,6 +3224,7 @@ setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
 loadAppData();
 const initialArcSetup = {
   arcLength: Number(els.arcLength.value),
+  braceMeasured: parseLooseNumber(els.braceMeasured.value),
   upperTiller: Number(els.upperTiller.value),
   lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
   limbMarkedWeight: Number(els.limbMarkedWeight.value),
@@ -3228,6 +3240,7 @@ if (initialArcSetupError) {
   els.drawLengthForWeight.value = "28";
   renderArcSetup({
     arcLength: Number(els.arcLength.value),
+    braceMeasured: parseLooseNumber(els.braceMeasured.value),
     upperTiller: Number(els.upperTiller.value),
     lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
     limbMarkedWeight: Number(els.limbMarkedWeight.value),

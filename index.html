@@ -190,6 +190,10 @@
                 Distance corde / branche basse mesuree (mm)
                 <input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" value="218" required />
               </label>
+              <label>
+                Band mesure (cm)
+                <input id="braceMeasured" type="number" min="18" max="28" step="0.1" placeholder="Ex : 22,6" />
+              </label>
             </div>
             <p>Le <strong>band</strong> depend surtout de la taille d'arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de base : entre <strong>+2 et +10 mm</strong>, avec un prereglage courant autour de <strong>+6 mm</strong>. Ne saisissez pas directement le tiller positif ici.</p>
           </section>
@@ -219,13 +223,6 @@
           <section class="subcard" id="barebowArcSetupCard" hidden>
             <h3>Reglage barebow (guides)</h3>
             <p>Base guide CC v1.0 (CD31/FFTA): pre-reglages statiques puis affinage progressif en cible.</p>
-            <label>
-              Ecriture reglette
-              <select id="scaleLabelSideBarebow" aria-label="Position des mesures de reglette barebow">
-                <option value="left">Gauche</option>
-                <option value="right">Droite</option>
-              </select>
-            </label>
             <div class="field-grid">
               <label>
                 Band mesure (cm)
