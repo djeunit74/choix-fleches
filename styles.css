@@ -680,12 +680,6 @@ button {
   width: 42px;
 }
 
-:root[data-scale-side="right"] .sight-scale-label {
-  left: auto;
-  right: 10%;
-  text-align: left;
-}
-
 :root[data-scale-side="left"] .sight-marker-label {
   left: auto;
   right: calc(50% + 46px);
