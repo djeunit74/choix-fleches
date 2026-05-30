@@ -82,7 +82,8 @@
   feedbackStatus: document.getElementById("feedbackStatus"),
   feedbackCategoryInputs: Array.from(document.querySelectorAll('input[name="feedbackCategory"]')),
   themeSelect: document.getElementById("themeSelect"),
-  scaleLabelSide: document.getElementById("scaleLabelSide"),
+  scaleLabelSideSight: document.getElementById("scaleLabelSideSight"),
+  scaleLabelSideBarebow: document.getElementById("scaleLabelSideBarebow"),
   bowStyle: document.getElementById("bowStyle"),
   sightHeading: document.getElementById("sightHeading"),
   sightIntro: document.getElementById("sightIntro"),
@@ -928,7 +929,8 @@ function applyTheme(theme) {
 function applyScaleLabelSide(side) {
   const nextSide = side === "right" ? "right" : "left";
   document.documentElement.dataset.scaleSide = nextSide;
-  if (els.scaleLabelSide) els.scaleLabelSide.value = nextSide;
+  if (els.scaleLabelSideSight) els.scaleLabelSideSight.value = nextSide;
+  if (els.scaleLabelSideBarebow) els.scaleLabelSideBarebow.value = nextSide;
   localStorage.setItem(STORAGE.scaleSide, nextSide);
 }
 
@@ -2922,7 +2924,8 @@ els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setActiveTab(button.dataset.tab || "spine"));
 });
 els.themeSelect.addEventListener("change", () => applyTheme(els.themeSelect.value));
-els.scaleLabelSide.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSide.value));
+els.scaleLabelSideSight?.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSideSight.value));
+els.scaleLabelSideBarebow?.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSideBarebow.value));
 els.bowStyle.addEventListener("change", () => applyBowStyle(els.bowStyle.value));
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);

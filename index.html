@@ -31,13 +31,6 @@
               </select>
             </div>
             <label>
-              Ecriture reglette
-              <select id="scaleLabelSide" aria-label="Position des mesures de reglette">
-                <option value="left">Gauche</option>
-                <option value="right">Droite</option>
-              </select>
-            </label>
-            <label>
               Type d arc
               <select id="bowStyle" aria-label="Choix du type d arc">
                 <option value="classique">Classique</option>
@@ -226,6 +219,13 @@
           <section class="subcard" id="barebowArcSetupCard" hidden>
             <h3>Reglage barebow (guides)</h3>
             <p>Base guide CC v1.0 (CD31/FFTA): pre-reglages statiques puis affinage progressif en cible.</p>
+            <label>
+              Ecriture reglette
+              <select id="scaleLabelSideBarebow" aria-label="Position des mesures de reglette barebow">
+                <option value="left">Gauche</option>
+                <option value="right">Droite</option>
+              </select>
+            </label>
             <div class="field-grid">
               <label>
                 Band mesure (cm)
@@ -354,6 +354,13 @@
                 </label>
               </div>
               <div class="sight-custom-distance">
+                <label>
+                  Ecriture reglette
+                  <select id="scaleLabelSideSight" aria-label="Position des mesures de reglette viseur">
+                    <option value="left">Gauche</option>
+                    <option value="right">Droite</option>
+                  </select>
+                </label>
                 <label>
                   Distance a reperer (m)
                   <input id="sightCustomDistance" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="Ex : 25" />
