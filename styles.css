@@ -133,63 +133,6 @@ body {
   width: 100%;
 }
 
-:root[data-sun-mode="on"] {
-  --line: #6e7784;
-  --muted: #1d2735;
-}
-
-:root[data-sun-mode="on"] body {
-  background: linear-gradient(180deg, #f9fbff 0%, #f1f5fb 100%);
-  color: #101a28;
-}
-
-:root[data-sun-mode="on"] .card,
-:root[data-sun-mode="on"] .subcard,
-:root[data-sun-mode="on"] .measurement-guide,
-:root[data-sun-mode="on"] .mini-card,
-:root[data-sun-mode="on"] .merchant-panel,
-:root[data-sun-mode="on"] .merchant-block,
-:root[data-sun-mode="on"] .merchant-shop,
-:root[data-sun-mode="on"] .notebook-item {
-  background: #ffffff;
-  border-color: #6e7784;
-}
-
-:root[data-sun-mode="on"] .tab-nav {
-  background: #ffffff;
-  border-color: #6e7784;
-}
-
-:root[data-sun-mode="on"] .tab-button {
-  background: #ffffff;
-  border-color: #6e7784;
-  color: #0f1b2b;
-}
-
-:root[data-sun-mode="on"] .hero {
-  background: #ffffff;
-  border-color: #5b6a80;
-  box-shadow: 0 10px 26px rgba(15, 27, 43, 0.12);
-}
-
-:root[data-sun-mode="on"] .hero h1 {
-  color: #15315f;
-}
-
-:root[data-sun-mode="on"] .hero p,
-:root[data-sun-mode="on"] label,
-:root[data-sun-mode="on"] .app-settings-toggle {
-  color: #17263b;
-}
-
-:root[data-sun-mode="on"] input,
-:root[data-sun-mode="on"] select,
-:root[data-sun-mode="on"] textarea {
-  background: #ffffff;
-  border-color: #617086;
-  color: #0f1b2b;
-}
-
 .app-settings {
   position: absolute;
   top: 10px;
@@ -231,19 +174,6 @@ body {
 .app-settings-grid {
   display: grid;
   gap: 0.6rem;
-}
-
-.inline-check {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-weight: 700;
-  color: var(--accent-2);
-}
-
-.inline-check input[type="checkbox"] {
-  width: 1rem;
-  height: 1rem;
 }
 
 .sr-only {
@@ -372,6 +302,56 @@ body {
 
 .measurement-list li {
   margin: 8px 0;
+}
+
+.arc-setup-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.arc-setup-card > p {
+  line-height: 1.45;
+}
+
+.arc-setup-card .measurement-guide,
+.arc-setup-card .danger-guide {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.arc-setup-card .subcard {
+  margin-top: 12px;
+  padding: 14px;
+}
+
+.arc-setup-card .subcard h3 {
+  margin-bottom: 10px;
+}
+
+.arc-setup-card .field-grid {
+  gap: 10px;
+}
+
+.arc-setup-card .measurement-list {
+  margin-top: 8px;
+}
+
+.arc-setup-card button[type="submit"] {
+  margin-top: 4px;
+}
+
+.arc-setup-result h2 {
+  margin-bottom: 10px;
+}
+
+.arc-setup-result .subcard p {
+  margin: 8px 0;
+  line-height: 1.42;
+}
+
+.arc-setup-result .measurement-list {
+  margin-top: 8px;
 }
 
 .card {
@@ -505,6 +485,23 @@ button {
   gap: 0.85rem;
 }
 
+#barebowArcSetupCard[hidden] {
+  display: none !important;
+}
+
+:root[data-bow-style="barebow"] #barebowArcSetupCard {
+  border-color: color-mix(in srgb, var(--accent-2) 22%, var(--line));
+  background: linear-gradient(135deg, rgba(157,95,104,0.08), rgba(255,255,255,0.86));
+}
+
+:root[data-bow-style="barebow"] .arc-classic-only {
+  display: none !important;
+}
+
+:root[data-bow-style="classique"] #barebowArcSetupCard {
+  display: none !important;
+}
+
 .sight-mark-fields {
   display: none;
 }
@@ -604,6 +601,43 @@ button {
     linear-gradient(90deg, rgba(255,255,255,0.22), transparent);
   opacity: 0.82;
   pointer-events: none;
+}
+
+:root[data-bow-style="barebow"] .sight-logo {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.58)),
+    radial-gradient(circle at 72% 40%, rgba(37,49,71,0.88) 0 9px, transparent 10px),
+    linear-gradient(110deg, #9a5f66, #b7777f 45%, #8f555d 100%);
+}
+
+:root[data-bow-style="barebow"] .sight-logo-ring,
+:root[data-bow-style="barebow"] .sight-logo-pin {
+  display: none;
+}
+
+:root[data-bow-style="barebow"] .sight-rail {
+  background:
+    linear-gradient(90deg, #181f29 0 15%, transparent 15% 60%, #232e3e 60% 100%),
+    linear-gradient(115deg, #7b444d 0%, #9f6168 54%, #7a4148 100%);
+}
+
+:root[data-bow-style="barebow"] .sight-rail::before {
+  left: 65%;
+  width: 24%;
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.95) 0 1px, transparent 1px 8px),
+    linear-gradient(90deg, rgba(0,0,0,0.16), rgba(255,255,255,0.08));
+  opacity: 0.88;
+}
+
+:root[data-bow-style="barebow"] .sight-rail::after {
+  display: none;
+}
+
+:root[data-bow-style="barebow"] .sight-tick {
+  left: 63%;
+  width: 56px;
 }
 
 .sight-rail::after {

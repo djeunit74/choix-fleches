@@ -37,9 +37,12 @@
                 <option value="right">Droite</option>
               </select>
             </label>
-            <label class="inline-check">
-              <input id="sunMode" type="checkbox" />
-              <span>Mode plein soleil</span>
+            <label>
+              Type d arc
+              <select id="bowStyle" aria-label="Choix du type d arc">
+                <option value="classique">Classique</option>
+                <option value="barebow">Barebow</option>
+              </select>
             </label>
           </div>
         </div>
@@ -50,7 +53,7 @@
       <button type="button" class="tab-button is-active" data-tab="spine">Choix des fleches</button>
       <button type="button" class="tab-button" data-tab="arc-setup">Reglage de l'arc</button>
       <button type="button" class="tab-button" data-tab="notebook">Carnet de reglage</button>
-      <button type="button" class="tab-button" data-tab="sight">Reglage du viseur</button>
+      <button type="button" class="tab-button" data-tab="sight" id="sightTabButton">Reglage du viseur</button>
     </nav>
 
     <section class="tab-panel is-active" data-panel="spine">
@@ -148,12 +151,12 @@
       </section>
     </section>
 
-    <section class="tab-panel" data-panel="arc-setup" hidden>
-      <section class="card">
-        <h2>Reglage de l'arc classique</h2>
-        <p>Deux outils separes : d'un cote les mesures pour le tiller et la plage de band, de l'autre l'estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.</p>
-        <p>Repere pedagogique FFTA : ces informations de base s'appuient sur la <a href="https://www.ffta.fr/pratiquer/progressez/la-demarche-federale-denseignement" target="_blank" rel="noopener noreferrer">demarche federale d'enseignement</a> et sur le PDF direct <a href="https://www.ffta.fr/sites/default/files/imported-documents-files/7_arcclassique.pdf" target="_blank" rel="noopener noreferrer">Je regle mon arc classique</a>.</p>
-        <div class="measurement-guide">
+    <section class="tab-panel arc-setup-panel" data-panel="arc-setup" hidden>
+      <section class="card arc-setup-card">
+        <h2 id="arcSetupHeading">Reglage de l'arc classique</h2>
+        <p id="arcSetupIntro">Deux outils separes : d'un cote les mesures pour le tiller et la plage de band, de l'autre l'estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.</p>
+        <p id="arcSetupDocRef">Repere pedagogique FFTA : ces informations de base s'appuient sur la <a href="https://www.ffta.fr/pratiquer/progressez/la-demarche-federale-denseignement" target="_blank" rel="noopener noreferrer">demarche federale d'enseignement</a> et sur le PDF direct <a href="https://www.ffta.fr/sites/default/files/imported-documents-files/7_arcclassique.pdf" target="_blank" rel="noopener noreferrer">Je regle mon arc classique</a>.</p>
+        <div class="measurement-guide arc-classic-only">
           <h3>Mesures a prendre</h3>
           <ul class="measurement-list">
             <li><strong>Band</strong> : distance entre la corde et le berger button ou le creux de la poignee.</li>
@@ -163,7 +166,7 @@
             <li>Prenez ces deux mesures au meme niveau, pres des fixations de branches.</li>
           </ul>
         </div>
-        <div class="measurement-guide danger-guide">
+        <div class="measurement-guide danger-guide arc-classic-only">
           <h3>Important</h3>
           <ul class="measurement-list">
             <li><strong>Avant d'agir sur les vis de branches</strong>, detendez ou enlevez d'abord la corde.</li>
@@ -174,7 +177,7 @@
           </ul>
         </div>
         <form id="arc-setup-form" novalidate autocomplete="off">
-          <section class="subcard">
+          <section class="subcard arc-classic-only">
             <h3>Band et tiller</h3>
             <div class="field-grid">
               <label>
@@ -198,7 +201,7 @@
             <p>Le <strong>band</strong> depend surtout de la taille d'arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de base : entre <strong>+2 et +10 mm</strong>, avec un prereglage courant autour de <strong>+6 mm</strong>. Ne saisissez pas directement le tiller positif ici.</p>
           </section>
 
-          <section class="subcard">
+          <section class="subcard arc-classic-only">
             <h3>Puissance tiree estimee</h3>
             <div class="field-grid">
               <label>
@@ -220,12 +223,66 @@
             </div>
             <p>Le calcul de puissance utilise la <strong>poignee</strong>, la <strong>puissance marquee</strong> et l'<strong>allonge</strong>. Le <strong>band</strong> n'entre pas dans ce calcul. Le <strong>tiller</strong> n'y entre pas directement non plus, sauf si vous changez le reglage des vis de branches.</p>
           </section>
+          <section class="subcard" id="barebowArcSetupCard" hidden>
+            <h3>Reglage barebow (guides)</h3>
+            <p>Base guide CC v1.0 (CD31/FFTA): pre-reglages statiques puis affinage progressif en cible.</p>
+            <div class="field-grid">
+              <label>
+                Band mesure (cm)
+                <input id="arcBbBandMeasured" type="number" min="18" max="28" step="0.1" placeholder="Ex : 22,4" />
+              </label>
+              <label>
+                Tiller mesure (mm)
+                <input id="arcBbTillerMeasured" type="number" min="-8" max="12" step="0.5" placeholder="Ex : 1,0" />
+              </label>
+              <label>
+                Detalonnage mesure (mm)
+                <input id="arcBbNockingMeasured" type="number" min="0" max="20" step="0.5" placeholder="Ex : 6,0" />
+              </label>
+              <label>
+                Point d ancrage
+                <input id="arcBbAnchorPoint" type="text" maxlength="80" placeholder="Ex : index commissure levres" />
+              </label>
+              <label>
+                Prise de corde / stringwalk
+                <input id="arcBbStringwalk" type="text" maxlength="80" placeholder="Ex : 3 under, crawl variable" />
+              </label>
+              <label>
+                Point d encochage
+                <input id="arcBbNockingPoint" type="text" maxlength="40" placeholder="Ex : +5 mm (pre-reglage)" />
+              </label>
+              <label>
+                Band
+                <input id="arcBbBraceHeight" type="text" maxlength="40" placeholder="Ex : 22,2 cm" />
+              </label>
+              <label>
+                Tiller
+                <input id="arcBbTiller" type="text" maxlength="40" placeholder="Ex : 0 mm (base barebow)" />
+              </label>
+              <label>
+                Berger button
+                <input id="arcBbBerger" type="text" maxlength="80" placeholder="Ex : tension medium, 1,5 tour" />
+              </label>
+              <label>
+                Centrage fleche
+                <input id="arcBbCenterShot" type="text" maxlength="80" placeholder="Ex : pointe legerement a gauche corde" />
+              </label>
+            </div>
+            <ul class="measurement-list">
+              <li><strong>Ordre conseille</strong> : band, tiller, point d encochage, centrage, puis test en cible.</li>
+              <li><strong>Repere tiller</strong> : base barebow autour de 0 mm, puis ajuster par quarts de tour.</li>
+              <li><strong>Repere detalonnage</strong> : pre-reglage autour de +5 mm (haut du nock-set bas).</li>
+              <li><strong>Stringwalking</strong> : utiliser 2 nock-sets pour stabiliser l encoche pendant la traction.</li>
+              <li><strong>Stringwalk</strong> : validez vos distances sur palette apres chaque changement mecanique.</li>
+              <li><strong>Securite</strong> : detendez/enlevez la corde avant vis de branches, puis re-mesurez.</li>
+            </ul>
+          </section>
 
           <button type="submit">Calculer</button>
         </form>
       </section>
 
-      <section class="card result" id="arcSetupResult" aria-live="polite">
+      <section class="card result arc-setup-result" id="arcSetupResult" aria-live="polite">
         <h2>Reglage de l'arc</h2>
         <p>Renseignez vos mesures puis lancez le calcul.</p>
       </section>
@@ -235,8 +292,8 @@
       <section class="card sight-card">
         <div class="sight-header">
           <div>
-            <h2>Reglage du viseur</h2>
-            <p>Enregistrez vos reperes de viseur par distance et visualisez-les sur une reglette.</p>
+            <h2 id="sightHeading">Reglage du viseur</h2>
+            <p id="sightIntro">Enregistrez vos reperes de viseur par distance et visualisez-les sur une reglette.</p>
           </div>
           <div class="sight-logo" aria-hidden="true">
             <span class="sight-logo-ring"></span>
@@ -267,7 +324,7 @@
             </div>
           </section>
 
-          <section class="subcard">
+          <section class="subcard arc-classic-only">
             <h3>Reperes par distance</h3>
             <div class="sight-layout">
               <div class="sight-mark-grid sight-mark-fields" aria-hidden="true">
@@ -304,9 +361,9 @@
                 <button id="addSightDistanceBtn" type="button">Ajouter le curseur</button>
               </div>
 
-              <div class="sight-visual" aria-label="Representation des reperes de viseur">
-                <p class="sight-help">Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette.</p>
-                <div class="sight-rail" aria-label="Reglette de viseur de 0 a 16 centimetres">
+              <div class="sight-visual" id="sightVisual" aria-label="Representation des reperes de viseur">
+                <p class="sight-help" id="sightHelp">Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette.</p>
+                <div class="sight-rail" id="sightRail" aria-label="Reglette de viseur de 0 a 16 centimetres">
                   <span class="sight-scale-label" style="top: 8%">0 cm</span>
                   <span class="sight-scale-label" style="top: 29%">4</span>
                   <span class="sight-scale-label" style="top: 50%">8</span>
@@ -319,15 +376,15 @@
                   <span class="sight-tick is-major" style="top: 92%"></span>
                   <div id="sightMarkers" class="sight-markers"></div>
                 </div>
-                <p class="sight-scale-note">0 cm en haut, 16 cm en bas. Fleches clavier : 1 mm, Page : 1 cm.</p>
+                <p class="sight-scale-note" id="sightScaleNote">0 cm en haut, 16 cm en bas. Fleches clavier : 1 mm, Page : 1 cm.</p>
               </div>
             </div>
             <label>
-              Notes viseur
+              <span id="sightNotesLabel">Notes viseur</span>
               <textarea id="sightNotes" rows="3" maxlength="700" placeholder="Ex : verifier 50 m avec vent de face, lumiere faible, changement de pointe..."></textarea>
             </label>
             <div class="row-actions">
-              <button type="submit">Enregistrer le reglage viseur</button>
+              <button id="saveSightBtn" type="submit">Enregistrer le reglage viseur</button>
               <button id="resetSightBtn" type="button">Vider</button>
             </div>
           </section>
@@ -335,7 +392,7 @@
       </section>
 
       <section class="card result" id="sightResult" aria-live="polite">
-        <h2>Reglages viseur enregistres</h2>
+        <h2 id="sightResultHeading">Reglages viseur enregistres</h2>
         <p id="sightStatus">Aucun reglage viseur pour le moment.</p>
         <div id="sightContent"></div>
       </section>

@@ -3,6 +3,10 @@
   result: document.getElementById("result"),
   arcSetupForm: document.getElementById("arc-setup-form"),
   arcSetupResult: document.getElementById("arcSetupResult"),
+  arcSetupHeading: document.getElementById("arcSetupHeading"),
+  arcSetupIntro: document.getElementById("arcSetupIntro"),
+  arcSetupDocRef: document.getElementById("arcSetupDocRef"),
+  arcClassicOnlyBlocks: Array.from(document.querySelectorAll(".arc-classic-only")),
   historyContent: document.getElementById("historyContent"),
   drawWeightLabel: document.getElementById("drawWeightLabel"),
   arrowLengthLabel: document.getElementById("arrowLengthLabel"),
@@ -79,14 +83,34 @@
   feedbackCategoryInputs: Array.from(document.querySelectorAll('input[name="feedbackCategory"]')),
   themeSelect: document.getElementById("themeSelect"),
   scaleLabelSide: document.getElementById("scaleLabelSide"),
-  sunMode: document.getElementById("sunMode"),
+  bowStyle: document.getElementById("bowStyle"),
+  sightHeading: document.getElementById("sightHeading"),
+  sightIntro: document.getElementById("sightIntro"),
+  sightHelp: document.getElementById("sightHelp"),
+  sightScaleNote: document.getElementById("sightScaleNote"),
+  sightNotesLabel: document.getElementById("sightNotesLabel"),
+  saveSightBtn: document.getElementById("saveSightBtn"),
+  sightResultHeading: document.getElementById("sightResultHeading"),
+  sightTabButton: document.getElementById("sightTabButton"),
+  sightRail: document.getElementById("sightRail"),
+  barebowArcSetupCard: document.getElementById("barebowArcSetupCard"),
+  arcBbAnchorPoint: document.getElementById("arcBbAnchorPoint"),
+  arcBbBandMeasured: document.getElementById("arcBbBandMeasured"),
+  arcBbTillerMeasured: document.getElementById("arcBbTillerMeasured"),
+  arcBbNockingMeasured: document.getElementById("arcBbNockingMeasured"),
+  arcBbStringwalk: document.getElementById("arcBbStringwalk"),
+  arcBbNockingPoint: document.getElementById("arcBbNockingPoint"),
+  arcBbBraceHeight: document.getElementById("arcBbBraceHeight"),
+  arcBbTiller: document.getElementById("arcBbTiller"),
+  arcBbBerger: document.getElementById("arcBbBerger"),
+  arcBbCenterShot: document.getElementById("arcBbCenterShot"),
   tabButtons: Array.from(document.querySelectorAll(".tab-button")),
   tabPanels: Array.from(document.querySelectorAll(".tab-panel")),
   disciplineWrap: document.getElementById("disciplineWrap"),
   discipline: document.getElementById("discipline")
 };
 
-const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", sight: "sightNotebook", theme: "appTheme", scaleSide: "sightScaleSide", sunMode: "sunMode", feedback: "feedbackDraft" };
+const STORAGE = { history: "spineHistory", activeTab: "activeMainTab", notebook: "archerNotebook", sight: "sightNotebook", theme: "appTheme", scaleSide: "sightScaleSide", bowStyle: "bowStyle", barebowArc: "barebowArcSetup", feedback: "feedbackDraft" };
 const FEEDBACK_FORM = {
   responseUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc1Pp7JKPm90GKUasJxFrPi8fs4YO37Smb2s8MtbPPVDKVWuA/formResponse",
   categoryField: "entry.1394735982",
@@ -908,11 +932,78 @@ function applyScaleLabelSide(side) {
   localStorage.setItem(STORAGE.scaleSide, nextSide);
 }
 
-function applySunMode(enabled) {
-  const isOn = Boolean(enabled);
-  document.documentElement.dataset.sunMode = isOn ? "on" : "off";
-  if (els.sunMode) els.sunMode.checked = isOn;
-  localStorage.setItem(STORAGE.sunMode, isOn ? "1" : "0");
+function currentBowStyle() {
+  return document.documentElement.dataset.bowStyle === "barebow" ? "barebow" : "classique";
+}
+
+function normalizeBowStyle(style) {
+  return style === "barebow" ? "barebow" : "classique";
+}
+
+function sightLabelByBowStyle(style, plural = false) {
+  const normalized = normalizeBowStyle(style);
+  if (normalized === "barebow") return plural ? "reglages barebow" : "reglage barebow";
+  return plural ? "reglages viseur" : "reglage viseur";
+}
+
+function updateSightCopyForBowStyle(style) {
+  const normalized = normalizeBowStyle(style);
+  const isBarebow = normalized === "barebow";
+  if (els.sightHeading) els.sightHeading.textContent = isBarebow ? "Reglage barebow" : "Reglage du viseur";
+  if (els.sightTabButton) els.sightTabButton.textContent = isBarebow ? "Reglage barebow" : "Reglage du viseur";
+  if (els.sightIntro) els.sightIntro.textContent = isBarebow
+    ? "Enregistrez vos reperes barebow par distance et visualisez-les sur une palette."
+    : "Enregistrez vos reperes de viseur par distance et visualisez-les sur une reglette.";
+  if (els.sightHelp) els.sightHelp.textContent = isBarebow
+    ? "Indiquez une distance, ajoutez le curseur, puis glissez-le sur la palette."
+    : "Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette.";
+  if (els.sightScaleNote) els.sightScaleNote.textContent = "0 cm en haut, 16 cm en bas. Fleches clavier : 1 mm, Page : 1 cm.";
+  if (els.sightNotesLabel) els.sightNotesLabel.textContent = isBarebow ? "Notes barebow" : "Notes viseur";
+  if (els.saveSightBtn) els.saveSightBtn.textContent = isBarebow ? "Enregistrer le reglage barebow" : "Enregistrer le reglage viseur";
+  if (els.sightResultHeading) els.sightResultHeading.textContent = isBarebow ? "Reglages barebow enregistres" : "Reglages viseur enregistres";
+  if (els.sightRail) els.sightRail.setAttribute("aria-label", isBarebow ? "Palette barebow de 0 a 16 centimetres" : "Reglette de viseur de 0 a 16 centimetres");
+  if (els.barebowArcSetupCard) els.barebowArcSetupCard.hidden = !isBarebow;
+}
+
+function updateArcSetupCopyForBowStyle(style) {
+  const normalized = normalizeBowStyle(style);
+  const isBarebow = normalized === "barebow";
+  if (els.arcSetupHeading) els.arcSetupHeading.textContent = isBarebow ? "Reglage de l'arc barebow" : "Reglage de l'arc classique";
+  if (els.arcSetupIntro) {
+    els.arcSetupIntro.textContent = isBarebow
+      ? "Reglage barebow dedie: saisissez vos mesures relevees et suivez les corrections conseillees, sans melange avec l arc classique."
+      : "Deux outils separes : d'un cote les mesures pour le tiller et la plage de band, de l'autre l'estimation de puissance tiree a partir des branches, de la poignee et de l'allonge.";
+  }
+  if (els.arcSetupDocRef) {
+    els.arcSetupDocRef.innerHTML = isBarebow
+      ? 'Base guide barebow : <a href="https://cd31arc.fr/tir/wp-content/uploads/2020/08/guide_des_reglages_arc_cc-v1-0.pdf" target="_blank" rel="noopener noreferrer">Guide des reglages d un arc (CC v1.0)</a>.'
+      : 'Repere pedagogique FFTA : ces informations de base s appuient sur la <a href="https://www.ffta.fr/pratiquer/progressez/la-demarche-federale-denseignement" target="_blank" rel="noopener noreferrer">demarche federale d enseignement</a> et sur le PDF direct <a href="https://www.ffta.fr/sites/default/files/imported-documents-files/7_arcclassique.pdf" target="_blank" rel="noopener noreferrer">Je regle mon arc classique</a>.';
+  }
+  els.arcClassicOnlyBlocks.forEach((block) => {
+    block.hidden = isBarebow;
+  });
+}
+
+function applyBowStyle(style) {
+  const normalized = normalizeBowStyle(style);
+  document.documentElement.dataset.bowStyle = normalized;
+  if (els.bowStyle) els.bowStyle.value = normalized;
+  localStorage.setItem(STORAGE.bowStyle, normalized);
+  updateSightCopyForBowStyle(normalized);
+  updateArcSetupCopyForBowStyle(normalized);
+  renderSightEntries();
+  const arcInput = {
+    arcLength: Number(els.arcLength.value),
+    upperTiller: Number(els.upperTiller.value),
+    lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
+    limbMarkedWeight: Number(els.limbMarkedWeight.value),
+    riserLength: Number(els.riserLength.value),
+    drawLengthForWeight: Number(els.drawLengthForWeight.value)
+  };
+  if (!validateArcSetupInput(arcInput)) {
+    if (normalized === "barebow") renderBarebowArcSetup(arcInput);
+    else renderArcSetup(arcInput);
+  }
 }
 function readFeedbackDraft() {
   try {
@@ -2277,6 +2368,7 @@ function sightFormData() {
     if (distance && input.value.trim()) marks[distance] = input.value.trim();
   });
   return {
+    bowStyle: currentBowStyle(),
     date: els.sightDate.value,
     title: els.sightTitle.value.trim(),
     equipment: els.sightEquipment.value.trim(),
@@ -2295,6 +2387,10 @@ function sightMarksSummary(entry) {
     .join(" / ");
 }
 
+function sightEntryBowStyle(entry) {
+  return normalizeBowStyle(entry?.bowStyle);
+}
+
 function resetSightForm() {
   currentSightId = null;
   fillSightForm({ date: todayIsoDate() });
@@ -2311,6 +2407,7 @@ function fillSightForm(entry = {}) {
     ensureSightInput(distance).value = marks[distance] || "";
   });
   els.sightNotes.value = entry.notes || "";
+  if (entry.bowStyle) applyBowStyle(entry.bowStyle);
   renderSightVisual();
 }
 
@@ -2475,13 +2572,15 @@ function setSightMarkFromPointer(distance, clientY) {
 }
 
 function renderSightEntries() {
-  const entries = readSightEntries();
+  const allEntries = readSightEntries();
+  const activeStyle = currentBowStyle();
+  const entries = allEntries.filter((entry) => sightEntryBowStyle(entry) === activeStyle);
   if (!entries.length) {
-    els.sightStatus.textContent = "Aucun reglage viseur pour le moment.";
+    els.sightStatus.textContent = `Aucun ${sightLabelByBowStyle(activeStyle)} pour le moment.`;
     els.sightContent.innerHTML = "";
     return;
   }
-  els.sightStatus.textContent = `${entries.length} reglage${entries.length > 1 ? "s" : ""} viseur enregistre${entries.length > 1 ? "s" : ""}.`;
+  els.sightStatus.textContent = `${entries.length} ${sightLabelByBowStyle(activeStyle, true)} enregistre${entries.length > 1 ? "s" : ""}.`;
   const items = entries
     .sort((a, b) => String(b.date).localeCompare(String(a.date)))
     .map((entry) => {
@@ -2493,7 +2592,7 @@ function renderSightEntries() {
       return `
         <li class="notebook-item">
           <div class="notebook-item-copy">
-            <p class="notebook-item-title">${escapeHtml(entry.title || "Reglage viseur")}</p>
+            <p class="notebook-item-title">${escapeHtml(entry.title || (activeStyle === "barebow" ? "Reglage barebow" : "Reglage viseur"))}</p>
             <p class="notebook-item-meta">${escapeHtml(formatDateFr(entry.date))}</p>
             ${summary ? `<p class="notebook-item-summary">${escapeHtml(summary)}</p>` : ""}
           </div>
@@ -2607,11 +2706,82 @@ function computeArcSetup(input) {
   };
 }
 
+function barebowArcSetupData() {
+  return {
+    bandMeasured: els.arcBbBandMeasured?.value.trim() || "",
+    tillerMeasured: els.arcBbTillerMeasured?.value.trim() || "",
+    nockingMeasured: els.arcBbNockingMeasured?.value.trim() || "",
+    anchorPoint: els.arcBbAnchorPoint?.value.trim() || "",
+    stringwalk: els.arcBbStringwalk?.value.trim() || "",
+    nockingPoint: els.arcBbNockingPoint?.value.trim() || "",
+    braceHeight: els.arcBbBraceHeight?.value.trim() || "",
+    tiller: els.arcBbTiller?.value.trim() || "",
+    berger: els.arcBbBerger?.value.trim() || "",
+    centerShot: els.arcBbCenterShot?.value.trim() || ""
+  };
+}
+
+function writeBarebowArcSetupDraft() {
+  localStorage.setItem(STORAGE.barebowArc, JSON.stringify(barebowArcSetupData()));
+}
+
+function readBarebowArcSetupDraft() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE.barebowArc) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function fillBarebowArcSetupDraft() {
+  const draft = readBarebowArcSetupDraft();
+  if (els.arcBbBandMeasured) els.arcBbBandMeasured.value = draft.bandMeasured || "";
+  if (els.arcBbTillerMeasured) els.arcBbTillerMeasured.value = draft.tillerMeasured || "";
+  if (els.arcBbNockingMeasured) els.arcBbNockingMeasured.value = draft.nockingMeasured || "";
+  if (els.arcBbAnchorPoint) els.arcBbAnchorPoint.value = draft.anchorPoint || "";
+  if (els.arcBbStringwalk) els.arcBbStringwalk.value = draft.stringwalk || "";
+  if (els.arcBbNockingPoint) els.arcBbNockingPoint.value = draft.nockingPoint || "";
+  if (els.arcBbBraceHeight) els.arcBbBraceHeight.value = draft.braceHeight || "";
+  if (els.arcBbTiller) els.arcBbTiller.value = draft.tiller || "";
+  if (els.arcBbBerger) els.arcBbBerger.value = draft.berger || "";
+  if (els.arcBbCenterShot) els.arcBbCenterShot.value = draft.centerShot || "";
+}
+
+function parseLooseNumber(value) {
+  const cleaned = String(value || "").replace(",", ".").replace(/[^\d.+-]/g, "");
+  const num = Number(cleaned);
+  return Number.isFinite(num) ? num : null;
+}
+
+function barebowAdjustmentLine(label, measured, target, unit) {
+  if (!Number.isFinite(measured)) {
+    return `<p><strong>${label}</strong> : mesure manquante | conseille ${target.toFixed(1)} ${unit} | action: renseigner la mesure.</p>`;
+  }
+  const delta = Math.round((measured - target) * 10) / 10;
+  if (Math.abs(delta) <= 0.3) {
+    return `<p><strong>${label}</strong> : ${measured.toFixed(1)} ${unit} | conseille ${target.toFixed(1)} ${unit} | action: OK, conserver.</p>`;
+  }
+  const direction = delta > 0 ? "diminuer" : "augmenter";
+  return `<p><strong>${label}</strong> : ${measured.toFixed(1)} ${unit} | conseille ${target.toFixed(1)} ${unit} | action: ${direction} progressivement (${Math.abs(delta).toFixed(1)} ${unit}).</p>`;
+}
+
 function renderArcSetup(input) {
   const setup = computeArcSetup(input);
+  const targetLower = Math.round((input.upperTiller - setup.tillerTarget) * 10) / 10;
+  const lowerDelta = Math.round((input.lowerTillerMeasured - targetLower) * 10) / 10;
+  const lowerAdvice = Math.abs(lowerDelta) <= 0.5
+    ? "Mesure basse proche de la base, conserver."
+    : lowerDelta > 0
+      ? `Mesure basse trop grande de ${Math.abs(lowerDelta).toFixed(1)} mm, corriger pour reduire le tiller.`
+      : `Mesure basse trop faible de ${Math.abs(lowerDelta).toFixed(1)} mm, corriger pour augmenter le tiller.`;
   lastArcSetupSnapshot = { input: cloneCatalog(input), setup: cloneCatalog(setup) };
   els.arcSetupResult.innerHTML = `
-    <h2>Reglage de l'arc</h2>
+    <h2>Reglage de l'arc classique</h2>
+    <section class="subcard">
+      <h3>Fiche actuelle</h3>
+      <p><strong>Arc</strong> : ${input.arcLength}" | <strong>Poignee</strong> : ${input.riserLength}" | <strong>Branches</strong> : ${input.limbMarkedWeight} lbs | <strong>Allonge</strong> : ${input.drawLengthForWeight.toFixed(2)}"</p>
+      <p><strong>Mesures relevees</strong> : haut ${input.upperTiller.toFixed(1)} mm | bas ${input.lowerTillerMeasured.toFixed(1)} mm | tiller calcule +${setup.actualTiller.toFixed(1)} mm</p>
+    </section>
     <section class="subcard">
       <h3>Band et tiller</h3>
       <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
@@ -2622,10 +2792,55 @@ function renderArcSetup(input) {
       <p>${setup.adjustment.advice}</p>
     </section>
     <section class="subcard">
+      <h3>Orientation claire des reglages</h3>
+      <p><strong>Band</strong> : regler dans la plage ${setup.braceRange[0].toFixed(1)} - ${setup.braceRange[1].toFixed(1)} cm, puis affiner au groupement.</p>
+      <p><strong>Tiller</strong> : base visee +${setup.tillerTarget.toFixed(1)} mm | ${lowerAdvice}</p>
+      <p><strong>Action</strong> : corriger une seule variable a la fois, puis re-corder et re-mesurer.</p>
+    </section>
+    <section class="subcard">
       <h3>Puissance tiree estimee</h3>
       <p><strong>Puissance tiree estimee</strong> : ${setup.drawWeightEstimate.estimated.toFixed(1)} lbs</p>
       <p><strong>Base du calcul</strong> : poignee ${input.riserLength}" + branches ${input.limbMarkedWeight} lbs + allonge ${input.drawLengthForWeight.toFixed(2)}".</p>
       <p><strong>Note</strong> : le band n'entre pas dans ce calcul. Le tiller n'entre pas directement dans ce calcul non plus. En revanche, toucher aux vis de branches peut faire bouger a la fois le tiller et la puissance ressentie.</p>
+    </section>
+  `;
+}
+
+function renderBarebowArcSetup(input) {
+  const bb = barebowArcSetupData();
+  const setup = computeArcSetup(input);
+  const tillerGuide = bb.tiller || "0 mm (base barebow)";
+  const nockingGuide = bb.nockingPoint || "+5 mm (pre-reglage)";
+  const bandMeasured = parseLooseNumber(bb.bandMeasured);
+  const tillerMeasured = parseLooseNumber(bb.tillerMeasured);
+  const nockingMeasured = parseLooseNumber(bb.nockingMeasured);
+  const bandTarget = setup.braceTarget;
+  const tillerTarget = 0;
+  const nockingTarget = 5;
+  lastArcSetupSnapshot = { input: cloneCatalog(input), setup: cloneCatalog(setup), barebow: cloneCatalog(bb) };
+  els.arcSetupResult.innerHTML = `
+    <h2>Reglage de l'arc barebow</h2>
+    <section class="subcard">
+      <h3>Fiche actuelle</h3>
+      <p><strong>Arc</strong> : ${input.arcLength}" | <strong>Poignee</strong> : ${input.riserLength}" | <strong>Branches</strong> : ${input.limbMarkedWeight} lbs | <strong>Allonge</strong> : ${input.drawLengthForWeight.toFixed(2)}"</p>
+      <p><strong>Mesures relevees</strong> : band ${Number.isFinite(bandMeasured) ? `${bandMeasured.toFixed(1)} cm` : "non renseigne"} | tiller ${Number.isFinite(tillerMeasured) ? `${tillerMeasured.toFixed(1)} mm` : "non renseigne"} | detalonnage ${Number.isFinite(nockingMeasured) ? `${nockingMeasured.toFixed(1)} mm` : "non renseigne"}</p>
+      <p><strong>Technique</strong> : ancrage ${escapeHtml(bb.anchorPoint || "non renseigne")} | stringwalk ${escapeHtml(bb.stringwalk || "non renseigne")} | berger ${escapeHtml(bb.berger || "non renseigne")} | centrage ${escapeHtml(bb.centerShot || "non renseigne")}</p>
+    </section>
+    <section class="subcard">
+      <h3>Base mecanique</h3>
+      <p><strong>Band de depart</strong> : ${setup.braceRange[0].toFixed(1)} a ${setup.braceRange[1].toFixed(1)} cm</p>
+      <p><strong>Band cible initial</strong> : ${setup.braceTarget.toFixed(1)} cm (a affiner au groupement)</p>
+      <p><strong>Tiller positif mesure</strong> : +${setup.actualTiller.toFixed(1)} mm</p>
+      <p><strong>Tiller guide barebow</strong> : ${escapeHtml(tillerGuide)}</p>
+      <p><strong>Detalonnage guide</strong> : ${escapeHtml(nockingGuide)}</p>
+      <p><strong>Orientation</strong> : ${setup.adjustment.status}</p>
+      <p>${setup.adjustment.advice}</p>
+    </section>
+    <section class="subcard">
+      <h3>Orientation claire des reglages</h3>
+      ${barebowAdjustmentLine("Band", bandMeasured, bandTarget, "cm")}
+      ${barebowAdjustmentLine("Tiller", tillerMeasured, tillerTarget, "mm")}
+      ${barebowAdjustmentLine("Detalonnage", nockingMeasured, nockingTarget, "mm")}
     </section>
   `;
 }
@@ -2708,7 +2923,7 @@ els.tabButtons.forEach((button) => {
 });
 els.themeSelect.addEventListener("change", () => applyTheme(els.themeSelect.value));
 els.scaleLabelSide.addEventListener("change", () => applyScaleLabelSide(els.scaleLabelSide.value));
-els.sunMode.addEventListener("change", () => applySunMode(els.sunMode.checked));
+els.bowStyle.addEventListener("change", () => applyBowStyle(els.bowStyle.value));
 els.clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE.history);
   renderHistory();
@@ -2759,6 +2974,20 @@ els.feedbackResetBtn.addEventListener("click", () => {
   els.feedbackMessage.value = "";
   persistFeedbackDraft();
   els.feedbackStatus.textContent = "Avis vide.";
+});
+[
+  els.arcBbBandMeasured,
+  els.arcBbTillerMeasured,
+  els.arcBbNockingMeasured,
+  els.arcBbAnchorPoint,
+  els.arcBbStringwalk,
+  els.arcBbNockingPoint,
+  els.arcBbBraceHeight,
+  els.arcBbTiller,
+  els.arcBbBerger,
+  els.arcBbCenterShot
+].forEach((input) => {
+  input?.addEventListener("input", writeBarebowArcSetupDraft);
 });
 
 els.resetNotebookBtn.addEventListener("click", () => {
@@ -2870,7 +3099,7 @@ els.sightMarkers.addEventListener("keydown", (event) => {
 
 els.resetSightBtn.addEventListener("click", () => {
   resetSightForm();
-  els.sightStatus.textContent = "Fiche viseur vide.";
+  els.sightStatus.textContent = `Fiche ${currentBowStyle() === "barebow" ? "barebow" : "viseur"} vide.`;
 });
 
 els.sightForm.addEventListener("submit", (event) => {
@@ -2890,7 +3119,7 @@ els.sightForm.addEventListener("submit", (event) => {
     : [record, ...entries].slice(0, 30);
   writeSightEntries(nextEntries);
   currentSightId = record.id;
-  els.sightStatus.textContent = `Reglage viseur enregistre${record.title ? ` : ${record.title}` : ""}.`;
+  els.sightStatus.textContent = `${currentBowStyle() === "barebow" ? "Reglage barebow" : "Reglage viseur"} enregistre${record.title ? ` : ${record.title}` : ""}.`;
 });
 
 els.sightContent.addEventListener("click", (event) => {
@@ -2905,7 +3134,7 @@ els.sightContent.addEventListener("click", (event) => {
     currentSightId = entry.id;
     fillSightForm(entry);
     setActiveTab("sight");
-    els.sightStatus.textContent = "Reglage viseur charge.";
+    els.sightStatus.textContent = `${currentBowStyle() === "barebow" ? "Reglage barebow" : "Reglage viseur"} charge.`;
   }
 
   if (target.classList.contains("sight-delete")) {
@@ -2957,16 +3186,20 @@ els.arcSetupForm.addEventListener("submit", (event) => {
     els.arcSetupResult.innerHTML = `<h2>Reglage de l'arc</h2><p>${setupError}</p>`;
     return;
   }
-
+  if (currentBowStyle() === "barebow") {
+    renderBarebowArcSetup(input);
+    return;
+  }
   renderArcSetup(input);
 });
 
 applyUnitConstraints();
 applyTheme(localStorage.getItem(STORAGE.theme) || "cible");
 applyScaleLabelSide(localStorage.getItem(STORAGE.scaleSide) || "left");
-applySunMode(localStorage.getItem(STORAGE.sunMode) === "1");
+applyBowStyle(localStorage.getItem(STORAGE.bowStyle) || "classique");
 applyProfileDefaults();
 updateVisibility();
+fillBarebowArcSetupDraft();
 renderHistory();
 resetNotebookForm();
 renderNotebook();
@@ -2999,7 +3232,8 @@ if (initialArcSetupError) {
     drawLengthForWeight: Number(els.drawLengthForWeight.value)
   });
 } else {
-  renderArcSetup(initialArcSetup);
+  if (currentBowStyle() === "barebow") renderBarebowArcSetup(initialArcSetup);
+  else renderArcSetup(initialArcSetup);
 }
 
 
