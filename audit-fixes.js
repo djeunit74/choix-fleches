@@ -139,6 +139,16 @@
     }
   });
 
+  // Reference barebow : World Archery comme source principale.
+  const originalUpdateArcSetupCopyForBowStyle = window.updateArcSetupCopyForBowStyle;
+  window.updateArcSetupCopyForBowStyle = function updateArcSetupCopyForBowStyleFixed(style) {
+    originalUpdateArcSetupCopyForBowStyle(style);
+    if (window.normalizeBowStyle(style) !== "barebow") return;
+    const ref = document.getElementById("arcSetupDocRef");
+    if (!ref) return;
+    ref.innerHTML = 'References barebow : <a href="https://www.worldarchery.sport/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Barebow</a> pour l\'equipement et le stringwalking, et <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery Coaching Manual Level 2</a> pour les principes de reglage (band, tiller, berger button et affinage au tir).';
+  };
+
   // En barebow, aucun libelle ne doit laisser penser qu'un viseur est necessaire.
   const originalUpdateSightCopyForBowStyle = window.updateSightCopyForBowStyle;
   window.updateSightCopyForBowStyle = function updateSightCopyForBowStyleFixed(style) {
@@ -169,7 +179,6 @@
   };
 
   // Installation PWA depuis Parametres.
-  // Neutralise l'ancien nettoyage du service worker puis enregistre le worker actuel.
   localStorage.setItem("sw-cleanup-v1", "done");
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
