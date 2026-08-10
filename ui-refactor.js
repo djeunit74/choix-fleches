@@ -1,139 +1,19 @@
-/* Navigation simplifiee et assistant de reglage dynamique guide. */
+/* Navigation simplifiee et assistant de reglage dynamique pas a pas. */
 (() => {
-  function simplifyExistingTabs() {
-    const labels = { spine: "Fleches", "arc-setup": "Reglage de base", notebook: "Mes reglages", sight: "Reperes" };
-    document.querySelectorAll('.tab-button[data-tab]').forEach((button) => { if (labels[button.dataset.tab]) button.textContent = labels[button.dataset.tab]; });
-    const heroText = document.querySelector('.hero > p');
-    if (heroText) heroText.textContent = "Choisir ses fleches, regler son arc et garder ses reperes.";
-    const history = document.getElementById('history');
-    if (history && !history.closest('details')) {
-      const details = document.createElement('details'); details.className = 'card notes';
-      const summary = document.createElement('summary'); summary.textContent = 'Historique des calculs';
-      history.parentNode.insertBefore(details, history); details.append(summary, history); history.classList.remove('card', 'notes');
-    }
-    const spinePanel = document.querySelector('[data-panel="spine"]');
-    if (spinePanel) [...spinePanel.querySelectorAll('.card.notes')].forEach((card) => {
-      if (card.id === 'history' || card.closest('details')) return;
-      if (card.querySelector('h3')?.textContent.trim() === 'Important') {
-        const details = document.createElement('details'); details.className = 'card notes';
-        const summary = document.createElement('summary'); summary.textContent = 'References et conseils';
-        card.parentNode.insertBefore(details, card); details.append(summary, card); card.classList.remove('card', 'notes');
-      }
-    });
-    const arcIntro = document.getElementById('arcSetupIntro');
-    if (arcIntro) arcIntro.textContent = "Entrez vos mesures. L'app vous indique uniquement ce qu'il faut verifier ou corriger.";
-  }
-
-  function ensureDynamicTab() {
-    if (document.querySelector('[data-tab="dynamic"]')) return;
-    const arcButton = document.querySelector('.tab-button[data-tab="arc-setup"]');
-    const arcPanel = document.querySelector('[data-panel="arc-setup"]');
-    if (!arcButton || !arcPanel) return;
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'tab-button'; button.dataset.tab = 'dynamic'; button.textContent = 'Reglage dynamique';
-    arcButton.insertAdjacentElement('afterend', button);
-    const panel = document.createElement('section');
-    panel.className = 'tab-panel'; panel.dataset.panel = 'dynamic'; panel.hidden = true;
-    panel.innerHTML = `
-      <section class="card">
-        <h2>Reglage dynamique</h2>
-        <p>Assistant guide : commencez par le fut nu. Ne modifiez qu'un seul reglage a la fois puis recommencez le test.</p>
-        <form id="dynamicTuningForm" novalidate autocomplete="off">
-          <div class="field-grid">
-            <label>Archer<select id="dynamicHand"><option value="right">Droitier</option><option value="left">Gaucher</option></select></label>
-            <label>Test<select id="dynamicTest"><option value="bareshaft">Test fut nu</option><option value="contact">Verification des contacts de fleche</option><option value="validation">Validation du groupement</option></select></label>
-            <label id="dynamicDistanceWrap">Distance<select id="dynamicDistance"><option value="10">10 m</option><option value="15">15 m</option><option value="18" selected>18 m</option><option value="20">20 m</option><option value="30">30 m</option></select></label>
-            <label id="dynamicObservationWrap">Observation<select id="dynamicObservation"></select></label>
-          </div>
-          <div id="dynamicProtocol" class="measurement-guide"></div>
-          <button type="submit">Analyser le test</button>
-        </form>
-      </section>
-      <section class="card result" id="dynamicTuningResult" aria-live="polite"><h2>Conseil</h2><p>Realisez le protocole puis indiquez ce que vous observez.</p></section>
-      <details class="card notes"><summary>Sources et methode</summary>
-        <p>Le test fut nu et la verification des contacts suivent les principes de reglage Easton. En barebow, la validation tient aussi compte du stringwalking.</p>
-        <p><a href="https://eastonarchery.com/wp-content/uploads/2019/08/TuningGuideEaston.pdf" target="_blank" rel="noopener noreferrer">Easton Arrow Tuning Guide</a> · <a href="https://eastonarchery.com/2018/08/tuning-tips-for-the-toxophilite/" target="_blank" rel="noopener noreferrer">Easton - bare shaft tuning</a> · <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Barebow</a></p>
-      </details>`;
-    arcPanel.insertAdjacentElement('afterend', panel);
-    document.getElementById('dynamicTest')?.addEventListener('change', updateDynamicTestUI);
-    document.getElementById('dynamicTuningForm')?.addEventListener('submit', handleDynamicSubmit);
-    updateDynamicTestUI();
-  }
-
-  const OBS = {
-    bareshaft: [
-      ['center','Futs nus dans le groupement'], ['left','Futs nus a gauche'], ['right','Futs nus a droite'],
-      ['high','Futs nus au-dessus'], ['low','Futs nus en-dessous'], ['mixed','Resultats disperses / non repetables']
-    ],
-    contact: [['none','Aucun contact visible'], ['rest','Plumes touchent le repose-fleche'], ['riser','Plumes touchent la fenetre / poignee'], ['button','Contact pres du berger button'], ['unknown','Trace presente mais origine incertaine']],
-    validation: [['stable','Groupement stable ou meilleur'], ['worse','Groupement moins bon'], ['variable','Resultat trop variable pour conclure']]
-  };
-
-  function updateDynamicTestUI() {
-    const test = document.getElementById('dynamicTest')?.value || 'bareshaft';
-    const select = document.getElementById('dynamicObservation');
-    const protocol = document.getElementById('dynamicProtocol');
-    const distanceWrap = document.getElementById('dynamicDistanceWrap');
-    if (!select || !protocol) return;
-    select.innerHTML = OBS[test].map(([v,l]) => `<option value="${v}">${l}</option>`).join('');
-    if (distanceWrap) distanceWrap.hidden = test === 'contact';
-    if (test === 'bareshaft') protocol.innerHTML = '<h3>Protocole</h3><ol><li>Reglez d abord le band et le detalonnage de base.</li><li>A 15-20 m, tirez au moins <strong>3 fleches empennees + 2 futs nus</strong> avec la meme visee.</li><li>Repetez plusieurs volees. N interpretez que la tendance repetable des futs nus.</li><li>Traitez d abord un ecart vertical avant le diagnostic horizontal.</li></ol>';
-    if (test === 'contact') protocol.innerHTML = '<h3>Protocole</h3><ol><li>Inspectez les plumes, le repose-fleche, le berger button et la fenetre de l arc.</li><li>Recherchez frottements, traces ou plumes abimees.</li><li>Un contact doit etre resolu avant d affiner le spine dynamique.</li></ol>';
-    if (test === 'validation') protocol.innerHTML = '<h3>Protocole</h3><ol><li>Apres une petite correction, revenez aux memes conditions de tir.</li><li>Tirez plusieurs volees sans changer un second parametre.</li><li>Conservez la correction seulement si le resultat est repetable et meilleur.</li></ol>';
-  }
-
-  function handleDynamicSubmit(event) {
-    event.preventDefault();
-    const hand = document.getElementById('dynamicHand').value;
-    const test = document.getElementById('dynamicTest').value;
-    const obs = document.getElementById('dynamicObservation').value;
-    const distance = Number(document.getElementById('dynamicDistance').value);
-    const style = window.currentBowStyle?.() || 'classique';
-    const result = document.getElementById('dynamicTuningResult');
-    if (!result) return;
-    let title = 'Ne modifiez rien pour l instant';
-    let advice = 'Repetez le test avant de conclure.';
-
-    if (test === 'bareshaft') {
-      if (obs === 'center') { title = 'Reglage coherent'; advice = 'Les futs nus rejoignent le groupement. Conservez ce reglage et confirmez sur plusieurs volees.'; }
-      else if (obs === 'mixed') { title = 'Test non exploitable'; advice = 'Les resultats ne sont pas assez repetables. Verifiez la regularite de tir et les contacts de fleche avant toute correction.'; }
-      else if (obs === 'high') { title = 'Corriger d abord le detalonnage'; advice = 'Les futs nus arrivent haut : montez legerement le point d encochage, puis refaites le test avant de toucher au berger ou au spine dynamique.'; }
-      else if (obs === 'low') { title = 'Corriger d abord le detalonnage'; advice = 'Les futs nus arrivent bas : descendez legerement le point d encochage, puis refaites le test avant de toucher au berger ou au spine dynamique.'; }
-      else {
-        const stiff = hand === 'right' ? obs === 'left' : obs === 'right';
-        title = stiff ? 'Fleche dynamiquement trop raide' : 'Fleche dynamiquement trop souple';
-        advice = stiff
-          ? 'Tendance a confirmer : commencez par une petite correction reversible du berger selon votre reglage actuel. Si l ecart persiste, examinez ensuite poids de pointe et puissance tiree. Ne changez qu un parametre.'
-          : 'Tendance a confirmer : commencez par une petite correction reversible du berger selon votre reglage actuel. Si l ecart persiste, examinez ensuite poids de pointe et puissance tiree. Ne changez qu un parametre.';
-      }
-      if (distance < 15) advice += ' Pour un diagnostic horizontal plus fiable, refaites ensuite le test vers 15-20 m.';
-    }
-
-    if (test === 'contact') {
-      if (obs === 'none') { title = 'Pas de contact detecte'; advice = 'Vous pouvez poursuivre le reglage dynamique. Verifiez quand meme que les plumes restent intactes apres plusieurs volees.'; }
-      else if (obs === 'unknown') { title = 'Identifier le contact avant de regler'; advice = 'Ne compensez pas avec le berger. Localisez d abord la zone de frottement et controlez repose-fleche, centrage et orientation des plumes.'; }
-      else { title = 'Contact de fleche a corriger'; advice = 'Un contact peut fausser le test fut nu. Corrigez d abord la clearance : controlez centrage, repose-fleche, orientation des plumes et position du berger, puis refaites le test.'; }
-    }
-
-    if (test === 'validation') {
-      if (obs === 'stable') { title = 'Correction validee'; advice = 'Le resultat est stable ou meilleur. Conservez ce reglage et notez-le dans Mes reglages.'; }
-      if (obs === 'worse') { title = 'Revenir au reglage precedent'; advice = 'La correction a degrade le groupement. Revenez au reglage precedent avant d essayer une autre modification.'; }
-      if (obs === 'variable') { title = 'Pas de conclusion fiable'; advice = 'Le resultat varie trop. Revenez a une execution reguliere et refaites plusieurs volees sans modifier le materiel.'; }
-    }
-
-    if (style === 'barebow') advice += ' En barebow, confirmez aussi a crawl courte, moyenne et longue : le stringwalking modifie le comportement dynamique.';
-    result.innerHTML = `<h2>${title}</h2><p>${advice}</p><p><strong>Regle :</strong> une seule correction a la fois, puis nouveau test.</p>`;
-  }
-
-  function addTabClickSupport() {
-    document.addEventListener('click', (event) => {
-      const button = event.target.closest('.tab-button[data-tab]'); if (!button) return;
-      const tab = button.dataset.tab;
-      document.querySelectorAll('.tab-button[data-tab]').forEach((b) => { const active = b.dataset.tab === tab; b.classList.toggle('is-active', active); b.setAttribute('aria-selected', active ? 'true' : 'false'); });
-      document.querySelectorAll('.tab-panel[data-panel]').forEach((panel) => { const active = panel.dataset.panel === tab; panel.classList.toggle('is-active', active); panel.hidden = !active; });
-      localStorage.setItem('activeMainTab', tab);
-    });
-  }
-
-  simplifyExistingTabs(); ensureDynamicTab(); addTabClickSupport();
+  function simplifyExistingTabs(){const labels={spine:'Fleches','arc-setup':'Reglage de base',notebook:'Mes reglages',sight:'Reperes'};document.querySelectorAll('.tab-button[data-tab]').forEach(b=>{if(labels[b.dataset.tab])b.textContent=labels[b.dataset.tab]});const h=document.querySelector('.hero > p');if(h)h.textContent='Choisir ses fleches, regler son arc et garder ses reperes.';const a=document.getElementById('arcSetupIntro');if(a)a.textContent="Entrez vos mesures. L'app vous indique uniquement ce qu'il faut verifier ou corriger."}
+  const state={step:0,hand:'right',distance:18,style:'classique'};
+  const steps=[
+    {title:'1. Preparez les fleches',body:'Prenez au moins <strong>3 fleches empennees + 2 futs nus</strong>. Les 5 doivent avoir le meme tube, spine, longueur, pointe et encoche. Seules les plumes doivent differer.',action:'Mes fleches sont pretes'},
+    {title:'2. Verifiez le reglage de base',body:'Avant le test, le <strong>band, le centrage, le repose-fleche et le detalonnage de base</strong> doivent deja etre regles. Si une plume touche l arc, faites d abord le test « contacts de fleche ».',action:'Le reglage de base est fait'},
+    {title:'3. Placez-vous a 15-20 m',body:'Utilisez une grande cible avec de la marge. Visez <strong>exactement le meme point</strong> pour toutes les fleches. Commencez a 15-20 m : 18 m convient tres bien.',action:'Je suis pret a tirer'},
+    {title:'4. Tirez une volee complete',body:'Tirez les <strong>3 empennees et les 2 futs nus</strong> avec la meme execution. Vous pouvez melanger leur ordre. Ne cherchez pas a corriger votre visee entre les fleches.',action:'J ai tire la volee'},
+    {title:'5. Repetez avant d analyser',body:'Refaites idealement <strong>3 volees</strong>. Une fleche isolee ne suffit pas. On cherche la position moyenne et repetable des futs nus par rapport au groupe des empennees.',action:'J ai une tendance repetable'},
+    {title:'6. Indiquez le resultat',body:'Regardez le <strong>groupe des futs nus</strong> par rapport au groupe des fleches empennees. Traitez d abord le vertical. Une fois le vertical correct, interpretez gauche/droite.',action:null}
+  ];
+  function ensureDynamicTab(){if(document.querySelector('[data-tab="dynamic"]'))return;const ab=document.querySelector('.tab-button[data-tab="arc-setup"]'),ap=document.querySelector('[data-panel="arc-setup"]');if(!ab||!ap)return;const b=document.createElement('button');b.type='button';b.className='tab-button';b.dataset.tab='dynamic';b.textContent='Reglage dynamique';ab.insertAdjacentElement('afterend',b);const p=document.createElement('section');p.className='tab-panel';p.dataset.panel='dynamic';p.hidden=true;p.innerHTML=`<section class="card"><h2>Reglage dynamique</h2><p>Je vous guide pendant le test. Faites une etape, puis passez a la suivante.</p><div class="field-grid"><label>Archer<select id="dynHand"><option value="right">Droitier</option><option value="left">Gaucher</option></select></label><label>Mode<select id="dynMode"><option value="bareshaft">Test fut nu guide</option><option value="contact">Verifier les contacts de fleche</option></select></label></div></section><section class="card" id="dynWizard"></section><section class="card result" id="dynResult" aria-live="polite"></section><details class="card notes"><summary>Pourquoi ce test ? Sources</summary><p>Le fut nu revele davantage le comportement dynamique de l ensemble arc/fleche car il n est pas stabilise par les plumes. On compare une tendance repetable, jamais une seule fleche.</p><p><a href="https://eastonarchery.com/wp-content/uploads/2019/08/TuningGuideEaston.pdf" target="_blank" rel="noopener noreferrer">Easton Arrow Tuning Guide</a> · <a href="https://eastonarchery.com/2018/08/tuning-tips-for-the-toxophilite/" target="_blank" rel="noopener noreferrer">Easton - bare shaft tuning</a> · <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Barebow</a></p></details>`;ap.insertAdjacentElement('afterend',p);document.getElementById('dynMode').addEventListener('change',()=>{state.step=0;renderWizard()});document.getElementById('dynHand').addEventListener('change',e=>state.hand=e.target.value);renderWizard()}
+  function renderWizard(){const w=document.getElementById('dynWizard'),r=document.getElementById('dynResult');if(!w)return;const mode=document.getElementById('dynMode')?.value||'bareshaft';if(r)r.innerHTML='';if(mode==='contact'){w.innerHTML=`<h2>Verification des contacts de fleche</h2><ol><li>Inspectez les plumes apres le tir : cherchez marque, dechirure ou frottement.</li><li>Inspectez le repose-fleche, la fenetre/poignee et la zone du berger button.</li><li>Si besoin, utilisez une poudre/talc tres leger sur la zone suspecte pour reperer un contact, sans en mettre dans le mecanisme du berger.</li><li>Un contact doit etre resolu <strong>avant</strong> d interpreter le test fut nu.</li></ol><label>Qu observez-vous ?<select id="contactObs"><option value="none">Aucune trace de contact</option><option value="rest">Contact avec le repose-fleche</option><option value="riser">Contact avec la poignee / fenetre</option><option value="button">Contact vers le berger</option><option value="unknown">Trace mais origine inconnue</option></select></label><button type="button" id="contactAnalyze">Analyser</button>`;document.getElementById('contactAnalyze').onclick=analyzeContact;return}const s=steps[state.step];if(state.step<5){w.innerHTML=`<p><strong>Etape ${state.step+1} / 6</strong></p><h2>${s.title}</h2><p>${s.body}</p><div class="actions"><button type="button" id="dynNext">${s.action}</button>${state.step?'<button type="button" class="secondary" id="dynBack">Retour</button>':''}</div>`;document.getElementById('dynNext').onclick=()=>{state.step++;renderWizard()};if(state.step)document.getElementById('dynBack').onclick=()=>{state.step--;renderWizard()};return}w.innerHTML=`<p><strong>Etape 6 / 6</strong></p><h2>${s.title}</h2><p>${s.body}</p><label>Position des futs nus<select id="bareObs"><option value="center">Dans / tres pres du groupe</option><option value="high">Au-dessus du groupe</option><option value="low">En-dessous du groupe</option><option value="left">A gauche du groupe</option><option value="right">A droite du groupe</option><option value="mixed">Pas de tendance repetable</option></select></label><button type="button" id="bareAnalyze">Analyser mon resultat</button><button type="button" class="secondary" id="dynRestart">Recommencer le test</button>`;document.getElementById('bareAnalyze').onclick=analyzeBare;document.getElementById('dynRestart').onclick=()=>{state.step=0;renderWizard()}}
+  function analyzeBare(){const o=document.getElementById('bareObs').value,r=document.getElementById('dynResult');let t='',a='';if(o==='center'){t='Reglage coherent';a='Les futs nus rejoignent de facon repetable les empennees. Conservez le reglage et validez ensuite avec toutes les fleches empennees.'}else if(o==='mixed'){t='Test non exploitable';a='Ne modifiez pas le materiel. Verifiez la regularite de tir et les contacts de fleche, puis recommencez.'}else if(o==='high'){t='Vertical : detalonnage d abord';a='Les futs nus arrivent haut. Montez legerement le point d encochage, puis refaites tout le test avant d analyser gauche/droite.'}else if(o==='low'){t='Vertical : detalonnage d abord';a='Les futs nus arrivent bas. Descendez legerement le point d encochage, puis refaites tout le test avant d analyser gauche/droite.'}else{const stiff=state.hand==='right'?o==='left':o==='right';t=stiff?'Tendance dynamique trop raide':'Tendance dynamique trop souple';a=`La tendance est ${stiff?'trop raide':'trop souple'} pour un archer ${state.hand==='right'?'droitier':'gaucher'}. Ne changez pas de tube immediatement : faites une petite correction reversible, puis recommencez exactement le meme test. Examinez ensuite berger, poids de pointe et puissance tiree si l ecart persiste.`}if((window.currentBowStyle?.()||'classique')==='barebow')a+=' En barebow, faites ce reglage principal avec une crawl intermediaire puis confirmez avec une crawl courte et une longue.';r.innerHTML=`<h2>${t}</h2><p>${a}</p><p><strong>Important :</strong> une seule modification a la fois.</p>`}
+  function analyzeContact(){const o=document.getElementById('contactObs').value,r=document.getElementById('dynResult');if(o==='none')r.innerHTML='<h2>Pas de contact detecte</h2><p>Vous pouvez passer au test fut nu.</p>';else if(o==='unknown')r.innerHTML='<h2>Contact a localiser</h2><p>Ne compensez pas avec le berger. Localisez d abord le frottement puis controlez repose-fleche, centrage et orientation des plumes.</p>';else r.innerHTML='<h2>Contact a corriger avant le fut nu</h2><p>Ce contact peut fausser le diagnostic dynamique. Corrigez-le, refaites quelques tirs, puis recommencez le test fut nu.</p>'}
+  function addTabClickSupport(){document.addEventListener('click',e=>{const b=e.target.closest('.tab-button[data-tab]');if(!b)return;const t=b.dataset.tab;document.querySelectorAll('.tab-button[data-tab]').forEach(x=>{const a=x.dataset.tab===t;x.classList.toggle('is-active',a);x.setAttribute('aria-selected',a?'true':'false')});document.querySelectorAll('.tab-panel[data-panel]').forEach(p=>{const a=p.dataset.panel===t;p.classList.toggle('is-active',a);p.hidden=!a});localStorage.setItem('activeMainTab',t)})}
+  simplifyExistingTabs();ensureDynamicTab();addTabClickSupport();
 })();
