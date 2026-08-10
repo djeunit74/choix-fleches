@@ -139,9 +139,42 @@
     }
   });
 
+  // En barebow, aucun libelle ne doit laisser penser qu'un viseur est present.
+  function setLabelText(inputId, text) {
+    const input = document.getElementById(inputId);
+    const label = input?.closest("label");
+    if (!label) return;
+    const textNode = Array.from(label.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+    if (textNode) textNode.textContent = `\n                ${text}\n                `;
+  }
+
+  function fixBarebowCopy() {
+    const isBarebow = document.documentElement.dataset.bowStyle === "barebow";
+    const sightForm = document.getElementById("sight-form");
+    const firstHeading = sightForm?.querySelector(".subcard h3");
+    if (firstHeading) firstHeading.textContent = isBarebow ? "Fiche barebow" : "Fiche viseur";
+
+    setLabelText("sightEquipment", isBarebow ? "Arc / materiel barebow" : "Viseur / arc");
+
+    const titleInput = document.getElementById("sightTitle");
+    if (titleInput) titleInput.placeholder = isBarebow ? "Ex : barebow exterieur / salle" : "Ex : exterieur carbone / salle alu";
+
+    const equipmentInput = document.getElementById("sightEquipment");
+    if (equipmentInput) equipmentInput.placeholder = isBarebow ? "Ex : WNS / Hoyt / palette / prise 3-under" : "Ex : Shibuya / viseur club / WNS";
+
+    const visual = document.getElementById("sightVisual");
+    if (visual) visual.setAttribute("aria-label", isBarebow ? "Representation des reperes barebow" : "Representation des reperes de viseur");
+  }
+
+  const bowStyleObserver = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.attributeName === "data-bow-style")) fixBarebowCopy();
+  });
+  bowStyleObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-bow-style"] });
+
   queueMicrotask(() => {
     try {
       window.applyBowStyle(window.currentBowStyle());
+      fixBarebowCopy();
     } catch {
       // Aucun blocage de l'app si le DOM n'est pas encore pret pour une raison externe.
     }
