@@ -103,4 +103,14 @@
       window.computeArcSetup = originalBuilder;
     }
   };
+
+  // app.js a deja fait son rendu initial avant le chargement de ce fichier.
+  // On force donc un rendu avec les fonctions corrigees des que les surcharges sont installees.
+  queueMicrotask(() => {
+    try {
+      window.applyBowStyle(window.currentBowStyle());
+    } catch {
+      // Aucun blocage de l'app si le DOM n'est pas encore pret pour une raison externe.
+    }
+  });
 })();
