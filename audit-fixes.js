@@ -20,7 +20,6 @@
     return null;
   }
 
-  // "Tous" doit rester un vrai mode multi-materiaux au lieu d'etre transforme en carbone/exterieur.
   window.normalizeInput = function normalizeInputFixed(input) {
     if (input.shaftMaterial !== "all") return originalNormalizeInput(input);
     return {
@@ -31,8 +30,6 @@
     };
   };
 
-  // En mode Tous, un modele est evalue dans son contexte carbone/exterieur ET alu/salle.
-  // Le meilleur score est conserve, ce qui evite d'eliminer artificiellement l'aluminium.
   window.scoreModel = function scoreModelFixed(modelName, input, profile) {
     if (input.shaftMaterial !== "all") return originalScoreModel(modelName, input, profile);
     const outdoor = originalScoreModel(modelName, {
@@ -48,7 +45,6 @@
     return outdoor.score >= indoor.score ? outdoor : indoor;
   };
 
-  // Ne jamais rabattre silencieusement une longueur hors tableau sur la derniere colonne fabricant.
   window.eastonCarbonRecommendation = function eastonCarbonRecommendationFixed(input) {
     return roundedLengthInRange(input, 21, 34, "Easton carbone") || originalEastonCarbonRecommendation(input);
   };
@@ -71,7 +67,6 @@
   };
 
   // Classique : +2 a +6 mm est une plage de depart, pas une cible unique.
-  // Si le tiller mesure est deja dans la plage, aucune correction n'est demandee.
   window.computeArcSetup = function computeArcSetupFixed(input) {
     const setup = originalComputeArcSetup(input);
     const minTiller = 2;
@@ -105,18 +100,18 @@
     return setup;
   };
 
-  // Adapte l'affichage classique pour parler d'une plage et non d'une cible fixe.
   window.renderArcSetup = function renderArcSetupFixed(input) {
     const result = originalRenderArcSetup(input);
-    if (window.els?.arcSetupResult) {
-      window.els.arcSetupResult.innerHTML = window.els.arcSetupResult.innerHTML
+    const arcSetupResult = document.getElementById("arcSetupResult");
+    if (arcSetupResult) {
+      arcSetupResult.innerHTML = arcSetupResult.innerHTML
         .replace(/<strong>Tiller positif vise<\/strong> : \+[^<]+ mm/, '<strong>Plage de tiller conseillee</strong> : +2 a +6 mm')
         .replace(/<strong>Tiller<\/strong> : base visee \+[^|]+\|/, '<strong>Tiller</strong> : plage conseillee +2 a +6 mm |');
     }
     return result;
   };
 
-  // Barebow : l'orientation mecanique doit viser 0 mm, sans reutiliser la logique classique.
+  // Barebow conserve sa logique distincte autour de 0 mm.
   const originalRenderBarebowArcSetup = window.renderBarebowArcSetup;
   window.renderBarebowArcSetup = function renderBarebowArcSetupFixed(input) {
     const originalBuilder = window.computeArcSetup;
@@ -138,15 +133,12 @@
     }
   };
 
-  // Corrige aussi le texte d'aide statique affiche dans le formulaire classique.
   document.querySelectorAll(".arc-classic-only p").forEach((paragraph) => {
     if (paragraph.textContent.includes("Repere de base")) {
       paragraph.innerHTML = 'Le <strong>band</strong> depend surtout de la taille d\'arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de depart : entre <strong>+2 et +6 mm</strong>. Une valeur situee dans cette plage n\'a pas a etre ramenee systematiquement a +6 mm. Ne saisissez pas directement le tiller positif ici.';
     }
   });
 
-  // app.js a deja fait son rendu initial avant le chargement de ce fichier.
-  // On force donc un rendu avec les fonctions corrigees des que les surcharges sont installees.
   queueMicrotask(() => {
     try {
       window.applyBowStyle(window.currentBowStyle());
