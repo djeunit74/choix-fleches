@@ -10,6 +10,7 @@
   const originalVictoryVxtRecommendation = window.victoryVxtRecommendation;
   const originalCarbonExpressRecommendation = window.carbonExpressRecommendation;
   const originalComputeArcSetup = window.computeArcSetup;
+  const originalRenderArcSetup = window.renderArcSetup;
 
   function roundedLengthInRange(input, min, max, label) {
     const roundedLength = Math.round(input.arrowLength);
@@ -69,25 +70,58 @@
     return rangeError || originalCarbonExpressRecommendation(input);
   };
 
-  // Cible classique coherente : +6 mm pour 66/68, +4 mm pour 70/72.
+  // Classique : +2 a +6 mm est une plage de depart, pas une cible unique.
+  // Si le tiller mesure est deja dans la plage, aucune correction n'est demandee.
   window.computeArcSetup = function computeArcSetupFixed(input) {
     const setup = originalComputeArcSetup(input);
-    const recommendedTiller = input.arcLength >= 70 ? 4 : 6;
-    const expectedLowerDistance = Math.round((input.upperTiller - recommendedTiller) * 10) / 10;
+    const minTiller = 2;
+    const maxTiller = 6;
+    const actualTiller = setup.actualTiller;
+    const target = actualTiller < minTiller ? minTiller : actualTiller > maxTiller ? maxTiller : actualTiller;
+    const expectedLowerDistance = Math.round((input.upperTiller - target) * 10) / 10;
+
+    setup.tillerRange = [minTiller, maxTiller];
     setup.lowerTiller = expectedLowerDistance;
     setup.lowerGap = Math.round((input.lowerTillerMeasured - expectedLowerDistance) * 10) / 10;
-    setup.tillerTarget = recommendedTiller;
-    setup.tillerAction = `Avec un tiller positif de depart a +${recommendedTiller} mm, la distance basse attendue est ${expectedLowerDistance.toFixed(1)} mm.`;
-    setup.adjustment = window.buildTillerAdjustment(setup.actualTiller, recommendedTiller);
+    setup.tillerTarget = target;
+    setup.tillerAction = actualTiller >= minTiller && actualTiller <= maxTiller
+      ? `Tiller dans la plage de depart conseillee (+${minTiller} a +${maxTiller} mm). Conserver puis affiner au tir si necessaire.`
+      : `Tiller hors plage de depart conseillee (+${minTiller} a +${maxTiller} mm). Corriger progressivement vers la limite la plus proche.`;
+
+    if (actualTiller >= minTiller && actualTiller <= maxTiller) {
+      setup.adjustment = {
+        status: "OK - dans la plage conseillee",
+        advice: `Le tiller mesure (+${actualTiller.toFixed(1)} mm) est compris entre +${minTiller} et +${maxTiller} mm. Ne modifiez pas les vis uniquement pour viser +6 mm.`
+      };
+    } else {
+      setup.adjustment = window.buildTillerAdjustment(actualTiller, target);
+    }
+
+    if (Array.isArray(setup.checks)) {
+      setup.checks = setup.checks.map((line) => line.startsWith("Tiller :")
+        ? `Tiller : plage de depart conseillee entre +${minTiller} et +${maxTiller} mm, a affiner selon le comportement de l'arc.`
+        : line);
+    }
     return setup;
   };
 
-  // Barebow : l'orientation mecanique doit viser 0 mm, sans reutiliser l'avis classique +4/+6 mm.
+  // Adapte l'affichage classique pour parler d'une plage et non d'une cible fixe.
+  window.renderArcSetup = function renderArcSetupFixed(input) {
+    const result = originalRenderArcSetup(input);
+    if (window.els?.arcSetupResult) {
+      window.els.arcSetupResult.innerHTML = window.els.arcSetupResult.innerHTML
+        .replace(/<strong>Tiller positif vise<\/strong> : \+[^<]+ mm/, '<strong>Plage de tiller conseillee</strong> : +2 a +6 mm')
+        .replace(/<strong>Tiller<\/strong> : base visee \+[^|]+\|/, '<strong>Tiller</strong> : plage conseillee +2 a +6 mm |');
+    }
+    return result;
+  };
+
+  // Barebow : l'orientation mecanique doit viser 0 mm, sans reutiliser la logique classique.
   const originalRenderBarebowArcSetup = window.renderBarebowArcSetup;
   window.renderBarebowArcSetup = function renderBarebowArcSetupFixed(input) {
     const originalBuilder = window.computeArcSetup;
     window.computeArcSetup = function barebowComputeArcSetup(barebowInput) {
-      const setup = originalBuilder(barebowInput);
+      const setup = originalComputeArcSetup(barebowInput);
       const target = 0;
       const expectedLowerDistance = Math.round((barebowInput.upperTiller - target) * 10) / 10;
       setup.lowerTiller = expectedLowerDistance;
@@ -103,6 +137,13 @@
       window.computeArcSetup = originalBuilder;
     }
   };
+
+  // Corrige aussi le texte d'aide statique affiche dans le formulaire classique.
+  document.querySelectorAll(".arc-classic-only p").forEach((paragraph) => {
+    if (paragraph.textContent.includes("Repere de base")) {
+      paragraph.innerHTML = 'Le <strong>band</strong> depend surtout de la taille d\'arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de depart : entre <strong>+2 et +6 mm</strong>. Une valeur situee dans cette plage n\'a pas a etre ramenee systematiquement a +6 mm. Ne saisissez pas directement le tiller positif ici.';
+    }
+  });
 
   // app.js a deja fait son rendu initial avant le chargement de ce fichier.
   // On force donc un rendu avec les fonctions corrigees des que les surcharges sont installees.
