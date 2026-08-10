@@ -139,42 +139,119 @@
     }
   });
 
-  // En barebow, aucun libelle ne doit laisser penser qu'un viseur est present.
-  function setLabelText(inputId, text) {
-    const input = document.getElementById(inputId);
-    const label = input?.closest("label");
-    if (!label) return;
-    const textNode = Array.from(label.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-    if (textNode) textNode.textContent = `\n                ${text}\n                `;
-  }
+  // En barebow, aucun libelle ne doit laisser penser qu'un viseur est necessaire.
+  const originalUpdateSightCopyForBowStyle = window.updateSightCopyForBowStyle;
+  window.updateSightCopyForBowStyle = function updateSightCopyForBowStyleFixed(style) {
+    originalUpdateSightCopyForBowStyle(style);
+    if (window.normalizeBowStyle(style) !== "barebow") return;
 
-  function fixBarebowCopy() {
-    const isBarebow = document.documentElement.dataset.bowStyle === "barebow";
     const sightForm = document.getElementById("sight-form");
-    const firstHeading = sightForm?.querySelector(".subcard h3");
-    if (firstHeading) firstHeading.textContent = isBarebow ? "Fiche barebow" : "Fiche viseur";
-
-    setLabelText("sightEquipment", isBarebow ? "Arc / materiel barebow" : "Viseur / arc");
-
-    const titleInput = document.getElementById("sightTitle");
-    if (titleInput) titleInput.placeholder = isBarebow ? "Ex : barebow exterieur / salle" : "Ex : exterieur carbone / salle alu";
+    if (!sightForm) return;
+    const subcardTitle = sightForm.querySelector(".subcard h3");
+    if (subcardTitle) subcardTitle.textContent = "Fiche barebow";
 
     const equipmentInput = document.getElementById("sightEquipment");
-    if (equipmentInput) equipmentInput.placeholder = isBarebow ? "Ex : WNS / Hoyt / palette / prise 3-under" : "Ex : Shibuya / viseur club / WNS";
+    if (equipmentInput) {
+      const equipmentLabel = equipmentInput.closest("label");
+      if (equipmentLabel) {
+        const textNode = Array.from(equipmentLabel.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+        if (textNode) textNode.textContent = "\n                Arc / materiel barebow\n                ";
+      }
+      equipmentInput.placeholder = "Ex : WNS / Hoyt / palette / berger button";
+    }
 
-    const visual = document.getElementById("sightVisual");
-    if (visual) visual.setAttribute("aria-label", isBarebow ? "Representation des reperes barebow" : "Representation des reperes de viseur");
+    const notes = document.getElementById("sightNotes");
+    if (notes) notes.placeholder = "Ex : crawl 30 m, repere palette, prise de corde, sensations...";
+    const sightVisual = document.getElementById("sightVisual");
+    if (sightVisual) sightVisual.setAttribute("aria-label", "Representation des reperes barebow par distance");
+    const scaleSide = document.getElementById("scaleLabelSideSight");
+    if (scaleSide) scaleSide.setAttribute("aria-label", "Position des mesures de palette barebow");
+  };
+
+  // Installation PWA depuis Parametres.
+  // Neutralise l'ancien nettoyage du service worker puis enregistre le worker actuel.
+  localStorage.setItem("sw-cleanup-v1", "done");
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
   }
 
-  const bowStyleObserver = new MutationObserver((mutations) => {
-    if (mutations.some((mutation) => mutation.attributeName === "data-bow-style")) fixBarebowCopy();
+  let deferredInstallPrompt = null;
+  const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  function installAppSettingsControl() {
+    const settingsBody = document.querySelector(".app-settings-body");
+    if (!settingsBody || document.getElementById("installAppBtn")) return;
+
+    const block = document.createElement("div");
+    block.className = "app-install-setting";
+    block.style.marginTop = "0.9rem";
+    block.style.paddingTop = "0.9rem";
+    block.style.borderTop = "1px solid rgba(0,0,0,.12)";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.id = "installAppBtn";
+    button.textContent = isStandalone() ? "Application installee" : "Installer l'application";
+    button.disabled = isStandalone();
+
+    const status = document.createElement("p");
+    status.id = "installAppStatus";
+    status.style.margin = "0.5rem 0 0";
+    status.style.fontSize = "0.9em";
+    status.textContent = isStandalone()
+      ? "L'application est deja installee sur ce telephone."
+      : "Ajoute Assistant Archer comme une application sur le telephone.";
+
+    button.addEventListener("click", async () => {
+      if (isStandalone()) return;
+
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        status.textContent = choice.outcome === "accepted"
+          ? "Installation lancee. L'icone Assistant Archer va apparaitre sur le telephone."
+          : "Installation annulee.";
+        return;
+      }
+
+      if (isIOS()) {
+        status.textContent = "Sur iPhone/iPad : ouvrez dans Safari, touchez Partager, puis Ajouter a l'ecran d'accueil.";
+      } else {
+        status.textContent = "Si le bouton d'installation du navigateur n'apparait pas encore : ouvrez le menu du navigateur puis choisissez Installer l'application ou Ajouter a l'ecran d'accueil.";
+      }
+    });
+
+    block.append(button, status);
+    settingsBody.appendChild(block);
+  }
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    const status = document.getElementById("installAppStatus");
+    if (status) status.textContent = "Pret a installer : touchez Installer l'application.";
   });
-  bowStyleObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-bow-style"] });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    const button = document.getElementById("installAppBtn");
+    const status = document.getElementById("installAppStatus");
+    if (button) {
+      button.textContent = "Application installee";
+      button.disabled = true;
+    }
+    if (status) status.textContent = "Assistant Archer est installe sur ce telephone.";
+  });
+
+  installAppSettingsControl();
 
   queueMicrotask(() => {
     try {
       window.applyBowStyle(window.currentBowStyle());
-      fixBarebowCopy();
     } catch {
       // Aucun blocage de l'app si le DOM n'est pas encore pret pour une raison externe.
     }
