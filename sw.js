@@ -1,4 +1,4 @@
-const CACHE_NAME = "choix-fleches-v8";
+const CACHE_NAME = "choix-fleches-v9";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const ASSETS = [
   "./app.js",
   "./audit-fixes.js",
   "./barebow-guidance.js",
+  "./ui-refactor.js",
   "./manifest.webmanifest",
   "./icon.svg",
   "./404.html"
@@ -34,6 +35,7 @@ self.addEventListener("fetch", (event) => {
     url.pathname.endsWith("/app.js") ||
     url.pathname.endsWith("/audit-fixes.js") ||
     url.pathname.endsWith("/barebow-guidance.js") ||
+    url.pathname.endsWith("/ui-refactor.js") ||
     url.pathname.endsWith("/styles.css") ||
     url.pathname.endsWith("/manifest.webmanifest") ||
     url.pathname.endsWith("/icon.svg");
