@@ -1,4 +1,4 @@
-const CACHE_NAME = "choix-fleches-v10";
+const CACHE_NAME = "choix-fleches-v11";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,7 +8,7 @@ const ASSETS = [
   "./barebow-guidance.js",
   "./ui-refactor.js",
   "./manifest.webmanifest",
-  "./icon.svg",
+  "./icon-assistant-archer-v11.svg",
   "./404.html"
 ];
 
@@ -38,7 +38,7 @@ self.addEventListener("fetch", (event) => {
     url.pathname.endsWith("/ui-refactor.js") ||
     url.pathname.endsWith("/styles.css") ||
     url.pathname.endsWith("/manifest.webmanifest") ||
-    url.pathname.endsWith("/icon.svg");
+    url.pathname.endsWith("/icon-assistant-archer-v11.svg");
 
   if (isAppAsset) {
     event.respondWith(
