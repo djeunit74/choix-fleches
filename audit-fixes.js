@@ -48,7 +48,6 @@
     return rangeError || originalCarbonExpressRecommendation(input);
   };
 
-  // Classique : +2 a +6 mm est une plage, pas une cible unique.
   window.computeArcSetup = function computeArcSetupFixed(input) {
     const setup = originalComputeArcSetup(input);
     const minTiller = 2;
@@ -85,7 +84,6 @@
     return result;
   };
 
-  // Barebow : tiller faible/proche de zero, mais zero n'est pas une cible absolue.
   window.renderBarebowArcSetup = function renderBarebowArcSetupFixed(input) {
     const classicalBuilder = window.computeArcSetup;
     window.computeArcSetup = function barebowComputeArcSetup(barebowInput) {
@@ -129,7 +127,6 @@
     }
   };
 
-  // Aucun vocabulaire de viseur en mode barebow.
   window.updateSightCopyForBowStyle = function updateSightCopyForBowStyleFixed(style) {
     originalUpdateSightCopyForBowStyle(style);
     if (window.normalizeBowStyle(style) !== "barebow") return;
@@ -150,7 +147,6 @@
     document.getElementById("scaleLabelSideSight")?.setAttribute("aria-label", "Position des mesures de palette barebow");
   };
 
-  // Installation PWA depuis Parametres.
   localStorage.setItem("sw-cleanup-v1", "done");
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
@@ -204,11 +200,17 @@
   });
   installAppSettingsControl();
 
-  // Charge le module de procedure barebow optimise sans modifier index.html.
   if (!document.querySelector('script[data-barebow-guidance]')) {
     const script = document.createElement("script");
     script.src = "barebow-guidance.js?v=20260810b";
     script.dataset.barebowGuidance = "true";
+    document.head.appendChild(script);
+  }
+
+  if (!document.querySelector('script[data-ui-refactor]')) {
+    const script = document.createElement("script");
+    script.src = "ui-refactor.js?v=20260810a";
+    script.dataset.uiRefactor = "true";
     document.head.appendChild(script);
   }
 
