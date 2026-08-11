@@ -1,0 +1,51 @@
+name: Publier dev vers public
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-public
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer la version publique
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+          fetch-depth: 0
+
+      - name: Recuperer la version dev validee
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: devsrc
+          fetch-depth: 1
+
+      - name: Copier dev vers la racine publique
+        run: |
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'test' \
+            --exclude 'test.html' \
+            devsrc/ site/
+
+      - name: Publier sur main
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "La version publique est deja a jour"
+            exit 0
+          fi
+          git commit -m "Publie la version dev validee"
+          git push origin main
