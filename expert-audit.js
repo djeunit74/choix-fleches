@@ -18,19 +18,13 @@
     const lengthLabel=document.getElementById('arrowLengthLabel');
     if(weightLabel && !document.getElementById('drawWeightHelp')){
       const d=document.createElement('details'); d.id='drawWeightHelp'; d.className='measurement-inline-help';
-      d.innerHTML='<summary>Comment mesurer la puissance ?</summary><p><strong>Avec un peson adapte au tir a l arc</strong>, armez progressivement jusqu a votre ancrage habituel, sans tirer la corde a vide. Relevez la puissance a votre allonge normale. Faites idealement 2 ou 3 mesures dans les memes conditions. Si vous debutez, faites-vous aider par un entraineur ou un archer experimente.</p><p><strong>Pour le choix de fleche, utilisez cette puissance mesuree</strong> plutot que seulement la valeur inscrite sur les branches.</p>';
+      d.innerHTML='<summary>Comment mesurer la puissance ?</summary><p><strong>Avec un peson adapte au tir a l arc</strong>, armez progressivement jusqu a votre ancrage habituel. Relevez la puissance a votre allonge normale et faites idealement 2 ou 3 mesures dans les memes conditions. Si vous debutez, faites-vous aider au club.</p><p>Pour le choix de fleche, utilisez cette <strong>puissance reellement mesuree</strong> plutot que seulement la valeur inscrite sur les branches.</p>';
       weightLabel.insertAdjacentElement('afterend',d);
     }
     if(lengthLabel && !document.getElementById('arrowLengthHelp')){
       const d=document.createElement('details'); d.id='arrowLengthHelp'; d.className='measurement-inline-help';
-      d.innerHTML='<summary>Comment mesurer la longueur de fleche ?</summary><p>Ici, l application attend la <strong>longueur du tube/fleche utilisee pour le tableau de selection</strong>, mesuree de la gorge de l encoche jusqu a l extremite du tube, sans compter la pointe. Ne confondez pas cette valeur avec votre allonge personnelle.</p><p>Si vous ne connaissez pas encore votre longueur de fleche definitive, faites-la determiner au club avant de couper un tube : une fleche trop courte peut etre dangereuse.</p>';
+      d.innerHTML='<summary>Comment mesurer la longueur de fleche ?</summary><p>L application attend la longueur utilisee pour le tableau de selection : mesurez de la <strong>gorge de l encoche jusqu a l extremite du tube</strong>, sans compter la pointe. Ne confondez pas cette valeur avec votre allonge personnelle.</p><p>Si votre longueur definitive n est pas connue, faites-la determiner au club avant de couper un tube : une fleche trop courte peut etre dangereuse.</p>';
       lengthLabel.insertAdjacentElement('afterend',d);
-    }
-    const drawLength=document.getElementById('drawLengthForWeight');
-    if(drawLength && !document.getElementById('drawLengthHelp')){
-      const label=drawLength.closest('label'); const d=document.createElement('details'); d.id='drawLengthHelp'; d.className='measurement-inline-help';
-      d.innerHTML='<summary>Comment mesurer l allonge ?</summary><p>Pour l estimation de puissance, utilisez de preference l <strong>allonge AMO</strong> : distance entre la gorge de l encoche et le point de pivot de la poignee, puis ajoutez 1,75 pouce. Le plus simple et le plus fiable est d utiliser une fleche de mesure au club, en armant normalement jusqu a votre ancrage.</p><p>Ne cherchez pas a gagner artificiellement de l allonge pendant la mesure : elle doit correspondre a votre position de tir habituelle.</p>';
-      label.insertAdjacentElement('afterend',d);
     }
   }
 
