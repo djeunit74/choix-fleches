@@ -1,0 +1,57 @@
+name: Publier la preversion dev
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dev-preview
+  cancel-in-progress: true
+
+jobs:
+  publish-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+          fetch-depth: 0
+
+      - name: Recuperer dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: devsrc
+          fetch-depth: 1
+
+      - name: Construire /test
+        run: |
+          rm -rf site/test
+          mkdir -p site/test
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'test' \
+            --exclude 'test.html' \
+            devsrc/ site/test/
+          printf '%s\n' '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=./test/"><title>Assistant Archer TEST</title><p><a href="./test/">Ouvrir la version test</a></p>' > site/test.html
+
+      - name: Publier la preversion dans main
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add test test.html
+          if git diff --cached --quiet; then
+            echo "Preversion deja a jour"
+            exit 0
+          fi
+          git commit -m "Met a jour la preversion dev"
+          git push origin main
