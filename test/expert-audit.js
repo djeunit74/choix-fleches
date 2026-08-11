@@ -13,6 +13,24 @@
     else panel.appendChild(details);
   }
 
+  function installPublishButton(){
+    const isTest = location.pathname.includes('/test/');
+    if(!isTest) return;
+    const body=document.querySelector('.app-settings-body');
+    if(!body || document.getElementById('publishPublicBtn')) return;
+    const block=document.createElement('div');
+    block.className='app-install-setting';
+    block.style.cssText='margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(0,0,0,.12)';
+    block.innerHTML='<p style="margin:0 0 .55rem"><strong>Version TEST</strong></p><p style="margin:.2rem 0 .65rem;font-size:.9em">Quand cette version te convient, publie-la manuellement sur la version publique.</p>';
+    const btn=document.createElement('button');
+    btn.type='button'; btn.id='publishPublicBtn'; btn.textContent='Publier sur public';
+    btn.onclick=()=>window.open('https://github.com/djeunit74/choix-fleches/actions/workflows/publish-public.yml','_blank','noopener');
+    const help=document.createElement('p');
+    help.style.cssText='margin:.5rem 0 0;font-size:.85em';
+    help.textContent='GitHub s ouvre : clique sur Run workflow pour confirmer la publication.';
+    block.append(btn,help); body.appendChild(block);
+  }
+
   function installAuditNotes() {
     addDetails('[data-panel="spine"]','expertArrowAudit','A retenir',`<p>Le <strong>spine propose est un point de depart</strong>. Confirmez votre choix avec le tableau du fabricant et, si possible, par un essai au tir.</p><hr><h3>Bien prendre les mesures</h3><p><strong>Puissance a l allonge</strong> : utilisez un peson adapte au tir a l arc. Armez normalement jusqu a votre ancrage habituel et relevez la puissance indiquee. Faites idealement 2 ou 3 mesures dans les memes conditions.</p><p><strong>Longueur de fleche</strong> : mesurez de la gorge de l encoche jusqu a l extremite du tube, sans compter la pointe.</p><p><strong>En cas de doute</strong>, faites verifier ces mesures au club avant de commander ou de couper des tubes.</p>`,'#result');
     addDetails('[data-panel="arc-setup"]','expertBaseAudit','Priorites de reglage',`<p><strong>Fabricant d abord</strong> pour les limites de reglage. Mesurez ensuite la puissance reelle et validez les reglages au tir.</p>`,'#arcSetupResult');
@@ -29,5 +47,5 @@
     addDetails('[data-panel="sight"]','expertSightAudit','Conseil pour les reperes',`<p>Les reperes de viseur ou de crawl sont des <strong>mesures personnelles</strong>. En barebow, notez aussi la palette, la prise de corde et toute modification de materiel.</p>`);
   }
   function harmonizeIdentity() { document.title='Assistant Archer'; const h1=document.querySelector('.hero h1'); if(h1)h1.textContent='Assistant Archer'; const meta=document.querySelector('meta[name="theme-color"]'); if(meta&&!document.documentElement.dataset.theme)meta.setAttribute('content','#102b4e'); }
-  setTimeout(() => { harmonizeIdentity(); installAuditNotes(); }, 250);
+  setTimeout(() => { harmonizeIdentity(); installAuditNotes(); installPublishButton(); }, 250);
 })();
