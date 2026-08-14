@@ -1,18 +1,27 @@
-/* Guidance barebow : World Archery pour la discipline, Easton/fabricant pour le reglage, validation au tir. */
+/* Barebow : le formulaire de saisie est commun au classique ; seules les interpretations sont adaptees. */
 (() => {
-  const originalRenderBarebowArcSetup = window.renderBarebowArcSetup;
   const originalUpdateArcSetupCopyForBowStyle = window.updateArcSetupCopyForBowStyle;
-  function numberValue(id){const el=document.getElementById(id);if(!el||el.value==='')return null;const value=Number(String(el.value).replace(',','.'));return Number.isFinite(value)?value:null}
-  function ensureBarebowGuide(){const card=document.getElementById('barebowArcSetupCard');if(!card||document.getElementById('barebowTuningGuide'))return;const guide=document.createElement('div');guide.id='barebowTuningGuide';guide.className='measurement-guide';guide.innerHTML=`<h3>Methode</h3><ol class="measurement-list"><li><strong>Band</strong> : partez de la plage du fabricant, puis affinez au tir.</li><li><strong>Tiller</strong> : une valeur faible, souvent proche de 0 mm, constitue un point de depart pratique.</li><li><strong>Detalonnage</strong> : 5 a 6 mm peut servir de prereglage, a confirmer au fut nu.</li><li><strong>Centrage et berger</strong> : partez d un centrage coherent et d une tension moyenne.</li><li><strong>Validation</strong> : controlez plusieurs ecarts sous l encoche et gardez le meilleur compromis.</li></ol><p>Changez une seule variable a la fois et validez chaque correction au tir.</p>`;card.appendChild(guide)}
-  function renderMeasuredGuidance(){if(window.currentBowStyle?.()!=='barebow')return;ensureBarebowGuide();let box=document.getElementById('barebowMeasuredGuidance');const card=document.getElementById('barebowArcSetupCard');if(!card)return;if(!box){box=document.createElement('div');box.id='barebowMeasuredGuidance';box.className='measurement-guide';card.appendChild(box)}const band=numberValue('arcBbBandMeasured'),tiller=numberValue('arcBbTillerMeasured'),nocking=numberValue('arcBbNockingMeasured'),lines=[];
-    if(band===null)lines.push('Band : renseignez la mesure et comparez-la a la plage du fabricant.');else lines.push(`Band : ${band.toFixed(1)} cm. Conservez cette valeur si elle reste dans la plage constructeur et donne un comportement propre.`);
-    if(tiller===null)lines.push('Tiller : mesurez-le avant toute correction.');else if(Math.abs(tiller)<=2)lines.push(`Tiller : ${tiller.toFixed(1)} mm. Base coherente si l arc reste stable sur plusieurs ecarts sous l encoche.`);else lines.push(`Tiller : ${tiller.toFixed(1)} mm. Verifiez le comportement au tir avant de corriger.`);
-    if(nocking===null)lines.push('Detalonnage : 5-6 mm peut servir de point de depart.');else if(nocking>=5&&nocking<=6)lines.push(`Detalonnage : ${nocking.toFixed(1)} mm. Passez au test dynamique pour confirmer.`);else lines.push(`Detalonnage : ${nocking.toFixed(1)} mm. Conservez-le si le test au tir est meilleur et reproductible.`);
-    box.innerHTML=`<h3>Lecture des mesures</h3><ul class="measurement-list">${lines.map(line=>`<li>${line}</li>`).join('')}</ul><p><strong>Suite :</strong> centrage, berger, controle des contacts, puis test fut nu.</p>`}
-  window.renderBarebowArcSetup=function(input){const result=originalRenderBarebowArcSetup(input);renderMeasuredGuidance();return result};
-  window.updateArcSetupCopyForBowStyle=function(style){originalUpdateArcSetupCopyForBowStyle(style);if(window.normalizeBowStyle(style)!=='barebow')return;ensureBarebowGuide();const ref=document.getElementById('arcSetupDocRef');if(ref)ref.innerHTML='Sources : <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> · <a href="https://eastonarchery.com/2019/10/technical-guide-to-setting-up-the-easton-rx-7-arrow-shaft/" target="_blank" rel="noopener noreferrer">Easton - procedure de tuning</a>.';renderMeasuredGuidance()};
-  ['arcBbBandMeasured','arcBbTillerMeasured','arcBbNockingMeasured'].forEach(id=>document.getElementById(id)?.addEventListener('input',renderMeasuredGuidance));
-  queueMicrotask(()=>{ensureBarebowGuide();if(window.currentBowStyle?.()==='barebow')renderMeasuredGuidance()});
-  if(!document.querySelector('script[data-barebow-layout]')){const s=document.createElement('script');s.src='barebow-layout.js?v=20260814d';s.dataset.barebowLayout='true';document.head.appendChild(s)}
-  if(!document.querySelector('script[data-expert-audit]')){const s=document.createElement('script');s.src='expert-audit.js?v=20260810a';s.dataset.expertAudit='true';document.head.appendChild(s)}
+
+  window.updateArcSetupCopyForBowStyle=function(style){
+    originalUpdateArcSetupCopyForBowStyle(style);
+    if(window.normalizeBowStyle(style)!=='barebow')return;
+    const ref=document.getElementById('arcSetupDocRef');
+    if(ref)ref.innerHTML='Sources : <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> · <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery - Coaching Manual Level 2</a>.';
+  };
+
+  /* Charge la mise en page commune. Aucun champ barebow parallele n est cree ici. */
+  const old=document.getElementById('barebowArcSetupCard');
+  if(old)old.remove();
+  if(!document.querySelector('script[data-barebow-layout]')){
+    const s=document.createElement('script');
+    s.src='barebow-layout.js?v=20260814e';
+    s.dataset.barebowLayout='true';
+    document.head.appendChild(s);
+  }
+  if(!document.querySelector('script[data-expert-audit]')){
+    const s=document.createElement('script');
+    s.src='expert-audit.js?v=20260814b';
+    s.dataset.expertAudit='true';
+    document.head.appendChild(s);
+  }
 })();
