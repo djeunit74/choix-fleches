@@ -8,22 +8,36 @@
     const classic=classicSetupCard();
     const power=findPowerCard();
     const legacy=field('barebowArcSetupCard');
-    [classic,power].forEach(card=>{if(!card)return;card.classList.remove('arc-classic-only');card.hidden=false;card.removeAttribute('hidden');card.style.setProperty('display','block','important')});
-    if(legacy){legacy.hidden=true;legacy.setAttribute('hidden','');legacy.style.setProperty('display','none','important')}
+
+    [classic,power].forEach(card=>{
+      if(!card)return;
+      card.classList.remove('arc-classic-only');
+      card.hidden=false;
+      card.removeAttribute('hidden');
+      card.style.removeProperty('display');
+    });
+
+    /* L ancien formulaire barebow ne doit plus pouvoir reprendre la main. */
+    if(legacy?.isConnected) legacy.remove();
+
     if(!bare)return;
     const heading=field('arcSetupHeading');
     const intro=field('arcSetupIntro');
     if(heading)heading.textContent='Reglage de base';
-    if(intro)intro.textContent='Renseignez les mesures principales de l arc, puis lancez le calcul. Les resultats sont interpretes pour le barebow.';
+    if(intro)intro.textContent='Renseignez les mesures de l arc puis lancez le calcul. L interpretation est adaptee au barebow.';
+
     const p=classic?.querySelector('p');
-    if(p)p.innerHTML='Le <strong>band</strong> depend surtout de la taille d arc. Le tiller se calcule avec les deux distances corde / branches. En barebow, partez d un tiller faible puis affinez au tir.';
+    if(p)p.innerHTML='Le <strong>band</strong> depend surtout de la taille d arc. Le <strong>tiller</strong> se calcule avec les deux distances corde / branches. Une valeur faible sert de point de depart, puis le reglage se valide au tir.';
+
     const pp=power?.querySelector('p');
-    if(pp)pp.innerHTML='La puissance tiree estimee utilise la <strong>taille de poignee</strong>, la <strong>puissance marquee des branches</strong> et l <strong>allonge reelle</strong>.';
+    if(pp)pp.innerHTML='Le calcul utilise la <strong>taille de poignee</strong>, la <strong>puissance marquee des branches</strong> et l <strong>allonge reelle</strong> pour estimer la puissance tiree.';
   }
-  const observer=new MutationObserver(()=>forceSharedLayout());
-  const panel=document.querySelector('[data-panel="arc-setup"]');
-  if(panel)observer.observe(panel,{attributes:true,subtree:true,attributeFilter:['hidden','class','style']});
-  field('bowStyle')?.addEventListener('change',()=>{forceSharedLayout();requestAnimationFrame(forceSharedLayout);setTimeout(forceSharedLayout,100)});
+
+  field('bowStyle')?.addEventListener('change',()=>{
+    forceSharedLayout();
+    requestAnimationFrame(forceSharedLayout);
+    setTimeout(forceSharedLayout,100);
+  });
   document.addEventListener('click',e=>{if(e.target.closest('[data-tab="arc-setup"]'))setTimeout(forceSharedLayout,0)});
   forceSharedLayout();
   requestAnimationFrame(forceSharedLayout);
