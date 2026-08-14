@@ -13,6 +13,6 @@
   window.updateArcSetupCopyForBowStyle=function(style){originalUpdateArcSetupCopyForBowStyle(style);if(window.normalizeBowStyle(style)!=='barebow')return;ensureBarebowGuide();const ref=document.getElementById('arcSetupDocRef');if(ref)ref.innerHTML='Sources : <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> · <a href="https://eastonarchery.com/2019/10/technical-guide-to-setting-up-the-easton-rx-7-arrow-shaft/" target="_blank" rel="noopener noreferrer">Easton - procedure de tuning</a>.';renderMeasuredGuidance()};
   ['arcBbBandMeasured','arcBbTillerMeasured','arcBbNockingMeasured'].forEach(id=>document.getElementById(id)?.addEventListener('input',renderMeasuredGuidance));
   queueMicrotask(()=>{ensureBarebowGuide();if(window.currentBowStyle?.()==='barebow')renderMeasuredGuidance()});
-  if(!document.querySelector('script[data-barebow-layout]')){const s=document.createElement('script');s.src='barebow-layout.js?v=20260814b';s.dataset.barebowLayout='true';document.head.appendChild(s)}
+  if(!document.querySelector('script[data-barebow-layout]')){const s=document.createElement('script');s.src='barebow-layout.js?v=20260814d';s.dataset.barebowLayout='true';document.head.appendChild(s)}
   if(!document.querySelector('script[data-expert-audit]')){const s=document.createElement('script');s.src='expert-audit.js?v=20260810a';s.dataset.expertAudit='true';document.head.appendChild(s)}
 })();
