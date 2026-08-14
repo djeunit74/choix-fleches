@@ -24,4 +24,10 @@
     s.dataset.expertAudit='true';
     document.head.appendChild(s);
   }
+  if(!document.querySelector('script[data-merchant-fix]')){
+    const s=document.createElement('script');
+    s.src='merchant-fix.js?v=20260814a';
+    s.dataset.merchantFix='true';
+    document.head.appendChild(s);
+  }
 })();
