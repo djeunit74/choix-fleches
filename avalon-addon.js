@@ -59,6 +59,16 @@
         if(panel){const d=document.createElement('details');d.id='avalonSourceNote';d.className='card notes expert-audit-note';d.innerHTML=`<summary>Source Avalon</summary><p>L app utilise le tableau Avalon / ArrowSelector 2016 pour les groupes A1 a A18, puis ne conserve que les Tyro / Classic encore presents dans la gamme actuelle.</p><p><a href="${AVALON_2016}" target="_blank" rel="noopener noreferrer">Tableau Avalon 2016</a> · <a href="${AVALON_CURRENT}" target="_blank" rel="noopener noreferrer">Gamme actuelle Avalon</a></p><p>Le spine 2000 actuel n est pas extrapole automatiquement.</p>`;panel.appendChild(d);}}
     }catch(e){console.warn('Avalon non charge',e);}
   }
-  setTimeout(install,1200);
-  setTimeout(install,3000);
+  function installArcEmptyState(){
+    const form=document.getElementById('arc-setup-form'),upper=document.getElementById('upperTiller'),lower=document.getElementById('lowerTillerMeasured'),result=document.getElementById('arcSetupResult');
+    if(!form||!upper||!lower||!result||form.dataset.emptyStateGuard)return;
+    form.dataset.emptyStateGuard='1';
+    const hasMeasurements=()=>Boolean(upper.value.trim()&&lower.value.trim());
+    const reset=()=>{result.innerHTML='<h2>Reglage de l\'arc</h2><p>Renseignez vos mesures puis lancez le calcul.</p>';};
+    if(!hasMeasurements())reset();
+    form.addEventListener('submit',event=>{if(hasMeasurements())return;event.preventDefault();event.stopImmediatePropagation();reset();},true);
+    [upper,lower].forEach(input=>input.addEventListener('input',()=>{if(!hasMeasurements())reset();}));
+  }
+  setTimeout(()=>{install();installArcEmptyState();},1200);
+  setTimeout(()=>{install();installArcEmptyState();},3000);
 })();
