@@ -1,17 +1,390 @@
 {
-  "updatedAt": "2026-08-14T00:00:00Z",
-  "source": "remote-csv-sync+avalon",
+  "updatedAt": "2026-08-11T05:29:48.408Z",
+  "source": "remote-csv-sync",
   "deals": [
-    {"brand":"avalon","modelKey":"avalon tyro 600","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 700","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 800","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 900","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 1000","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 1100","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 1300","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 1500","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon tyro 1800","material":"carbon","bowTypes":["recurve"],"tier":"eco","title":"Lot de 12 tubes Avalon Tyro 4,2 mm en carbone","price":"32,95 EUR","url":"https://www.archerie.fr/fr/4632-lot-de-12-tubes-avalon-tyro-42mm-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon classic 500","material":"carbon","bowTypes":["recurve"],"tier":"mid","title":"Lot de 12 flèches Avalon Classic 4.2 en carbone","price":"52,95 EUR","url":"https://www.archerie.fr/fr/4634-lot-de-12-fleches-avalon-classic-42-en-carbone.html","shop":"archerie.fr"},
-    {"brand":"avalon","modelKey":"avalon classic 600","material":"carbon","bowTypes":["recurve"],"tier":"mid","title":"Lot de 12 flèches Avalon Classic 4.2 en carbone","price":"52,95 EUR","url":"https://www.archerie.fr/fr/4634-lot-de-12-fleches-avalon-classic-42-en-carbone.html","shop":"archerie.fr"}
+    {
+      "brand": "skylon",
+      "modelKey": "brixxon",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "eco",
+      "title": "Skylon Brixxon carbone 4,2 lot de 12 tubes",
+      "price": "67,50 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "paragon",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Skylon Paragon lot de 12 tubes",
+      "price": "144,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "premiens",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Skylon Preminens lot de 12 tubes",
+      "price": "179,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/2689-skylon-preminens-lot-de-12-tubes.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "avance",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Easton Avance tube carbone competition",
+      "price": "13,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/easton-avance-tube-carbone-competition",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "avance",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Easton Tube Avance",
+      "price": "12,90 EUR",
+      "url": "https://www.heraclesarcherie.fr/tubes-carbone/easton-tube-avance-detail",
+      "shop": "heraclesarcherie.fr"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "avance",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Tubes Easton Avance Sport 4mm en carbone",
+      "price": "103,95 EUR",
+      "url": "https://www.archerie.fr/fr/4838-tubes-easton-avance-sport-4mm-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "x7",
+      "material": "alu",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "mid",
+      "title": "Easton X7 lot de 12 tubes",
+      "price": "139,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "x23",
+      "material": "alu",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Easton X23 tube aluminium",
+      "price": "12,50 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/easton-x23-tube-aluminium",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "rx7",
+      "material": "alu",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Easton RX7 douzaine de tubes aluminium",
+      "price": "169,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/easton-rx7-tube-aluminium",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap target",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "premium",
+      "title": "Victory VAP Target V1 lot de 12 tubes",
+      "price": "170,94 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/2143-443507-victory-vap-target-v1-lot-de-12-tubes.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap target",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "premium",
+      "title": "Victory VAP Target V1 unite",
+      "price": "15,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/victory-vap-target-v1-2017-unit2",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap target",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "premium",
+      "title": "Tube VAP Target Elite Victory",
+      "price": "259,90 EUR",
+      "url": "https://www.archerie.fr/fr/2375-tube-vap-target-elite-victory.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "v-tac 23 elite",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Victory V-TAC 23 Elite lot de 12 tubes",
+      "price": "169,90 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/victory-v-tac-23-elite-lot-de-12-tubes",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap gamer v3",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Victory VAP Gamer V3 tube carbone",
+      "price": "12,70 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/3949-victory-vap-gamer-v3-tube-carbone.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vft gamer v3",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "eco",
+      "title": "Victory VFT Gamer V3 Target tube carbone",
+      "price": "9,50 EUR",
+      "url": "https://www.erhart-sports.com/tubes-nus/3953-victory-vft-target-tube-carbone.html",
+      "shop": "erhart-sports.com"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "predator ii",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "eco",
+      "title": "Carbon Express Predator II",
+      "price": "47,94 EUR",
+      "url": "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "radius",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "eco",
+      "title": "Lot de 12 fleches Skylon Radius 4,2 mm en carbone",
+      "price": "55,95 EUR",
+      "url": "https://www.archerie.fr/fr/4766-lot-de-12-fleches-skylon-radius-42-mm-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "radius",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "eco",
+      "title": "Lot de 12 tubes Skylon Radius ID4.2 en carbone",
+      "price": "39,95 EUR",
+      "url": "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "superdrive micro",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Lot de 12 tubes Easton Superdrive Micro en carbone",
+      "price": "228,95 EUR",
+      "url": "https://www.archerie.fr/fr/8503-lot-de-12-tubes-easton-superdrive-micro-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "vector",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Lot de 12 tubes Easton Vector 4 mm en carbone",
+      "price": "53,95 EUR",
+      "url": "https://www.archerie.fr/fr/9000-lot-de-12-tubes-easton-vector-4-mm-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "easton",
+      "modelKey": "xx75 platinum plus",
+      "material": "alu",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "mid",
+      "title": "Tube XX75 Platinum Plus Easton",
+      "price": "92,95 EUR",
+      "url": "https://www.archerie.fr/fr/2004-tube-xx75-platinum-plus-easton.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vforce",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "mid",
+      "title": "Tube Victory Vforce 245 V6 Sport",
+      "price": "109,90 EUR",
+      "url": "https://www.archerie.fr/fr/2325-tube-victory-vforce-245-v6-sport.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "victory",
+      "modelKey": "vap target",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve",
+        "compound"
+      ],
+      "tier": "premium",
+      "title": "Tube Victory VAP Target Sport",
+      "price": "189,90 EUR",
+      "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "medallion xr",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Tube Medallion-XR (2016) Carbon Express",
+      "price": "69,95 EUR",
+      "url": "https://www.archerie.fr/fr/2343-tube-medallion-xr-2016-carbon-express.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "brixxon",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "eco",
+      "title": "Lot de 12 tubes Skylon Brixxon ID4.2 en carbone",
+      "price": "59,95 EUR",
+      "url": "https://www.archerie.fr/fr/4612-lot-de-12-tubes-skylon-brixxon-id42-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "paragon",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Lot de 12 tubes Skylon Paragon ID3.2 en carbone",
+      "price": "129,95 EUR",
+      "url": "https://www.archerie.fr/fr/4616-lot-de-12-tubes-skylon-paragon-id32-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "precium",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Lot de 12 tubes Skylon Precium ID3.2 en carbone",
+      "price": "119,95 EUR",
+      "url": "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "skylon",
+      "modelKey": "performa",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "mid",
+      "title": "Lot de 12 tubes Skylon Performa ID3.2 en carbone",
+      "price": "71,36 EUR",
+      "url": "https://www.archerie.fr/fr/4614-lot-de-12-tubes-skylon-performa-id32-en-carbone.html",
+      "shop": "archerie.fr"
+    },
+    {
+      "brand": "carbon",
+      "modelKey": "nano sst",
+      "material": "carbon",
+      "bowTypes": [
+        "recurve"
+      ],
+      "tier": "premium",
+      "title": "Tube Nano-SST Carbon Express",
+      "price": "323,95 EUR",
+      "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
+      "shop": "archerie.fr"
+    }
   ]
 }
