@@ -1,4 +1,4 @@
-/* Barebow : presentation, sources officielles et interpretation prudente. Le formulaire de base reste commun au classique. */
+/* Arc nu : presentation, sources officielles et interpretation prudente. Le formulaire de base reste commun au classique. */
 (() => {
   function field(id){ return document.getElementById(id); }
   function setupCard(){ return field('upperTiller')?.closest('.subcard') || null; }
@@ -20,9 +20,9 @@
     const equipment=field('sightEquipment');
     const notes=field('sightNotes');
     if(isBarebow){
-      if(title)title.textContent='Fiche barebow';
-      if(equipment){setLabelText(equipment,'Arc / materiel barebow');equipment.placeholder='Ex : WNS / Hoyt / palette / berger button';}
-      if(notes)notes.placeholder='Ex : crawl 30 m, repere palette, prise de corde, sensations...';
+      if(title)title.textContent='Fiche arc nu';
+      if(equipment){setLabelText(equipment,'Arc / materiel arc nu');equipment.placeholder='Ex : WNS / Hoyt / palette / Berger Button';}
+      if(notes)notes.placeholder='Ex : repere de prise de corde a 30 m, repere palette, ancrage, sensations...';
     }else{
       if(title)title.textContent='Fiche viseur';
       if(equipment){setLabelText(equipment,'Viseur / arc');equipment.placeholder='Ex : Shibuya / viseur club / WNS';}
@@ -50,12 +50,12 @@
     const heading=field('arcSetupHeading');
     const intro=field('arcSetupIntro');
     const ref=field('arcSetupDocRef');
-    if(heading)heading.textContent='Reglage de base barebow';
-    if(intro)intro.textContent="Reglez d'abord une base mecanique reproductible. Les valeurs de depart doivent ensuite etre validees au tir, notamment avec le stringwalking.";
-    if(ref)ref.innerHTML='<strong>References officielles :</strong> <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> pour le materiel et la technique barebow ; <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery Coaching Manual Level 2</a> pour le reglage et l affinage. Les valeurs numeriques affichees par l app sont des bases de travail, pas des prescriptions World Archery.';
+    if(heading)heading.textContent='Reglage de base - arc nu';
+    if(intro)intro.textContent="Reglez d'abord une base mecanique reproductible. Les valeurs de depart doivent ensuite etre validees au tir, notamment avec le deplacement des doigts sur la corde.";
+    if(ref)ref.innerHTML='<strong>References officielles :</strong> <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> pour le materiel et la technique ; <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery Coaching Manual Level 2</a> pour le reglage et l affinage. Les valeurs numeriques affichees par l app sont des bases de travail, pas des prescriptions World Archery.';
 
     const setupIntro=setup?.querySelector('p');
-    if(setupIntro)setupIntro.innerHTML='<strong>Base mecanique</strong> : band, tiller et detalonnage. Le but est d obtenir un point de depart stable avant les tests au tir. En barebow, le stringwalking modifie les contraintes sur l arc selon le crawl : validez donc le comportement a plusieurs distances.';
+    if(setupIntro)setupIntro.innerHTML='<strong>Base mecanique</strong> : band, tiller et detalonnage. Le but est d obtenir un point de depart stable avant les tests au tir. En arc nu, le deplacement des doigts sur la corde modifie les contraintes selon le repere de prise de corde : validez donc le comportement a plusieurs distances.';
     const powerIntro=power?.querySelector('p');
     if(powerIntro)powerIntro.innerHTML='<strong>Puissance tiree</strong> : estimation a partir de la poignee, de la puissance marquee des branches et de l allonge reelle. Une allonge constante est essentielle pour conserver une force et un comportement de fleche reproductibles.';
   }
@@ -89,7 +89,6 @@
     if(field('bowStyle')?.value!=='barebow')return;
     const result=field('arcSetupResult');
     if(!result)return;
-    /* Ne jamais transformer une donnee absente en mesure utilisateur. */
     result.querySelectorAll('p,li').forEach(node=>{
       const text=node.textContent.toLowerCase();
       if(text.includes('non renseigne')||text.includes('non renseigné'))node.remove();
@@ -98,12 +97,12 @@
     const section=document.createElement('section');
     section.className='subcard';section.dataset.barebowMethod='1';
     section.innerHTML=`
-      <h3>Methode de reglage barebow</h3>
+      <h3>Methode de reglage - arc nu</h3>
       <p><strong>1. Base mecanique</strong> : stabilisez band, tiller et detalonnage avant de chercher un affinage fin.</p>
-      <p><strong>2. Technique reproductible</strong> : gardez une allonge et un ancrage constants. World Archery souligne que la regularite de l allonge est essentielle en barebow.</p>
-      <p><strong>3. Stringwalking</strong> : controlez le comportement sur plusieurs crawls/distances ; la position des doigts change les contraintes appliquees a la corde et au repose-fleche.</p>
-      <p><strong>4. Reglage dynamique</strong> : affinez ensuite centrage, berger button et comportement de la fleche au tir. Le Coaching Manual indique que le pressure button se regle selon les memes principes de base qu en recurve.</p>
-      <p><small><strong>Important :</strong> l app distingue les regles World Archery des valeurs de depart de tuning. Les recommandations numeriques restent des points de depart a confirmer au tir, avec un entraineur si possible.</small></p>`;
+      <p><strong>2. Technique reproductible</strong> : gardez une allonge et un ancrage constants. World Archery souligne que la regularite de l allonge est essentielle en arc nu.</p>
+      <p><strong>3. Deplacement des doigts sur la corde</strong> : controlez le comportement a plusieurs distances et avec plusieurs reperes de prise de corde. Cette technique est aussi appelee <em>string-walking</em> dans les documents internationaux.</p>
+      <p><strong>4. Reglage dynamique</strong> : affinez ensuite le centrage, le Berger Button et le comportement de la fleche au tir. Le bouton compensateur agit sur le comportement horizontal de la fleche lors de sa sortie de l arc.</p>
+      <p><small><strong>Important :</strong> l app distingue les regles World Archery des valeurs de depart de reglage. Les recommandations numeriques restent des points de depart a confirmer au tir, avec un entraineur si possible.</small></p>`;
     result.appendChild(section);
   }
 
