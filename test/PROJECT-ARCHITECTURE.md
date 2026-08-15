@@ -51,6 +51,7 @@ En barebow, l'onglet doit afficher `Repere palette`. En classique, il doit affic
 ### PWA / premiere utilisation
 - Installation de base : `audit-fixes.js`
 - Tutoriel et mise a jour : `onboarding.js`
+- Cache courant de la version TEST : `choix-fleches-v16` dans `sw.js`
 
 ## Regles avant modification
 
@@ -70,5 +71,9 @@ Avant chaque changement :
 `point-guidance.js` a ete supprime : son petit role d'affichage a ete absorbe dans `audit-fixes.js` afin de reduire le nombre de scripts charges.
 
 `merchant-fix.js` a ete supprime : son fallback a ete absorbe dans `audit-fixes.js`. Le rendu marchand principal reste dans `app.js`.
+
+`arc-empty-state.js` a ete supprime : il n'etait plus charge par `/test/` et son ancien garde de formulaire faisait doublon avec la logique actuelle d'etat vide.
+
+Le fichier vide accidentel `c` a egalement ete supprime.
 
 Les prochains nettoyages devront progressivement reduire le contenu de `audit-fixes.js` en reintegrant ses ajustements stables dans `app.js`, sans changer le comportement fonctionnel pendant cette phase.
