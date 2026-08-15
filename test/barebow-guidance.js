@@ -1,33 +1,49 @@
-/* Barebow : le formulaire de saisie est commun au classique ; seules les interpretations sont adaptees. */
+/* Barebow : mise en page commune au classique. Ce module ne gere que l'affichage barebow. */
 (() => {
-  const originalUpdateArcSetupCopyForBowStyle = window.updateArcSetupCopyForBowStyle;
+  function field(id){ return document.getElementById(id); }
+  function setupCard(){ return field('upperTiller')?.closest('.subcard') || null; }
+  function powerCard(){ return field('riserLength')?.closest('.subcard') || null; }
 
-  window.updateArcSetupCopyForBowStyle=function(style){
-    originalUpdateArcSetupCopyForBowStyle(style);
-    if(window.normalizeBowStyle(style)!=='barebow')return;
-    const ref=document.getElementById('arcSetupDocRef');
-    if(ref)ref.innerHTML='Sources : <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> · <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery - Coaching Manual Level 2</a>.';
-  };
+  function applyBarebowLayout(){
+    const isBarebow = field('bowStyle')?.value === 'barebow';
+    const setup = setupCard();
+    const power = powerCard();
+    const legacy = field('barebowArcSetupCard');
 
-  /* Charge la mise en page commune. Aucun champ barebow parallele n est cree ici. */
-  const old=document.getElementById('barebowArcSetupCard');
-  if(old)old.remove();
-  if(!document.querySelector('script[data-barebow-layout]')){
-    const s=document.createElement('script');
-    s.src='barebow-layout.js?v=20260814e';
-    s.dataset.barebowLayout='true';
-    document.head.appendChild(s);
+    /* Un seul formulaire de saisie pour classique et barebow. */
+    [setup, power].forEach((card) => {
+      if (!card) return;
+      card.classList.remove('arc-classic-only');
+      card.hidden = false;
+      card.removeAttribute('hidden');
+      card.style.removeProperty('display');
+    });
+    if (legacy?.isConnected) legacy.remove();
+
+    if (!isBarebow) return;
+
+    const heading = field('arcSetupHeading');
+    const intro = field('arcSetupIntro');
+    const ref = field('arcSetupDocRef');
+    if (heading) heading.textContent = 'Reglage de base';
+    if (intro) intro.textContent = "Renseignez les mesures de l'arc puis lancez le calcul. L'interpretation est adaptee au barebow.";
+    if (ref) ref.innerHTML = 'Sources : <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> · <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery - Coaching Manual Level 2</a>.';
+
+    const setupIntro = setup?.querySelector('p');
+    if (setupIntro) setupIntro.innerHTML = 'Le <strong>band</strong> depend surtout de la taille d arc. Le <strong>tiller</strong> se calcule avec les deux distances corde / branches. Une valeur faible sert de point de depart, puis le reglage se valide au tir.';
+
+    const powerIntro = power?.querySelector('p');
+    if (powerIntro) powerIntro.innerHTML = 'Le calcul utilise la <strong>taille de poignee</strong>, la <strong>puissance marquee des branches</strong> et l <strong>allonge reelle</strong> pour estimer la puissance tiree.';
   }
-  if(!document.querySelector('script[data-expert-audit]')){
-    const s=document.createElement('script');
-    s.src='expert-audit.js?v=20260814b';
-    s.dataset.expertAudit='true';
-    document.head.appendChild(s);
-  }
-  if(!document.querySelector('script[data-merchant-fix]')){
-    const s=document.createElement('script');
-    s.src='merchant-fix.js?v=20260814a';
-    s.dataset.merchantFix='true';
-    document.head.appendChild(s);
-  }
+
+  field('bowStyle')?.addEventListener('change', () => {
+    applyBarebowLayout();
+    requestAnimationFrame(applyBarebowLayout);
+  });
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('[data-tab="arc-setup"]')) setTimeout(applyBarebowLayout, 0);
+  });
+
+  applyBarebowLayout();
+  requestAnimationFrame(applyBarebowLayout);
 })();
