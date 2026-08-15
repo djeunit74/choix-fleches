@@ -51,4 +51,5 @@
     }catch{}
   }
   setupUpdates();
+  if(!document.querySelector('script[data-point-guidance]')){const s=document.createElement('script');s.src='point-guidance.js?v=20260815a';s.dataset.pointGuidance='1';document.head.appendChild(s)}
 })();
