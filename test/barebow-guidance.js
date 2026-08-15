@@ -1,10 +1,10 @@
-/* Barebow : mise en page et textes specifiques. Le formulaire de reglage de base reste commun au classique. */
+/* Barebow : presentation, sources officielles et interpretation prudente. Le formulaire de base reste commun au classique. */
 (() => {
   function field(id){ return document.getElementById(id); }
   function setupCard(){ return field('upperTiller')?.closest('.subcard') || null; }
   function powerCard(){ return field('riserLength')?.closest('.subcard') || null; }
 
-  function setLabelText(input, text){
+  function setLabelText(input,text){
     const label=input?.closest('label');
     if(!label)return;
     const node=Array.from(label.childNodes).find(item=>item.nodeType===Node.TEXT_NODE&&item.textContent.trim());
@@ -35,7 +35,6 @@
     const setup=setupCard();
     const power=powerCard();
     const legacy=field('barebowArcSetupCard');
-
     applySightCopy(isBarebow);
 
     [setup,power].forEach(card=>{
@@ -46,21 +45,19 @@
       card.style.removeProperty('display');
     });
     if(legacy?.isConnected)legacy.remove();
-
     if(!isBarebow)return;
 
     const heading=field('arcSetupHeading');
     const intro=field('arcSetupIntro');
     const ref=field('arcSetupDocRef');
-    if(heading)heading.textContent='Reglage de base';
-    if(intro)intro.textContent="Renseignez les mesures de l'arc puis lancez le calcul. L'interpretation est adaptee au barebow.";
-    if(ref)ref.innerHTML='References barebow : <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> pour l equipement et le stringwalking, et <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery Coaching Manual Level 2</a> pour les principes de band, tiller, berger button, detalonnage et affinage au tir.';
+    if(heading)heading.textContent='Reglage de base barebow';
+    if(intro)intro.textContent="Reglez d'abord une base mecanique reproductible. Les valeurs de depart doivent ensuite etre validees au tir, notamment avec le stringwalking.";
+    if(ref)ref.innerHTML='<strong>References officielles :</strong> <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> pour le materiel et la technique barebow ; <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery Coaching Manual Level 2</a> pour le reglage et l affinage. Les valeurs numeriques affichees par l app sont des bases de travail, pas des prescriptions World Archery.';
 
     const setupIntro=setup?.querySelector('p');
-    if(setupIntro)setupIntro.innerHTML='Le <strong>band</strong> depend surtout de la taille d arc. Le <strong>tiller</strong> se calcule avec les deux distances corde / branches. Une valeur faible sert de point de depart, puis le reglage se valide au tir.';
-
+    if(setupIntro)setupIntro.innerHTML='<strong>Base mecanique</strong> : band, tiller et detalonnage. Le but est d obtenir un point de depart stable avant les tests au tir. En barebow, le stringwalking modifie les contraintes sur l arc selon le crawl : validez donc le comportement a plusieurs distances.';
     const powerIntro=power?.querySelector('p');
-    if(powerIntro)powerIntro.innerHTML='Le calcul utilise la <strong>taille de poignee</strong>, la <strong>puissance marquee des branches</strong> et l <strong>allonge reelle</strong> pour estimer la puissance tiree.';
+    if(powerIntro)powerIntro.innerHTML='<strong>Puissance tiree</strong> : estimation a partir de la poignee, de la puissance marquee des branches et de l allonge reelle. Une allonge constante est essentielle pour conserver une force et un comportement de fleche reproductibles.';
   }
 
   function syncBarebowMeasuredValues(){
@@ -79,36 +76,42 @@
     if(field('bowStyle')?.value!=='barebow')return;
     const result=field('arcSetupResult');
     if(!result||result.querySelector('[data-barebow-estimated-power]'))return;
-    const riser=Number(field('riserLength')?.value);
-    const limbs=Number(field('limbMarkedWeight')?.value);
-    const draw=Number(field('drawLengthForWeight')?.value);
+    const riser=Number(field('riserLength')?.value),limbs=Number(field('limbMarkedWeight')?.value),draw=Number(field('drawLengthForWeight')?.value);
     if(![riser,limbs,draw].every(Number.isFinite))return;
-    const riserAdjust=riser===23?2:riser===27?-2:0;
-    const drawAdjust=(draw-28)*2;
-    const estimated=Math.round((limbs+riserAdjust+drawAdjust)*10)/10;
+    const estimated=Math.round((limbs+(riser===23?2:riser===27?-2:0)+(draw-28)*2)*10)/10;
     const section=document.createElement('section');
-    section.className='subcard';
-    section.dataset.barebowEstimatedPower='1';
+    section.className='subcard';section.dataset.barebowEstimatedPower='1';
+    section.innerHTML=`<h3>Puissance tiree estimee</h3><p><strong>Estimation</strong> : ${estimated.toFixed(1)} lbs</p><p><strong>Donnees</strong> : poignee ${riser}\", branches ${limbs} lbs, allonge ${draw.toFixed(2)}\".</p><p><small>Estimation pratique : une mesure au peson reste la reference pour connaitre la puissance reelle a votre allonge.</small></p>`;
+    result.appendChild(section);
+  }
+
+  function professionalizeBarebowResult(){
+    if(field('bowStyle')?.value!=='barebow')return;
+    const result=field('arcSetupResult');
+    if(!result)return;
+    /* Ne jamais transformer une donnee absente en mesure utilisateur. */
+    result.querySelectorAll('p,li').forEach(node=>{
+      const text=node.textContent.toLowerCase();
+      if(text.includes('non renseigne')||text.includes('non renseigné'))node.remove();
+    });
+    if(result.querySelector('[data-barebow-method]'))return;
+    const section=document.createElement('section');
+    section.className='subcard';section.dataset.barebowMethod='1';
     section.innerHTML=`
-      <h3>Puissance tiree estimee</h3>
-      <p><strong>Puissance tiree estimee</strong> : ${estimated.toFixed(1)} lbs</p>
-      <p><strong>Base du calcul</strong> : poignee ${riser}\" + branches ${limbs} lbs + allonge ${draw.toFixed(2)}\".</p>
-      <p><strong>Note</strong> : le band et le tiller n entrent pas directement dans ce calcul. Une modification des vis de branches peut toutefois faire varier la puissance ressentie.</p>`;
+      <h3>Methode de reglage barebow</h3>
+      <p><strong>1. Base mecanique</strong> : stabilisez band, tiller et detalonnage avant de chercher un affinage fin.</p>
+      <p><strong>2. Technique reproductible</strong> : gardez une allonge et un ancrage constants. World Archery souligne que la regularite de l allonge est essentielle en barebow.</p>
+      <p><strong>3. Stringwalking</strong> : controlez le comportement sur plusieurs crawls/distances ; la position des doigts change les contraintes appliquees a la corde et au repose-fleche.</p>
+      <p><strong>4. Reglage dynamique</strong> : affinez ensuite centrage, berger button et comportement de la fleche au tir. Le Coaching Manual indique que le pressure button se regle selon les memes principes de base qu en recurve.</p>
+      <p><small><strong>Important :</strong> l app distingue les regles World Archery des valeurs de depart de tuning. Les recommandations numeriques restent des points de depart a confirmer au tir, avec un entraineur si possible.</small></p>`;
     result.appendChild(section);
   }
 
   field('arc-setup-form')?.addEventListener('submit',()=>{
     syncBarebowMeasuredValues();
-    setTimeout(ensureBarebowEstimatedPower,0);
+    setTimeout(()=>{ensureBarebowEstimatedPower();professionalizeBarebowResult();},0);
   },true);
-  field('bowStyle')?.addEventListener('change',()=>{
-    applyBarebowLayout();
-    requestAnimationFrame(applyBarebowLayout);
-  });
-  document.addEventListener('click',event=>{
-    if(event.target.closest('[data-tab="arc-setup"], [data-tab="sight"]'))setTimeout(applyBarebowLayout,0);
-  });
-
-  applyBarebowLayout();
-  requestAnimationFrame(applyBarebowLayout);
+  field('bowStyle')?.addEventListener('change',()=>{applyBarebowLayout();requestAnimationFrame(applyBarebowLayout);});
+  document.addEventListener('click',event=>{if(event.target.closest('[data-tab="arc-setup"], [data-tab="sight"]'))setTimeout(applyBarebowLayout,0);});
+  applyBarebowLayout();requestAnimationFrame(applyBarebowLayout);
 })();
