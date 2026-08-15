@@ -39,6 +39,20 @@
     if (powerIntro) powerIntro.innerHTML = 'Le calcul utilise la <strong>taille de poignee</strong>, la <strong>puissance marquee des branches</strong> et l <strong>allonge reelle</strong> pour estimer la puissance tiree.';
   }
 
+  /* Le formulaire barebow historique est masque, mais le moteur d'interpretation lit encore
+     ses champs internes. Avant le calcul, on les synchronise avec les mesures visibles.
+     Une mesure absente recoit "+" : parseLooseNumber la traite alors comme absente et non 0. */
+  function syncBarebowMeasuredValues(){
+    if (field('bowStyle')?.value !== 'barebow' || typeof els === 'undefined') return;
+    const brace = String(field('braceMeasured')?.value || '').trim();
+    const upper = Number(field('upperTiller')?.value);
+    const lower = Number(field('lowerTillerMeasured')?.value);
+    if (els.arcBbBandMeasured) els.arcBbBandMeasured.value = brace || '+';
+    if (els.arcBbTillerMeasured) els.arcBbTillerMeasured.value = Number.isFinite(upper) && Number.isFinite(lower) ? String(Math.round((upper - lower) * 10) / 10) : '+';
+    if (els.arcBbNockingMeasured && !String(els.arcBbNockingMeasured.value || '').trim()) els.arcBbNockingMeasured.value = '+';
+  }
+
+  field('arc-setup-form')?.addEventListener('submit', syncBarebowMeasuredValues, true);
   field('bowStyle')?.addEventListener('change', () => {
     applyBarebowLayout();
     requestAnimationFrame(applyBarebowLayout);
