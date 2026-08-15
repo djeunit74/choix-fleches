@@ -10,7 +10,7 @@ Une fonctionnalite ne doit avoir qu'un seul module responsable. Ne pas ajouter d
 
 1. `app.js` — moteur principal de l'application : donnees, calculs, formulaires, rendu des resultats, carnet et reperes.
 2. `audit-fixes.js` — point d'entree unique des ajustements de compatibilite, presentation compacte du conseil de pointe, fallback marchand et chargeur des modules TEST.
-3. `barebow-guidance.js` — uniquement la mise en page et les textes specifiques barebow. Le formulaire de reglage de base reste commun au classique.
+3. `barebow-guidance.js` — mise en page, textes et synchronisation des mesures specifiques barebow. Le formulaire de reglage de base reste commun au classique.
 4. `ui-refactor.js` — navigation simplifiee et assistant de reglage dynamique.
 5. `expert-audit.js` — contenus pedagogiques, sources, notes d'audit et bouton de publication TEST.
 6. `onboarding.js` — tutoriel de premiere utilisation et gestion des mises a jour PWA.
@@ -29,7 +29,7 @@ Le fallback marchand ne doit intervenir que si aucune offre exacte n'est trouvee
 
 ### Reglage de base
 - Calculs de band, tiller et puissance estimee : `app.js` + ajustements historiques centralises dans `audit-fixes.js`
-- Affichage commun classique/barebow : `barebow-guidance.js`
+- Affichage commun, textes barebow et synchronisation des mesures visibles : `barebow-guidance.js`
 - Conseils, alignements, ordre des reglages et sources : `expert-audit.js`
 
 Le barebow ne doit jamais avoir un deuxieme formulaire de saisie parallele. Les champs de base sont communs ; seule l'interpretation change.
@@ -39,7 +39,8 @@ Le barebow ne doit jamais avoir un deuxieme formulaire de saisie parallele. Les 
 
 ### Repere palette / viseur
 - Donnees et rendu des reperes : `app.js`
-- Libelle et presentation barebow : `audit-fixes.js` puis `ui-refactor.js` pour la navigation
+- Libelles et presentation classique/barebow : `barebow-guidance.js`
+- Navigation : `ui-refactor.js`
 - Conseils : `expert-audit.js`
 
 En barebow, l'onglet doit afficher `Repere palette`. En classique, il doit afficher `Reperes`.
