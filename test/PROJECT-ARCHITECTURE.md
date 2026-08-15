@@ -1,0 +1,70 @@
+# Assistant Archer — architecture de la version TEST
+
+Ce fichier sert de reference avant toute modification de `test/`.
+
+## Regle principale
+
+Une fonctionnalite ne doit avoir qu'un seul module responsable. Ne pas ajouter de nouveau script correctif si la fonction peut etre corrigee dans son module proprietaire.
+
+## Ordre de chargement
+
+1. `app.js` — moteur principal de l'application : donnees, calculs, formulaires, rendu des resultats, carnet et reperes.
+2. `audit-fixes.js` — point d'entree unique des ajustements de compatibilite et chargeur des modules TEST.
+3. `barebow-guidance.js` — uniquement la mise en page et les textes specifiques barebow. Le formulaire de reglage de base reste commun au classique.
+4. `merchant-fix.js` — uniquement les offres marchands et leur fallback.
+5. `ui-refactor.js` — navigation simplifiee et assistant de reglage dynamique.
+6. `expert-audit.js` — contenus pedagogiques, sources, notes d'audit et bouton de publication TEST.
+7. `point-guidance.js` — presentation compacte du conseil de poids de pointe.
+8. `onboarding.js` — tutoriel de premiere utilisation et gestion des mises a jour PWA.
+
+Les modules 3 a 8 sont charges uniquement depuis `audit-fixes.js`. Aucun de ces modules ne doit charger un autre module.
+
+## Proprietaires fonctionnels
+
+### Choix des fleches
+- Calculs de spine et tableaux fabricants : `app.js`
+- Presentation du conseil de pointe : `point-guidance.js`
+- Offres marchands : `merchant-fix.js`
+- Contenus pedagogiques et sources : `expert-audit.js`
+
+### Reglage de base
+- Calculs de band, tiller et puissance estimee : `app.js` + ajustements historiques centralises dans `audit-fixes.js`
+- Affichage commun classique/barebow : `barebow-guidance.js`
+- Conseils, alignements, ordre des reglages et sources : `expert-audit.js`
+
+Le barebow ne doit jamais avoir un deuxieme formulaire de saisie parallele. Les champs de base sont communs ; seule l'interpretation change.
+
+### Reglage dynamique
+- Assistant fut nu / contacts : `ui-refactor.js`
+
+### Repere palette / viseur
+- Donnees et rendu des reperes : `app.js`
+- Libelle et presentation barebow : `audit-fixes.js` puis `ui-refactor.js` pour la navigation
+- Conseils : `expert-audit.js`
+
+En barebow, l'onglet doit afficher `Repere palette`. En classique, il doit afficher `Reperes`.
+
+### Carnet
+- Stockage et rendu : `app.js`
+- Clarification du pre-remplissage : `ui-refactor.js`
+
+### PWA / premiere utilisation
+- Installation de base : `audit-fixes.js`
+- Tutoriel et mise a jour : `onboarding.js`
+
+## Regles avant modification
+
+Avant chaque changement :
+
+1. Identifier le module proprietaire dans ce document.
+2. Rechercher si une autre fonction modifie le meme element ou la meme variable.
+3. Modifier le module proprietaire plutot que creer une surcharge supplementaire.
+4. Verifier le comportement en classique ET en barebow si la zone est partagee.
+5. Verifier que les champs d'exemple restent des placeholders et ne sont pas interpretes comme des mesures utilisateur.
+6. Ne pas annoncer une correction terminee avant d'avoir verifie le fichier effectivement charge par `/test/`.
+
+## Fichiers historiques
+
+`barebow-layout.js` a ete supprime : son role a ete integre directement dans `barebow-guidance.js`.
+
+Les prochains nettoyages devront progressivement reduire le contenu de `audit-fixes.js` en reintegrant ses ajustements stables dans `app.js`, sans changer le comportement fonctionnel pendant cette phase.
