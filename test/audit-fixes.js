@@ -1,4 +1,4 @@
-/* Correctifs issus de l'audit du 10/08/2026. */
+/* Correctifs issus de l'audit du 10/08/2026. Point d'entree unique des modules additionnels TEST. */
 (() => {
   const originalNormalizeInput = window.normalizeInput;
   const originalScoreModel = window.scoreModel;
@@ -29,7 +29,22 @@
   window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;const s=document.getElementById("installAppStatus");if(s)s.textContent="Pret a installer : touchez Installer l'application."});window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;document.querySelector('.app-install-setting')?.remove();});installAppSettingsControl();
   function applyBrandIdentity(){document.title="Assistant Archer";let icon=document.querySelector('link[rel="icon"]');if(icon){icon.href="icon-assistant-archer-v11.svg";icon.type="image/svg+xml"}const h=document.querySelector('.hero h1');if(h)h.textContent="Assistant Archer";const p=document.querySelector('.hero > p');if(p)p.textContent="Choisir ses fleches, regler son arc et garder ses reperes.";if(!document.getElementById('aaBrandStyle')){const s=document.createElement('style');s.id='aaBrandStyle';s.textContent=`.app-settings{border-color:var(--line)}.app-settings[open]{box-shadow:0 14px 30px rgba(9,31,55,.18)}`;document.head.appendChild(s)}}
   applyBrandIdentity();
-  function loadScript(src,key){if(document.querySelector(`script[data-${key}]`))return;const s=document.createElement("script");s.src=src;s.setAttribute(`data-${key}`,"true");document.head.appendChild(s)}
-  loadScript("barebow-guidance.js?v=20260814c","barebow-guidance");loadScript("ui-refactor.js?v=20260810c","ui-refactor");loadScript("onboarding.js?v=20260810d","onboarding");
+
+  /* Ordre de chargement unique. Ne pas charger ces modules depuis d'autres modules. */
+  function loadModule(src,key){
+    if(document.querySelector(`script[data-${key}]`))return;
+    const s=document.createElement("script");
+    s.src=src;
+    s.async=false;
+    s.setAttribute(`data-${key}`,"true");
+    document.head.appendChild(s);
+  }
+  loadModule("barebow-guidance.js?v=20260815a","barebow-guidance");
+  loadModule("merchant-fix.js?v=20260814a","merchant-fix");
+  loadModule("ui-refactor.js?v=20260815a","ui-refactor");
+  loadModule("expert-audit.js?v=20260814b","expert-audit");
+  loadModule("point-guidance.js?v=20260815a","point-guidance");
+  loadModule("onboarding.js?v=20260810d","onboarding");
+
   queueMicrotask(()=>{try{window.applyBowStyle(window.currentBowStyle())}catch{}});
 })();
