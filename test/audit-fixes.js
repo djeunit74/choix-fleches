@@ -16,7 +16,7 @@
   window.normalizeInput=function(input){if(input.shaftMaterial!=="all")return originalNormalizeInput(input);return{...input,shootingProfile:"recurve_all",shootingEnvironment:"mixed",discipline:"target"}};
   window.scoreModel=function(modelName,input,profile){if(input.shaftMaterial!=="all")return originalScoreModel(modelName,input,profile);const outdoor=originalScoreModel(modelName,{...input,shootingProfile:"recurve_outdoor",shootingEnvironment:"outdoor"},profile),indoor=originalScoreModel(modelName,{...input,shootingProfile:"recurve_indoor",shootingEnvironment:"indoor"},profile);return outdoor.score>=indoor.score?outdoor:indoor};
   window.eastonCarbonRecommendation=(input)=>roundedLengthInRange(input,21,34,"Easton carbone")||originalEastonCarbonRecommendation(input);window.eastonAluRecommendation=(input)=>roundedLengthInRange(input,21,32,"Easton alu")||originalEastonAluRecommendation(input);window.victoryRecurveRecommendation=(input)=>roundedLengthInRange(input,23,31,"Victory recurve")||originalVictoryRecurveRecommendation(input);window.victoryVxtRecommendation=function(input){if(roundedLengthInRange(input,23,31,"Victory VXT"))return null;return originalVictoryVxtRecommendation(input)};window.carbonExpressRecommendation=function(input){const light=input.drawWeight<=34&&input.arrowLength<=27;return(light?roundedLengthInRange(input,21,27,"Carbon Express light recurve"):roundedLengthInRange(input,23,32,"Carbon Express recurve series"))||originalCarbonExpressRecommendation(input)};
-  window.computeArcSetup=function(input){const setup=originalComputeArcSetup(input),min=2,max=6,a=setup.actualTiller,target=a<min?min:a>max?max:a,expected=Math.round((input.upperTiller-target)*10)/10;setup.tillerRange=[min,max];setup.lowerTiller=expected;setup.lowerGap=Math.round((input.lowerTillerMeasured-expected)*10)/10;setup.tillerTarget=target;setup.tillerAction=a>=min&&a<=max?`Tiller dans la plage de depart conseillee (+${min} a +${max} mm). Conserver puis affiner au tir si necessaire.`:`Tiller hors plage de depart conseillee (+${min} a +${max} mm). Corriger progressivement vers la limite la plus proche.`;setup.adjustment=a>=min&&a<=max?{status:"OK - dans la plage conseillee",advice:`Le tiller mesure (+${a.toFixed(1)} mm) est compris entre +${min} et +${max} mm. Ne modifiez pas les vis uniquement pour viser +6 mm.`}:window.buildTillerAdjustment(a,target);if(Array.isArray(setup.checks))setup.checks=setup.checks.map(line=>line.startsWith("Tiller :")?`Tiller : plage de depart conseillee entre +${min} et +${max} mm, a affiner selon le comportement de l'arc.`:line);return setup};
+  window.computeArcSetup=function(input){const setup=originalComputeArcSetup(input),min=2,max=6,a=setup.actualTiller,target=a<min?min:a>max?a:max,expected=Math.round((input.upperTiller-target)*10)/10;setup.tillerRange=[min,max];setup.lowerTiller=expected;setup.lowerGap=Math.round((input.lowerTillerMeasured-expected)*10)/10;setup.tillerTarget=target;setup.tillerAction=a>=min&&a<=max?`Tiller dans la plage de depart conseillee (+${min} a +${max} mm). Conserver puis affiner au tir si necessaire.`:`Tiller hors plage de depart conseillee (+${min} a +${max} mm). Corriger progressivement vers la limite la plus proche.`;setup.adjustment=a>=min&&a<=max?{status:"OK - dans la plage conseillee",advice:`Le tiller mesure (+${a.toFixed(1)} mm) est compris entre +${min} et +${max} mm. Ne modifiez pas les vis uniquement pour viser +6 mm.`}:window.buildTillerAdjustment(a,target);if(Array.isArray(setup.checks))setup.checks=setup.checks.map(line=>line.startsWith("Tiller :")?`Tiller : plage de depart conseillee entre +${min} et +${max} mm, a affiner selon le comportement de l'arc.`:line);return setup};
   window.renderArcSetup=function(input){const result=originalRenderArcSetup(input),output=document.getElementById("arcSetupResult");if(output)output.innerHTML=output.innerHTML.replace(/<strong>Tiller positif vise<\/strong> : \+[^<]+ mm/,'<strong>Plage de tiller conseillee</strong> : +2 a +6 mm').replace(/<strong>Tiller<\/strong> : base visee \+[^|]+\|/,'<strong>Tiller</strong> : plage conseillee +2 a +6 mm |');return result};
   window.renderBarebowArcSetup=function(input){const classical=window.computeArcSetup;window.computeArcSetup=function(i){const s=originalComputeArcSetup(i),min=-2,max=2,a=s.actualTiller,target=Math.max(min,Math.min(max,a)),expected=Math.round((i.upperTiller-target)*10)/10;s.tillerRange=[min,max];s.lowerTiller=expected;s.lowerGap=Math.round((i.lowerTillerMeasured-expected)*10)/10;s.tillerTarget=target;s.tillerAction=a>=min&&a<=max?`Tiller faible/proche de zero (${a.toFixed(1)} mm) : conserver comme base si l'arc est stable, puis valider au tir sur plusieurs crawls.`:`Tiller ${a.toFixed(1)} mm : verifier d'abord la recommandation fabricant puis revenir progressivement vers un tiller faible si necessaire.`;s.adjustment=a>=min&&a<=max?{status:"Base barebow coherente",advice:"Ne cherchez pas a atteindre exactement 0 mm. Validez le comportement de l'arc sur plusieurs crawls."}:window.buildTillerAdjustment(a,target);return s};try{return originalRenderBarebowArcSetup(input)}finally{window.computeArcSetup=classical}};
   document.querySelectorAll(".arc-classic-only p").forEach(p=>{if(p.textContent.includes("Repere de base"))p.innerHTML='Le <strong>band</strong> depend surtout de la taille d\'arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de depart : entre <strong>+2 et +6 mm</strong>.'});
@@ -29,6 +29,25 @@
   window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;const s=document.getElementById("installAppStatus");if(s)s.textContent="Pret a installer : touchez Installer l'application."});window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;document.querySelector('.app-install-setting')?.remove();});installAppSettingsControl();
   function applyBrandIdentity(){document.title="Assistant Archer";let icon=document.querySelector('link[rel="icon"]');if(icon){icon.href="icon-assistant-archer-v11.svg";icon.type="image/svg+xml"}const h=document.querySelector('.hero h1');if(h)h.textContent="Assistant Archer";const p=document.querySelector('.hero > p');if(p)p.textContent="Choisir ses fleches, regler son arc et garder ses reperes.";if(!document.getElementById('aaBrandStyle')){const s=document.createElement('style');s.id='aaBrandStyle';s.textContent=`.app-settings{border-color:var(--line)}.app-settings[open]{box-shadow:0 14px 30px rgba(9,31,55,.18)}`;document.head.appendChild(s)}}
   applyBrandIdentity();
+
+  /* Conseil de pointe compact, consolide ici pour eviter un module supplementaire. */
+  function enhancePointAdvice(){
+    const result=document.getElementById('result');
+    if(!result)return;
+    const paragraphs=[...result.querySelectorAll('p')];
+    const point=paragraphs.find(p=>p.textContent.trim().startsWith('Pointe conseillee'));
+    if(!point||point.dataset.pointGuidance==='1')return;
+    const match=point.textContent.match(/Pointe conseillee\s*:\s*(\d+)\s*gr.*?(\d+)\s*-\s*(\d+)\s*gr/i);
+    if(!match)return;
+    const recommended=Number(match[1]),min=Number(match[2]),max=Number(match[3]);
+    point.dataset.pointGuidance='1';
+    point.innerHTML=`<strong>Pointe conseillee</strong> : ${recommended} gr <span class="result-subvalue">(plage fabricant ${min}-${max} gr)</span>`;
+    const quick=paragraphs.find(p=>p.textContent.trim().startsWith('Ajustement rapide'));
+    if(quick)quick.innerHTML='<strong>Affinage au tir</strong> : une pointe plus lourde assouplit dynamiquement la fleche ; une pointe plus legere la raidit. Restez dans la plage compatible du tube.';
+  }
+  const resultPanel=document.getElementById('result');
+  if(resultPanel)new MutationObserver(enhancePointAdvice).observe(resultPanel,{childList:true,subtree:true});
+  enhancePointAdvice();
 
   /* Ordre de chargement unique. Ne pas charger ces modules depuis d'autres modules. */
   function loadModule(src,key){
@@ -43,7 +62,6 @@
   loadModule("merchant-fix.js?v=20260814a","merchant-fix");
   loadModule("ui-refactor.js?v=20260815a","ui-refactor");
   loadModule("expert-audit.js?v=20260814b","expert-audit");
-  loadModule("point-guidance.js?v=20260815a","point-guidance");
   loadModule("onboarding.js?v=20260810d","onboarding");
 
   queueMicrotask(()=>{try{window.applyBowStyle(window.currentBowStyle())}catch{}});
