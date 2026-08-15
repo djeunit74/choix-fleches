@@ -50,12 +50,13 @@ En barebow, l'onglet doit afficher `Repere palette`. En classique, il doit affic
 - Clarification du pre-remplissage : `ui-refactor.js`
 
 ### Parametres / premiere utilisation / PWA
-- Installation de base : `audit-fixes.js`
+- Installation de base et identite d'interface : `audit-fixes.js`
 - Presentation du bouton Reglages, mini tutoriel et mise a jour : `onboarding.js`
 - Bouton de publication TEST : `expert-audit.js`
-- Cache courant de la version TEST : `choix-fleches-v16` dans `sw.js`
+- Identite de l'application installee : `manifest.webmanifest`
+- Cache courant de la version TEST : `choix-fleches-v17` dans `sw.js`
 
-`expert-audit.js` ne doit plus modifier le style du bouton Parametres/Reglages : cette presentation appartient a `onboarding.js`.
+`expert-audit.js` ne doit plus modifier le style du bouton Parametres/Reglages ni l'identite principale : ces responsabilites appartiennent respectivement a `onboarding.js` et `audit-fixes.js`/`manifest.webmanifest`.
 
 ## Regles avant modification
 
@@ -68,16 +69,14 @@ Avant chaque changement :
 5. Verifier que les champs d'exemple restent des placeholders et ne sont pas interpretes comme des mesures utilisateur.
 6. Ne pas annoncer une correction terminee avant d'avoir verifie le fichier effectivement charge par `/test/`.
 
-## Fichiers historiques
+## Fichiers historiques supprimes
 
-`barebow-layout.js` a ete supprime : son role a ete integre directement dans `barebow-guidance.js`.
+- `barebow-layout.js` : integre dans `barebow-guidance.js`.
+- `point-guidance.js` : absorbe dans `audit-fixes.js`; aucun module ne doit plus tenter de le charger.
+- `merchant-fix.js` : fallback absorbe dans `audit-fixes.js`.
+- `arc-empty-state.js` : doublon ancien de l'etat vide, supprime.
+- fichier accidentel `c` : supprime.
 
-`point-guidance.js` a ete supprime : son petit role d'affichage a ete absorbe dans `audit-fixes.js` afin de reduire le nombre de scripts charges. L'ancien chargement restant dans `onboarding.js` a egalement ete retire ; aucun module ne doit plus tenter de charger ce fichier.
+## Etat de consolidation
 
-`merchant-fix.js` a ete supprime : son fallback a ete absorbe dans `audit-fixes.js`. Le rendu marchand principal reste dans `app.js`.
-
-`arc-empty-state.js` a ete supprime : il n'etait plus charge par `/test/` et son ancien garde de formulaire faisait doublon avec la logique actuelle d'etat vide.
-
-Le fichier vide accidentel `c` a egalement ete supprime.
-
-Les prochains nettoyages devront progressivement reduire le contenu de `audit-fixes.js` en reintegrant ses ajustements stables dans `app.js`, sans changer le comportement fonctionnel pendant cette phase.
+La phase de nettoyage structurel de `/test/` est consideree terminee pour cette version. Ne pas entreprendre de nouvelle refonte avant publication : les prochaines modifications doivent etre fonctionnelles et ciblees. Les deux blocs encore centralises temporairement dans `audit-fixes.js` — conseil de pointe et fallback marchand — peuvent etre reintegres plus tard dans `app.js`, mais uniquement dans une phase dediee et testee separement.
