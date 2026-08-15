@@ -9,21 +9,20 @@ Une fonctionnalite ne doit avoir qu'un seul module responsable. Ne pas ajouter d
 ## Ordre de chargement
 
 1. `app.js` — moteur principal de l'application : donnees, calculs, formulaires, rendu des resultats, carnet et reperes.
-2. `audit-fixes.js` — point d'entree unique des ajustements de compatibilite et chargeur des modules TEST.
+2. `audit-fixes.js` — point d'entree unique des ajustements de compatibilite, presentation compacte du conseil de pointe et chargeur des modules TEST.
 3. `barebow-guidance.js` — uniquement la mise en page et les textes specifiques barebow. Le formulaire de reglage de base reste commun au classique.
 4. `merchant-fix.js` — uniquement les offres marchands et leur fallback.
 5. `ui-refactor.js` — navigation simplifiee et assistant de reglage dynamique.
 6. `expert-audit.js` — contenus pedagogiques, sources, notes d'audit et bouton de publication TEST.
-7. `point-guidance.js` — presentation compacte du conseil de poids de pointe.
-8. `onboarding.js` — tutoriel de premiere utilisation et gestion des mises a jour PWA.
+7. `onboarding.js` — tutoriel de premiere utilisation et gestion des mises a jour PWA.
 
-Les modules 3 a 8 sont charges uniquement depuis `audit-fixes.js`. Aucun de ces modules ne doit charger un autre module.
+Les modules 3 a 7 sont charges uniquement depuis `audit-fixes.js`. Aucun de ces modules ne doit charger un autre module.
 
 ## Proprietaires fonctionnels
 
 ### Choix des fleches
 - Calculs de spine et tableaux fabricants : `app.js`
-- Presentation du conseil de pointe : `point-guidance.js`
+- Presentation compacte du conseil de pointe : `audit-fixes.js` temporairement, a reintegrer ensuite dans `app.js`
 - Offres marchands : `merchant-fix.js`
 - Contenus pedagogiques et sources : `expert-audit.js`
 
@@ -66,5 +65,7 @@ Avant chaque changement :
 ## Fichiers historiques
 
 `barebow-layout.js` a ete supprime : son role a ete integre directement dans `barebow-guidance.js`.
+
+`point-guidance.js` a ete supprime : son petit role d'affichage a ete absorbe dans `audit-fixes.js` afin de reduire le nombre de scripts charges.
 
 Les prochains nettoyages devront progressivement reduire le contenu de `audit-fixes.js` en reintegrant ses ajustements stables dans `app.js`, sans changer le comportement fonctionnel pendant cette phase.
