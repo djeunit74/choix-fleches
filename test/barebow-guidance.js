@@ -1,4 +1,4 @@
-/* Barebow : mise en page commune au classique. Ce module ne gere que l'affichage barebow. */
+/* Barebow : mise en page commune au classique. Ce module gere l'affichage partage classique/barebow. */
 (() => {
   function field(id){ return document.getElementById(id); }
   function setupCard(){ return field('upperTiller')?.closest('.subcard') || null; }
@@ -9,6 +9,9 @@
     const setup = setupCard();
     const power = powerCard();
     const legacy = field('barebowArcSetupCard');
+    const sightTab = field('sightTabButton');
+
+    if (sightTab) sightTab.textContent = isBarebow ? 'Repere palette' : 'Reperes';
 
     /* Un seul formulaire de saisie pour classique et barebow. */
     [setup, power].forEach((card) => {
@@ -41,7 +44,7 @@
     requestAnimationFrame(applyBarebowLayout);
   });
   document.addEventListener('click', (event) => {
-    if (event.target.closest('[data-tab="arc-setup"]')) setTimeout(applyBarebowLayout, 0);
+    if (event.target.closest('[data-tab="arc-setup"], [data-tab="sight"]')) setTimeout(applyBarebowLayout, 0);
   });
 
   applyBarebowLayout();
