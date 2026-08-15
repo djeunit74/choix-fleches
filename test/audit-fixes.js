@@ -49,6 +49,31 @@
   if(resultPanel)new MutationObserver(enhancePointAdvice).observe(resultPanel,{childList:true,subtree:true});
   enhancePointAdvice();
 
+  /* Offres marchands : resultat exact en priorite, fallback compatible seulement si necessaire. */
+  const originalRenderDeals=window.renderDeals;
+  function escapeMerchantText(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  function merchantPriceValue(price){const match=String(price||'').replace(/\s/g,'').replace(',','.').match(/(\d+(?:\.\d+)?)/);return match?Number(match[1]):Number.POSITIVE_INFINITY;}
+  function compatibleMerchantDeals(preferredBrand,shaftMaterial,bowType,shootingProfile,allowedBrands){
+    const list=(typeof dealsState!=='undefined'&&Array.isArray(dealsState?.deals))?dealsState.deals:[];
+    return list.filter(deal=>{
+      const brandOk=preferredBrand==='all'||deal.brand===preferredBrand;
+      const visibleBrandOk=!allowedBrands||allowedBrands.includes(deal.brand);
+      const materialOk=shaftMaterial==='all'||deal.material===shaftMaterial;
+      const bowOk=!deal.bowTypes||deal.bowTypes.includes(bowType);
+      const outdoorOk=shootingProfile!=='recurve_outdoor'||deal.material==='carbon';
+      return brandOk&&visibleBrandOk&&materialOk&&bowOk&&outdoorOk;
+    }).sort((a,b)=>merchantPriceValue(a.price)-merchantPriceValue(b.price));
+  }
+  if(typeof originalRenderDeals==='function')window.renderDeals=function(preferredBrand,shaftMaterial,bowType,shootingProfile,allowedBrands=null,recommendedModels=[]){
+    const exact=originalRenderDeals(preferredBrand,shaftMaterial,bowType,shootingProfile,allowedBrands,recommendedModels);
+    if(exact&&!exact.includes('Aucune offre marchande')&&!exact.includes('Aucune offre correspondant'))return exact;
+    const fallback=compatibleMerchantDeals(preferredBrand,shaftMaterial,bowType,shootingProfile,allowedBrands).slice(0,8);
+    if(!fallback.length)return exact;
+    const groups=fallback.reduce((acc,deal)=>{(acc[deal.shop]??=[]).push(deal);return acc;},{});
+    const content=Object.entries(groups).map(([shop,deals])=>`<li class="merchant-shop"><p class="merchant-shop-name">${escapeMerchantText(shop)}</p><ul class="merchant-deals">${deals.map(deal=>`<li><a href="${escapeMerchantText(deal.url)}" target="_blank" rel="noopener noreferrer">${escapeMerchantText(deal.title)}</a> - ${escapeMerchantText(deal.price)}</li>`).join('')}</ul></li>`).join('');
+    return `<section class="merchant-block"><p class="merchant-intro">Aucune offre exacte pour le modele conseille. Voici des offres compatibles avec la marque, la matiere et le type d arc :</p><ul class="merchant-shops">${content}</ul></section>`;
+  };
+
   /* Ordre de chargement unique. Ne pas charger ces modules depuis d'autres modules. */
   function loadModule(src,key){
     if(document.querySelector(`script[data-${key}]`))return;
@@ -59,7 +84,6 @@
     document.head.appendChild(s);
   }
   loadModule("barebow-guidance.js?v=20260815a","barebow-guidance");
-  loadModule("merchant-fix.js?v=20260814a","merchant-fix");
   loadModule("ui-refactor.js?v=20260815a","ui-refactor");
   loadModule("expert-audit.js?v=20260814b","expert-audit");
   loadModule("onboarding.js?v=20260810d","onboarding");
