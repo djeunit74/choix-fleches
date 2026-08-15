@@ -13,7 +13,7 @@ Une fonctionnalite ne doit avoir qu'un seul module responsable. Ne pas ajouter d
 3. `barebow-guidance.js` — mise en page, textes et synchronisation des mesures specifiques barebow. Le formulaire de reglage de base reste commun au classique.
 4. `ui-refactor.js` — navigation simplifiee et assistant de reglage dynamique.
 5. `expert-audit.js` — contenus pedagogiques, sources, notes d'audit et bouton de publication TEST.
-6. `onboarding.js` — tutoriel de premiere utilisation et gestion des mises a jour PWA.
+6. `onboarding.js` — tutoriel de premiere utilisation, presentation du bouton Reglages et gestion des mises a jour PWA.
 
 Les modules 3 a 6 sont charges uniquement depuis `audit-fixes.js`. Aucun de ces modules ne doit charger un autre module.
 
@@ -49,10 +49,13 @@ En barebow, l'onglet doit afficher `Repere palette`. En classique, il doit affic
 - Stockage et rendu : `app.js`
 - Clarification du pre-remplissage : `ui-refactor.js`
 
-### PWA / premiere utilisation
+### Parametres / premiere utilisation / PWA
 - Installation de base : `audit-fixes.js`
-- Tutoriel et mise a jour : `onboarding.js`
+- Presentation du bouton Reglages, mini tutoriel et mise a jour : `onboarding.js`
+- Bouton de publication TEST : `expert-audit.js`
 - Cache courant de la version TEST : `choix-fleches-v16` dans `sw.js`
+
+`expert-audit.js` ne doit plus modifier le style du bouton Parametres/Reglages : cette presentation appartient a `onboarding.js`.
 
 ## Regles avant modification
 
