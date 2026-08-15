@@ -69,7 +69,7 @@ Avant chaque changement :
 
 `barebow-layout.js` a ete supprime : son role a ete integre directement dans `barebow-guidance.js`.
 
-`point-guidance.js` a ete supprime : son petit role d'affichage a ete absorbe dans `audit-fixes.js` afin de reduire le nombre de scripts charges.
+`point-guidance.js` a ete supprime : son petit role d'affichage a ete absorbe dans `audit-fixes.js` afin de reduire le nombre de scripts charges. L'ancien chargement restant dans `onboarding.js` a egalement ete retire ; aucun module ne doit plus tenter de charger ce fichier.
 
 `merchant-fix.js` a ete supprime : son fallback a ete absorbe dans `audit-fixes.js`. Le rendu marchand principal reste dans `app.js`.
 
