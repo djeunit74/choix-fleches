@@ -1,69 +1,24 @@
 /* Correctifs finaux TEST : mise a jour PWA, terminologie francaise et affichage Easton prudent. */
 (() => {
-  const VERSION = '20260817-final4';
+  const VERSION = '2026.08.17-test.24';
 
   function installUpdateControl() {
     const body = document.querySelector('.app-settings-body');
-    if (!body || document.getElementById('appUpdateBtn')) return;
-    const block = document.createElement('div');
-    block.className = 'app-update-setting';
-    block.style.cssText = 'margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(0,0,0,.12)';
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.id = 'appUpdateBtn';
-    button.textContent = "Mettre a jour l'application";
-    const status = document.createElement('p');
-    status.id = 'appUpdateStatus';
-    status.style.cssText = 'margin:.5rem 0 0;font-size:.9em';
-    status.textContent = 'Charge la derniere version sans effacer vos reglages enregistres.';
-    button.addEventListener('click', async () => {
-      button.disabled = true; status.textContent = 'Recherche de la derniere version...';
-      try {
-        if ('serviceWorker' in navigator) { const registration = await navigator.serviceWorker.getRegistration('./'); if (registration) { await registration.update(); if (registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'}); } }
-        if (window.caches) { const keys=await caches.keys(); await Promise.all(keys.filter(k=>k.startsWith('choix-fleches-')).map(k=>caches.delete(k))); }
-        status.textContent='Mise a jour chargee. Reouverture...'; const url=new URL(window.location.href); url.searchParams.set('update',Date.now().toString()); window.location.replace(url.toString());
-      } catch(error) { console.warn('Mise a jour impossible',error); status.textContent='Mise a jour impossible pour le moment. Verifiez la connexion puis recommencez.'; button.disabled=false; }
-    });
-    block.append(button,status); body.appendChild(block);
+    if (!body) return;
+    let version=document.getElementById('appVersionInfo');
+    if(!version){version=document.createElement('p');version.id='appVersionInfo';version.style.cssText='margin:.6rem 0;font-size:.9em;font-weight:700;opacity:.75';body.appendChild(version);}
+    version.textContent='Version : '+VERSION;
+    if (document.getElementById('appUpdateBtn')) return;
+    const block = document.createElement('div'); block.className='app-update-setting'; block.style.cssText='margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(0,0,0,.12)';
+    const button=document.createElement('button');button.type='button';button.id='appUpdateBtn';button.textContent="Mettre a jour l'application";
+    const status=document.createElement('p');status.id='appUpdateStatus';status.style.cssText='margin:.5rem 0 0;font-size:.9em';status.textContent='Charge la derniere version sans effacer vos reglages enregistres.';
+    button.addEventListener('click',async()=>{button.disabled=true;status.textContent='Recherche de la derniere version...';try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration){await registration.update();if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});}}if(window.caches){const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('choix-fleches-')).map(k=>caches.delete(k)));}status.textContent='Mise a jour chargee. Reouverture...';const url=new URL(window.location.href);url.searchParams.set('update',Date.now().toString());window.location.replace(url.toString());}catch(error){console.warn('Mise a jour impossible',error);status.textContent='Mise a jour impossible pour le moment. Verifiez la connexion puis recommencez.';button.disabled=false;}});
+    block.append(button,status);body.appendChild(block);
   }
-
-  function frenchTechnicalTerms(root=document.body){
-    if(!root)return; const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),nodes=[]; while(walker.nextNode())nodes.push(walker.currentNode);
-    for(const node of nodes){ if(!node.nodeValue||!/(crawl|stringwalk)/i.test(node.nodeValue))continue; node.nodeValue=node.nodeValue.replace(/plusieurs crawls/gi,'plusieurs decalages des doigts sous l encoche').replace(/crawl intermediaire/gi,'decalage intermediaire des doigts sous l encoche').replace(/crawl courte/gi,'decalage court des doigts sous l encoche').replace(/crawl longue/gi,'decalage long des doigts sous l encoche').replace(/crawls/gi,'decalages des doigts sous l encoche').replace(/crawl/gi,'decalage des doigts sous l encoche').replace(/prise de corde\s*\/\s*stringwalk/gi,'decalage des doigts sous l encoche').replace(/stringwalking/gi,'deplacement des doigts sur la corde').replace(/stringwalk/gi,'deplacement des doigts sur la corde'); }
-  }
-
-  function cleanEastonDisplay(){
-    const result=document.getElementById('result'); if(!result)return;
-    const allText=result.textContent||''; if(!/Recommandation\s+Easton/i.test(allText))return;
-
-    // Ne depend plus de la classe CSS du gros nombre : recherche directement le texte genere.
-    const walker=document.createTreeWalker(result,NodeFilter.SHOW_TEXT),nodes=[]; while(walker.nextNode())nodes.push(walker.currentNode);
-    for(const node of nodes){
-      const text=(node.nodeValue||'').trim();
-      const match=text.match(/^(\d+)\s+base\s+(\d+)\s*[-–]\s*(\d+)\s*\/\s*eq\.\s*(\d+)$/i);
-      if(!match)continue;
-      const a=Number(match[2]),b=Number(match[3]),equivalent=Number(match[4]),min=Math.min(a,b),max=Math.max(a,b);
-      const box=document.createElement('span'); box.className='easton-clear-recommendation'; box.style.cssText='display:block';
-      box.innerHTML=`<span style="display:block;font-size:.58em;font-weight:700;line-height:1.3">Plage fabricant : ${min}-${max}</span><span style="display:block;margin-top:.18em">Spine de depart conseille : ${equivalent}</span>`;
-      node.parentNode.replaceChild(box,node);
-      break;
-    }
-
-    // Supprime la ligne incoherente quel que soit son conteneur HTML.
-    [...result.querySelectorAll('p,li,div')].forEach(el=>{ if(/^\s*Alternatives spine\s*:/i.test(el.textContent||'')) el.remove(); });
-  }
-
-  function updateGuidedLabels(){ const guide=document.getElementById('aaNeedsGuide'); if(!guide)return; const notebook=guide.querySelector('[data-go="notebook"]'),sight=guide.querySelector('[data-go="sight"]'); if(notebook)notebook.textContent='Enregistrer / retrouver mes reglages'; if(sight)sight.textContent='Enregistrer / consulter mes reperes'; }
-
-  let scheduled=false;
-  function scheduleFix(){ if(scheduled)return; scheduled=true; requestAnimationFrame(()=>{scheduled=false; frenchTechnicalTerms(document.body); cleanEastonDisplay(); updateGuidedLabels(); installUpdateControl();}); }
-
-  function init(){
-    document.documentElement.dataset.testFixVersion=VERSION;
-    scheduleFix();
-    new MutationObserver(scheduleFix).observe(document.body,{childList:true,subtree:true,characterData:true});
-    document.getElementById('spine-form')?.addEventListener('submit',()=>{setTimeout(cleanEastonDisplay,0);setTimeout(cleanEastonDisplay,100);setTimeout(cleanEastonDisplay,400);},true);
-    document.getElementById('preferredBrand')?.addEventListener('change',()=>setTimeout(cleanEastonDisplay,0));
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  function frenchTechnicalTerms(root=document.body){if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(!node.nodeValue||!/(crawl|stringwalk)/i.test(node.nodeValue))continue;node.nodeValue=node.nodeValue.replace(/plusieurs crawls/gi,'plusieurs decalages des doigts sous l encoche').replace(/crawl intermediaire/gi,'decalage intermediaire des doigts sous l encoche').replace(/crawl courte/gi,'decalage court des doigts sous l encoche').replace(/crawl longue/gi,'decalage long des doigts sous l encoche').replace(/crawls/gi,'decalages des doigts sous l encoche').replace(/crawl/gi,'decalage des doigts sous l encoche').replace(/prise de corde\s*\/\s*stringwalk/gi,'decalage des doigts sous l encoche').replace(/stringwalking/gi,'deplacement des doigts sur la corde').replace(/stringwalk/gi,'deplacement des doigts sur la corde');}}
+  function cleanEastonDisplay(){const result=document.getElementById('result');if(!result)return;const allText=result.textContent||'';if(!/Recommandation\s+Easton/i.test(allText))return;const walker=document.createTreeWalker(result,NodeFilter.SHOW_TEXT),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){const text=(node.nodeValue||'').trim(),match=text.match(/^(\d+)\s+base\s+(\d+)\s*[-–]\s*(\d+)\s*\/\s*eq\.\s*(\d+)$/i);if(!match)continue;const a=Number(match[2]),b=Number(match[3]),equivalent=Number(match[4]),min=Math.min(a,b),max=Math.max(a,b),box=document.createElement('span');box.className='easton-clear-recommendation';box.style.cssText='display:block';box.innerHTML=`<span style="display:block;font-size:.58em;font-weight:700;line-height:1.3">Plage fabricant : ${min}-${max}</span><span style="display:block;margin-top:.18em">Spine de depart conseille : ${equivalent}</span>`;node.parentNode.replaceChild(box,node);break;}[...result.querySelectorAll('p,li,div')].forEach(el=>{if(/^\s*Alternatives spine\s*:/i.test(el.textContent||''))el.remove();});}
+  function updateGuidedLabels(){const guide=document.getElementById('aaNeedsGuide');if(!guide)return;const notebook=guide.querySelector('[data-go="notebook"]'),sight=guide.querySelector('[data-go="sight"]');if(notebook)notebook.textContent='Enregistrer / retrouver mes reglages';if(sight)sight.textContent='Enregistrer / consulter mes reperes';}
+  let scheduled=false;function scheduleFix(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;frenchTechnicalTerms(document.body);cleanEastonDisplay();updateGuidedLabels();installUpdateControl();});}
+  function init(){document.documentElement.dataset.testFixVersion=VERSION;scheduleFix();new MutationObserver(scheduleFix).observe(document.body,{childList:true,subtree:true,characterData:true});document.getElementById('spine-form')?.addEventListener('submit',()=>{setTimeout(cleanEastonDisplay,0);setTimeout(cleanEastonDisplay,100);setTimeout(cleanEastonDisplay,400);},true);document.getElementById('preferredBrand')?.addEventListener('change',()=>setTimeout(cleanEastonDisplay,0));}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
