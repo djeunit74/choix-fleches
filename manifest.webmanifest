@@ -1,5 +1,5 @@
 {
-  "name": "Assistant Archer",
+  "name": "Assistant Fleches et Reglages",
   "short_name": "Assistant Archer",
   "start_url": "./?pwa=11",
   "scope": "./",
@@ -7,7 +7,7 @@
   "background_color": "#07111d",
   "theme_color": "#07111d",
   "lang": "fr",
-  "description": "Guide pratique pour choisir ses fleches, regler son arc et conserver ses reperes en classique et barebow.",
+  "description": "Une application simple pour aider les archers debutants a choisir des fleches coherentes et regler un arc plus facilement.",
   "icons": [
     {
       "src": "icon-assistant-archer-v11.svg",
