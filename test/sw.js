@@ -1,4 +1,4 @@
-const CACHE_NAME = "choix-fleches-v22";
+const CACHE_NAME = "choix-fleches-v23";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,15 +9,16 @@ const ASSETS = [
   "./ui-refactor.js",
   "./onboarding.js",
   "./expert-audit.js",
-  "./final-fixes.js",
+  "./final-fixes.js?v=20260817-final3",
   "./manifest.webmanifest",
   "./icon-assistant-archer-v11.svg",
   "./404.html"
 ];
 
 function injectFinalFixes(html) {
-  if (html.includes('final-fixes.js')) return html;
-  return html.replace('</body>', '<script src="./final-fixes.js?v=20260817-final2"></script></body>');
+  const tag = '<script src="./final-fixes.js?v=20260817-final3"></script>';
+  html = html.replace(/<script[^>]+final-fixes\.js[^>]*><\/script>/gi, '');
+  return html.replace('</body>', tag + '</body>');
 }
 
 self.addEventListener("install", event => {
