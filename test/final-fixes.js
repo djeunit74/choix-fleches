@@ -1,25 +1,21 @@
 /* Correctifs finaux TEST : mise a jour PWA, terminologie francaise et affichage Easton prudent. */
 (() => {
-  const VERSION = '20260817-final2';
+  const VERSION = '20260817-final3';
 
   function installUpdateControl() {
     const body = document.querySelector('.app-settings-body');
     if (!body || document.getElementById('appUpdateBtn')) return;
-
     const block = document.createElement('div');
     block.className = 'app-update-setting';
     block.style.cssText = 'margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(0,0,0,.12)';
-
     const button = document.createElement('button');
     button.type = 'button';
     button.id = 'appUpdateBtn';
     button.textContent = "Mettre a jour l'application";
-
     const status = document.createElement('p');
     status.id = 'appUpdateStatus';
     status.style.cssText = 'margin:.5rem 0 0;font-size:.9em';
     status.textContent = 'Charge la derniere version sans effacer vos reglages enregistres.';
-
     button.addEventListener('click', async () => {
       button.disabled = true;
       status.textContent = 'Recherche de la derniere version...';
@@ -45,7 +41,6 @@
         button.disabled = false;
       }
     });
-
     block.append(button, status);
     body.appendChild(block);
   }
@@ -70,17 +65,29 @@
     }
   }
 
-  function cleanEastonAlternatives() {
+  function cleanEastonDisplay() {
     const result = document.getElementById('result');
     if (!result) return;
     const preferred = document.getElementById('preferredBrand')?.value;
     const isEaston = preferred === 'easton' || /Recommandation\s+Easton/i.test(result.textContent || '');
     if (!isEaston) return;
 
-    result.querySelectorAll('p').forEach(p => {
-      if (/Alternatives spine\s*:/i.test(p.textContent || '')) {
-        p.innerHTML = '<strong>Lecture Easton :</strong> utilisez la plage fabricant affichee ci-dessus. Plus le nombre de spine est petit, plus le tube est rigide. Les alternatives automatiques hors de cette plage ne sont pas affichees.';
+    const value = result.querySelector('.result-value');
+    if (value) {
+      const text = value.textContent.trim();
+      const match = text.match(/^(\d+)\s+base\s+(\d+)\s*[-–]\s*(\d+)\s*\/\s*eq\.\s*(\d+)/i);
+      if (match) {
+        const a = Number(match[2]);
+        const b = Number(match[3]);
+        const equivalent = Number(match[4]);
+        const min = Math.min(a, b);
+        const max = Math.max(a, b);
+        value.innerHTML = `<span style="display:block;font-size:.48em;font-weight:700;line-height:1.25">Plage fabricant : ${min}-${max}</span><span style="display:block">Spine de depart conseille : ${equivalent}</span>`;
       }
+    }
+
+    result.querySelectorAll('p').forEach(p => {
+      if (/Alternatives spine\s*:/i.test(p.textContent || '')) p.remove();
     });
   }
 
@@ -96,7 +103,7 @@
   function installObservers() {
     const observer = new MutationObserver(() => {
       frenchTechnicalTerms(document.body);
-      cleanEastonAlternatives();
+      cleanEastonDisplay();
       updateGuidedLabels();
       installUpdateControl();
     });
@@ -107,10 +114,10 @@
     document.documentElement.dataset.testFixVersion = VERSION;
     installUpdateControl();
     frenchTechnicalTerms(document.body);
-    cleanEastonAlternatives();
+    cleanEastonDisplay();
     updateGuidedLabels();
     installObservers();
-    document.getElementById('preferredBrand')?.addEventListener('change', () => setTimeout(cleanEastonAlternatives, 0));
+    document.getElementById('preferredBrand')?.addEventListener('change', () => setTimeout(cleanEastonDisplay, 0));
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
