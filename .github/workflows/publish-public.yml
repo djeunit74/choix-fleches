@@ -1,4 +1,4 @@
-name: Publier dev vers public
+name: Publier TEST vers public
 
 on:
   workflow_dispatch:
@@ -21,21 +21,19 @@ jobs:
           path: site
           fetch-depth: 0
 
-      - name: Recuperer la version dev validee
+      - name: Recuperer la version TEST validee
         uses: actions/checkout@v4
         with:
-          ref: dev
-          path: devsrc
+          ref: main
+          path: testsrc
           fetch-depth: 1
 
-      - name: Copier dev vers la racine publique
+      - name: Copier TEST vers la racine publique
         run: |
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github' \
-            --exclude 'test' \
-            --exclude 'test.html' \
-            devsrc/ site/
+            testsrc/test/ site/
 
       - name: Publier sur main
         working-directory: site
@@ -47,5 +45,5 @@ jobs:
             echo "La version publique est deja a jour"
             exit 0
           fi
-          git commit -m "Publie la version dev validee"
+          git commit -m "Publie la version TEST validee"
           git push origin main
