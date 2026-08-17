@@ -1,12 +1,22 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Page non trouvee</title>
-  <meta http-equiv="refresh" content="0; url=./index.html" />
+  <title>Assistant Archer</title>
+  <script>
+    (function () {
+      var base = '/choix-fleches/';
+      var target = window.location.origin + base;
+      if (window.location.pathname !== base) {
+        window.location.replace(target + window.location.search + window.location.hash);
+      } else {
+        window.location.replace(target + 'index.html' + window.location.search + window.location.hash);
+      }
+    }());
+  </script>
 </head>
 <body>
-  <p>Redirection vers l'application...</p>
+  <p>Redirection vers Assistant Archer...</p>
 </body>
 </html>
