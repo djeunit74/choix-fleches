@@ -1,4 +1,4 @@
-const CACHE_NAME = "choix-fleches-v21";
+const CACHE_NAME = "choix-fleches-v22";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,11 +9,68 @@ const ASSETS = [
   "./ui-refactor.js",
   "./onboarding.js",
   "./expert-audit.js",
+  "./final-fixes.js",
   "./manifest.webmanifest",
   "./icon-assistant-archer-v11.svg",
   "./404.html"
 ];
-self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS)))});
-self.addEventListener("message",event=>{if(event.data?.type==="SKIP_WAITING")self.skipWaiting()});
-self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key)))));self.clients.claim()});
-self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;const url=new URL(event.request.url);const isAppAsset=["/index.html","/app.js","/audit-fixes.js","/barebow-guidance.js","/ui-refactor.js","/onboarding.js","/expert-audit.js","/styles.css","/manifest.webmanifest","/icon-assistant-archer-v11.svg"].some(x=>url.pathname.endsWith(x));if(isAppAsset){event.respondWith(fetch(event.request,{cache:"no-store"}).then(response=>{const copy=response.clone();caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match(event.request).then(cached=>cached||caches.match("./index.html"))));return}event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match("./index.html"))))});
+
+function injectFinalFixes(html) {
+  if (html.includes('final-fixes.js')) return html;
+  return html.replace('</body>', '<script src="./final-fixes.js?v=20260817-final2"></script></body>');
+}
+
+self.addEventListener("install", event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("message", event => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+});
+
+self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
+  const url = new URL(event.request.url);
+  const isNavigation = event.request.mode === 'navigate' && url.origin === self.location.origin;
+  const isIndex = url.pathname.endsWith('/index.html') || url.pathname.endsWith('/test/');
+
+  if (isNavigation || isIndex) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .then(async response => {
+          if (!response.ok) return response;
+          const text = injectFinalFixes(await response.text());
+          const headers = new Headers(response.headers);
+          headers.set('content-type', 'text/html; charset=utf-8');
+          return new Response(text, { status: response.status, statusText: response.statusText, headers });
+        })
+        .catch(async () => {
+          const cached = await caches.match('./index.html');
+          if (!cached) throw new Error('index indisponible');
+          const text = injectFinalFixes(await cached.text());
+          return new Response(text, { headers: { 'content-type': 'text/html; charset=utf-8' } });
+        })
+    );
+    return;
+  }
+
+  const isAppAsset = ["/app.js","/audit-fixes.js","/barebow-guidance.js","/ui-refactor.js","/onboarding.js","/expert-audit.js","/final-fixes.js","/styles.css","/manifest.webmanifest","/icon-assistant-archer-v11.svg"].some(x => url.pathname.endsWith(x));
+  if (isAppAsset) {
+    event.respondWith(fetch(event.request, { cache: "no-store" }).then(response => {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+      return response;
+    }).catch(() => caches.match(event.request)));
+    return;
+  }
+
+  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+    const copy = response.clone();
+    caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+    return response;
+  })));
+});
