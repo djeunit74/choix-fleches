@@ -69,6 +69,14 @@
     form.addEventListener('submit',event=>{if(hasMeasurements())return;event.preventDefault();event.stopImmediatePropagation();reset();},true);
     [upper,lower].forEach(input=>input.addEventListener('input',()=>{if(!hasMeasurements())reset();}));
   }
-  setTimeout(()=>{install();installArcEmptyState();},1200);
-  setTimeout(()=>{install();installArcEmptyState();},3000);
+  function updateGuidedMenuLabels(){
+    const guide=document.getElementById('aaNeedsGuide');
+    if(!guide)return;
+    const notebook=guide.querySelector('[data-go="notebook"]');
+    const sight=guide.querySelector('[data-go="sight"]');
+    if(notebook)notebook.textContent='Enregistrer / retrouver mes reglages';
+    if(sight)sight.textContent='Enregistrer / consulter mes reperes';
+  }
+  setTimeout(()=>{install();installArcEmptyState();updateGuidedMenuLabels();},1200);
+  setTimeout(()=>{install();installArcEmptyState();updateGuidedMenuLabels();},3000);
 })();
