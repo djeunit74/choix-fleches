@@ -14,29 +14,27 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Recuperer la version publique
+      - name: Recuperer le depot
         uses: actions/checkout@v4
         with:
           ref: main
-          path: site
           fetch-depth: 0
 
-      - name: Recuperer la version TEST validee
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          path: testsrc
-          fetch-depth: 1
+      - name: Verifier la version TEST
+        run: |
+          test -f test/index.html || { echo "ERREUR: test/index.html absent"; exit 1; }
+          test -f test/app.js || { echo "ERREUR: test/app.js absent"; exit 1; }
+          test -f test/styles.css || { echo "ERREUR: test/styles.css absent"; exit 1; }
 
-      - name: Copier TEST vers la racine publique
+      - name: Copier TEST vers la racine publique sans supprimer TEST
         run: |
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github' \
-            testsrc/test/ site/
+            --exclude 'test' \
+            test/ ./
 
       - name: Publier sur main
-        working-directory: site
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
