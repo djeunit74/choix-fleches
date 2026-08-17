@@ -4,6 +4,14 @@
   function setupCard(){ return field('upperTiller')?.closest('.subcard') || null; }
   function powerCard(){ return field('riserLength')?.closest('.subcard') || null; }
 
+  const CLASSIC_COPY={
+    heading:"Reglage de l'arc classique",
+    intro:"Entrez vos mesures. L'app vous indique ce qu'il faut verifier ou corriger, puis le reglage se valide au tir.",
+    ref:'Repere pedagogique FFTA : ces informations de base s appuient sur la <a href="https://www.ffta.fr/pratiquer/progressez/la-demarche-federale-denseignement" target="_blank" rel="noopener noreferrer">demarche federale d enseignement</a> et sur le PDF direct <a href="https://www.ffta.fr/sites/default/files/imported-documents-files/7_arcclassique.pdf" target="_blank" rel="noopener noreferrer">Je regle mon arc classique</a>.',
+    setup:'Le <strong>band</strong> depend surtout de la taille d arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de depart classique : entre <strong>+2 et +6 mm</strong>, puis affinage au tir.',
+    power:'Le calcul de puissance utilise la <strong>poignee</strong>, la <strong>puissance marquee</strong> et l <strong>allonge</strong>. Le <strong>band</strong> n entre pas dans ce calcul. Le <strong>tiller</strong> n y entre pas directement non plus, sauf si vous changez le reglage des vis de branches.'
+  };
+
   function setLabelText(input,text){
     const label=input?.closest('label');
     if(!label)return;
@@ -30,6 +38,19 @@
     }
   }
 
+  function applyClassicalCopy(setup,power){
+    const heading=field('arcSetupHeading');
+    const intro=field('arcSetupIntro');
+    const ref=field('arcSetupDocRef');
+    if(heading)heading.textContent=CLASSIC_COPY.heading;
+    if(intro)intro.textContent=CLASSIC_COPY.intro;
+    if(ref)ref.innerHTML=CLASSIC_COPY.ref;
+    const setupIntro=setup?.querySelector('p');
+    if(setupIntro)setupIntro.innerHTML=CLASSIC_COPY.setup;
+    const powerIntro=power?.querySelector('p');
+    if(powerIntro)powerIntro.innerHTML=CLASSIC_COPY.power;
+  }
+
   function applyBarebowLayout(){
     const isBarebow=field('bowStyle')?.value==='barebow';
     const setup=setupCard();
@@ -45,7 +66,7 @@
       card.style.removeProperty('display');
     });
     if(legacy?.isConnected)legacy.remove();
-    if(!isBarebow)return;
+    if(!isBarebow){applyClassicalCopy(setup,power);return;}
 
     const heading=field('arcSetupHeading');
     const intro=field('arcSetupIntro');
@@ -55,9 +76,9 @@
     if(ref)ref.innerHTML='<strong>References officielles :</strong> <a href="https://www.worldarchery.sport/fr/sport/equipment/barebow" target="_blank" rel="noopener noreferrer">World Archery - Arc nu</a> pour le materiel et la technique ; <a href="https://extranet.worldarchery.sport/documents/index.php/Coaches/Accreditation/Coaching_Levels/Coaching_Manual_Level2.pdf" target="_blank" rel="noopener noreferrer">World Archery Coaching Manual Level 2</a> pour le reglage et l affinage. Les valeurs numeriques affichees par l app sont des bases de travail, pas des prescriptions World Archery.';
 
     const setupIntro=setup?.querySelector('p');
-    if(setupIntro)setupIntro.innerHTML='<strong>Base mecanique</strong> : band, tiller et detalonnage. Le but est d obtenir un point de depart stable avant les tests au tir. En arc nu, le deplacement des doigts sur la corde modifie les contraintes selon le repere de prise de corde : validez donc le comportement a plusieurs distances.';
+    if(setupIntro)setupIntro.innerHTML='<strong>Base mecanique arc nu</strong> : band, tiller et detalonnage. Le but est d obtenir un point de depart stable avant les tests au tir. En arc nu, le deplacement des doigts sur la corde modifie les contraintes selon le repere de prise de corde : validez donc le comportement a plusieurs distances.';
     const powerIntro=power?.querySelector('p');
-    if(powerIntro)powerIntro.innerHTML='<strong>Puissance tiree</strong> : estimation a partir de la poignee, de la puissance marquee des branches et de l allonge reelle. Une allonge constante est essentielle pour conserver une force et un comportement de fleche reproductibles.';
+    if(powerIntro)powerIntro.innerHTML='<strong>Puissance tiree arc nu</strong> : estimation a partir de la poignee, de la puissance marquee des branches et de l allonge reelle. Une allonge constante est essentielle pour conserver une force et un comportement de fleche reproductibles.';
   }
 
   function syncBarebowMeasuredValues(){
