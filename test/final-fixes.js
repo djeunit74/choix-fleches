@@ -1,6 +1,6 @@
 /* Correctifs finaux TEST : mise a jour PWA, terminologie francaise et affichage Easton prudent. */
 (() => {
-  const VERSION = '20260817-final1';
+  const VERSION = '20260817-final2';
 
   function installUpdateControl() {
     const body = document.querySelector('.app-settings-body');
@@ -18,7 +18,7 @@
     const status = document.createElement('p');
     status.id = 'appUpdateStatus';
     status.style.cssText = 'margin:.5rem 0 0;font-size:.9em';
-    status.textContent = 'Recherche et charge la derniere version sans effacer vos reglages enregistres.';
+    status.textContent = 'Charge la derniere version sans effacer vos reglages enregistres.';
 
     button.addEventListener('click', async () => {
       button.disabled = true;
@@ -56,14 +56,17 @@
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const node of nodes) {
-      if (!node.nodeValue || !/crawl/i.test(node.nodeValue)) continue;
+      if (!node.nodeValue || !/(crawl|stringwalk)/i.test(node.nodeValue)) continue;
       node.nodeValue = node.nodeValue
         .replace(/plusieurs crawls/gi, 'plusieurs decalages des doigts sous l encoche')
         .replace(/crawl intermediaire/gi, 'decalage intermediaire des doigts sous l encoche')
         .replace(/crawl courte/gi, 'decalage court des doigts sous l encoche')
         .replace(/crawl longue/gi, 'decalage long des doigts sous l encoche')
         .replace(/crawls/gi, 'decalages des doigts sous l encoche')
-        .replace(/crawl/gi, 'decalage des doigts sous l encoche');
+        .replace(/crawl/gi, 'decalage des doigts sous l encoche')
+        .replace(/prise de corde\s*\/\s*stringwalk/gi, 'decalage des doigts sous l encoche')
+        .replace(/stringwalking/gi, 'deplacement des doigts sur la corde')
+        .replace(/stringwalk/gi, 'deplacement des doigts sur la corde');
     }
   }
 
@@ -81,19 +84,21 @@
     });
   }
 
+  function updateGuidedLabels() {
+    const guide = document.getElementById('aaNeedsGuide');
+    if (!guide) return;
+    const notebook = guide.querySelector('[data-go="notebook"]');
+    const sight = guide.querySelector('[data-go="sight"]');
+    if (notebook) notebook.textContent = 'Enregistrer / retrouver mes reglages';
+    if (sight) sight.textContent = 'Enregistrer / consulter mes reperes';
+  }
+
   function installObservers() {
-    const observer = new MutationObserver(mutations => {
-      let needsTerms = false;
-      let needsEaston = false;
-      for (const mutation of mutations) {
-        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          needsTerms = true;
-          needsEaston = true;
-          break;
-        }
-      }
-      if (needsTerms) frenchTechnicalTerms(document.body);
-      if (needsEaston) cleanEastonAlternatives();
+    const observer = new MutationObserver(() => {
+      frenchTechnicalTerms(document.body);
+      cleanEastonAlternatives();
+      updateGuidedLabels();
+      installUpdateControl();
     });
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   }
@@ -103,6 +108,7 @@
     installUpdateControl();
     frenchTechnicalTerms(document.body);
     cleanEastonAlternatives();
+    updateGuidedLabels();
     installObservers();
     document.getElementById('preferredBrand')?.addEventListener('change', () => setTimeout(cleanEastonAlternatives, 0));
   }
