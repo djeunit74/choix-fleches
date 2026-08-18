@@ -1,6 +1,6 @@
-const CACHE_NAME = "choix-fleches-v24";
-const ASSETS = ["./","./index.html","./styles.css","./app.js","./audit-fixes.js","./barebow-guidance.js","./ui-refactor.js","./onboarding.js","./expert-audit.js","./final-fixes.js?v=20260817-final4","./manifest.webmanifest","./icon-assistant-archer-v11.svg","./404.html"];
-function injectFinalFixes(html){const tag='<script src="./final-fixes.js?v=20260817-final4"></script>';html=html.replace(/<script[^>]+final-fixes\.js[^>]*><\/script>/gi,'');return html.replace('</body>',tag+'</body>');}
+const CACHE_NAME = "choix-fleches-v25";
+const ASSETS = ["./","./index.html","./styles.css","./app.js","./audit-fixes.js","./barebow-guidance.js","./ui-refactor.js","./onboarding.js","./expert-audit.js","./final-fixes.js?v=20260818-audit25","./manifest.webmanifest","./icon-assistant-archer-v11.svg","./404.html"];
+function injectFinalFixes(html){const tag='<script src="./final-fixes.js?v=20260818-audit25"></script>';html=html.replace(/<script[^>]+final-fixes\.js[^>]*><\/script>/gi,'');return html.replace('</body>',tag+'</body>');}
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));});
 self.addEventListener("message",event=>{if(event.data?.type==="SKIP_WAITING")self.skipWaiting();});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
