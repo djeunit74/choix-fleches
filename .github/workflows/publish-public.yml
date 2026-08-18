@@ -26,12 +26,17 @@ jobs:
           test -f test/app.js || { echo "ERREUR: test/app.js absent"; exit 1; }
           test -f test/styles.css || { echo "ERREUR: test/styles.css absent"; exit 1; }
 
-      - name: Copier TEST vers la racine publique sans supprimer TEST
+      - name: Copier TEST vers la racine publique sans supprimer TEST ni les donnees marchands
         run: |
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github' \
             --exclude 'test' \
+            --exclude 'scripts' \
+            --exclude 'deals.json' \
+            --exclude 'deals-config.json' \
+            --exclude 'google-sheet-deals-template.csv' \
+            --exclude 'google-sheet-deals-template.tsv' \
             test/ ./
 
       - name: Publier sur main
