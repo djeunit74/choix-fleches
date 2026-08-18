@@ -32,6 +32,22 @@
   const spineOf=name=>String(name).match(/(\d{3,4})$/)?.[1]||null;
   function groupFor(input){const len=Math.round(input.arrowLength),col=LENGTHS.indexOf(len);if(col<0)return null;const row=ROWS.find(r=>input.drawWeight>=r.range[0]&&input.drawWeight<=r.range[1]);if(!row)return null;const group=row.cells[col];return group?{group,rowLabel:`${row.range[0]}-${row.range[1]} lbs`,length:len}:null;}
   function meta(name){const spine=Number(spineOf(name)||800),tyro=name.includes('Tyro');const points=tyro?(spine>=1800?[50]:spine>=900?[70]:[90]):[60,70,80,90,100,110,120];return {material:'carbon',diameters:['standard'],environments:['outdoor','mixed'],disciplines:['target','field'],bowTypes:['recurve'],goals:['club','polyvalent'],pointRange:[Math.min(...points),Math.max(...points)],pointChoices:points,note:'Correspondance issue du tableau Avalon 2016, gamme actuelle controlee.',seriesTier:'club',massClass:spine>=1000?'light':'medium',toleranceClass:'standard',componentSystem:'insert',useCase:'club',distanceBand:'mixed',dataPrecision:'model'};}
+  function integrateAvalonSources(){
+    document.getElementById('avalonSourceNote')?.remove();
+    const important=[...document.querySelectorAll('[data-panel="spine"] .card.notes')].find(card=>/Important/i.test(card.querySelector('h3')?.textContent||''));
+    const list=important?.querySelector('ul');
+    if(!list)return;
+    const sourceLine=[...list.querySelectorAll('li')].find(li=>/Tableaux officiels|Tableaux fabricants|fabricants a consulter/i.test(li.textContent||''));
+    if(!sourceLine)return;
+    if(sourceLine.querySelector('a[data-avalon-source]'))return;
+    const sep=document.createTextNode(', ');
+    const a2016=document.createElement('a');a2016.href=AVALON_2016;a2016.target='_blank';a2016.rel='noopener noreferrer';a2016.dataset.avalonSource='2016';a2016.textContent='Avalon / ArrowSelector 2016';
+    const sep2=document.createTextNode(' et ');
+    const acurrent=document.createElement('a');acurrent.href=AVALON_CURRENT;acurrent.target='_blank';acurrent.rel='noopener noreferrer';acurrent.dataset.avalonSource='current';acurrent.textContent='gamme actuelle Avalon';
+    const endText=(sourceLine.lastChild?.nodeType===Node.TEXT_NODE&&/\.\s*$/.test(sourceLine.lastChild.nodeValue||''));
+    if(endText)sourceLine.lastChild.nodeValue=sourceLine.lastChild.nodeValue.replace(/\.\s*$/,'');
+    sourceLine.append(sep,a2016,sep2,acurrent,document.createTextNode('.'));
+  }
   function install(){
     try{
       const select=document.getElementById('preferredBrand');
@@ -50,13 +66,11 @@
           const names=GROUPS[hit.group]||[];
           const ranked=rankModels(names,input,profile).map(e=>({...e,advisedSpine:spineOf(e.model)}));
           const top=ranked[0]?.meta||null,point=estimatePointSetup(input,top?.pointRange||profile.pointRange,top);
-          return {brand:'avalon',mode:'avalon-table',primary:hit.group,comparisonSpine:ranked[0]?.advisedSpine||null,softer:null,stiffer:null,load:input.drawWeight,confidence:names.length?'Moyenne':'Faible',confidenceReasons:[`Groupe ${hit.group} du tableau Avalon 2016 (${hit.rowLabel}, ${hit.length}\").`,names.length?'Seuls les Tyro / Classic encore presents dans la gamme actuelle sont proposes.':'Aucun Tyro / Classic actuel directement documente dans ce groupe.','Le spine 2000 actuel n est pas extrapole.'],models:ranked,alternativeModels:[],fallbackLabel:'',recommendedMaterial:top?.material||'carbon',recommendedDiameter:top?.diameters?.[0]||'standard',recommendedPointRange:top?.pointRange||profile.pointRange,recommendedPointWeight:point.recommended,recommendedPointChoices:point.pointChoices,recommendedPointProfile:point.profile,recommendedPointSofter:point.softerOption,recommendedPointStiffer:point.stifferOption,pointWeightNote:point.note,recommendedSeries:top?.seriesTier||'club',recommendedMass:top?.massClass||'medium',recommendedTolerance:top?.toleranceClass||'standard',recommendedComponentSystem:top?.componentSystem||'insert',recommendedUseCase:top?.useCase||'club',recommendedDistanceBand:top?.distanceBand||'mixed',notes:['Tableau Avalon historique utilise avec controle de la gamme actuelle.','Validation finale au tir recommandee.']};
+          return {brand:'avalon',mode:'avalon-table',primary:hit.group,comparisonSpine:ranked[0]?.advisedSpine||null,softer:null,stiffer:null,load:input.drawWeight,confidence:names.length?'Moyenne':'Faible',confidenceReasons:[`Groupe ${hit.group} du tableau Avalon 2016 (${hit.rowLabel}, ${hit.length}\").`,names.length?'Seuls les Tyro / Classic encore presents dans la gamme actuelle sont proposes.':'Aucun Tyro / Classic actuel directement documente dans ce groupe.'],models:ranked,alternativeModels:[],fallbackLabel:'',recommendedMaterial:top?.material||'carbon',recommendedDiameter:top?.diameters?.[0]||'standard',recommendedPointRange:top?.pointRange||profile.pointRange,recommendedPointWeight:point.recommended,recommendedPointChoices:point.pointChoices,recommendedPointProfile:point.profile,recommendedPointSofter:point.softerOption,recommendedPointStiffer:point.stifferOption,pointWeightNote:point.note,recommendedSeries:top?.seriesTier||'club',recommendedMass:top?.massClass||'medium',recommendedTolerance:top?.toleranceClass||'standard',recommendedComponentSystem:top?.componentSystem||'insert',recommendedUseCase:top?.useCase||'club',recommendedDistanceBand:top?.distanceBand||'mixed',notes:['Tableau Avalon historique utilise avec controle de la gamme actuelle.','Validation finale au tir recommandee.']};
         };
         window.__avalonWrapped=true;
       }
-      if(!document.getElementById('avalonSourceNote')){
-        const panel=document.querySelector('[data-panel="spine"]');
-        if(panel){const d=document.createElement('details');d.id='avalonSourceNote';d.className='card notes expert-audit-note';d.innerHTML=`<summary>Source Avalon</summary><p>L app utilise le tableau Avalon / ArrowSelector 2016 pour les groupes A1 a A18, puis ne conserve que les Tyro / Classic encore presents dans la gamme actuelle.</p><p><a href="${AVALON_2016}" target="_blank" rel="noopener noreferrer">Tableau Avalon 2016</a> · <a href="${AVALON_CURRENT}" target="_blank" rel="noopener noreferrer">Gamme actuelle Avalon</a></p><p>Le spine 2000 actuel n est pas extrapole automatiquement.</p>`;panel.appendChild(d);}}
+      integrateAvalonSources();
     }catch(e){console.warn('Avalon non charge',e);}
   }
   function installArcEmptyState(){
@@ -77,6 +91,6 @@
     if(notebook)notebook.textContent='Enregistrer / retrouver mes reglages';
     if(sight)sight.textContent='Enregistrer / consulter mes reperes';
   }
-  setTimeout(()=>{install();installArcEmptyState();updateGuidedMenuLabels();},1200);
-  setTimeout(()=>{install();installArcEmptyState();updateGuidedMenuLabels();},3000);
+  setTimeout(()=>{install();installArcEmptyState();updateGuidedMenuLabels();integrateAvalonSources();},1200);
+  setTimeout(()=>{install();installArcEmptyState();updateGuidedMenuLabels();integrateAvalonSources();},3000);
 })();
