@@ -1,0 +1,33 @@
+name: Refactor non-regression
+
+on:
+  push:
+    branches:
+      - refactor-preserve-features
+  pull_request:
+    paths:
+      - 'test/**'
+      - 'scripts/refactor-check.mjs'
+      - '.github/workflows/refactor-check.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntaxe JavaScript
+        run: |
+          node --check test/app-config.js
+          node --check test/app.js
+          node --check test/app-enhancements.js
+          node --check test/refactor-smoke.js
+          node --check test/barebow-guidance.js
+          node --check test/ui-refactor.js
+          node --check test/expert-audit.js
+          node --check test/onboarding.js
+          node --check test/avalon-addon.js
+      - name: Controles de non regression
+        run: node scripts/refactor-check.mjs

@@ -22,7 +22,7 @@
             <div class="theme-picker"><label for="themeSelect">Theme</label><select id="themeSelect"><option value="cible">Cible</option><option value="campagne">Campagne</option><option value="3d">3D</option></select></div>
             <label>Type d arc<select id="bowStyle"><option value="classique">Classique</option><option value="barebow">Barebow</option></select></label>
           </div>
-          <p id="appVersionStatic" style="margin:.8rem 0 0;font-weight:700;opacity:.8">Version : 2026.08.18-test.26</p>
+          <p id="appVersionStatic" style="margin:.8rem 0 0;font-weight:700;opacity:.8">Version : chargement...</p>
         </div>
       </details>
     </header>
@@ -63,8 +63,9 @@
   </main>
   <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">Je donne mon avis</button>
   <section id="feedbackPanel" class="feedback-panel" hidden><div class="feedback-panel-card"><div class="feedback-panel-head"><h2>Je donne mon avis</h2><button id="feedbackCloseBtn" type="button" class="feedback-close">Fermer</button></div><form id="feedbackForm"><fieldset class="feedback-categories"><legend>Categorie</legend><label><input type="radio" name="feedbackCategory" value="Ca manque" /> Ca manque</label><label><input type="radio" name="feedbackCategory" value="C'est faux" /> C'est faux</label><label><input type="radio" name="feedbackCategory" value="C'est confus" /> C'est confus</label><label><input type="radio" name="feedbackCategory" value="C'est utile" /> C'est utile</label></fieldset><label>Mon avis<textarea id="feedbackMessage" rows="4" maxlength="600"></textarea></label><div class="row-actions"><button id="feedbackSendBtn" type="button">Envoyer mon avis</button><button id="feedbackResetBtn" type="button">Vider</button></div></form><p id="feedbackStatus"></p></div></section>
-  <script src="app.js?v=20260818-audit26"></script>
-  <script src="audit-fixes.js?v=20260818-audit26"></script>
-  <script src="final-fixes.js?v=20260818-audit26"></script>
+  <script src="app-config.js?v=refactor2"></script>
+  <script src="app.js?v=refactor2"></script>
+  <script src="app-enhancements.js?v=refactor2"></script>
+  <script src="refactor-smoke.js?v=refactor2"></script>
 </body>
 </html>
