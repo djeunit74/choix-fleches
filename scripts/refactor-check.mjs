@@ -12,11 +12,13 @@ const requiredIds = [
   'feedbackToggleBtn','feedbackPanel'
 ];
 for (const id of requiredIds) assert(index.includes(`id="${id}"`), `DOM essentiel manquant: ${id}`);
-
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
 for (const script of ['app-config.js','app.js','app-enhancements.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 assert(!index.includes('audit-fixes.js'), 'Ancienne couche audit-fixes.js encore chargee');
 assert(!index.includes('final-fixes.js'), 'Ancienne couche final-fixes.js encore chargee');
+assert(!fs.existsSync('test/audit-fixes.js'), 'Ancien fichier audit-fixes.js encore present');
+assert(!fs.existsSync('test/final-fixes.js'), 'Ancien fichier final-fixes.js encore present');
+assert(index.includes('Version : chargement...'), 'La version est de nouveau codee en dur dans index.html');
 
 const config = read('test/app-config.js');
 assert(config.includes("channel: 'test'"), 'Canal TEST absent de la configuration centrale');
@@ -25,15 +27,20 @@ assert(config.includes('coachValidationRecommended: true'), 'Validation coach ab
 assert(config.includes('measuredDrawWeightPreferred: true'), 'Puissance mesuree non prioritaire');
 
 const enhancements = read('test/app-enhancements.js');
-for (const feature of ['EASTON_REFERENCES','x10','a/c/e','x10 parallel pro 4 mm','x10 parallel pro 3.2 mm','alignMerchants','explainModels','barebow-guidance.js','ui-refactor.js','expert-audit.js','onboarding.js']) {
-  assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
-}
+for (const feature of [
+  'EASTON_REFERENCES','x10','a/c/e','x10 parallel pro 4 mm','x10 parallel pro 3.2 mm',
+  'alignMerchants','explainModels','renderBarebowArcSetup','tillerRange=[min,max]',
+  'barebow-guidance.js','ui-refactor.js','expert-audit.js','onboarding.js'
+]) assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
 
 for (const module of ['test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js','test/avalon-addon.js']) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
-
 for (const json of ['test/catalog.json','test/deals.json','test/deals-config.json']) JSON.parse(read(json));
 
 const app = read('test/app.js');
-for (const feature of ['spineHistory','archerNotebook','sightNotebook','renderDeals','computeArcSetup','eastonCarbonRecommendation','victoryRecurveRecommendation','carbonExpressRecommendation']) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
+for (const feature of [
+  'spineHistory','archerNotebook','sightNotebook','renderDeals','computeArcSetup',
+  'eastonCarbonRecommendation','eastonAluRecommendation','victoryRecurveRecommendation',
+  'victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
+]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
 console.log('Assistant Archer refactor: controles statiques OK');
