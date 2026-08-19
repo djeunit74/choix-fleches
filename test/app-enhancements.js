@@ -89,6 +89,7 @@
   localStorage.setItem('sw-cleanup-v1','done');
   if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 
+  function removeAlternativeSpines(result){ if(!result) return; result.querySelectorAll('p').forEach(p=>{ if(/^\s*Alternatives?\s+spine\s*:/i.test(p.textContent||'')) p.remove(); }); }
   function enhancePointAdvice(){ const result=document.getElementById('result'); if(!result) return; const ps=[...result.querySelectorAll('p')], point=ps.find(p=>p.textContent.trim().startsWith('Pointe conseillee')); if(!point||point.dataset.pointGuidance==='1') return; const m=point.textContent.match(/Pointe conseillee\s*:\s*(\d+)\s*gr.*?(\d+)\s*-\s*(\d+)\s*gr/i); if(!m) return; point.dataset.pointGuidance='1'; point.innerHTML=`<strong>Pointe conseillee</strong> : ${m[1]} gr <span class="result-subvalue">(plage fabricant ${m[2]}-${m[3]} gr)</span>`; const quick=ps.find(p=>p.textContent.trim().startsWith('Ajustement rapide')); if(quick) quick.innerHTML='<strong>Affinage au tir</strong> : une pointe plus lourde assouplit dynamiquement la fleche ; une pointe plus legere la raidit. Restez dans la plage compatible du tube.'; }
 
   onceScript('barebow-guidance.js?v=refactor2','barebow-guidance');
@@ -101,7 +102,7 @@
   if(lowerTillerInput){lowerTillerInput.value='';lowerTillerInput.placeholder='Ex : 218';}
 
   let queued=false, running=false;
-  function run(){ if(queued||running) return; queued=true; requestAnimationFrame(()=>{ queued=false; running=true; try{ applyStaticUi(); installAppSettingsControl(); const r=document.getElementById('result'); if(r){ augmentEaston(r); explainModels(r); enhancePointAdvice(); } alignMerchants(); if(document.documentElement.dataset.testFixVersion!==cfg.version) document.documentElement.dataset.testFixVersion=cfg.version; } finally { running=false; } }); }
+  function run(){ if(queued||running) return; queued=true; requestAnimationFrame(()=>{ queued=false; running=true; try{ applyStaticUi(); installAppSettingsControl(); const r=document.getElementById('result'); if(r){ removeAlternativeSpines(r); augmentEaston(r); explainModels(r); enhancePointAdvice(); } alignMerchants(); if(document.documentElement.dataset.testFixVersion!==cfg.version) document.documentElement.dataset.testFixVersion=cfg.version; } finally { running=false; } }); }
   function init(){ run(); const bodyObserver=new MutationObserver(mutations=>{ if(running) return; const relevant=mutations.some(m=>{ const target=m.target.nodeType===1?m.target:m.target.parentElement; return target?.closest?.('#result,#arcSetupResult,#notebookResult,#sightResult,.app-settings-body,.hero,#aaNeedsGuide'); }); if(relevant) run(); }); bodyObserver.observe(document.body,{childList:true,subtree:true,characterData:true}); document.addEventListener('submit',()=>{setTimeout(run,0);setTimeout(run,150);setTimeout(run,500)},true); document.addEventListener('change',()=>setTimeout(run,100),true); queueMicrotask(()=>{try{window.applyBowStyle?.(window.currentBowStyle?.())}catch{}}); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();
