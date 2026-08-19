@@ -1,5 +1,5 @@
 /* Assistant Archer - garde de non-regression pendant le refactor.
-   Ne modifie aucune logique metier. Signale uniquement les fonctions/DOM essentiels manquants. */
+   Ne modifie aucune logique metier. Signale les fonctions/DOM essentiels manquants et maintient temporairement l'avertissement du choix des fleches. */
 (() => {
   const requiredIds = [
     'spine-form','result','historyContent','clearHistoryBtn',
@@ -8,6 +8,19 @@
     'sight-form','sightResult','sightStatus','sightMarkers'
   ];
   const requiredBrands = ['skylon','easton','victory','carbon'];
+
+  function ensureArrowChoiceWorkBanner() {
+    if (document.querySelector('[data-aa-work-banner], [aria-label="Choix des fleches en travaux"]')) return;
+    const panel = document.querySelector('.tab-panel[data-panel="spine"]');
+    if (!panel) return;
+    const banner = document.createElement('aside');
+    banner.dataset.aaWorkBanner = '1';
+    banner.setAttribute('role', 'status');
+    banner.setAttribute('aria-label', 'Choix des fleches en travaux');
+    banner.style.cssText = 'margin:0 0 1rem;padding:1rem 1.1rem;border:2px dashed #b56a00;border-radius:14px;background:#fff4d6;color:#5d3a00;box-shadow:0 6px 18px rgba(93,58,0,.10)';
+    banner.innerHTML = '<strong style="font-size:1.08rem">🏹 Zone de tir en travaux 🚧</strong><br><span>Le choix des flèches est actuellement en réglage fin. Les flèches, elles, vont droit… le code fait encore quelques écarts. 😄 Utilisez les recommandations avec prudence jusqu’à la fin des vérifications.</span>';
+    panel.prepend(banner);
+  }
 
   function duplicateAddedReferences() {
     const counts = new Map();
@@ -38,6 +51,7 @@
   }
 
   function audit() {
+    ensureArrowChoiceWorkBanner();
     const missingIds = requiredIds.filter(id => !document.getElementById(id));
     const brandSelect = document.getElementById('preferredBrand');
     const values = brandSelect ? [...brandSelect.options].map(o => o.value) : [];
