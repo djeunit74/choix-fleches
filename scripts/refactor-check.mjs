@@ -9,7 +9,7 @@ const requiredIds = [
   'arc-setup-form','arcSetupResult','bowStyle',
   'notebook-form','notebookResult','notebookStatus','notebookContent',
   'sight-form','sightResult','sightStatus','sightMarkers',
-  'feedbackToggleBtn','feedbackPanel','discipline','disciplineWrap','shaftMaterial'
+  'feedbackToggleBtn','feedbackPanel','discipline','disciplineWrap','shaftMaterial','themeSelect'
 ];
 for (const id of requiredIds) assert(index.includes(`id="${id}"`), `DOM essentiel manquant: ${id}`);
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
@@ -19,9 +19,7 @@ assert(!index.includes('final-fixes.js'), 'Ancienne couche final-fixes.js encore
 assert(!fs.existsSync('test/audit-fixes.js'), 'Ancien fichier audit-fixes.js encore present');
 assert(!fs.existsSync('test/final-fixes.js'), 'Ancien fichier final-fixes.js encore present');
 assert(index.includes('Version : chargement...'), 'La version est de nouveau codee en dur dans index.html');
-assert(index.includes('Cible (salle ou exterieur)'), 'Option discipline cible absente');
-assert(index.includes('>Campagne<'), 'Option discipline campagne absente');
-assert(index.includes('>3D<'), 'Option discipline 3D absente');
+for (const theme of ['value="cible"','value="campagne"','value="3d"']) assert(index.includes(theme), `Theme discipline absent: ${theme}`);
 assert(index.includes('Peu importe / conseille-moi'), 'Choix materiau debutant absent');
 
 const config = read('test/app-config.js');
@@ -36,13 +34,14 @@ for (const feature of [
   'alignMerchants','explainModels','renderBarebowArcSetup','tillerRange',
   'barebow-guidance.js','ui-refactor.js','expert-audit.js','onboarding.js'
 ]) assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
-
-// Choix fleches : discipline visible et conservee apres normalisation.
-for (const feature of ['configureArrowChoiceInputs','disciplineWrap.hidden = false','const discipline = input.discipline']) {
-  assert(enhancements.includes(feature), `Gestion discipline manquante: ${feature}`);
-}
+assert(enhancements.includes('const discipline = input.discipline'), 'La discipline choisie doit survivre a la normalisation');
 assert(enhancements.includes("Peu importe / conseille-moi"), 'Libelle materiau debutant absent de la couche integration');
 assert(enhancements.includes('aluminium/carbone'), 'Information tubes aluminium/carbone absente');
+
+const uiRefactor = read('test/ui-refactor.js');
+for (const feature of ['bindDisciplineToTheme','themeSelect','disciplineWrap','discipline.value=theme.value===\'cible\'?\'target\':\'field\'','#disciplineWrap{display:none!important}']) {
+  assert(uiRefactor.includes(feature), `Liaison theme/discipline manquante: ${feature}`);
+}
 
 // Offres marchands : uniquement les modeles techniques, sans fallback vague.
 for (const feature of ['merchantDealsForModels','merchantDealKey','packageInfo','priceOpportunityIds','Bonne affaire']) {
