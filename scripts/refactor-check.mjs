@@ -34,7 +34,11 @@ for (const feature of [
 ]) assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
 
 for (const module of ['test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js','test/avalon-addon.js']) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
-for (const json of ['test/catalog.json','test/deals.json','test/deals-config.json']) JSON.parse(read(json));
+JSON.parse(read('test/catalog.json'));
+const dealsConfig = JSON.parse(read('test/deals-config.json'));
+assert(dealsConfig.remoteJsonUrl === '../deals.json', 'TEST ne pointe pas vers la source marchands centrale');
+assert(!fs.existsSync('test/deals.json'), 'Une copie test/deals.json recreerait une seconde source marchands');
+JSON.parse(read('deals.json'));
 
 const app = read('test/app.js');
 for (const feature of [
