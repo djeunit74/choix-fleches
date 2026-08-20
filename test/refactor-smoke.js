@@ -9,6 +9,8 @@
     'sight-form','sightResult','sightStatus','sightMarkers','sightRail'
   ];
   const requiredBrands = ['skylon','easton','victory','carbon'];
+  let loadedNotebookId = null;
+  let notebookSaveGuardInstalled = false;
 
   function ensureArrowChoiceWorkBanner() {
     if (document.querySelector('[data-aa-work-banner], [aria-label="Choix des fleches en travaux"]')) return;
@@ -23,6 +25,83 @@
     panel.prepend(banner);
   }
 
+  function notebookEntryValid(entry) {
+    return Boolean(entry && (entry.title || entry.arcModel || entry.arrowModel));
+  }
+
+  function setNotebookLoadedState(id) {
+    loadedNotebookId = id || null;
+    const update = document.getElementById('updateNotebookBtn');
+    if (update) update.hidden = !loadedNotebookId;
+  }
+
+  function createNotebookRecord(entry, id = `notebook-${Date.now()}`) {
+    return { id, ...entry, updatedAt: new Date().toISOString() };
+  }
+
+  function saveNotebookAsNew(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const entry = typeof window.notebookFormData === 'function' ? window.notebookFormData() : null;
+    const status = document.getElementById('notebookStatus');
+    if (!notebookEntryValid(entry)) {
+      if (status) status.textContent = 'Ajoutez au moins un titre, un arc ou une fleche pour enregistrer la fiche.';
+      return;
+    }
+    const entries = typeof window.readNotebook === 'function' ? window.readNotebook() : [];
+    const record = createNotebookRecord(entry);
+    const next = [record, ...entries].slice(0, 50);
+    if (typeof window.writeNotebook === 'function') window.writeNotebook(next);
+    else {
+      localStorage.setItem('archerNotebook', JSON.stringify(next));
+      try { window.renderNotebook?.(); } catch {}
+    }
+    setNotebookLoadedState(null);
+    try { if (typeof currentNotebookId !== 'undefined') currentNotebookId = null; } catch {}
+    if (status) status.textContent = `Nouvelle fiche enregistree${record.title ? ` : ${record.title}` : ''}.`;
+  }
+
+  function updateLoadedNotebook() {
+    const status = document.getElementById('notebookStatus');
+    if (!loadedNotebookId) {
+      if (status) status.textContent = 'Chargez d abord une fiche a modifier.';
+      return;
+    }
+    const entry = typeof window.notebookFormData === 'function' ? window.notebookFormData() : null;
+    if (!notebookEntryValid(entry)) {
+      if (status) status.textContent = 'Ajoutez au moins un titre, un arc ou une fleche.';
+      return;
+    }
+    const entries = typeof window.readNotebook === 'function' ? window.readNotebook() : [];
+    const record = createNotebookRecord(entry, loadedNotebookId);
+    const next = entries.map(existing => existing.id === loadedNotebookId ? record : existing);
+    if (typeof window.writeNotebook === 'function') window.writeNotebook(next);
+    else {
+      localStorage.setItem('archerNotebook', JSON.stringify(next));
+      try { window.renderNotebook?.(); } catch {}
+    }
+    if (status) status.textContent = `Fiche mise a jour${record.title ? ` : ${record.title}` : ''}.`;
+  }
+
+  function installNotebookSaveGuard(form) {
+    if (notebookSaveGuardInstalled || !form) return;
+    notebookSaveGuardInstalled = true;
+    form.addEventListener('submit', saveNotebookAsNew, true);
+    document.getElementById('updateNotebookBtn')?.addEventListener('click', updateLoadedNotebook);
+    document.getElementById('resetNotebookBtn')?.addEventListener('click', () => setNotebookLoadedState(null));
+    document.getElementById('notebookContent')?.addEventListener('click', event => {
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (!target) return;
+      if (target.classList.contains('notebook-load')) {
+        setNotebookLoadedState(target.dataset.entryId || null);
+        setTimeout(() => setNotebookLoadedState(target.dataset.entryId || null), 0);
+      }
+      if (target.classList.contains('notebook-delete') && target.dataset.entryId === loadedNotebookId) {
+        setNotebookLoadedState(null);
+      }
+    }, true);
+  }
+
   function restoreNotebookUi() {
     const form = document.getElementById('notebook-form');
     if (!form) return;
@@ -31,18 +110,34 @@
       const save = document.createElement('button');
       save.id = 'saveNotebookBtn';
       save.type = 'submit';
-      save.textContent = 'Enregistrer la fiche';
+      save.textContent = 'Enregistrer comme nouvelle fiche';
       const reset = document.getElementById('resetNotebookBtn');
       actions.insertBefore(save, reset || null);
+    } else {
+      const save = document.getElementById('saveNotebookBtn');
+      if (save) save.textContent = 'Enregistrer comme nouvelle fiche';
+    }
+    if (actions && !document.getElementById('updateNotebookBtn')) {
+      const update = document.createElement('button');
+      update.id = 'updateNotebookBtn';
+      update.type = 'button';
+      update.textContent = 'Mettre a jour cette fiche';
+      update.hidden = true;
+      const reset = document.getElementById('resetNotebookBtn');
+      actions.insertBefore(update, reset || null);
     }
     const card = form.closest('.card');
     if (card && !card.querySelector('.aa-notebook-intro')) {
       const intro = document.createElement('p');
       intro.className = 'aa-notebook-intro';
-      intro.textContent = 'Enregistrez plusieurs fiches de reglages. Une nouvelle fiche est creee apres avoir vide le formulaire ; une fiche chargee peut etre consultee, modifiee puis reenregistree.';
+      intro.textContent = 'Vous pouvez enregistrer plusieurs fiches. Enregistrer comme nouvelle fiche n ecrase jamais une fiche existante. Apres avoir charge une fiche, utilisez Mettre a jour cette fiche uniquement si vous voulez la modifier.';
       const heading = card.querySelector('h2');
       heading?.insertAdjacentElement('afterend', intro);
+    } else {
+      const intro = card?.querySelector('.aa-notebook-intro');
+      if (intro) intro.textContent = 'Vous pouvez enregistrer plusieurs fiches. Enregistrer comme nouvelle fiche n ecrase jamais une fiche existante. Apres avoir charge une fiche, utilisez Mettre a jour cette fiche uniquement si vous voulez la modifier.';
     }
+    installNotebookSaveGuard(form);
   }
 
   function createFixedSightInputs(holder) {
@@ -198,6 +293,7 @@
     if (missingIds.length) failures.push(`DOM: ${missingIds.join(', ')}`);
     if (!document.querySelector('.sight-mark-fields .sight-mark-input[data-distance="18"]')) failures.push('reperes: champs par distance absents');
     if (!document.getElementById('aaSightScaleSide')) failures.push('viseur classique: choix cote ecriture absent');
+    if (!document.getElementById('updateNotebookBtn')) failures.push('carnet: bouton mise a jour explicite absent');
     if (missingBrands.length) failures.push(`marques: ${missingBrands.join(', ')}`);
     if (duplicateRefs.length) failures.push(`references ajoutees dupliquees: ${duplicateRefs.join(', ')}`);
     if (duplicateLabels.length) failures.push(`modeles dupliques: ${duplicateLabels.join(', ')}`);
