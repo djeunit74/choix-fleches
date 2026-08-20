@@ -85,10 +85,11 @@ JSON.parse(read('deals.json'));
 // Configurateur de fleche : il compose les composants apres le calcul sans remplacer le moteur de spine.
 const builder = read('test/arrow-builder.js');
 const components = JSON.parse(read('test/arrow-components.json'));
-for (const feature of ['data-arrow-part="point"','data-arrow-part="shaft"','data-arrow-part="vane"','collectTubes','pointWeights','vaneScore','arrow-components.json']) {
+for (const feature of ['data-arrow-part="point"','data-arrow-part="shaft"','data-arrow-part="vane"','collectTubes','pointChoices','pointRange','vaneScore','arrow-components.json']) {
   assert(builder.includes(feature), `Configurateur incomplet: ${feature}`);
 }
 assert(builder.includes('Reference exacte pas encore documentee'), 'Le configurateur doit signaler une pointe non documentee au lieu de l inventer');
+assert(builder.includes('poids commerciaux et references compatibles ne sont pas encore relies'), 'Une simple plage de pointe ne doit pas devenir des poids commerciaux inventes');
 assert(!builder.includes('dealsState'), 'Le configurateur technique ne doit pas dependre des offres marchands');
 assert(!builder.includes('merchantDealsForModels'), 'Le configurateur technique ne doit pas appeler le moteur marchand');
 assert(Array.isArray(components.vanes) && components.vanes.length >= 5, 'Catalogue de plumes sourcees insuffisant');
