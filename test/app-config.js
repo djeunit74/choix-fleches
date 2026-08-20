@@ -1,6 +1,6 @@
 /* Configuration centrale Assistant Archer TEST. Aucun comportement metier ici. */
 window.AssistantArcherConfig = Object.freeze({
-  version: '2026.08.20-v40',
+  version: '2026.08.20-v41',
   channel: 'test',
   historyLimit: 5,
   principles: Object.freeze({
