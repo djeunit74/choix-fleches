@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  sync-deals:
+  refresh-deals:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,13 +20,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Sync deals
-        env:
-          DEALS_REMOTE_JSON_URL: ${{ secrets.DEALS_REMOTE_JSON_URL }}
-          DEALS_REMOTE_CSV_URL: ${{ secrets.DEALS_REMOTE_CSV_URL }}
-        run: node scripts/sync-deals.mjs
-
-      - name: Refresh prices
+      - name: Refresh availability and prices
         run: node scripts/refresh-prices.mjs
 
       - name: Commit changes
