@@ -2,14 +2,20 @@
    Les correctifs transverses restent ici afin d'eviter les chaines de fichiers fix/final-fix. */
 (() => {
   const cfg = window.AssistantArcherConfig || { version: 'refactor-dev', channel: 'test' };
-  const norm = v => String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const norm = value => String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   const onceScript = (src, key) => {
     if (document.querySelector(`script[data-${key}]`)) return;
-    const s = document.createElement('script');
-    s.src = src;
-    s.async = false;
-    s.setAttribute(`data-${key}`, 'true');
-    document.head.appendChild(s);
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.setAttribute(`data-${key}`, 'true');
+    document.head.appendChild(script);
   };
 
   const originalNormalizeInput = window.normalizeInput;
@@ -22,6 +28,9 @@
   const originalComputeArcSetup = window.computeArcSetup;
   const originalRenderArcSetup = window.renderArcSetup;
   const originalRenderBarebowArcSetup = window.renderBarebowArcSetup;
+  const originalRenderDeals = window.renderDeals;
+  const originalRenderComparisonBrandCard = window.renderComparisonBrandCard;
+  const originalRenderModelList = window.renderModelList;
 
   function roundedLengthInRange(input, min, max, label) {
     const rounded = Math.round(input.arrowLength);
@@ -79,8 +88,10 @@
   if (typeof originalRenderArcSetup === 'function') {
     window.renderArcSetup = input => {
       const out = originalRenderArcSetup(input);
-      const el = document.getElementById('arcSetupResult');
-      if (el) el.innerHTML = el.innerHTML.replace(/<strong>Tiller positif vise<\/strong> : \+[^<]+ mm/, '<strong>Plage de tiller conseillee</strong> : +2 a +6 mm').replace(/<strong>Tiller<\/strong> : base visee \+[^|]+\|/, '<strong>Tiller</strong> : plage conseillee +2 a +6 mm |');
+      const element = document.getElementById('arcSetupResult');
+      if (element) element.innerHTML = element.innerHTML
+        .replace(/<strong>Tiller positif vise<\/strong> : \+[^<]+ mm/, '<strong>Plage de tiller conseillee</strong> : +2 a +6 mm')
+        .replace(/<strong>Tiller<\/strong> : base visee \+[^|]+\|/, '<strong>Tiller</strong> : plage conseillee +2 a +6 mm |');
       return out;
     };
   }
@@ -88,16 +99,16 @@
     window.renderBarebowArcSetup = input => {
       if (typeof els !== 'undefined' && els.arcBbBandMeasured) els.arcBbBandMeasured.value = Number.isFinite(input.braceMeasured) ? String(input.braceMeasured) : '';
       const classical = window.computeArcSetup;
-      window.computeArcSetup = i => {
-        const setup = originalComputeArcSetup(i);
+      window.computeArcSetup = currentInput => {
+        const setup = originalComputeArcSetup(currentInput);
         const min = -2;
         const max = 2;
         const actual = setup.actualTiller;
         const target = Math.max(min, Math.min(max, actual));
-        const expected = Math.round((i.upperTiller - target) * 10) / 10;
+        const expected = Math.round((currentInput.upperTiller - target) * 10) / 10;
         setup.tillerRange = [min, max];
         setup.lowerTiller = expected;
-        setup.lowerGap = Math.round((i.lowerTillerMeasured - expected) * 10) / 10;
+        setup.lowerGap = Math.round((currentInput.lowerTillerMeasured - expected) * 10) / 10;
         setup.tillerTarget = target;
         setup.tillerAction = actual >= min && actual <= max
           ? `Tiller faible/proche de zero (${actual.toFixed(1)} mm) : conserver comme base si l'arc est stable, puis valider au tir sur plusieurs ecarts sous l'encoche.`
@@ -130,7 +141,10 @@
     'brixxon': ['brixxon'], 'radius': ['radius'], 'premiens': ['premiens', 'preminens'], 'performa': ['performa'],
     'precium': ['precium'], 'paragon': ['paragon'], 'edge': ['edge']
   };
-  const ALIAS_MATCHES = Object.entries(ALIASES).flatMap(([key, arr]) => arr.map(alias => ({ key, alias: norm(alias) }))).filter(x => x.alias).sort((a, b) => b.alias.length - a.alias.length);
+  const ALIAS_MATCHES = Object.entries(ALIASES)
+    .flatMap(([key, aliases]) => aliases.map(alias => ({ key, alias: norm(alias) })))
+    .filter(entry => entry.alias)
+    .sort((a, b) => b.alias.length - a.alias.length);
   const WHY = {
     'avance': 'Retenue pour son tube carbone fin oriente cible : un choix coherent pour le classique et la progression vers la competition.',
     'superdrive micro': 'Retenue pour son petit diametre et son orientation performance exterieure ; interessante lorsque la discipline privilegie la tenue au vent, le campagne ou le 3D.',
@@ -163,23 +177,23 @@
   ];
 
   function canonical(value) {
-    const t = ` ${norm(value)} `;
+    const text = ` ${norm(value)} `;
     for (const { key, alias } of ALIAS_MATCHES) {
-      if (t.includes(` ${alias} `)) return key;
+      if (text.includes(` ${alias} `)) return key;
     }
     return '';
   }
-  function modelKey(li) {
-    const added = li?.dataset?.aaAddedReference;
+  function modelKey(listItem) {
+    const added = listItem?.dataset?.aaAddedReference;
     if (added && ALIASES[added]) return added;
-    return canonical(li?.querySelector('strong')?.textContent || li?.textContent || '');
+    return canonical(listItem?.querySelector('strong')?.textContent || listItem?.textContent || '');
   }
-  function dedupeModelList(ul) {
+  function dedupeModelList(list) {
     const seen = new Set();
-    [...ul.querySelectorAll(':scope > li')].forEach(li => {
-      const key = modelKey(li);
+    [...list.querySelectorAll(':scope > li')].forEach(item => {
+      const key = modelKey(item);
       if (!key) return;
-      if (seen.has(key)) li.remove();
+      if (seen.has(key)) item.remove();
       else seen.add(key);
     });
     return seen;
@@ -189,8 +203,9 @@
     return raw.includes('bare') || raw.includes('nu') ? 'barebow' : raw.includes('compound') || raw.includes('poul') ? 'compound' : 'recurve';
   }
   function eastonRange(result) {
-    const t = result.textContent || '';
-    const match = t.match(/(?:base\s+)?(\d{3,4})\s*[-–]\s*(\d{3,4})\s*\/\s*eq\.?\s*(\d{3,4})/i) || t.match(/plage fabricant\s*:\s*(\d{3,4})\s*[-–]\s*(\d{3,4})/i);
+    const text = result.textContent || '';
+    const match = text.match(/(?:base\s+)?(\d{3,4})\s*[-–]\s*(\d{3,4})\s*\/\s*eq\.?\s*(\d{3,4})/i)
+      || text.match(/plage fabricant\s*:\s*(\d{3,4})\s*[-–]\s*(\d{3,4})/i);
     return match ? [Math.min(+match[1], +match[2]), Math.max(+match[1], +match[2])] : null;
   }
   function augmentEaston(result) {
@@ -199,56 +214,114 @@
     if (!range) return;
     const [min, max] = range;
     const bow = currentBow();
-    const heading = [...result.querySelectorAll('p,div,h3,h4')].find(el => /^\s*Mod[eè]les conseill[eé]s\s*:/i.test(el.textContent || ''));
+    const heading = [...result.querySelectorAll('p,div,h3,h4')].find(element => /^\s*Mod[eè]les conseill[eé]s\s*:/i.test(element.textContent || ''));
     if (!heading) return;
-    const ul = heading.nextElementSibling;
-    if (!ul || ul.tagName !== 'UL') return;
-    const existing = dedupeModelList(ul);
+    const list = heading.nextElementSibling;
+    if (!list || list.tagName !== 'UL') return;
+    const existing = dedupeModelList(list);
     for (const model of EASTON_REFERENCES) {
       if (existing.has(model.key) || !model.bows.includes(bow)) continue;
       const available = model.spines.filter(spine => spine >= min && spine <= max);
       if (!available.length) continue;
-      const li = document.createElement('li');
-      li.dataset.aaAddedReference = model.key;
-      li.innerHTML = `<strong>${model.name}</strong> - ${model.material} | spine(s) fabricant dans la plage : <strong>${available.join(', ')}</strong>`;
-      ul.appendChild(li);
+      const item = document.createElement('li');
+      item.dataset.aaAddedReference = model.key;
+      item.innerHTML = `<strong>${model.name}</strong> - ${model.material} | spine(s) fabricant dans la plage : <strong>${available.join(', ')}</strong>`;
+      list.appendChild(item);
       existing.add(model.key);
     }
   }
-  function proposedModels(result) {
+  function proposedModels(scope) {
     const models = new Map();
-    result.querySelectorAll('li').forEach(li => {
-      if (li.closest('.merchant-block')) return;
-      const key = modelKey(li);
+    scope.querySelectorAll('li').forEach(item => {
+      if (item.closest('.merchant-block')) return;
+      const key = modelKey(item);
       if (!key || models.has(key)) return;
-      const label = li.querySelector('strong')?.textContent?.trim() || key;
+      const label = item.querySelector('strong')?.textContent?.trim() || key;
       models.set(key, label);
     });
     return models;
   }
-  function explainModels(result) {
-    result.querySelectorAll('li').forEach(li => {
-      if (li.closest('.merchant-block')) return;
-      const key = modelKey(li);
+  function explainModels(scope) {
+    scope.querySelectorAll('li').forEach(item => {
+      if (item.closest('.merchant-block')) return;
+      const key = modelKey(item);
       if (!key) return;
-      let why = li.querySelector('.aa-model-why');
+      let why = item.querySelector('.aa-model-why');
       if (!why) {
         why = document.createElement('div');
         why.className = 'aa-model-why';
         why.style.cssText = 'margin-top:.28rem;line-height:1.35';
-        li.appendChild(why);
+        item.appendChild(why);
       }
       const html = '<strong>Pourquoi ce modele :</strong> ' + (WHY[key] || 'Retenu car ses caracteristiques, son usage et les tailles disponibles sont coherents avec la configuration selectionnee ; le choix final reste a confirmer au tir.');
       if (why.innerHTML !== html) why.innerHTML = html;
     });
   }
 
+  function uniqueRecommendationModels(models = []) {
+    const seen = new Set();
+    return models.filter(entry => {
+      const key = canonical(entry?.model || '');
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+  function renderAllModelList(recommendation, input) {
+    const models = uniqueRecommendationModels(recommendation?.models || []);
+    if (!models.length) return '<li>Aucun modele correspondant strictement a vos filtres.</li>';
+    return models.map(entry => {
+      const meta = entry.meta;
+      const source = entry.sourceSpine ? ` | spine voisin ${entry.sourceSpine}` : '';
+      const advisedSpine = entry.advisedSpine ? ` | spine conseille ${entry.advisedSpine}` : '';
+      const pointSetup = meta?.pointRange && typeof window.estimatePointSetup === 'function' ? window.estimatePointSetup(input, meta.pointRange, meta) : null;
+      const details = meta
+        ? [
+            typeof window.seriesLabel === 'function' ? window.seriesLabel(meta.seriesTier) : meta.seriesTier,
+            typeof window.materialLabel === 'function' ? window.materialLabel(meta.material) : meta.material,
+            typeof window.diameterLabel === 'function' ? window.diameterLabel(meta.diameters?.[0] || 'standard') : meta.diameters?.[0],
+            typeof window.massLabel === 'function' ? window.massLabel(meta.massClass) : meta.massClass,
+            typeof window.toleranceLabel === 'function' ? window.toleranceLabel(meta.toleranceClass) : meta.toleranceClass,
+            typeof window.componentSystemLabel === 'function' ? window.componentSystemLabel(meta.componentSystem) : meta.componentSystem,
+            typeof window.distanceBandLabel === 'function' ? window.distanceBandLabel(meta.distanceBand) : meta.distanceBand,
+            typeof window.useCaseLabel === 'function' ? window.useCaseLabel(meta.useCase) : meta.useCase,
+            `pointe conseillee ${pointSetup?.recommended || meta.pointRange[0]} gr (options ${pointSetup?.pointChoices?.join('/') || `${meta.pointRange[0]}-${meta.pointRange[1]}`})${advisedSpine}${source}`
+          ].filter(Boolean).join(' | ')
+        : 'Meta technique locale incomplete';
+      return `<li><strong>${entry.model}</strong> - ${details}</li>`;
+    }).join('');
+  }
+  if (typeof originalRenderModelList === 'function') window.renderModelList = renderAllModelList;
+
+  function comparisonModelLine(entry, rec, input) {
+    const meta = entry.meta;
+    const pointSetup = meta?.pointRange && typeof window.estimatePointSetup === 'function' ? window.estimatePointSetup(input, meta.pointRange, meta) : null;
+    const spine = entry.advisedSpine || rec.primary;
+    const diameter = meta && typeof window.diameterLabel === 'function' ? window.diameterLabel(meta.diameters?.[0] || 'standard') : '';
+    const point = pointSetup?.recommended || meta?.pointRange?.[0];
+    const options = pointSetup?.pointChoices?.join('/') || (meta?.pointRange ? `${meta.pointRange[0]}-${meta.pointRange[1]}` : '');
+    const details = [spine ? `spine ${spine}` : '', diameter, point ? `pointe ${point} gr` : '', options ? `options ${options}` : ''].filter(Boolean).join(' | ');
+    return `<li><strong>${entry.model}</strong>${details ? ` - ${details}` : ''}</li>`;
+  }
+  if (typeof originalRenderComparisonBrandCard === 'function') {
+    window.renderComparisonBrandCard = (entry, input) => {
+      const models = uniqueRecommendationModels(entry.rec?.models || []);
+      const modelList = models.length ? `<ul>${models.map(model => comparisonModelLine(model, entry.rec, input)).join('')}</ul>` : '<p>Aucun modele detaille pour cette marque.</p>';
+      const deals = typeof originalRenderDeals === 'function'
+        ? originalRenderDeals(entry.brand, input.shaftMaterial, input.bowType, input.shootingProfile, null, models.map(model => model.model))
+        : '<p>Aucune offre marchande correspondante actuellement.</p>';
+      const brand = typeof window.brandLabel === 'function' ? window.brandLabel(entry.brand) : entry.brand;
+      const sources = typeof window.renderSourcesSection === 'function' ? window.renderSourcesSection([entry.brand]) : '';
+      return `<article class="mini-card" data-aa-brand="${entry.brand}"><p class="mini-card-brand">${brand}</p><p class="mini-card-subtitle">Modeles coherents</p>${modelList}${deals}${sources}</article>`;
+    };
+  }
+
   function merchantPriceValue(price) {
-    const m = String(price || '').replace(/\s/g, '').replace(',', '.').match(/(\d+(?:\.\d+)?)/);
-    return m ? Number(m[1]) : Number.POSITIVE_INFINITY;
+    const match = String(price || '').replace(/\s/g, '').replace(',', '.').match(/(\d+(?:\.\d+)?)/);
+    return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
   }
   function escapeText(value) {
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
   }
   function packageInfo(title) {
     const text = norm(title);
@@ -267,16 +340,23 @@
   function merchantIdentity(deal, key) {
     return [key, norm(deal.brand), norm(deal.material), (deal.bowTypes || []).map(norm).sort().join('|'), norm(deal.shop), String(deal.url || '').trim().toLowerCase()].join('::');
   }
-  function merchantDealsForModels(models) {
+  function dealVerificationFresh(deal) {
+    if (deal?.availability !== 'available' || !deal?.lastCheckedAt) return false;
+    const checked = new Date(deal.lastCheckedAt).getTime();
+    return Number.isFinite(checked) && Date.now() - checked <= 48 * 60 * 60 * 1000;
+  }
+  function merchantDealsForModels(models, brandFilter = null) {
     const allDeals = typeof dealsState !== 'undefined' && Array.isArray(dealsState?.deals) ? dealsState.deals : [];
     const preferredBrand = document.getElementById('preferredBrand')?.value || 'all';
     const material = document.getElementById('shaftMaterial')?.value || 'all';
     const bow = currentBow() === 'barebow' ? 'recurve' : currentBow();
     const seen = new Set();
-    const out = [];
+    const output = [];
     for (const deal of allDeals) {
       const key = merchantDealKey(deal);
       if (!key || !models.has(key)) continue;
+      if (deal.availability === 'unavailable') continue;
+      if (brandFilter && deal.brand !== brandFilter) continue;
       if (preferredBrand !== 'all' && deal.brand !== preferredBrand) continue;
       if (material !== 'all' && deal.material !== material) continue;
       if (Array.isArray(deal.bowTypes) && deal.bowTypes.length && !deal.bowTypes.includes(bow)) continue;
@@ -284,62 +364,89 @@
       const id = merchantIdentity(deal, key);
       if (seen.has(id)) continue;
       seen.add(id);
-      out.push({ deal, key, package: packageInfo(deal.title), price: merchantPriceValue(deal.price), id });
+      output.push({ deal, key, package: packageInfo(deal.title), price: merchantPriceValue(deal.price), id });
     }
-    return out;
+    return output;
   }
-  function goodDealIds(entries) {
+  function priceOpportunityIds(entries, verifiedOnly = false) {
     const groups = new Map();
     for (const entry of entries) {
-      if (entry.package.key === 'unknown' || !Number.isFinite(entry.price)) continue;
+      if (verifiedOnly && !dealVerificationFresh(entry.deal)) continue;
+      if (entry.deal?.availability === 'unavailable' || entry.package.key === 'unknown' || !Number.isFinite(entry.price)) continue;
       const key = `${entry.key}::${entry.package.key}`;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(entry);
     }
-    const good = new Set();
+    const opportunities = new Set();
     for (const group of groups.values()) {
       if (group.length < 2) continue;
       group.sort((a, b) => a.price - b.price);
       const [best, next] = group;
-      if (best.price <= next.price * 0.95) good.add(best.id);
+      if (best.price <= next.price * 0.95) opportunities.add(best.id);
     }
-    return good;
+    return opportunities;
   }
   function dealsFreshnessMessage() {
     if (typeof dealsState === 'undefined' || !dealsState?.updatedAt) return '';
     const updated = new Date(dealsState.updatedAt).getTime();
     if (!Number.isFinite(updated)) return '';
-    return Date.now() - updated > 48 * 60 * 60 * 1000 ? '<p><strong>Donnees marchands non actualisees recemment.</strong> Les recommandations techniques restent valides independamment des offres.</p>' : '';
+    return Date.now() - updated > 48 * 60 * 60 * 1000
+      ? '<p><strong>Donnees marchands non actualisees recemment.</strong> Les recommandations techniques restent valides independamment des offres.</p>'
+      : '';
   }
-  function alignMerchants() {
-    const result = document.getElementById('result');
-    const panel = result?.querySelector('.merchant-panel');
-    if (!result || !panel) return;
-    const models = proposedModels(result);
+  function renderMerchantBlock(container, modelScope, brandFilter = null) {
+    const models = proposedModels(modelScope);
     if (!models.size) return;
-    const entries = merchantDealsForModels(models);
-    const good = goodDealIds(entries);
+    const entries = merchantDealsForModels(models, brandFilter);
+    const good = priceOpportunityIds(entries, true);
+    const provisional = priceOpportunityIds(entries, false);
+    const pendingVerification = entries.some(entry => !dealVerificationFresh(entry.deal));
     const byModel = new Map();
     for (const entry of entries) {
       if (!byModel.has(entry.key)) byModel.set(entry.key, []);
       byModel.get(entry.key).push(entry);
     }
-    let block = panel.querySelector('.merchant-block');
+    let block = container.querySelector(':scope > .merchant-block') || container.querySelector('.merchant-block');
     if (!block) {
       block = document.createElement('section');
       block.className = 'merchant-block';
-      panel.appendChild(block);
+      container.appendChild(block);
     }
     const modelSections = [...models.entries()].map(([key, label]) => {
       const offers = (byModel.get(key) || []).sort((a, b) => a.price - b.price || String(a.deal.shop).localeCompare(String(b.deal.shop)));
       if (!offers.length) return `<section class="merchant-model" data-model-key="${escapeText(key)}"><h4>${escapeText(label)}</h4><p>Aucune offre marchande correspondante actuellement.</p></section>`;
       const items = offers.map(entry => {
-        const badge = good.has(entry.id) ? ' <mark><strong>🔥 Bonne affaire</strong></mark>' : '';
+        const badge = good.has(entry.id)
+          ? ' <mark><strong>🔥 Bonne affaire</strong></mark>'
+          : provisional.has(entry.id)
+            ? ' <mark><strong>💰 Prix interessant</strong></mark>'
+            : '';
         return `<li><a href="${escapeText(entry.deal.url)}" target="_blank" rel="noopener noreferrer">${escapeText(entry.deal.title)}</a> — <strong>${escapeText(entry.deal.price)}</strong>${badge}<div class="aa-offer-meta">${escapeText(entry.deal.shop)} · ${escapeText(entry.package.label)}</div></li>`;
       }).join('');
       return `<section class="merchant-model" data-model-key="${escapeText(key)}"><h4>${escapeText(label)}</h4><ul class="merchant-deals">${items}</ul></section>`;
     }).join('');
-    block.innerHTML = `<p class="merchant-intro"><strong>Offres marchands coherentes :</strong> uniquement pour les modeles retenus par le calcul technique.</p>${dealsFreshnessMessage()}${modelSections}`;
+    const pendingMessage = pendingVerification
+      ? '<p class="merchant-verification-note"><strong>Verification quotidienne en cours :</strong> certains liens n ont pas encore leur controle de disponibilite du jour. “Prix interessant” compare uniquement les prix ; “Bonne affaire” apparait apres verification du lien.</p>'
+      : '';
+    block.innerHTML = `<p class="merchant-intro"><strong>Offres marchands coherentes :</strong> uniquement pour les modeles retenus par le calcul technique.</p>${dealsFreshnessMessage()}${pendingMessage}${modelSections}`;
+  }
+  function alignMerchants() {
+    const result = document.getElementById('result');
+    if (!result) return;
+    const mainPanel = result.querySelector(':scope > .merchant-panel');
+    if (mainPanel) renderMerchantBlock(mainPanel, result, null);
+    result.querySelectorAll('.mini-card').forEach(card => {
+      const brand = card.dataset.aaBrand || null;
+      let holder = card.querySelector(':scope > .merchant-block');
+      if (!holder) {
+        holder = document.createElement('section');
+        holder.className = 'merchant-block';
+        const sources = [...card.children].find(child => child.tagName === 'P' && /Sources des tableaux/i.test(child.textContent || ''));
+        if (sources) card.insertBefore(holder, sources);
+        else card.appendChild(holder);
+      }
+      renderMerchantBlock(card, card, brand);
+    });
   }
 
   function applyBrandIdentity() {
@@ -373,10 +480,10 @@
       if (notebook && notebook.textContent !== 'Enregistrer / retrouver mes reglages') notebook.textContent = 'Enregistrer / retrouver mes reglages';
       if (sight && sight.textContent !== 'Enregistrer / consulter mes reperes') sight.textContent = 'Enregistrer / consulter mes reperes';
     }
-    document.querySelectorAll('.arc-classic-only p').forEach(p => {
-      if (p.textContent.includes('Repere de base')) {
+    document.querySelectorAll('.arc-classic-only p').forEach(paragraph => {
+      if (paragraph.textContent.includes('Repere de base')) {
         const html = "Le <strong>band</strong> depend surtout de la taille d'arc. Le <strong>tiller positif</strong> se calcule ainsi : <strong>tiller haut - tiller bas</strong>. Repere de depart : entre <strong>+2 et +6 mm</strong>.";
-        if (p.innerHTML !== html) p.innerHTML = html;
+        if (paragraph.innerHTML !== html) paragraph.innerHTML = html;
       }
     });
     applyBrandIdentity();
@@ -392,9 +499,9 @@
     block.className = 'app-install-setting';
     block.style.cssText = 'margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(0,0,0,.12)';
     block.innerHTML = '<button type="button" id="installAppBtn">Installer l\'application</button><p id="installAppStatus" style="margin:.5rem 0 0;font-size:.9em">Ajoute Assistant Archer comme une application sur le telephone.</p>';
-    const btn = block.querySelector('button');
+    const button = block.querySelector('button');
     const status = block.querySelector('p');
-    btn.onclick = async () => {
+    button.onclick = async () => {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
         const choice = await deferredInstallPrompt.userChoice;
@@ -417,19 +524,19 @@
 
   function removeAlternativeSpines(result) {
     if (!result) return;
-    result.querySelectorAll('p').forEach(p => { if (/^\s*Alternatives?\s+spine\s*:/i.test(p.textContent || '')) p.remove(); });
+    result.querySelectorAll('p').forEach(paragraph => { if (/^\s*Alternatives?\s+spine\s*:/i.test(paragraph.textContent || '')) paragraph.remove(); });
   }
   function enhancePointAdvice() {
     const result = document.getElementById('result');
     if (!result) return;
     const paragraphs = [...result.querySelectorAll('p')];
-    const point = paragraphs.find(p => p.textContent.trim().startsWith('Pointe conseillee'));
+    const point = paragraphs.find(paragraph => paragraph.textContent.trim().startsWith('Pointe conseillee'));
     if (!point || point.dataset.pointGuidance === '1') return;
     const match = point.textContent.match(/Pointe conseillee\s*:\s*(\d+)\s*gr.*?(\d+)\s*-\s*(\d+)\s*gr/i);
     if (!match) return;
     point.dataset.pointGuidance = '1';
     point.innerHTML = `<strong>Pointe conseillee</strong> : ${match[1]} gr <span class="result-subvalue">(plage fabricant ${match[2]}-${match[3]} gr)</span>`;
-    const quick = paragraphs.find(p => p.textContent.trim().startsWith('Ajustement rapide'));
+    const quick = paragraphs.find(paragraph => paragraph.textContent.trim().startsWith('Ajustement rapide'));
     if (quick) quick.innerHTML = '<strong>Affinage au tir</strong> : une pointe plus lourde assouplit dynamiquement la fleche ; une pointe plus legere la raidit. Restez dans la plage compatible du tube.';
   }
 
@@ -463,7 +570,9 @@
         }
         alignMerchants();
         if (document.documentElement.dataset.testFixVersion !== cfg.version) document.documentElement.dataset.testFixVersion = cfg.version;
-      } finally { running = false; }
+      } finally {
+        running = false;
+      }
     });
   }
   function init() {
