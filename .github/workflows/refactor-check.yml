@@ -23,6 +23,7 @@ jobs:
           node --check test/app-config.js
           node --check test/app.js
           node --check test/app-enhancements.js
+          node --check test/arrow-builder.js
           node --check test/refactor-smoke.js
           node --check test/barebow-guidance.js
           node --check test/ui-refactor.js
