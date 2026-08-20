@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#b23b2f" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon-assistant-archer-v11.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=20260419b" />
+  <link rel="stylesheet" href="styles.css?v=20260820-v49" />
 </head>
 <body>
   <main class="app">
@@ -34,10 +34,10 @@
         <label id="shootingProfileWrap" hidden style="display:none">Profil de tir<select id="shootingProfile" required><option value="recurve_outdoor">Recurve exterieur</option><option value="recurve_indoor">Recurve salle</option></select></label>
         <label>Marque preferee<select id="preferredBrand" required><option value="all">Toutes</option><option value="skylon">Skylon</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="carbon">Carbon Express</option></select></label>
         <label id="shootingEnvironmentWrap" hidden style="display:none">Environnement<select id="shootingEnvironment" required><option value="outdoor">Exterieur</option><option value="indoor">Interieur / salle</option><option value="mixed">Polyvalent</option></select></label>
-        <label>Materiaux<select id="shaftMaterial" required><option value="all">Tous</option><option value="carbon">Carbone</option><option value="alu">Alu</option></select></label><p id="materialGuidance">Repere debutant : carbone pour l'exterieur, alu surtout pour la salle.</p>
+        <label>Type de tube souhaite<select id="shaftMaterial" required><option value="all">Peu importe / conseille-moi</option><option value="carbon">Carbone</option><option value="alu">Aluminium</option></select></label><p id="materialGuidance">Le lieu de tir n impose pas un materiau. Le carbone est polyvalent, l aluminium est courant en salle, et les tubes aluminium/carbone sont proposes automatiquement lorsqu un modele compatible existe.</p>
+        <label id="disciplineWrap">Discipline<select id="discipline"><option value="target">Cible (salle ou exterieur)</option><option value="field">Campagne</option><option value="field">3D</option></select></label>
         <label id="drawWeightLabel">Puissance reelle a l'allonge<input id="drawWeight" type="number" min="10" max="70" step="0.5" value="30" required /></label>
         <label id="arrowLengthLabel">Longueur de fleche<input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required /></label>
-        <label id="disciplineWrap" hidden style="display:none">Usage<select id="discipline"><option value="target">Cible</option><option value="field">Campagne / 3D</option></select></label>
         <button type="submit">Calculer</button>
       </form></section>
       <section class="card result" id="result" aria-live="polite"><h2>Recommandation</h2><p>Entrez vos parametres puis lancez le calcul.</p></section>
@@ -63,9 +63,9 @@
   </main>
   <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">Je donne mon avis</button>
   <section id="feedbackPanel" class="feedback-panel" hidden><div class="feedback-panel-card"><div class="feedback-panel-head"><h2>Je donne mon avis</h2><button id="feedbackCloseBtn" type="button" class="feedback-close">Fermer</button></div><form id="feedbackForm"><fieldset class="feedback-categories"><legend>Categorie</legend><label><input type="radio" name="feedbackCategory" value="Ca manque" /> Ca manque</label><label><input type="radio" name="feedbackCategory" value="C'est faux" /> C'est faux</label><label><input type="radio" name="feedbackCategory" value="C'est confus" /> C'est confus</label><label><input type="radio" name="feedbackCategory" value="C'est utile" /> C'est utile</label></fieldset><label>Mon avis<textarea id="feedbackMessage" rows="4" maxlength="600"></textarea></label><div class="row-actions"><button id="feedbackSendBtn" type="button">Envoyer mon avis</button><button id="feedbackResetBtn" type="button">Vider</button></div></form><p id="feedbackStatus"></p></div></section>
-  <script src="app-config.js?v=refactor2"></script>
-  <script src="app.js?v=refactor2"></script>
-  <script src="app-enhancements.js?v=refactor2"></script>
-  <script src="refactor-smoke.js?v=refactor2"></script>
+  <script src="app-config.js?v=20260820-v49"></script>
+  <script src="app.js?v=20260820-v49"></script>
+  <script src="app-enhancements.js?v=20260820-v49"></script>
+  <script src="refactor-smoke.js?v=20260820-v49"></script>
 </body>
 </html>
