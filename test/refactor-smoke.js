@@ -39,7 +39,7 @@
     if (card && !card.querySelector('.aa-notebook-intro')) {
       const intro = document.createElement('p');
       intro.className = 'aa-notebook-intro';
-      intro.textContent = 'Enregistrez vos reglages, retrouvez une fiche plus tard, chargez-la pour la consulter ou la modifier, puis enregistrez-la de nouveau.';
+      intro.textContent = 'Enregistrez plusieurs fiches de reglages. Une nouvelle fiche est creee apres avoir vide le formulaire ; une fiche chargee peut etre consultee, modifiee puis reenregistree.';
       const heading = card.querySelector('h2');
       heading?.insertAdjacentElement('afterend', intro);
     }
@@ -58,11 +58,54 @@
     });
   }
 
+  function configureSightPreferences() {
+    const form = document.getElementById('sight-form');
+    if (!form) return;
+
+    const arrows = document.getElementById('sightArrows');
+    const arrowsLabel = arrows?.closest('label');
+    if (arrowsLabel) {
+      arrowsLabel.hidden = true;
+      arrowsLabel.style.display = 'none';
+    }
+
+    const sideHost = document.getElementById('scaleLabelSideSight');
+    if (!sideHost) return;
+    let select = document.getElementById('aaSightScaleSide');
+    if (!select) {
+      sideHost.innerHTML = 'Cote de l\'ecriture<select id="aaSightScaleSide" aria-label="Cote de l ecriture de la reglette"><option value="left">Gauche</option><option value="right">Droite</option></select>';
+      select = document.getElementById('aaSightScaleSide');
+      if (select) {
+        const initial = document.documentElement.dataset.scaleSide === 'right' ? 'right' : 'left';
+        select.value = initial;
+        sideHost.value = initial;
+        select.addEventListener('change', () => {
+          sideHost.value = select.value;
+          if (typeof window.applyScaleLabelSide === 'function') window.applyScaleLabelSide(select.value);
+          else {
+            document.documentElement.dataset.scaleSide = select.value;
+            localStorage.setItem('sightScaleSide', select.value);
+          }
+        });
+      }
+    } else {
+      const current = document.documentElement.dataset.scaleSide === 'right' ? 'right' : 'left';
+      select.value = current;
+      sideHost.value = current;
+    }
+
+    const isBarebow = document.getElementById('bowStyle')?.value === 'barebow';
+    sideHost.hidden = isBarebow;
+    sideHost.style.display = isBarebow ? 'none' : '';
+  }
+
   function restoreSightUi() {
     const form = document.getElementById('sight-form');
     const markers = document.getElementById('sightMarkers');
     const rail = document.getElementById('sightRail');
     if (!form || !markers || !rail) return;
+
+    configureSightPreferences();
 
     let section = form.querySelector('.aa-restored-sight-ui');
     if (!section) {
@@ -154,6 +197,7 @@
     const failures = [];
     if (missingIds.length) failures.push(`DOM: ${missingIds.join(', ')}`);
     if (!document.querySelector('.sight-mark-fields .sight-mark-input[data-distance="18"]')) failures.push('reperes: champs par distance absents');
+    if (!document.getElementById('aaSightScaleSide')) failures.push('viseur classique: choix cote ecriture absent');
     if (missingBrands.length) failures.push(`marques: ${missingBrands.join(', ')}`);
     if (duplicateRefs.length) failures.push(`references ajoutees dupliquees: ${duplicateRefs.join(', ')}`);
     if (duplicateLabels.length) failures.push(`modeles dupliques: ${duplicateLabels.join(', ')}`);
@@ -164,7 +208,8 @@
     return { ok: !failures.length, failures };
   }
 
-  window.AssistantArcherRefactorAudit = Object.freeze({ audit, duplicateAddedReferences, duplicateModelLabels, restoreNotebookUi, restoreSightUi });
+  document.getElementById('bowStyle')?.addEventListener('change', () => setTimeout(configureSightPreferences, 0));
+  window.AssistantArcherRefactorAudit = Object.freeze({ audit, duplicateAddedReferences, duplicateModelLabels, restoreNotebookUi, restoreSightUi, configureSightPreferences });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', audit, { once: true });
   else audit();
 })();
