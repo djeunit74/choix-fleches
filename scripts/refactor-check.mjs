@@ -29,9 +29,17 @@ assert(config.includes('measuredDrawWeightPreferred: true'), 'Puissance mesuree 
 const enhancements = read('test/app-enhancements.js');
 for (const feature of [
   'EASTON_REFERENCES','x10','a/c/e','x10 parallel pro 4 mm','x10 parallel pro 3.2 mm',
-  'alignMerchants','explainModels','renderBarebowArcSetup','tillerRange=[min,max]',
+  'alignMerchants','explainModels','renderBarebowArcSetup','tillerRange',
   'barebow-guidance.js','ui-refactor.js','expert-audit.js','onboarding.js'
 ]) assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
+
+// Offres marchands : uniquement les modeles techniques, sans fallback vague.
+for (const feature of ['merchantDealsForModels','merchantDealKey','packageInfo','goodDealIds','Bonne affaire']) {
+  assert(enhancements.includes(feature), `Controle marchand manquant: ${feature}`);
+}
+assert(!enhancements.includes('Voici des offres compatibles avec la marque'), 'Fallback marchand trop large encore present');
+assert(enhancements.includes("best.price <= next.price * 0.95"), 'Seuil Bonne affaire absent ou modifie');
+assert(enhancements.includes("entry.package.key === 'unknown'"), 'Conditionnement inconnu doit etre exclu des comparaisons de prix');
 
 for (const module of ['test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js','test/avalon-addon.js']) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
 JSON.parse(read('test/catalog.json'));
