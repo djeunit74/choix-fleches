@@ -89,14 +89,7 @@ function normalizedDeal(entry) {
 }
 
 function dealIdentity(entry) {
-  return [
-    entry.brand,
-    entry.modelKey,
-    entry.material,
-    entry.bowTypes.join("|"),
-    entry.shop,
-    entry.url.toLowerCase()
-  ].join("::");
+  return [entry.brand, entry.modelKey, entry.material, entry.bowTypes.join("|"), entry.shop, entry.url.toLowerCase()].join("::");
 }
 
 function normalizeDeals(deals) {
@@ -117,18 +110,15 @@ function validateDealsOrThrow(deals) {
     if (!VALID_BRANDS.has(entry.brand)) return true;
     if (!VALID_MATERIALS.has(entry.material)) return true;
     if (!VALID_TIERS.has(entry.tier)) return true;
-    if (!entry.modelKey) return true;
-    if (!entry.title) return true;
-    if (!entry.price) return true;
+    if (!entry.modelKey || !entry.title || !entry.price) return true;
     if (!entry.url || !entry.url.startsWith("http")) return true;
     if (!entry.shop || !entry.shop.includes(".")) return true;
     if (!entry.bowTypes.length) return true;
     return false;
   });
-
   if (invalid.length) {
     const sample = invalid.slice(0, 3).map((entry) => JSON.stringify(entry)).join("\n");
-    throw new Error(`Remote deals source is malformed. Invalid rows detected:\n${sample}`);
+    throw new Error(`Deals source is malformed. Invalid rows detected:\n${sample}`);
   }
 }
 
@@ -136,56 +126,55 @@ async function readJson(filePath) {
   return JSON.parse(await fs.readFile(filePath, "utf8"));
 }
 
-async function resolveRemoteSource() {
+async function resolveSource() {
   const config = await readJson(CONFIG_PATH);
+  const localCsvPath = process.env.DEALS_LOCAL_CSV_PATH || config.localCsvPath || "";
   const remoteJsonUrl = process.env.DEALS_REMOTE_JSON_URL || config.remoteJsonUrl || "";
   const remoteCsvUrl = process.env.DEALS_REMOTE_CSV_URL || config.remoteCsvUrl || "";
 
+  if (localCsvPath) return { type: "local-csv", path: path.resolve(ROOT, localCsvPath) };
   if (remoteJsonUrl) return { type: "json", url: remoteJsonUrl };
   if (remoteCsvUrl) return { type: "csv", url: remoteCsvUrl };
   return null;
 }
 
-async function fetchRemotePayload(source) {
-  const response = await fetch(source.url, { headers: { "cache-control": "no-cache" } });
-  if (!response.ok) {
-    throw new Error(`Remote source failed: ${response.status} ${response.statusText}`);
+async function loadSource(source) {
+  if (source.type === "local-csv") {
+    const text = await fs.readFile(source.path, "utf8");
+    const deals = normalizeDeals(csvToDeals(text));
+    validateDealsOrThrow(deals);
+    return { updatedAt: new Date().toISOString(), source: "local-csv-sync", deals };
   }
+
+  const response = await fetch(source.url, { headers: { "cache-control": "no-cache" } });
+  if (!response.ok) throw new Error(`Remote source failed: ${response.status} ${response.statusText}`);
+
   if (source.type === "json") {
     const payload = await response.json();
     const deals = normalizeDeals(payload.deals || []);
     validateDealsOrThrow(deals);
-    return {
-      updatedAt: new Date().toISOString(),
-      source: payload.source || "remote-json-sync",
-      deals
-    };
+    return { updatedAt: new Date().toISOString(), source: payload.source || "remote-json-sync", deals };
   }
 
   const text = await response.text();
   const deals = normalizeDeals(csvToDeals(text));
   validateDealsOrThrow(deals);
-  return {
-    updatedAt: new Date().toISOString(),
-    source: "remote-csv-sync",
-    deals
-  };
+  return { updatedAt: new Date().toISOString(), source: "remote-csv-sync", deals };
 }
 
 async function main() {
-  const source = await resolveRemoteSource();
+  const source = await resolveSource();
   if (!source) {
-    console.log("No remote source configured. Set DEALS_REMOTE_JSON_URL or DEALS_REMOTE_CSV_URL, or update deals-config.json.");
+    console.log("No deals source configured.");
     process.exit(0);
   }
 
-  const nextDealsState = await fetchRemotePayload(source);
-  if (!nextDealsState.deals.length) {
-    throw new Error("Remote source returned zero valid deals.");
-  }
+  const nextDealsState = await loadSource(source);
+  if (!nextDealsState.deals.length) throw new Error("Deals source returned zero valid deals.");
 
   await fs.writeFile(DEALS_PATH, `${JSON.stringify(nextDealsState, null, 2)}\n`, "utf8");
-  console.log(`Updated deals.json with ${nextDealsState.deals.length} unique offers from ${source.url}`);
+  const label = source.type === "local-csv" ? source.path : source.url;
+  console.log(`Updated deals.json with ${nextDealsState.deals.length} unique offers from ${label}`);
 }
 
 main().catch((error) => {
