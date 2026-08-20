@@ -13,7 +13,8 @@ const requiredIds = [
 ];
 for (const id of requiredIds) assert(index.includes(`id="${id}"`), `DOM essentiel manquant: ${id}`);
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
-for (const script of ['app-config.js','app.js','app-enhancements.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
+for (const script of ['app-config.js','app.js','app-enhancements.js','arrow-builder.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
+assert(index.includes('arrow-builder.css'), 'Style du configurateur non charge');
 assert(!index.includes('audit-fixes.js'), 'Ancienne couche audit-fixes.js encore chargee');
 assert(!index.includes('final-fixes.js'), 'Ancienne couche final-fixes.js encore chargee');
 assert(!fs.existsSync('test/audit-fixes.js'), 'Ancien fichier audit-fixes.js encore present');
@@ -21,8 +22,10 @@ assert(!fs.existsSync('test/final-fixes.js'), 'Ancien fichier final-fixes.js enc
 assert(index.includes('Version : chargement...'), 'La version est de nouveau codee en dur dans index.html');
 for (const theme of ['value="cible"','value="campagne"','value="3d"']) assert(index.includes(theme), `Theme discipline absent: ${theme}`);
 assert(index.includes('Peu importe / conseille-moi'), 'Choix materiau debutant absent');
+assert(index.includes('20260820-v50'), 'Cache-buster v50 absent du shell TEST');
 
 const config = read('test/app-config.js');
+assert(config.includes("version: '2026.08.20-v50'"), 'Version TEST v50 absente de la configuration centrale');
 assert(config.includes("channel: 'test'"), 'Canal TEST absent de la configuration centrale');
 assert(config.includes('manufacturerSourcesFirst: true'), 'Principe sources fabricant absent');
 assert(config.includes('coachValidationRecommended: true'), 'Validation coach absente');
@@ -35,8 +38,11 @@ for (const feature of [
   'barebow-guidance.js','ui-refactor.js','expert-audit.js','onboarding.js'
 ]) assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
 assert(enhancements.includes('const discipline = input.discipline'), 'La discipline choisie doit survivre a la normalisation');
+assert(enhancements.includes("disciplineWrap.hidden = true"), 'La discipline ne doit pas redevenir visible dans le formulaire fleches');
 assert(enhancements.includes("Peu importe / conseille-moi"), 'Libelle materiau debutant absent de la couche integration');
 assert(enhancements.includes('aluminium/carbone'), 'Information tubes aluminium/carbone absente');
+assert(enhancements.includes('encodeURIComponent(cfg.version'), 'Les modules dynamiques ne suivent pas la version centrale');
+assert(!enhancements.includes('?v=refactor2'), 'Ancien cache-buster refactor2 encore present dans la couche integration');
 
 const uiRefactor = read('test/ui-refactor.js');
 for (const feature of ['bindDisciplineToTheme','themeSelect','disciplineWrap','discipline.value=theme.value===\'cible\'?\'target\':\'field\'','#disciplineWrap{display:none!important}']) {
@@ -69,12 +75,31 @@ for (const feature of ['looksLikeMissingProduct','Soft 404 / product missing pag
 }
 assert(refreshPrices.includes('response.status === 404 || response.status === 410'), 'Les HTTP 404/410 ne sont pas traites');
 
-for (const module of ['test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js','test/avalon-addon.js']) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
+for (const module of ['test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js','test/avalon-addon.js','test/arrow-builder.js']) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
 JSON.parse(read('test/catalog.json'));
 const dealsConfig = JSON.parse(read('test/deals-config.json'));
 assert(dealsConfig.remoteJsonUrl === '../deals.json', 'TEST ne pointe pas vers la source marchands centrale');
 assert(!fs.existsSync('test/deals.json'), 'Une copie test/deals.json recreerait une seconde source marchands');
 JSON.parse(read('deals.json'));
+
+// Configurateur de fleche : il compose les composants apres le calcul sans remplacer le moteur de spine.
+const builder = read('test/arrow-builder.js');
+const components = JSON.parse(read('test/arrow-components.json'));
+for (const feature of ['data-arrow-part="point"','data-arrow-part="shaft"','data-arrow-part="vane"','collectTubes','pointWeights','vaneScore','arrow-components.json']) {
+  assert(builder.includes(feature), `Configurateur incomplet: ${feature}`);
+}
+assert(builder.includes('Reference exacte pas encore documentee'), 'Le configurateur doit signaler une pointe non documentee au lieu de l inventer');
+assert(!builder.includes('dealsState'), 'Le configurateur technique ne doit pas dependre des offres marchands');
+assert(!builder.includes('merchantDealsForModels'), 'Le configurateur technique ne doit pas appeler le moteur marchand');
+assert(Array.isArray(components.vanes) && components.vanes.length >= 5, 'Catalogue de plumes sourcees insuffisant');
+for (const vane of components.vanes) {
+  assert(vane.id && vane.manufacturer && vane.model && vane.sourceUrl, 'Plume sans identite ou source fabricant');
+  assert(/^https:\/\//.test(vane.sourceUrl), `URL fabricant invalide pour ${vane.id}`);
+}
+
+const expertAudit = read('test/expert-audit.js');
+assert(expertAudit.includes('window.AssistantArcherConfig?.version'), 'Avalon ne suit pas la version centrale');
+assert(!expertAudit.includes('avalon-addon.js?v=20260814'), 'Ancien cache-buster Avalon encore present');
 
 const app = read('test/app.js');
 for (const feature of [
