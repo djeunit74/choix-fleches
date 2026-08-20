@@ -8,6 +8,7 @@
     .aa-onboarding-card h2{margin:12px 36px 8px 0;color:#fff;font-size:1.35rem}
     .aa-tutorial-text{margin:0 0 16px;line-height:1.5;color:#e8eef7}
     .aa-first-choice{margin:0 0 18px;display:grid;gap:14px}
+    .aa-first-choice[hidden]{display:none!important}
     .aa-first-choice label{display:block;margin-bottom:7px;font-weight:700;color:#fff}
     .aa-first-choice select{width:100%;min-height:48px;padding:.7rem .8rem;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:#fff;color:#102033;font:inherit}
     .aa-choice-help{margin:6px 0 0;color:#d7e3f3;font-size:.9rem;line-height:1.4}
