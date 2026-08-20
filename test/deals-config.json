@@ -1,4 +1,4 @@
 {
-  "remoteJsonUrl": "",
+  "remoteJsonUrl": "../deals.json",
   "remoteCsvUrl": ""
 }
