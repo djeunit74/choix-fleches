@@ -1,0 +1,58 @@
+/* Assistant Archer TEST - interface du configurateur Pointe / Tube / Plume. */
+.arrow-builder{overflow:hidden}
+.arrow-builder-head{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.arrow-builder-head h2{margin:.15rem 0 0}
+.arrow-builder-kicker{margin:0;color:var(--accent);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.arrow-builder-state{margin:0;padding:.45rem .7rem;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:.86rem;font-weight:700}
+.arrow-builder-intro{margin:.8rem 0 1rem;line-height:1.45}
+.arrow-assembly{display:grid;grid-template-columns:minmax(92px,.8fr) minmax(150px,2.1fr) minmax(92px,.8fr);gap:0;align-items:center;margin:1rem 0 1.1rem;padding:.75rem;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.68))}
+.arrow-part{position:relative;min-height:88px;margin:0;padding:.55rem .35rem;border:0;border-radius:14px;background:transparent;color:var(--ink);font:inherit;font-weight:800;cursor:pointer;overflow:visible}
+.arrow-part:hover,.arrow-part:focus-visible{background:rgba(255,255,255,.8);outline:2px solid color-mix(in srgb,var(--accent-2) 45%,transparent);outline-offset:2px}
+.arrow-part.is-active{background:color-mix(in srgb,var(--accent-2) 10%,white);box-shadow:inset 0 0 0 2px var(--accent-2)}
+.arrow-part-art{display:block;position:relative;height:38px;margin:0 auto .4rem}
+.arrow-part-point .arrow-part-art{width:74px}
+.arrow-part-point .arrow-part-art::before{content:"";position:absolute;right:0;top:13px;width:52px;height:12px;border-radius:2px 7px 7px 2px;background:linear-gradient(90deg,#777,#c9c9c9)}
+.arrow-part-point .arrow-part-art::after{content:"";position:absolute;left:0;top:5px;border-top:16px solid transparent;border-bottom:16px solid transparent;border-right:28px solid #666}
+.arrow-part-shaft .arrow-part-art{width:100%;min-width:120px}
+.arrow-part-shaft .arrow-part-art::before{content:"";position:absolute;left:-8px;right:-8px;top:16px;height:7px;border-radius:99px;background:linear-gradient(90deg,var(--accent-2),#424c57,var(--accent-2));box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.arrow-part-vane .arrow-part-art{width:72px;font-size:2.2rem;line-height:38px;transform:rotate(-12deg)}
+.arrow-builder-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 1rem}
+.arrow-builder-summary>div{padding:.65rem .7rem;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.7);min-width:0}
+.arrow-builder-summary span{display:block;margin-bottom:.2rem;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--accent-2);font-weight:800}
+.arrow-builder-summary strong{display:block;overflow-wrap:anywhere;font-size:.92rem}
+.arrow-builder-panel{border-top:1px solid var(--line);padding-top:1rem}
+.arrow-builder-panel h3{margin:0;color:var(--accent-2)}
+.arrow-builder-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:.8rem}
+.arrow-builder-panel-head p{margin:.3rem 0 0}
+.arrow-builder-count{white-space:nowrap;padding:.28rem .55rem;border-radius:999px;background:color-mix(in srgb,var(--accent-2) 10%,white);font-size:.78rem;font-weight:800}
+.arrow-component-list{display:grid;gap:10px}
+.arrow-component-card{padding:.9rem;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.035)}
+.arrow-component-card.is-selected{border-color:var(--accent-2);box-shadow:inset 0 0 0 1px var(--accent-2),0 6px 16px rgba(0,0,0,.05)}
+.arrow-component-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.arrow-component-card h4{margin:.12rem 0 .45rem;font-size:1.05rem;color:var(--ink)}
+.arrow-component-brand{font-size:.76rem;text-transform:uppercase;letter-spacing:.045em;color:var(--accent-2);font-weight:800}
+.arrow-component-specs{margin:.3rem 0;font-weight:700}
+.arrow-component-card p{line-height:1.42}
+.arrow-builder-badge{flex:0 0 auto;padding:.28rem .5rem;border-radius:999px;background:color-mix(in srgb,var(--accent) 15%,white);color:var(--ink);font-size:.74rem;font-weight:900}
+.arrow-builder-badge.is-secondary{background:#f1f1ef;color:#555}
+.arrow-select-component{width:auto!important;margin:.45rem 0 0!important;padding:.55rem .75rem!important}
+.arrow-point-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:.8rem 0}
+.arrow-point-choice{min-height:72px;padding:.65rem;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.arrow-point-choice strong,.arrow-point-choice span{display:block}
+.arrow-point-choice span{margin-top:.18rem;font-size:.72rem;color:var(--accent-2);font-weight:800}
+.arrow-point-choice.is-selected{border-color:var(--accent-2);box-shadow:inset 0 0 0 1px var(--accent-2);background:color-mix(in srgb,var(--accent-2) 7%,white)}
+.arrow-builder-callout,.arrow-builder-empty{margin:.8rem 0;padding:.75rem .85rem;border-left:4px solid var(--accent-2);border-radius:10px;background:color-mix(in srgb,var(--accent-2) 7%,white);line-height:1.45}
+.arrow-builder-empty p{margin:.35rem 0 0}
+.arrow-source{font-size:.84rem}
+.arrow-source a{overflow-wrap:anywhere}
+@media(max-width:560px){
+  .arrow-assembly{grid-template-columns:82px minmax(120px,1fr) 82px;padding:.55rem}
+  .arrow-part{min-height:80px;font-size:.84rem}
+  .arrow-part-point .arrow-part-art{width:58px}
+  .arrow-part-point .arrow-part-art::before{width:40px}
+  .arrow-part-point .arrow-part-art::after{border-right-width:22px}
+  .arrow-part-vane .arrow-part-art{width:58px;font-size:1.9rem}
+  .arrow-builder-summary{grid-template-columns:1fr}
+  .arrow-builder-panel-head{display:block}
+  .arrow-builder-count{display:inline-block;margin-top:.5rem}
+}
