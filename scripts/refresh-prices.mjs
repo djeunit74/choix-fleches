@@ -84,10 +84,43 @@ function priceChangeGuard(deal, selected) {
   return { accepted: true };
 }
 
-async function fetchHtml(url) {
-  const response = await fetch(url, { headers: { "user-agent": USER_AGENT, "cache-control": "no-cache" } });
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-  return response.text();
+function normalizePageText(html) {
+  return String(html || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function looksLikeMissingProduct(html) {
+  const text = normalizePageText(html);
+  return [
+    /page que vous cherchez n['’]?a pas ete trouvee/,
+    /page introuvable/,
+    /produit introuvable/,
+    /product not found/,
+    /the page you are looking for (?:was not found|does not exist)/,
+    /erreur 404/,
+    /404 not found/
+  ].some((pattern) => pattern.test(text));
+}
+
+async function fetchProductPage(url) {
+  const response = await fetch(url, {
+    redirect: "follow",
+    headers: { "user-agent": USER_AGENT, "cache-control": "no-cache" }
+  });
+  const html = await response.text();
+  return { response, html };
+}
+
+function withVerification(deal, availability, checkedAt, extra = {}) {
+  return {
+    ...deal,
+    availability,
+    lastCheckedAt: checkedAt,
+    ...extra
+  };
 }
 
 function toCsvCell(value) {
@@ -112,37 +145,53 @@ async function main() {
   const dealsState = JSON.parse(await fs.readFile(DEALS_PATH, "utf8"));
   const nextDeals = [];
   const changed = [];
+  const unavailable = [];
   const errors = [];
 
   for (const deal of dealsState.deals) {
+    const checkedAt = new Date().toISOString();
     try {
-      const html = await fetchHtml(deal.url);
+      const { response, html } = await fetchProductPage(deal.url);
+      if (response.status === 404 || response.status === 410 || looksLikeMissingProduct(html)) {
+        unavailable.push({ title: deal.title, url: deal.url, reason: response.status === 404 || response.status === 410 ? `HTTP ${response.status}` : "Soft 404 / product missing page" });
+        nextDeals.push(withVerification(deal, "unavailable", checkedAt, { checkReason: response.status === 404 || response.status === 410 ? `http-${response.status}` : "soft-404" }));
+        continue;
+      }
+      if (!response.ok) {
+        errors.push({ title: deal.title, url: deal.url, reason: `${response.status} ${response.statusText}` });
+        nextDeals.push(withVerification(deal, "unknown", checkedAt, { checkReason: `http-${response.status}` }));
+        continue;
+      }
+
       const candidates = extractCandidates(html);
       const selected = chooseCandidate(deal, candidates);
+      const verifiedDeal = withVerification(deal, "available", checkedAt, { checkReason: "ok" });
       if (!selected) {
         errors.push({ title: deal.title, url: deal.url, reason: "No price candidate found" });
-        nextDeals.push(deal);
+        nextDeals.push(verifiedDeal);
         continue;
       }
       const guard = priceChangeGuard(deal, selected);
       if (!guard.accepted) {
         errors.push({ title: deal.title, url: deal.url, reason: guard.reason });
-        nextDeals.push(deal);
+        nextDeals.push(verifiedDeal);
         continue;
       }
       const nextPrice = formatEur(selected);
       const currentPrice = priceFromDeal(deal.price);
       if (currentPrice != null && Math.abs(selected - currentPrice) < 0.05) {
-        nextDeals.push(deal);
+        nextDeals.push(verifiedDeal);
         continue;
       }
       if (nextPrice !== deal.price) {
         changed.push({ title: deal.title, from: deal.price, to: nextPrice, shop: deal.shop });
-        nextDeals.push({ ...deal, price: nextPrice });
-      } else nextDeals.push(deal);
+        nextDeals.push({ ...verifiedDeal, price: nextPrice });
+      } else {
+        nextDeals.push(verifiedDeal);
+      }
     } catch (error) {
       errors.push({ title: deal.title, url: deal.url, reason: error.message });
-      nextDeals.push(deal);
+      nextDeals.push(withVerification(deal, "unknown", checkedAt, { checkReason: "fetch-error" }));
     }
   }
 
@@ -153,9 +202,11 @@ async function main() {
 
   console.log(`Checked ${nextDeals.length} offers.`);
   console.log(`Updated ${changed.length} prices.`);
+  console.log(`Marked ${unavailable.length} unavailable offers.`);
   changed.slice(0, 20).forEach((entry) => console.log(`- ${entry.title}: ${entry.from} -> ${entry.to}`));
+  unavailable.slice(0, 20).forEach((entry) => console.log(`- unavailable ${entry.title}: ${entry.reason}`));
   if (errors.length) {
-    console.log(`Skipped ${errors.length} offers with fetch/extraction issues.`);
+    console.log(`Kept ${errors.length} offers with unknown/check issues.`);
     errors.slice(0, 10).forEach((entry) => console.log(`- ${entry.title}: ${entry.reason}`));
   }
 }
