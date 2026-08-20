@@ -1,4 +1,5 @@
 {
+  "localCsvPath": "google-sheet-deals-template.csv",
   "remoteJsonUrl": "",
   "remoteCsvUrl": ""
 }
