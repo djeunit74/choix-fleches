@@ -3,7 +3,12 @@ name: Refactor non-regression
 on:
   push:
     branches:
+      - main
       - refactor-preserve-features
+    paths:
+      - 'test/**'
+      - 'scripts/refactor-check.mjs'
+      - '.github/workflows/refactor-check.yml'
   pull_request:
     paths:
       - 'test/**'
