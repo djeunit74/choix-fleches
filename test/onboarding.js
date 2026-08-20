@@ -45,7 +45,7 @@
   const steps = [
     {
       title: 'Bienvenue dans Assistant Archer',
-      text: 'Pour commencer, indiquez votre type d’arc et votre pratique principale. L’application adaptera ses conseils à ce profil.',
+      text: 'Pour commencer, choisissez votre type d’arc puis votre discipline principale. Ce choix correspond au thème utilisé par l’application.',
       tab: null,
       firstChoices: true
     },
@@ -112,14 +112,14 @@
             </select>
           </div>
           <div>
-            <label for="aaThemeChoice">Quelle est votre pratique principale ?</label>
+            <label for="aaThemeChoice">Discipline / thème principal</label>
             <select id="aaThemeChoice">
-              <option value="">Choisissez votre pratique</option>
+              <option value="">Choisissez votre discipline</option>
               <option value="cible">Cible</option>
               <option value="campagne">Campagne</option>
               <option value="3d">3D</option>
             </select>
-            <p class="aa-choice-help">Choisissez celle qui correspond le mieux à votre pratique actuelle. Vous pourrez la modifier à tout moment dans Réglages paramètres.</p>
+            <p class="aa-choice-help">D’autres disciplines pourront être choisies ensuite dans Réglages Paramètres. Vous pourrez modifier ce choix à tout moment.</p>
           </div>
         </div>
         <div class="aa-tutorial-actions">
