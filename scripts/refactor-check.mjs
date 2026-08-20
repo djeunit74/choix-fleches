@@ -41,6 +41,24 @@ assert(!enhancements.includes('Voici des offres compatibles avec la marque'), 'F
 assert(enhancements.includes("best.price <= next.price * 0.95"), 'Seuil Bonne affaire absent ou modifie');
 assert(enhancements.includes("entry.package.key === 'unknown'"), 'Conditionnement inconnu doit etre exclu des comparaisons de prix');
 
+// Multi-marques : pas de plafond arbitraire et chaque carte conserve sa marque.
+for (const feature of ['uniqueRecommendationModels','renderComparisonBrandCard','data-aa-brand','renderAllModelList']) {
+  assert(enhancements.includes(feature), `Generalisation multi-marques manquante: ${feature}`);
+}
+assert(!enhancements.includes('uniqueRecommendationModels(entry.rec?.models || []).slice('), 'Un plafond a ete rajoute sur les modeles multi-marques');
+
+// Une bonne affaire doit etre basee sur une page marchande verifiee recemment.
+for (const feature of ['dealVerificationFresh','availability','lastCheckedAt']) {
+  assert(enhancements.includes(feature), `Controle de disponibilite marchand manquant: ${feature}`);
+}
+assert(enhancements.includes("deal.availability === 'unavailable'"), 'Les offres indisponibles ne sont pas filtrees');
+
+const refreshPrices = read('scripts/refresh-prices.mjs');
+for (const feature of ['looksLikeMissingProduct','Soft 404 / product missing page','availability','lastCheckedAt']) {
+  assert(refreshPrices.includes(feature), `Verification quotidienne des URLs manquante: ${feature}`);
+}
+assert(refreshPrices.includes('response.status === 404 || response.status === 410'), 'Les HTTP 404/410 ne sont pas traites');
+
 for (const module of ['test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js','test/avalon-addon.js']) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
 JSON.parse(read('test/catalog.json'));
 const dealsConfig = JSON.parse(read('test/deals-config.json'));
