@@ -1,4 +1,4 @@
-const CACHE_NAME = "assistant-archer-test-shell-v41";
+const CACHE_NAME = "assistant-archer-test-shell";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
