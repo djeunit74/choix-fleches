@@ -40,9 +40,13 @@
   }
 
   if (typeof originalNormalizeInput === 'function') {
-    window.normalizeInput = input => input.shaftMaterial !== 'all'
-      ? originalNormalizeInput(input)
-      : { ...input, shootingProfile: 'recurve_all', shootingEnvironment: 'mixed', discipline: 'target' };
+    window.normalizeInput = input => {
+      const discipline = input.discipline || 'target';
+      if (input.shaftMaterial === 'all') {
+        return { ...input, shootingProfile: 'recurve_all', shootingEnvironment: 'mixed', discipline };
+      }
+      return { ...originalNormalizeInput(input), discipline };
+    };
   }
   if (typeof originalScoreModel === 'function') {
     window.scoreModel = (modelName, input, profile) => {
@@ -449,6 +453,41 @@
     });
   }
 
+  function configureArrowChoiceInputs() {
+    const material = document.getElementById('shaftMaterial');
+    if (material) {
+      const selected = material.value;
+      const wanted = [
+        ['all', 'Peu importe / conseille-moi'],
+        ['carbon', 'Carbone'],
+        ['alu', 'Aluminium']
+      ];
+      const currentSignature = [...material.options].map(option => `${option.value}:${option.textContent}`).join('|');
+      const wantedSignature = wanted.map(([value, label]) => `${value}:${label}`).join('|');
+      if (currentSignature !== wantedSignature) {
+        material.innerHTML = wanted.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+        material.value = wanted.some(([value]) => value === selected) ? selected : 'all';
+      }
+    }
+    const disciplineWrap = document.getElementById('disciplineWrap');
+    if (disciplineWrap) {
+      disciplineWrap.hidden = false;
+      disciplineWrap.style.display = '';
+    }
+    const discipline = document.getElementById('discipline');
+    if (discipline) {
+      const selected = discipline.value || 'target';
+      const signature = [...discipline.options].map(option => `${option.value}:${option.textContent}`).join('|');
+      const wanted = 'target:Cible (salle ou exterieur)|field:Campagne|field:3D';
+      if (signature !== wanted) {
+        discipline.innerHTML = '<option value="target">Cible (salle ou exterieur)</option><option value="field">Campagne</option><option value="field">3D</option>';
+        discipline.value = selected === 'field' ? 'field' : 'target';
+      }
+    }
+    const guidance = document.getElementById('materialGuidance');
+    if (guidance) guidance.textContent = 'Le lieu de tir n impose pas un materiau. Le carbone est polyvalent, l aluminium est courant en salle, et les tubes aluminium/carbone sont proposes automatiquement lorsqu un modele compatible existe.';
+  }
+
   function applyBrandIdentity() {
     document.title = 'Assistant Archer';
     const icon = document.querySelector('link[rel="icon"]');
@@ -486,6 +525,7 @@
         if (paragraph.innerHTML !== html) paragraph.innerHTML = html;
       }
     });
+    configureArrowChoiceInputs();
     applyBrandIdentity();
   }
 
