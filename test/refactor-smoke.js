@@ -47,7 +47,7 @@
 
   function createFixedSightInputs(holder) {
     [18,30,40,50,60,70].forEach(distance => {
-      if (document.querySelector(`.sight-mark-input[data-distance="${distance}"]`)) return;
+      if (holder.querySelector(`.sight-mark-input[data-distance="${distance}"]`)) return;
       const input = document.createElement('input');
       input.type = 'hidden';
       input.className = 'sight-mark-input';
