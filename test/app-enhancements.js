@@ -368,22 +368,23 @@
     }
     return output;
   }
-  function goodDealIds(entries) {
+  function priceOpportunityIds(entries, verifiedOnly = false) {
     const groups = new Map();
     for (const entry of entries) {
-      if (!dealVerificationFresh(entry.deal) || entry.package.key === 'unknown' || !Number.isFinite(entry.price)) continue;
+      if (verifiedOnly && !dealVerificationFresh(entry.deal)) continue;
+      if (entry.deal?.availability === 'unavailable' || entry.package.key === 'unknown' || !Number.isFinite(entry.price)) continue;
       const key = `${entry.key}::${entry.package.key}`;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(entry);
     }
-    const good = new Set();
+    const opportunities = new Set();
     for (const group of groups.values()) {
       if (group.length < 2) continue;
       group.sort((a, b) => a.price - b.price);
       const [best, next] = group;
-      if (best.price <= next.price * 0.95) good.add(best.id);
+      if (best.price <= next.price * 0.95) opportunities.add(best.id);
     }
-    return good;
+    return opportunities;
   }
   function dealsFreshnessMessage() {
     if (typeof dealsState === 'undefined' || !dealsState?.updatedAt) return '';
@@ -393,16 +394,13 @@
       ? '<p><strong>Donnees marchands non actualisees recemment.</strong> Les recommandations techniques restent valides independamment des offres.</p>'
       : '';
   }
-  function verificationLabel(deal) {
-    if (deal?.availability === 'available' && deal?.lastCheckedAt) return 'page verifiee';
-    if (deal?.availability === 'unknown') return 'verification de disponibilite en attente';
-    return 'disponibilite non encore confirmee';
-  }
   function renderMerchantBlock(container, modelScope, brandFilter = null) {
     const models = proposedModels(modelScope);
     if (!models.size) return;
     const entries = merchantDealsForModels(models, brandFilter);
-    const good = goodDealIds(entries);
+    const good = priceOpportunityIds(entries, true);
+    const provisional = priceOpportunityIds(entries, false);
+    const pendingVerification = entries.some(entry => !dealVerificationFresh(entry.deal));
     const byModel = new Map();
     for (const entry of entries) {
       if (!byModel.has(entry.key)) byModel.set(entry.key, []);
@@ -418,12 +416,19 @@
       const offers = (byModel.get(key) || []).sort((a, b) => a.price - b.price || String(a.deal.shop).localeCompare(String(b.deal.shop)));
       if (!offers.length) return `<section class="merchant-model" data-model-key="${escapeText(key)}"><h4>${escapeText(label)}</h4><p>Aucune offre marchande correspondante actuellement.</p></section>`;
       const items = offers.map(entry => {
-        const badge = good.has(entry.id) ? ' <mark><strong>🔥 Bonne affaire</strong></mark>' : '';
-        return `<li><a href="${escapeText(entry.deal.url)}" target="_blank" rel="noopener noreferrer">${escapeText(entry.deal.title)}</a> — <strong>${escapeText(entry.deal.price)}</strong>${badge}<div class="aa-offer-meta">${escapeText(entry.deal.shop)} · ${escapeText(entry.package.label)} · ${escapeText(verificationLabel(entry.deal))}</div></li>`;
+        const badge = good.has(entry.id)
+          ? ' <mark><strong>🔥 Bonne affaire</strong></mark>'
+          : provisional.has(entry.id)
+            ? ' <mark><strong>💰 Prix interessant</strong></mark>'
+            : '';
+        return `<li><a href="${escapeText(entry.deal.url)}" target="_blank" rel="noopener noreferrer">${escapeText(entry.deal.title)}</a> — <strong>${escapeText(entry.deal.price)}</strong>${badge}<div class="aa-offer-meta">${escapeText(entry.deal.shop)} · ${escapeText(entry.package.label)}</div></li>`;
       }).join('');
       return `<section class="merchant-model" data-model-key="${escapeText(key)}"><h4>${escapeText(label)}</h4><ul class="merchant-deals">${items}</ul></section>`;
     }).join('');
-    block.innerHTML = `<p class="merchant-intro"><strong>Offres marchands coherentes :</strong> uniquement pour les modeles retenus par le calcul technique.</p>${dealsFreshnessMessage()}${modelSections}`;
+    const pendingMessage = pendingVerification
+      ? '<p class="merchant-verification-note"><strong>Verification quotidienne en cours :</strong> certains liens n ont pas encore leur controle de disponibilite du jour. “Prix interessant” compare uniquement les prix ; “Bonne affaire” apparait apres verification du lien.</p>'
+      : '';
+    block.innerHTML = `<p class="merchant-intro"><strong>Offres marchands coherentes :</strong> uniquement pour les modeles retenus par le calcul technique.</p>${dealsFreshnessMessage()}${pendingMessage}${modelSections}`;
   }
   function alignMerchants() {
     const result = document.getElementById('result');
