@@ -1,13 +1,16 @@
 /* Assistant Archer - garde de non-regression pendant le refactor.
-   Ne modifie aucune logique metier. Signale les fonctions/DOM essentiels manquants et maintient temporairement l'avertissement du choix des fleches. */
+   Restaure les interfaces carnet/reperes perdues pendant la simplification UI,
+   sans modifier leur stockage historique dans app.js. */
 (() => {
   const requiredIds = [
     'spine-form','result','historyContent','clearHistoryBtn',
     'arc-setup-form','arcSetupResult','bowStyle',
-    'notebook-form','notebookResult','notebookStatus',
-    'sight-form','sightResult','sightStatus','sightMarkers'
+    'notebook-form','notebookResult','notebookStatus','notebookContent','saveNotebookBtn',
+    'sight-form','sightResult','sightStatus','sightMarkers','sightRail'
   ];
   const requiredBrands = ['skylon','easton','victory','carbon'];
+  let loadedNotebookId = null;
+  let notebookSaveGuardInstalled = false;
 
   function ensureArrowChoiceWorkBanner() {
     if (document.querySelector('[data-aa-work-banner], [aria-label="Choix des fleches en travaux"]')) return;
@@ -20,6 +23,232 @@
     banner.style.cssText = 'margin:0 0 1rem;padding:1rem 1.1rem;border:2px dashed #b56a00;border-radius:14px;background:#fff4d6;color:#5d3a00;box-shadow:0 6px 18px rgba(93,58,0,.10)';
     banner.innerHTML = '<strong style="font-size:1.08rem">🏹 Zone de tir en travaux 🚧</strong><br><span>Le choix des flèches est actuellement en réglage fin. Les flèches, elles, vont droit… le code fait encore quelques écarts. 😄 Utilisez les recommandations avec prudence jusqu’à la fin des vérifications.</span>';
     panel.prepend(banner);
+  }
+
+  function notebookEntryValid(entry) {
+    return Boolean(entry && (entry.title || entry.arcModel || entry.arrowModel));
+  }
+
+  function setNotebookLoadedState(id) {
+    loadedNotebookId = id || null;
+    const update = document.getElementById('updateNotebookBtn');
+    if (update) update.hidden = !loadedNotebookId;
+  }
+
+  function createNotebookRecord(entry, id = `notebook-${Date.now()}`) {
+    return { id, ...entry, updatedAt: new Date().toISOString() };
+  }
+
+  function saveNotebookAsNew(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const entry = typeof window.notebookFormData === 'function' ? window.notebookFormData() : null;
+    const status = document.getElementById('notebookStatus');
+    if (!notebookEntryValid(entry)) {
+      if (status) status.textContent = 'Ajoutez au moins un titre, un arc ou une fleche pour enregistrer la fiche.';
+      return;
+    }
+    const entries = typeof window.readNotebook === 'function' ? window.readNotebook() : [];
+    const record = createNotebookRecord(entry);
+    const next = [record, ...entries].slice(0, 50);
+    if (typeof window.writeNotebook === 'function') window.writeNotebook(next);
+    else {
+      localStorage.setItem('archerNotebook', JSON.stringify(next));
+      try { window.renderNotebook?.(); } catch {}
+    }
+    setNotebookLoadedState(null);
+    try { if (typeof currentNotebookId !== 'undefined') currentNotebookId = null; } catch {}
+    if (status) status.textContent = `Nouvelle fiche enregistree${record.title ? ` : ${record.title}` : ''}.`;
+  }
+
+  function updateLoadedNotebook() {
+    const status = document.getElementById('notebookStatus');
+    if (!loadedNotebookId) {
+      if (status) status.textContent = 'Chargez d abord une fiche a modifier.';
+      return;
+    }
+    const entry = typeof window.notebookFormData === 'function' ? window.notebookFormData() : null;
+    if (!notebookEntryValid(entry)) {
+      if (status) status.textContent = 'Ajoutez au moins un titre, un arc ou une fleche.';
+      return;
+    }
+    const entries = typeof window.readNotebook === 'function' ? window.readNotebook() : [];
+    const record = createNotebookRecord(entry, loadedNotebookId);
+    const next = entries.map(existing => existing.id === loadedNotebookId ? record : existing);
+    if (typeof window.writeNotebook === 'function') window.writeNotebook(next);
+    else {
+      localStorage.setItem('archerNotebook', JSON.stringify(next));
+      try { window.renderNotebook?.(); } catch {}
+    }
+    if (status) status.textContent = `Fiche mise a jour${record.title ? ` : ${record.title}` : ''}.`;
+  }
+
+  function installNotebookSaveGuard(form) {
+    if (notebookSaveGuardInstalled || !form) return;
+    notebookSaveGuardInstalled = true;
+    form.addEventListener('submit', saveNotebookAsNew, true);
+    document.getElementById('updateNotebookBtn')?.addEventListener('click', updateLoadedNotebook);
+    document.getElementById('resetNotebookBtn')?.addEventListener('click', () => setNotebookLoadedState(null));
+    document.getElementById('notebookContent')?.addEventListener('click', event => {
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (!target) return;
+      if (target.classList.contains('notebook-load')) {
+        setNotebookLoadedState(target.dataset.entryId || null);
+        setTimeout(() => setNotebookLoadedState(target.dataset.entryId || null), 0);
+      }
+      if (target.classList.contains('notebook-delete') && target.dataset.entryId === loadedNotebookId) {
+        setNotebookLoadedState(null);
+      }
+    }, true);
+  }
+
+  function restoreNotebookUi() {
+    const form = document.getElementById('notebook-form');
+    if (!form) return;
+    const actions = form.querySelector('.row-actions');
+    if (actions && !document.getElementById('saveNotebookBtn')) {
+      const save = document.createElement('button');
+      save.id = 'saveNotebookBtn';
+      save.type = 'submit';
+      save.textContent = 'Enregistrer comme nouvelle fiche';
+      const reset = document.getElementById('resetNotebookBtn');
+      actions.insertBefore(save, reset || null);
+    } else {
+      const save = document.getElementById('saveNotebookBtn');
+      if (save) save.textContent = 'Enregistrer comme nouvelle fiche';
+    }
+    if (actions && !document.getElementById('updateNotebookBtn')) {
+      const update = document.createElement('button');
+      update.id = 'updateNotebookBtn';
+      update.type = 'button';
+      update.textContent = 'Mettre a jour cette fiche';
+      update.hidden = true;
+      const reset = document.getElementById('resetNotebookBtn');
+      actions.insertBefore(update, reset || null);
+    }
+    const card = form.closest('.card');
+    if (card && !card.querySelector('.aa-notebook-intro')) {
+      const intro = document.createElement('p');
+      intro.className = 'aa-notebook-intro';
+      intro.textContent = 'Vous pouvez enregistrer plusieurs fiches. Enregistrer comme nouvelle fiche n ecrase jamais une fiche existante. Apres avoir charge une fiche, utilisez Mettre a jour cette fiche uniquement si vous voulez la modifier.';
+      const heading = card.querySelector('h2');
+      heading?.insertAdjacentElement('afterend', intro);
+    } else {
+      const intro = card?.querySelector('.aa-notebook-intro');
+      if (intro) intro.textContent = 'Vous pouvez enregistrer plusieurs fiches. Enregistrer comme nouvelle fiche n ecrase jamais une fiche existante. Apres avoir charge une fiche, utilisez Mettre a jour cette fiche uniquement si vous voulez la modifier.';
+    }
+    installNotebookSaveGuard(form);
+  }
+
+  function createFixedSightInputs(holder) {
+    [18,30,40,50,60,70].forEach(distance => {
+      if (holder.querySelector(`.sight-mark-input[data-distance="${distance}"]`)) return;
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.className = 'sight-mark-input';
+      input.dataset.distance = String(distance);
+      input.id = `sightMark${distance}`;
+      input.inputMode = 'decimal';
+      holder.appendChild(input);
+    });
+  }
+
+  function configureSightPreferences() {
+    const form = document.getElementById('sight-form');
+    if (!form) return;
+
+    const arrows = document.getElementById('sightArrows');
+    const arrowsLabel = arrows?.closest('label');
+    if (arrowsLabel) {
+      arrowsLabel.hidden = true;
+      arrowsLabel.style.display = 'none';
+    }
+
+    const sideHost = document.getElementById('scaleLabelSideSight');
+    if (!sideHost) return;
+    let select = document.getElementById('aaSightScaleSide');
+    if (!select) {
+      sideHost.innerHTML = 'Cote de l\'ecriture<select id="aaSightScaleSide" aria-label="Cote de l ecriture de la reglette"><option value="left">Gauche</option><option value="right">Droite</option></select>';
+      select = document.getElementById('aaSightScaleSide');
+      if (select) {
+        const initial = document.documentElement.dataset.scaleSide === 'right' ? 'right' : 'left';
+        select.value = initial;
+        sideHost.value = initial;
+        select.addEventListener('change', () => {
+          sideHost.value = select.value;
+          if (typeof window.applyScaleLabelSide === 'function') window.applyScaleLabelSide(select.value);
+          else {
+            document.documentElement.dataset.scaleSide = select.value;
+            localStorage.setItem('sightScaleSide', select.value);
+          }
+        });
+      }
+    } else {
+      const current = document.documentElement.dataset.scaleSide === 'right' ? 'right' : 'left';
+      select.value = current;
+      sideHost.value = current;
+    }
+
+    const isBarebow = document.getElementById('bowStyle')?.value === 'barebow';
+    sideHost.hidden = isBarebow;
+    sideHost.style.display = isBarebow ? 'none' : '';
+  }
+
+  function restoreSightUi() {
+    const form = document.getElementById('sight-form');
+    const markers = document.getElementById('sightMarkers');
+    const rail = document.getElementById('sightRail');
+    if (!form || !markers || !rail) return;
+
+    configureSightPreferences();
+
+    let section = form.querySelector('.aa-restored-sight-ui');
+    if (!section) {
+      section = document.createElement('section');
+      section.className = 'subcard aa-restored-sight-ui';
+      section.innerHTML = '<h3>Reperes par distance</h3><div class="sight-layout"><div class="sight-mark-grid sight-mark-fields" aria-hidden="true"></div><div class="sight-visual" id="sightVisual"></div></div>';
+      const notes = document.getElementById('sightNotes')?.closest('label');
+      form.insertBefore(section, notes || form.querySelector('.row-actions') || null);
+    }
+
+    const holder = section.querySelector('.sight-mark-fields');
+    if (!holder) return;
+    holder.innerHTML = '';
+    createFixedSightInputs(holder);
+
+    const visual = section.querySelector('.sight-visual');
+    if (!visual) return;
+    const help = document.getElementById('sightHelp');
+    const note = document.getElementById('sightScaleNote');
+    if (help) {
+      help.className = 'sight-help';
+      if (!help.textContent.trim()) help.textContent = 'Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette ou la palette.';
+      visual.appendChild(help);
+    }
+
+    rail.className = 'sight-rail';
+    rail.setAttribute('aria-label', document.documentElement.dataset.bowStyle === 'barebow' ? 'Palette barebow de 0 a 16 centimetres' : 'Reglette de viseur de 0 a 16 centimetres');
+    rail.innerHTML = '<span class="sight-scale-label" style="top:8%">0 cm</span><span class="sight-scale-label" style="top:29%">4</span><span class="sight-scale-label" style="top:50%">8</span><span class="sight-scale-label" style="top:71%">12</span><span class="sight-scale-label" style="top:92%">16 cm</span><span class="sight-tick is-major" style="top:8%"></span><span class="sight-tick is-major" style="top:29%"></span><span class="sight-tick is-major" style="top:50%"></span><span class="sight-tick is-major" style="top:71%"></span><span class="sight-tick is-major" style="top:92%"></span>';
+    markers.className = 'sight-markers';
+    markers.innerHTML = '';
+    rail.appendChild(markers);
+    visual.appendChild(rail);
+
+    if (note) {
+      note.className = 'sight-scale-note';
+      if (!note.textContent.trim()) note.textContent = '0 cm en haut, 16 cm en bas. Fleches clavier : 1 mm, Page : 1 cm.';
+      visual.appendChild(note);
+    }
+
+    const heading = form.closest('.card')?.querySelector('h2');
+    if (heading && !form.closest('.card')?.querySelector('.aa-sight-intro-restored')) {
+      const intro = document.createElement('p');
+      intro.className = 'aa-sight-intro-restored';
+      intro.textContent = 'Enregistrez vos reperes par distance. Les fiches sauvegardees peuvent ensuite etre chargees, consultees, modifiees ou supprimees.';
+      heading.insertAdjacentElement('afterend', intro);
+    }
+
+    try { if (typeof renderSightVisual === 'function') renderSightVisual(); } catch (error) { console.error('[Assistant Archer] restauration reperes:', error); }
   }
 
   function duplicateAddedReferences() {
@@ -52,25 +281,31 @@
 
   function audit() {
     ensureArrowChoiceWorkBanner();
+    restoreNotebookUi();
+    restoreSightUi();
     const missingIds = requiredIds.filter(id => !document.getElementById(id));
     const brandSelect = document.getElementById('preferredBrand');
     const values = brandSelect ? [...brandSelect.options].map(o => o.value) : [];
     const missingBrands = requiredBrands.filter(v => !values.includes(v));
     const duplicateRefs = duplicateAddedReferences();
     const duplicateLabels = duplicateModelLabels();
-    const cfg = window.AssistantArcherConfig;
     const failures = [];
     if (missingIds.length) failures.push(`DOM: ${missingIds.join(', ')}`);
+    if (!document.querySelector('.sight-mark-fields .sight-mark-input[data-distance="18"]')) failures.push('reperes: champs par distance absents');
+    if (!document.getElementById('aaSightScaleSide')) failures.push('viseur classique: choix cote ecriture absent');
+    if (!document.getElementById('updateNotebookBtn')) failures.push('carnet: bouton mise a jour explicite absent');
     if (missingBrands.length) failures.push(`marques: ${missingBrands.join(', ')}`);
     if (duplicateRefs.length) failures.push(`references ajoutees dupliquees: ${duplicateRefs.join(', ')}`);
     if (duplicateLabels.length) failures.push(`modeles dupliques: ${duplicateLabels.join(', ')}`);
+    const cfg = window.AssistantArcherConfig;
     if (!cfg || cfg.channel !== 'test') failures.push('configuration TEST centrale absente');
     document.documentElement.dataset.refactorSmoke = failures.length ? 'fail' : 'pass';
     if (failures.length) console.error('[Assistant Archer refactor] non-regression:', failures);
     return { ok: !failures.length, failures };
   }
 
-  window.AssistantArcherRefactorAudit = Object.freeze({ audit, duplicateAddedReferences, duplicateModelLabels });
+  document.getElementById('bowStyle')?.addEventListener('change', () => setTimeout(configureSightPreferences, 0));
+  window.AssistantArcherRefactorAudit = Object.freeze({ audit, duplicateAddedReferences, duplicateModelLabels, restoreNotebookUi, restoreSightUi, configureSightPreferences });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', audit, { once: true });
   else audit();
 })();
