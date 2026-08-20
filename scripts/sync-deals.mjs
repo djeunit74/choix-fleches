@@ -74,20 +74,42 @@ function isValidDealEntry(entry) {
     && typeof entry.shop === "string";
 }
 
+function normalizedDeal(entry) {
+  return {
+    brand: entry.brand.trim().toLowerCase(),
+    modelKey: normalizeModelKey(entry.modelKey),
+    material: entry.material.trim().toLowerCase(),
+    bowTypes: [...new Set(entry.bowTypes.map((value) => value.trim().toLowerCase()).filter(Boolean))].sort(),
+    tier: entry.tier.trim().toLowerCase(),
+    title: entry.title.trim(),
+    price: entry.price.trim(),
+    url: entry.url.trim(),
+    shop: entry.shop.trim().toLowerCase()
+  };
+}
+
+function dealIdentity(entry) {
+  return [
+    entry.brand,
+    entry.modelKey,
+    entry.material,
+    entry.bowTypes.join("|"),
+    entry.shop,
+    entry.url.toLowerCase()
+  ].join("::");
+}
+
 function normalizeDeals(deals) {
-  return deals
-    .filter(isValidDealEntry)
-    .map((entry) => ({
-      brand: entry.brand.trim().toLowerCase(),
-      modelKey: normalizeModelKey(entry.modelKey),
-      material: entry.material.trim().toLowerCase(),
-      bowTypes: entry.bowTypes.map((value) => value.trim().toLowerCase()).filter(Boolean),
-      tier: entry.tier.trim().toLowerCase(),
-      title: entry.title.trim(),
-      price: entry.price.trim(),
-      url: entry.url.trim(),
-      shop: entry.shop.trim().toLowerCase()
-    }));
+  const seen = new Set();
+  const unique = [];
+  for (const rawEntry of deals.filter(isValidDealEntry)) {
+    const entry = normalizedDeal(rawEntry);
+    const identity = dealIdentity(entry);
+    if (seen.has(identity)) continue;
+    seen.add(identity);
+    unique.push(entry);
+  }
+  return unique;
 }
 
 function validateDealsOrThrow(deals) {
@@ -163,7 +185,7 @@ async function main() {
   }
 
   await fs.writeFile(DEALS_PATH, `${JSON.stringify(nextDealsState, null, 2)}\n`, "utf8");
-  console.log(`Updated deals.json with ${nextDealsState.deals.length} offers from ${source.url}`);
+  console.log(`Updated deals.json with ${nextDealsState.deals.length} unique offers from ${source.url}`);
 }
 
 main().catch((error) => {
