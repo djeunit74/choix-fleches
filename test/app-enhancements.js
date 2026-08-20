@@ -9,10 +9,11 @@
     .replace(/[^a-z0-9]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  const assetUrl = src => `${src}${src.includes('?') ? '&' : '?'}v=${encodeURIComponent(cfg.version || 'test')}`;
   const onceScript = (src, key) => {
     if (document.querySelector(`script[data-${key}]`)) return;
     const script = document.createElement('script');
-    script.src = src;
+    script.src = assetUrl(src);
     script.async = false;
     script.setAttribute(`data-${key}`, 'true');
     document.head.appendChild(script);
@@ -471,8 +472,8 @@
     }
     const disciplineWrap = document.getElementById('disciplineWrap');
     if (disciplineWrap) {
-      disciplineWrap.hidden = false;
-      disciplineWrap.style.display = '';
+      disciplineWrap.hidden = true;
+      disciplineWrap.style.display = 'none';
     }
     const discipline = document.getElementById('discipline');
     if (discipline) {
@@ -580,10 +581,10 @@
     if (quick) quick.innerHTML = '<strong>Affinage au tir</strong> : une pointe plus lourde assouplit dynamiquement la fleche ; une pointe plus legere la raidit. Restez dans la plage compatible du tube.';
   }
 
-  onceScript('barebow-guidance.js?v=refactor2', 'barebow-guidance');
-  onceScript('ui-refactor.js?v=refactor2', 'ui-refactor');
-  onceScript('expert-audit.js?v=refactor2', 'expert-audit');
-  onceScript('onboarding.js?v=refactor2', 'onboarding');
+  onceScript('barebow-guidance.js', 'barebow-guidance');
+  onceScript('ui-refactor.js', 'ui-refactor');
+  onceScript('expert-audit.js', 'expert-audit');
+  onceScript('onboarding.js', 'onboarding');
 
   const upperTillerInput = document.getElementById('upperTiller');
   const lowerTillerInput = document.getElementById('lowerTillerMeasured');
