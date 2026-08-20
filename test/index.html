@@ -34,10 +34,10 @@
         <label id="shootingProfileWrap" hidden style="display:none">Profil de tir<select id="shootingProfile" required><option value="recurve_outdoor">Recurve exterieur</option><option value="recurve_indoor">Recurve salle</option></select></label>
         <label>Marque preferee<select id="preferredBrand" required><option value="all">Toutes</option><option value="skylon">Skylon</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="carbon">Carbon Express</option></select></label>
         <label id="shootingEnvironmentWrap" hidden style="display:none">Environnement<select id="shootingEnvironment" required><option value="outdoor">Exterieur</option><option value="indoor">Interieur / salle</option><option value="mixed">Polyvalent</option></select></label>
-        <label>Materiaux<select id="shaftMaterial" required><option value="all">Tous</option><option value="carbon">Carbone</option><option value="alu">Alu</option></select></label><p id="materialGuidance">Repere debutant : carbone pour l'exterieur, alu surtout pour la salle.</p>
+        <label>Type de tube souhaite<select id="shaftMaterial" required><option value="all">Peu importe / conseille-moi</option><option value="carbon">Carbone</option><option value="alu">Aluminium</option></select></label><p id="materialGuidance">Le lieu de tir n impose pas un materiau. Le carbone est polyvalent, l aluminium est courant en salle, et les tubes aluminium/carbone sont proposes automatiquement lorsqu un modele compatible existe.</p>
+        <label id="disciplineWrap">Discipline<select id="discipline"><option value="target">Cible (salle ou exterieur)</option><option value="field">Campagne</option><option value="field">3D</option></select></label>
         <label id="drawWeightLabel">Puissance reelle a l'allonge<input id="drawWeight" type="number" min="10" max="70" step="0.5" value="30" required /></label>
         <label id="arrowLengthLabel">Longueur de fleche<input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required /></label>
-        <label id="disciplineWrap" hidden style="display:none">Usage<select id="discipline"><option value="target">Cible</option><option value="field">Campagne / 3D</option></select></label>
         <button type="submit">Calculer</button>
       </form></section>
       <section class="card result" id="result" aria-live="polite"><h2>Recommandation</h2><p>Entrez vos parametres puis lancez le calcul.</p></section>
