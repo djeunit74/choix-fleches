@@ -18,6 +18,21 @@
 
   let refreshTimer = 0;
 
+  const POINT_MEDIA = Object.freeze({
+    'skylon-42-parallel': Object.freeze({
+      imageUrl: 'https://www.dutchbowstore.com/media/0f/e6/89/1648816905/radiusBreakoffPoint.jpg?ts=1648816905',
+      alt: 'Pointe Skylon 4.2 Break-off Parallel',
+      sourceUrl: 'https://www.dutchbowstore.com/Skylon-ID4.2-Parallel-Break-off-Point-Radius-Brixxon/150359007',
+      sourceLabel: 'DutchBowStore — photo produit'
+    }),
+    'skylon-42-bulge': Object.freeze({
+      imageUrl: 'https://www.arrowforge.de/WebRoot/Store20/Shops/63122672/5F3A/7548/5FEC/66CB/3E43/0A0C/6D10/9735/101449_Skylon_Bulge_Break_Up_Einklebespitze_4.2_fuer_Radius_Brixxon_kaufen_new_3_2000_LEVOPT_V1.jpg',
+      alt: 'Pointe Skylon 4.2 Break-off Bulge',
+      sourceUrl: 'https://www.arrowforge.de/Skylon-Bulge-Break-Up-Einklebespitze-42-fuer-Radius/Brixxon',
+      sourceLabel: 'Arrowforge — photo produit'
+    })
+  });
+
   const norm = value => String(value || '')
     .toLowerCase()
     .normalize('NFD')
@@ -32,6 +47,10 @@
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+
+  const pointUiText = value => String(value || '')
+    .replace(/\bfitments\b/gi, 'tailles compatibles')
+    .replace(/\bfitment\b/gi, 'taille compatible');
 
   const theme = () => {
     const value = document.getElementById('themeSelect')?.value;
@@ -447,8 +466,19 @@
 
   function renderPointCard(match) {
     const point = match.point;
-    const fitment = match.fitment ? ` · Fitment ${match.fitment}` : '';
+    const fitment = match.fitment
+      ? ` · Taille compatible fabricant : ${String(match.fitment).replace(/^#/, 'n°')}`
+      : '';
     const selected = state.point?.id === point.id;
+    const media = POINT_MEDIA[point.id] || null;
+    const mediaBlock = media
+      ? `<figure class="arrow-point-media">
+          <a href="${esc(media.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="arrow-point-media-link">
+            <img src="${esc(media.imageUrl)}" alt="${esc(media.alt)}" loading="lazy" decoding="async" data-point-image>
+          </a>
+          <figcaption>Photo illustrative · <a href="${esc(media.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(media.sourceLabel)}</a></figcaption>
+        </figure>`
+      : '';
     const weightButtons = match.weights.length
       ? `<div class="arrow-point-choices">${match.weights.map(value => `
           <button type="button" class="arrow-point-choice${selected && state.point?.weight === value ? ' is-selected' : ''}"
@@ -467,7 +497,8 @@
           ${match.exact ? '<span class="arrow-builder-badge">Compatible</span>' : '<span class="arrow-builder-badge is-secondary">Spine a confirmer</span>'}
         </div>
         <p class="arrow-component-specs">${esc(point.material || 'Materiau non indique')} · ${esc(point.mount || 'Montage non indique')}${esc(fitment)}</p>
-        ${point.note ? `<p>${esc(point.note)}</p>` : ''}
+        ${mediaBlock}
+        ${point.note ? `<p>${esc(pointUiText(point.note))}</p>` : ''}
         ${weightButtons}
         <p class="arrow-source"><a href="${esc(point.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source fabricant : ${esc(point.sourceLabel)}</a></p>
       </article>`;
@@ -500,7 +531,7 @@
         <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
           <strong>Le catalogue de pointes existe pour ce tube, mais le spine ${esc(state.tube.spine || 'non precise')} n est pas un spine fabricant documente dans cette source.</strong>
-          <p>Confirmez d abord la reference / le spine exact du tube avant de choisir le fitment de pointe.</p>
+          <p>Confirmez d abord la reference / le spine exact du tube avant de choisir la taille de pointe compatible.</p>
         </div>
         <div class="arrow-point-known-families">
           ${unresolved.map(match => `<span>${esc(match.point.manufacturer)} · ${esc(match.point.model)}</span>`).join('')}
@@ -525,6 +556,10 @@
     }
 
     panel.innerHTML = body;
+
+    panel.querySelectorAll('[data-point-image]').forEach(image => {
+      image.addEventListener('error', () => image.closest('.arrow-point-media')?.remove(), { once: true });
+    });
 
     panel.querySelectorAll('[data-point-id]').forEach(button => {
       button.addEventListener('click', () => {
@@ -708,7 +743,7 @@
     refresh();
   }
 
-  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v54' });
+  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v55' });
   document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', install, { once: true })
     : install();
