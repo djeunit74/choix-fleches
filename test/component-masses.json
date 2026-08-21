@@ -1,0 +1,59 @@
+{
+  "updatedAt": "2026-08-21",
+  "policy": {
+    "manufacturerPreferred": true,
+    "resellerConsensusAllowed": true,
+    "minimumIndependentSources": 2,
+    "note": "Une masse non constructeur n est utilisee que si au moins deux sources independantes convergent. La valeur reste affichee comme estimation et conserve sa plage mesuree/publiee."
+  },
+  "vaneMasses": [
+    {
+      "componentId": "jet6-s-175",
+      "manufacturer": "Jet6 Archery",
+      "component": "S 1.75\"",
+      "estimatedGrains": 0.9,
+      "rangeGrains": [0.8, 1.0],
+      "confidence": "medium-high",
+      "sourceTier": "reseller-consensus",
+      "sources": [
+        {
+          "label": "Bogensportshop.eu — pesee BSS",
+          "valueGrains": 0.8,
+          "url": "https://bogensportshop.eu/en/arrows/vanes-feathers/spin-vanes/jet6-vanes-s-1-75-50-pcs.html"
+        },
+        {
+          "label": "Monster Archery Malaysia — specification produit",
+          "valueGrains": 1.0,
+          "url": "https://monstersportarchery.com/product/k--k-archery-vanes-ksl-jet6-s-175"
+        }
+      ],
+      "note": "La fiche distributeur JVD affiche 0 grain, valeur traitee comme placeholder invalide. L estimation 0,9 gr est le milieu de deux sources independantes 0,8 et ~1,0 gr."
+    }
+  ],
+  "rearComponents": [
+    {
+      "id": "skylon-recurve-pin-nock",
+      "manufacturer": "Skylon",
+      "componentType": "nock",
+      "component": "Recurve Pin Nock",
+      "estimatedGrains": 2.4,
+      "rangeGrains": [2.28, 2.5],
+      "confidence": "medium-high",
+      "sourceTier": "measured-reseller-consensus",
+      "systems": ["3.2", "4.2"],
+      "sources": [
+        {
+          "label": "OCD Strings — mesure de nock",
+          "valueGrains": 2.28,
+          "url": "https://www.ocdstrings.com/nock-guide"
+        },
+        {
+          "label": "Bogenladen Leipzig — fiche produit",
+          "valueGrains": 2.5,
+          "url": "https://www.bogenladen-leipzig.de/Skylon-Recurve-Pin-Nock-schwarz"
+        }
+      ],
+      "note": "Cette masse d encoche ne suffit pas a calculer l ensemble arriere Skylon : la masse du pin adapter 3.2/4.2 reste a recouper par groupe de spine."
+    }
+  ]
+}
