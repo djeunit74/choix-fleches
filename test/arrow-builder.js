@@ -962,11 +962,22 @@
 
   async function loadComponents() {
     try {
-      const response = await fetch('./arrow-components.json', { cache: 'no-store' });
-      if (!response.ok) throw new Error(String(response.status));
-      const data = await response.json();
+      const [componentResponse, jet6Response] = await Promise.all([
+        fetch('./arrow-components.json', { cache: 'no-store' }),
+        fetch('./jet6-vanes.json', { cache: 'no-store' }).catch(() => null)
+      ]);
+      if (!componentResponse.ok) throw new Error(String(componentResponse.status));
+      const data = await componentResponse.json();
+      const jet6 = jet6Response?.ok ? await jet6Response.json() : { vanes: [] };
+      const baseVanes = Array.isArray(data.vanes) ? data.vanes : [];
+      const extraVanes = Array.isArray(jet6.vanes) ? jet6.vanes : [];
+      const seenVanes = new Set();
       state.points = Array.isArray(data.points) ? data.points : [];
-      state.vanes = Array.isArray(data.vanes) ? data.vanes : [];
+      state.vanes = [...baseVanes, ...extraVanes].filter(vane => {
+        if (!vane?.id || seenVanes.has(vane.id)) return false;
+        seenVanes.add(vane.id);
+        return true;
+      });
     } catch (error) {
       console.warn('[Assistant Archer] catalogue composants indisponible', error);
       state.points = [];
@@ -1037,7 +1048,7 @@
     refresh();
   }
 
-  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v57' });
+  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v58' });
   document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', install, { once: true })
     : install();
