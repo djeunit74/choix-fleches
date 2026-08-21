@@ -9,6 +9,7 @@
     tube: null,
     point: null,
     pointReviewed: false,
+    points: [],
     vane: null,
     vanes: [],
     calculated: false,
@@ -105,7 +106,7 @@
           spine: advisedSpine,
           meta: modelMeta
         };
-        output.push({ list, item, tube });
+        output.push({ item, tube });
       });
     });
 
@@ -121,18 +122,79 @@
     return modelEntries().map(entry => entry.tube);
   }
 
-  function pointChoices(tube) {
-    const direct = Array.isArray(tube?.meta?.pointChoices)
-      ? tube.meta.pointChoices.map(Number).filter(Number.isFinite)
-      : [];
-    return [...new Set(direct)].sort((a, b) => a - b);
-  }
-
   function pointRange(tube) {
     const range = Array.isArray(tube?.meta?.pointRange) ? tube.meta.pointRange.map(Number) : [];
     return range.length >= 2 && range.every(Number.isFinite)
       ? [Math.min(...range), Math.max(...range)]
       : null;
+  }
+
+  function tubeMatchesKey(tube, key) {
+    const model = norm(tube?.model);
+    const wanted = norm(key);
+    if (!wanted) return false;
+    // Les alias courts ne doivent jamais absorber une variante plus precise.
+    if (wanted === 'x10') return model === 'x10';
+    if (wanted === 'vap') return model === 'vap';
+    return model === wanted || model.startsWith(`${wanted} `);
+  }
+
+  function matchedTubeKey(point, tube) {
+    return (point?.tubeKeys || []).find(key => tubeMatchesKey(tube, key)) || '';
+  }
+
+  function pointFit(point, tube) {
+    const key = matchedTubeKey(point, tube);
+    if (!key) return null;
+
+    const selectedSpine = Number(tube?.spine);
+    const hasSpine = Number.isFinite(selectedSpine);
+    const spineKey = hasSpine ? String(selectedSpine) : '';
+
+    let recommended = null;
+    if (point.recommendedWeightsByTubeSpine) {
+      const byTube = point.recommendedWeightsByTubeSpine[norm(key)] || point.recommendedWeightsByTubeSpine[key];
+      if (!byTube || !hasSpine || !Array.isArray(byTube[spineKey])) {
+        return { point, key, weights: [], fitment: '', exact: false, reason: 'spine' };
+      }
+      recommended = byTube[spineKey].map(Number).filter(Number.isFinite);
+    }
+
+    if (Array.isArray(point.spines) && point.spines.length) {
+      if (!hasSpine || !point.spines.map(Number).includes(selectedSpine)) {
+        return { point, key, weights: [], fitment: '', exact: false, reason: 'spine' };
+      }
+    }
+
+    let weights = Array.isArray(point.weights) ? point.weights.map(Number).filter(Number.isFinite) : [];
+    if (point.weightsBySpine) {
+      if (!hasSpine || !Array.isArray(point.weightsBySpine[spineKey])) {
+        return { point, key, weights: [], fitment: '', exact: false, reason: 'spine' };
+      }
+      weights = point.weightsBySpine[spineKey].map(Number).filter(Number.isFinite);
+    }
+
+    if (recommended) {
+      const allowed = new Set(weights);
+      weights = recommended.filter(value => allowed.has(value));
+    }
+
+    const fitment = point.fitmentBySpine?.[spineKey] || point.fitment || '';
+    return {
+      point,
+      key,
+      weights: [...new Set(weights)].sort((a, b) => a - b),
+      fitment,
+      exact: true,
+      reason: ''
+    };
+  }
+
+  function pointCatalogForTube(tube) {
+    return state.points
+      .map(point => pointFit(point, tube))
+      .filter(Boolean)
+      .sort((a, b) => Number(b.exact) - Number(a.exact) || a.point.manufacturer.localeCompare(b.point.manufacturer));
   }
 
   function vaneScore(vane) {
@@ -317,8 +379,7 @@
   }
 
   function decorateModelChoices() {
-    const entries = modelEntries();
-    entries.forEach(({ item, tube }) => {
+    modelEntries().forEach(({ item, tube }) => {
       let row = item.querySelector(':scope > .arrow-model-select-row');
       if (!row) {
         row = document.createElement('div');
@@ -353,7 +414,9 @@
     const summary = document.getElementById('arrowBuilderSummary');
     if (!summary) return;
     const tubeText = state.tube ? `${state.tube.model}${state.tube.spine ? ` ${state.tube.spine}` : ''}` : 'a choisir';
-    const pointText = state.point ? `${state.point} gr` : state.pointReviewed ? 'a documenter' : 'a choisir';
+    const pointText = state.point
+      ? `${state.point.manufacturer} ${state.point.model} · ${state.point.weight} gr`
+      : state.pointReviewed ? 'a documenter' : 'a choisir';
     const vaneText = state.vane ? state.vane.model : 'a choisir';
     summary.innerHTML = `
       <span><strong>Tube :</strong> ${esc(tubeText)}</span>
@@ -382,34 +445,78 @@
     });
   }
 
+  function renderPointCard(match) {
+    const point = match.point;
+    const fitment = match.fitment ? ` · Fitment ${match.fitment}` : '';
+    const selected = state.point?.id === point.id;
+    const weightButtons = match.weights.length
+      ? `<div class="arrow-point-choices">${match.weights.map(value => `
+          <button type="button" class="arrow-point-choice${selected && state.point?.weight === value ? ' is-selected' : ''}"
+            data-point-id="${esc(point.id)}" data-point-weight="${value}">
+            <strong>${value} gr</strong><span>selectionner</span>
+          </button>`).join('')}</div>`
+      : '<p class="muted">Poids non selectionnable tant que le spine fabricant exact n est pas confirme.</p>';
+
+    return `
+      <article class="arrow-component-card${selected ? ' is-selected' : ''}">
+        <div class="arrow-component-card-head">
+          <div>
+            <span class="arrow-component-brand">${esc(point.manufacturer)} · ${esc(point.family)}</span>
+            <h4>${esc(point.model)}</h4>
+          </div>
+          ${match.exact ? '<span class="arrow-builder-badge">Compatible</span>' : '<span class="arrow-builder-badge is-secondary">Spine a confirmer</span>'}
+        </div>
+        <p class="arrow-component-specs">${esc(point.material || 'Materiau non indique')} · ${esc(point.mount || 'Montage non indique')}${esc(fitment)}</p>
+        ${point.note ? `<p>${esc(point.note)}</p>` : ''}
+        ${weightButtons}
+        <p class="arrow-source"><a href="${esc(point.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source fabricant : ${esc(point.sourceLabel)}</a></p>
+      </article>`;
+  }
+
   function renderPointPanel(panel) {
     if (!state.tube) {
       panel.innerHTML = '<h3>2. Pointe</h3><p>Selectionnez d abord un tube dans les modeles coherents.</p>';
       return;
     }
 
-    const choices = pointChoices(state.tube);
+    const matches = pointCatalogForTube(state.tube);
+    const exact = matches.filter(match => match.exact && match.weights.length);
+    const unresolved = matches.filter(match => !match.exact);
     const range = pointRange(state.tube);
-    let body = '';
 
-    if (choices.length) {
+    let body = '';
+    if (exact.length) {
       body = `
-        <div class="arrow-point-choices">
-          ${choices.map(value => `
-            <button type="button" class="arrow-point-choice${state.point === value ? ' is-selected' : ''}" data-point="${value}">
-              <strong>${value} gr</strong><span>poids documente</span>
-            </button>`).join('')}
+        <div class="arrow-builder-panel-head">
+          <div>
+            <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
+            <p>References fabricant compatibles avec le tube et le spine selectionnes.</p>
+          </div>
+          <span class="arrow-builder-count">${exact.length} reference${exact.length > 1 ? 's' : ''}</span>
         </div>
-        <p class="arrow-builder-callout">Une pointe plus lourde tend a assouplir dynamiquement la fleche ; une plus legere tend a la raidir. Validation finale au tir.</p>`;
+        <div class="arrow-component-list">${exact.map(renderPointCard).join('')}</div>`;
+    } else if (unresolved.length) {
+      body = `
+        <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
+        <div class="arrow-builder-empty">
+          <strong>Le catalogue de pointes existe pour ce tube, mais le spine ${esc(state.tube.spine || 'non precise')} n est pas un spine fabricant documente dans cette source.</strong>
+          <p>Confirmez d abord la reference / le spine exact du tube avant de choisir le fitment de pointe.</p>
+        </div>
+        <div class="arrow-point-known-families">
+          ${unresolved.map(match => `<span>${esc(match.point.manufacturer)} · ${esc(match.point.model)}</span>`).join('')}
+        </div>
+        <button type="button" class="arrow-continue" data-continue-vane>Continuer vers l empennage sans valider de pointe</button>`;
     } else if (range) {
       body = `
+        <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
           <strong>Plage technique connue : ${range[0]}–${range[1]} gr.</strong>
-          <p>Les references exactes ne sont pas encore reliees a une source fabricant precise.</p>
+          <p>Aucune reference fabricant exacte n est encore reliee a ce modele dans le catalogue composants.</p>
         </div>
         <button type="button" class="arrow-continue" data-continue-vane>Continuer vers l empennage sans valider de pointe</button>`;
     } else {
       body = `
+        <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
           <strong>Reference exacte pas encore documentee.</strong>
           <p>On n invente pas de pointe compatible.</p>
@@ -417,14 +524,19 @@
         <button type="button" class="arrow-continue" data-continue-vane>Continuer vers l empennage sans valider de pointe</button>`;
     }
 
-    panel.innerHTML = `
-      <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
-      <p>Choisissez la pointe compatible avec le tube selectionne.</p>
-      ${body}`;
+    panel.innerHTML = body;
 
-    panel.querySelectorAll('[data-point]').forEach(button => {
+    panel.querySelectorAll('[data-point-id]').forEach(button => {
       button.addEventListener('click', () => {
-        state.point = Number(button.dataset.point);
+        const point = state.points.find(entry => entry.id === button.dataset.pointId);
+        const pointWeight = Number(button.dataset.pointWeight);
+        if (!point || !Number.isFinite(pointWeight)) return;
+        state.point = {
+          id: point.id,
+          manufacturer: point.manufacturer,
+          model: point.model,
+          weight: pointWeight
+        };
         state.pointReviewed = true;
         state.part = 'vane';
         render();
@@ -546,14 +658,16 @@
     refreshTimer = window.setTimeout(refresh, delay);
   }
 
-  async function loadVanes() {
+  async function loadComponents() {
     try {
       const response = await fetch('./arrow-components.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(String(response.status));
       const data = await response.json();
+      state.points = Array.isArray(data.points) ? data.points : [];
       state.vanes = Array.isArray(data.vanes) ? data.vanes : [];
     } catch (error) {
       console.warn('[Assistant Archer] catalogue composants indisponible', error);
+      state.points = [];
       state.vanes = [];
     }
     render();
@@ -590,11 +704,11 @@
       render();
     });
 
-    loadVanes();
+    loadComponents();
     refresh();
   }
 
-  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v53' });
+  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v54' });
   document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', install, { once: true })
     : install();
