@@ -17,13 +17,13 @@ for (const id of [
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
 for (const script of ['app-config.js','app.js','app-enhancements.js','arrow-builder.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 assert(index.includes('arrow-builder.css'), 'Style du configurateur non charge');
-assert(index.includes('20260821-v56'), 'Cache-buster v56 absent du shell TEST');
-assert(!index.includes('20260821-v55'), 'Ancien cache-buster v55 encore present dans le shell TEST');
+assert(index.includes('20260821-v57'), 'Cache-buster v57 absent du shell TEST');
+assert(!index.includes('20260821-v56'), 'Ancien cache-buster v56 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.08.21-v56'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.08.21-v57'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 
 const enhancements = read('test/app-enhancements.js');
 for (const feature of [
@@ -68,12 +68,12 @@ const builderCss = read('test/arrow-builder.css');
 const components = json('test/arrow-components.json');
 const balance = json('test/arrow-balance.json');
 
-// Parcours de fabrication v56 : Tube -> Empennage -> Pointe -> Equilibre.
+// Parcours de fabrication v57 : Tube -> Empennage -> Pointe -> Equilibre.
 has(builder, [
   'data-arrow-part="shaft"','data-arrow-part="vane"','data-arrow-part="point"','data-arrow-part="balance"',
   'modelEntries','decorateModelChoices',"insertAdjacentElement('beforebegin', builder)",'state.part = \'vane\'',
   'state.part = \'point\'','state.part = \'balance\'','scheduleRefresh(120)','arrow-balance.json'
-], 'Parcours de fabrication v56 incomplet');
+], 'Parcours de fabrication v57 incomplet');
 assert(builder.indexOf('data-arrow-part="shaft"') < builder.indexOf('data-arrow-part="vane"'), 'Empennage doit suivre le tube');
 assert(builder.indexOf('data-arrow-part="vane"') < builder.indexOf('data-arrow-part="point"'), 'Pointe doit suivre l empennage');
 assert(builder.indexOf('data-arrow-part="point"') < builder.indexOf('data-arrow-part="balance"'), 'Equilibre doit suivre la pointe');
@@ -90,6 +90,9 @@ assert(!builder.includes('dealsState') && !builder.includes('merchantDealsForMod
 assert(builder.includes('FOC non calcule'), 'Les donnees insuffisantes doivent interdire un faux FOC');
 assert(builder.includes('Il ne remplace pas la mesure du point d equilibre reel'), 'La limite du FOC estime doit etre visible');
 assert(builder.includes('POINT_MEDIA') && builder.includes('data-point-image'), 'Support photo des pointes absent');
+assert(builder.includes('skylonarchery.com/images/components/42parallel.png'), 'Photo constructeur Skylon Parallel absente');
+assert(builder.includes('skylonarchery.com/images/components/42bulge.png'), 'Photo constructeur Skylon Bulge absente');
+assert(!builder.toLowerCase().includes('dutchbowstore') && !builder.toLowerCase().includes('arrowforge'), 'Une photo revendeur Skylon est encore chargee');
 assert(!builder.includes('🪶'), 'Ancien emoji plume encore utilise');
 
 // Catalogue pointes et correction Avance issue du tableau specifique tube/spine.
@@ -126,7 +129,7 @@ for (const gasProId of ['gaspro-olympic-efficient-175','gaspro-recurve-hp-175','
 }
 
 // Donnees d equilibre : profils separes, sources fabricant et inconnues explicites.
-assert(balance.method?.targetFoc === 12, 'Repere de classement FOC v56 modifie');
+assert(balance.method?.targetFoc === 12, 'Repere de classement FOC v57 modifie');
 assert(JSON.stringify(balance.method?.coherentFocRange) === JSON.stringify([10,15]), 'Plage FOC de depart modifiee');
 assert(Array.isArray(balance.profiles) && balance.profiles.length >= 15, 'Profils de masse insuffisants');
 const balanceById = id => balance.profiles.find(profile => profile.id === id);
@@ -153,7 +156,7 @@ assert(balance.profiles.some(profile => profile.manufacturer === 'Easton' && pro
 assert(balance.profiles.some(profile => profile.manufacturer === 'Skylon' && profile.rearAssembly === null), 'Une masse arriere Skylon non documentee ne doit pas etre inventee');
 assert(balanceById('easton-vector')?.rearAssembly === null, 'Vector ne doit pas imposer un montage arriere unique');
 
-has(builderCss, ['.arrow-builder-inline','.arrow-model-select','.arrow-builder-dialog','.arrow-vane-svg','.arrow-part-balance','.arrow-balance-summary','.arrow-balance-visual','max-height:84vh'], 'Styles configurateur v56 incomplets');
+has(builderCss, ['.arrow-builder-inline','.arrow-model-select','.arrow-builder-dialog','.arrow-vane-svg','.arrow-part-balance','.arrow-balance-summary','.arrow-balance-visual','max-height:84vh'], 'Styles configurateur v57 incomplets');
 
 const expertAudit = read('test/expert-audit.js');
 assert(expertAudit.includes('window.AssistantArcherConfig?.version'), 'Avalon ne suit plus la version centrale');
@@ -165,4 +168,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques v56 OK');
+console.log('Assistant Archer refactor: controles statiques v57 OK');
