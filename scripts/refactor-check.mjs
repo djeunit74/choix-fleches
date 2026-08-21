@@ -22,10 +22,11 @@ assert(!fs.existsSync('test/final-fixes.js'), 'Ancien fichier final-fixes.js enc
 assert(index.includes('Version : chargement...'), 'La version est de nouveau codee en dur dans index.html');
 for (const theme of ['value="cible"','value="campagne"','value="3d"']) assert(index.includes(theme), `Theme discipline absent: ${theme}`);
 assert(index.includes('Peu importe / conseille-moi'), 'Choix materiau debutant absent');
-assert(index.includes('20260820-v50'), 'Cache-buster v50 absent du shell TEST');
+assert(index.includes('20260821-v51'), 'Cache-buster v51 absent du shell TEST');
+assert(!index.includes('20260820-v50'), 'Ancien cache-buster v50 encore present dans le shell TEST');
 
 const config = read('test/app-config.js');
-assert(config.includes("version: '2026.08.20-v50'"), 'Version TEST v50 absente de la configuration centrale');
+assert(config.includes("version: '2026.08.21-v51'"), 'Version TEST v51 absente de la configuration centrale');
 assert(config.includes("channel: 'test'"), 'Canal TEST absent de la configuration centrale');
 assert(config.includes('manufacturerSourcesFirst: true'), 'Principe sources fabricant absent');
 assert(config.includes('coachValidationRecommended: true'), 'Validation coach absente');
@@ -82,12 +83,21 @@ assert(dealsConfig.remoteJsonUrl === '../deals.json', 'TEST ne pointe pas vers l
 assert(!fs.existsSync('test/deals.json'), 'Une copie test/deals.json recreerait une seconde source marchands');
 JSON.parse(read('deals.json'));
 
-// Configurateur de fleche : il compose les composants apres le calcul sans remplacer le moteur de spine.
+// Configurateur de fleche : composition apres calcul, interface compacte et detail dans un panneau flottant.
 const builder = read('test/arrow-builder.js');
+const builderCss = read('test/arrow-builder.css');
 const components = JSON.parse(read('test/arrow-components.json'));
 for (const feature of ['data-arrow-part="point"','data-arrow-part="shaft"','data-arrow-part="vane"','collectTubes','pointChoices','pointRange','vaneScore','arrow-components.json']) {
   assert(builder.includes(feature), `Configurateur incomplet: ${feature}`);
 }
+for (const feature of ['arrowBuilderDialog','showModal','arrow-builder-sheet','showAllVanes','ranked.slice(0, 3)','vaneGraphic']) {
+  assert(builder.includes(feature), `Configurateur compact incomplet: ${feature}`);
+}
+assert(builder.includes('Voir tous les modeles'), 'Le panneau empennage doit proposer Voir tous les modeles');
+assert(!builder.includes('🪶'), 'L ancien emoji plume ne doit plus etre utilise');
+assert(builderCss.includes('.arrow-builder-dialog'), 'Style du panneau flottant absent');
+assert(builderCss.includes('.arrow-vane-svg'), 'Silhouette d empennage absente');
+assert(builderCss.includes('max-height:84vh'), 'Le panneau mobile doit limiter sa hauteur');
 assert(builder.includes('Reference exacte pas encore documentee'), 'Le configurateur doit signaler une pointe non documentee au lieu de l inventer');
 assert(builder.includes('poids commerciaux et references compatibles ne sont pas encore relies'), 'Une simple plage de pointe ne doit pas devenir des poids commerciaux inventes');
 assert(!builder.includes('dealsState'), 'Le configurateur technique ne doit pas dependre des offres marchands');
