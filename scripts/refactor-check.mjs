@@ -22,11 +22,11 @@ assert(!fs.existsSync('test/final-fixes.js'), 'Ancien fichier final-fixes.js enc
 assert(index.includes('Version : chargement...'), 'La version est de nouveau codee en dur dans index.html');
 for (const theme of ['value="cible"','value="campagne"','value="3d"']) assert(index.includes(theme), `Theme discipline absent: ${theme}`);
 assert(index.includes('Peu importe / conseille-moi'), 'Choix materiau debutant absent');
-assert(index.includes('20260821-v54'), 'Cache-buster v54 absent du shell TEST');
-assert(!index.includes('20260821-v53'), 'Ancien cache-buster v53 encore present dans le shell TEST');
+assert(index.includes('20260821-v55'), 'Cache-buster v55 absent du shell TEST');
+assert(!index.includes('20260821-v54'), 'Ancien cache-buster v54 encore present dans le shell TEST');
 
 const config = read('test/app-config.js');
-assert(config.includes("version: '2026.08.21-v54'"), 'Version TEST v54 absente de la configuration centrale');
+assert(config.includes("version: '2026.08.21-v55'"), 'Version TEST v55 absente de la configuration centrale');
 assert(config.includes("channel: 'test'"), 'Canal TEST absent de la configuration centrale');
 assert(config.includes('manufacturerSourcesFirst: true'), 'Principe sources fabricant absent');
 assert(config.includes('coachValidationRecommended: true'), 'Validation coach absente');
@@ -97,13 +97,17 @@ for (const feature of ['arrowBuilderDialog','showModal','arrow-builder-sheet','s
   assert(builder.includes(feature), `Panneau compact incomplet: ${feature}`);
 }
 
-// Pointes : catalogue fabricant distinct, filtre tube + spine, poids et fitment documentes.
+// Pointes : catalogue fabricant distinct, filtre tube + spine, poids et taille compatible documentes.
 for (const feature of ['state.points','loadComponents','pointCatalogForTube','pointFit','renderPointCard','sourceLabel','fitmentBySpine','recommendedWeightsByTubeSpine']) {
   assert(builder.includes(feature), `Catalogue pointes non branche: ${feature}`);
 }
 assert(builder.includes("wanted === 'x10'"), 'X10 doit etre un alias exact pour ne pas capturer Parallel Pro');
 assert(builder.includes("wanted === 'vap'"), 'VAP generique doit etre un alias exact pour ne pas capturer Gamer/Target par erreur');
 assert(builder.includes('n est pas un spine fabricant documente'), 'Un spine non documente doit etre signale et non devine');
+assert(builder.includes('Taille compatible fabricant'), 'Le terme fitment doit etre traduit dans l interface');
+assert(builder.includes('POINT_MEDIA'), 'Le support media des pointes est absent');
+assert(builder.includes('data-point-image'), 'La gestion des photos de pointes est absente');
+assert(builderCss.includes('.arrow-point-media'), 'Style des photos de pointes absent');
 assert(!builder.includes('state.tube = state.tubes[0]'), 'Le premier tube ne doit pas etre selectionne automatiquement');
 assert(!builder.includes('renderTubePanel'), 'Le choix du tube ne doit pas etre duplique dans le panneau flottant');
 assert(builder.includes('Voir tous les modeles'), 'Le panneau empennage doit proposer Voir tous les modeles');
