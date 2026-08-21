@@ -44,7 +44,8 @@
     const spans = [...summary.querySelectorAll(':scope > span')];
     const balance = spans.find(span => /^Equilibre\s*:/i.test(span.textContent || '')) || spans.at(-1);
     if (!balance) return;
-    balance.innerHTML = `<strong>Equilibre :</strong> FOC mesure ${measured.foc.toFixed(1)} %`;
+    const html = `<strong>Equilibre :</strong> FOC mesure ${measured.foc.toFixed(1)} %`;
+    if (balance.innerHTML !== html) balance.innerHTML = html;
   }
 
   function renderResult(section, length, balance) {
