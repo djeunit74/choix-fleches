@@ -366,11 +366,6 @@
     if (!vane.drawWeight || !Number.isFinite(power) || (power >= vane.drawWeight[0] && power <= vane.drawWeight[1])) score += 1;
     else score -= 2;
 
-    if (Number.isFinite(vaneWeight(vane))) {
-      score += 0.5;
-      reasons.push('masse documentee');
-    }
-
     return { score, reasons };
   }
 
@@ -642,9 +637,9 @@
     if (candidate.estimate.complete) {
       if (candidate.estimate.coherent && index === 0) return 'Equilibre conseille';
       if (candidate.estimate.coherent) return 'Equilibre coherent';
-      return 'Le plus proche';
+      return 'FOC a verifier';
     }
-    return index === 0 ? 'Point de depart fabricant' : 'Alternative compatible';
+    return index === 0 ? 'Preselection compatible' : 'Alternative compatible';
   }
 
   function renderCandidate(candidate, index) {
@@ -673,7 +668,7 @@
       ${pointMedia(point)}
       ${balanceLine}
       ${quality}
-      <button type="button" class="arrow-select-component${index === 0 ? ' arrow-select-recommended' : ''}" data-point-config="${esc(candidate.id)}">${selected ? '✓ Configuration selectionnee' : index === 0 ? 'Choisir la configuration conseillee' : 'Choisir cette configuration'}</button>
+      <button type="button" class="arrow-select-component${index === 0 ? ' arrow-select-recommended' : ''}" data-point-config="${esc(candidate.id)}">${selected ? '✓ Configuration selectionnee' : index === 0 ? 'Choisir cette preselection' : 'Choisir cette configuration'}</button>
       <p class="arrow-source"><a href="${esc(point.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source fabricant : ${esc(point.sourceLabel)}</a></p>
     </article>`;
   }
@@ -786,7 +781,7 @@
         <h3>3. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
           <strong>Reference exacte pas encore documentee.</strong>
-          <p>On n invente pas de pointe compatible.</p>
+          <p>La pointe ne sera pas devinee.</p>
         </div>
         <button type="button" class="arrow-continue" data-continue-balance>Continuer vers l equilibre sans valider de pointe</button>`;
     }
