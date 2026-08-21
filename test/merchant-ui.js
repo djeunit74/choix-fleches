@@ -1,4 +1,4 @@
-/* Assistant Archer TEST - accordéon natif des offres marchands. */
+/* Assistant Archer TEST - accordéon robuste des offres marchands. */
 (() => {
   'use strict';
 
@@ -13,32 +13,15 @@
     return 'details';
   }
 
-  /* Compatibilite de l API historique. Le composant v5 n utilise plus cette fonction
-     pour son fonctionnement normal : <details> gere lui-meme l ouverture. */
   function setDisclosureState(block, open) {
     const details = block?.querySelector?.(':scope > .merchant-native-disclosure');
     if (details instanceof HTMLDetailsElement) details.open = Boolean(open);
   }
 
-  function installLegacyFallback(details, block) {
-    if ('open' in details) return;
-    const summary = details.querySelector('.merchant-disclosure-summary');
-    const body = details.querySelector('.merchant-disclosure-body');
-    if (!summary || !body) return;
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'merchant-disclosure-summary';
-    button.setAttribute('aria-expanded', 'false');
-    button.setAttribute('aria-controls', body.id);
-    button.textContent = 'Voir les offres marchands';
-    button.addEventListener('click', () => {
-      const open = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', open ? 'false' : 'true');
-      body.hidden = open;
-    });
-    summary.replaceWith(button);
-    body.hidden = true;
-    block.classList.add('merchant-disclosure');
+  function updateSummaryAccessibility(details, summary) {
+    const open = details.open;
+    summary.setAttribute('aria-expanded', open ? 'true' : 'false');
+    details.dataset.open = open ? 'true' : 'false';
   }
 
   function enhanceMerchantBlock(block) {
@@ -51,14 +34,21 @@
 
     const details = document.createElement('details');
     details.className = 'merchant-native-disclosure merchant-disclosure';
-    /* Pas d attribut open : les offres sont réellement repliees par defaut. */
+    details.dataset.merchantReady = 'prealpha-v6';
 
     const summary = document.createElement('summary');
     summary.className = 'merchant-native-summary merchant-disclosure-summary';
+    /* Certains navigateurs perdent l activation native si summary est force en flex.
+       On restaure explicitement son mode natif et on met le flex dans un enfant. */
+    summary.style.setProperty('display', 'list-item', 'important');
+    summary.style.setProperty('list-style', 'none', 'important');
     summary.innerHTML = `
-      <span class="merchant-native-label merchant-native-label-closed">Voir les offres marchands</span>
-      <span class="merchant-native-label merchant-native-label-open">Masquer les offres marchands</span>
-      <span class="merchant-disclosure-count">${count}</span>
+      <span class="merchant-summary-row" style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%">
+        <span class="merchant-native-label merchant-native-label-closed">Voir les offres marchands</span>
+        <span class="merchant-native-label merchant-native-label-open">Masquer les offres marchands</span>
+        <span class="merchant-disclosure-count">${count}</span>
+        <span class="merchant-native-chevron" aria-hidden="true">▾</span>
+      </span>
     `;
 
     const body = document.createElement('div');
@@ -70,7 +60,18 @@
     details.append(summary, body);
     block.appendChild(details);
 
-    installLegacyFallback(details, block);
+    /* Filet de sécurité : on ne dépend plus exclusivement du comportement natif de
+       <summary>. Le clic pilote explicitement l attribut open. preventDefault évite
+       un double basculement quand le navigateur gère aussi summary correctement. */
+    summary.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      details.open = !details.open;
+      updateSummaryAccessibility(details, summary);
+    });
+
+    details.addEventListener('toggle', () => updateSummaryAccessibility(details, summary));
+    updateSummaryAccessibility(details, summary);
   }
 
   function compactAll(root = document) {
@@ -89,7 +90,7 @@
 
   function install() {
     const release = document.getElementById('appReleaseStatic');
-    if (release) release.textContent = 'Version : Pré-alpha v5';
+    if (release) release.textContent = 'Version : Pré-alpha v6';
 
     const result = document.getElementById('result');
     if (!result) return;
@@ -101,7 +102,7 @@
     refresh: compactAll,
     setDisclosureState,
     version: 'v62',
-    release: 'Pre-alpha v5'
+    release: 'Pre-alpha v6'
   });
 
   document.readyState === 'loading'
