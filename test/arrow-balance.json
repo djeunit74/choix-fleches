@@ -1,0 +1,56 @@
+{
+  "updatedAt": "2026-08-21",
+  "method": {
+    "targetFoc": 12,
+    "coherentFocRange": [10, 15],
+    "vaneSetbackInches": 1,
+    "note": "FOC estime par modele de masses simplifie : tube uniforme, pointe appliquee a l extremite du tube, ensemble arriere au niveau de l encoche, centre des 3 plumes estime a 1 pouce + demi-longueur de plume. A confirmer sur la fleche terminee."
+  },
+  "profiles": [
+    {
+      "id": "easton-avance",
+      "manufacturer": "Easton",
+      "tubeKeys": ["avance", "avance sport"],
+      "gpiBySpine": {"340":8.8,"400":7.9,"450":7.4,"500":6.9,"550":6.5,"600":6.5,"660":6.2,"730":5.7,"810":5.5,"900":5.2,"1000":4.9,"1150":4.9,"1400":4.2,"1600":3.8,"1800":3.6,"2000":3.4},
+      "rearAssembly": {"weightGrains":11,"label":"4MM Pin 9 gr + Pin Nock 2 gr","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"},
+      "sourceUrl": "https://eastonarchery.com/arrows_/avance-avance-sport/",
+      "sourceLabel": "Easton — Avance / Avance Sport"
+    },
+    {
+      "id": "easton-ace",
+      "manufacturer": "Easton",
+      "tubeKeys": ["a c e", "ace"],
+      "gpiBySpine": {"370":7.9,"400":7.5,"430":7.0,"470":6.8,"520":6.7,"570":6.3,"620":6.1,"670":5.9,"720":6.4,"780":6.0,"850":5.7,"920":5.8,"1000":5.7,"1100":5.1,"1250":5.1},
+      "rearAssembly": {"weightGrains":11,"label":"4MM Pin 9 gr + Pin Nock 2 gr","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"},
+      "sourceUrl": "https://eastonarchery.com/arrows_/a-c-e/",
+      "sourceLabel": "Easton — A/C/E"
+    },
+    {
+      "id": "easton-superdrive-micro",
+      "manufacturer": "Easton",
+      "tubeKeys": ["superdrive micro"],
+      "gpiBySpine": {"325":8.1,"375":7.4,"425":6.8,"475":6.4,"525":6.1,"575":5.9,"625":5.7,"675":5.6,"750":5.5,"850":5.3,"950":5.1},
+      "rearAssembly": {"weightGrains":11,"label":"4MM Pin 9 gr + Pin Nock 2 gr","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"},
+      "sourceUrl": "https://eastonarchery.com/arrows_/superdrive-micro/",
+      "sourceLabel": "Easton — SuperDrive Micro"
+    },
+    {
+      "id": "skylon-brixxon",
+      "manufacturer": "Skylon",
+      "tubeKeys": ["brixxon"],
+      "gpiBySpine": {"1100":4.64,"1000":4.90,"900":5.34,"850":5.48,"800":5.80,"750":5.94,"700":6.17,"650":6.42,"600":7.09,"550":7.47,"500":8.00,"450":8.63,"400":9.47},
+      "rearAssembly": null,
+      "sourceUrl": "https://www.skylonarchery.com/arrows/2023-06-29-08-52-09/brixxon",
+      "sourceLabel": "Skylon — Brixxon"
+    },
+    {
+      "id": "skylon-radius",
+      "manufacturer": "Skylon",
+      "tubeKeys": ["radius"],
+      "gpiBySpine": {"2000":3.60,"1800":3.89,"1500":4.00,"1300":4.16,"1100":4.64,"1000":4.90,"900":5.34,"850":5.48,"800":5.80,"750":5.94,"700":6.17,"650":6.42,"600":7.09,"550":7.47,"500":8.00,"450":8.63,"400":9.47},
+      "rearAssembly": null,
+      "sourceUrl": "https://skylonarchery.com/arrows/2023-06-29-08-52-09/radius",
+      "sourceLabel": "Skylon — Radius"
+    }
+  ]
+}
