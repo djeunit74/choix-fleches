@@ -1,4 +1,4 @@
-/* Assistant Archer TEST - presentation robuste des offres marchands. */
+/* Assistant Archer TEST - accordéon natif des offres marchands. */
 (() => {
   'use strict';
 
@@ -13,44 +13,64 @@
     return 'details';
   }
 
+  /* Compatibilite de l API historique. Le composant v5 n utilise plus cette fonction
+     pour son fonctionnement normal : <details> gere lui-meme l ouverture. */
   function setDisclosureState(block, open) {
-    const button = block.querySelector(':scope > .merchant-disclosure-summary');
-    if (!button) return;
-    button.setAttribute('aria-expanded', open ? 'true' : 'false');
-    block.dataset.open = open ? 'true' : 'false';
-    block.classList.toggle('is-collapsed', !open);
-    const label = button.querySelector('.merchant-disclosure-label');
-    if (label) label.textContent = open ? 'Masquer les offres marchands' : 'Voir les offres marchands';
+    const details = block?.querySelector?.(':scope > .merchant-native-disclosure');
+    if (details instanceof HTMLDetailsElement) details.open = Boolean(open);
   }
 
-  function enhanceMerchantBlock(block) {
-    if (!(block instanceof HTMLElement)) return;
-    if (block.querySelector(':scope > .merchant-disclosure-summary')) return;
-
-    disclosureSequence += 1;
-    block.classList.add('merchant-disclosure');
-
-    const controlled = block.querySelector(':scope > .merchant-shops') || block.querySelector(':scope > .merchant-intro');
-    if (controlled && !controlled.id) controlled.id = `merchant-offers-${disclosureSequence}`;
-
+  function installLegacyFallback(details, block) {
+    if ('open' in details) return;
+    const summary = details.querySelector('.merchant-disclosure-summary');
+    const body = details.querySelector('.merchant-disclosure-body');
+    if (!summary || !body) return;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'merchant-disclosure-summary';
     button.setAttribute('aria-expanded', 'false');
-    if (controlled?.id) button.setAttribute('aria-controls', controlled.id);
-    button.innerHTML = `<span class="merchant-disclosure-label">Voir les offres marchands</span><span class="merchant-disclosure-count">${disclosureLabel(block)}</span>`;
-
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      event.stopPropagation();
+    button.setAttribute('aria-controls', body.id);
+    button.textContent = 'Voir les offres marchands';
+    button.addEventListener('click', () => {
       const open = button.getAttribute('aria-expanded') === 'true';
-      setDisclosureState(block, !open);
+      button.setAttribute('aria-expanded', open ? 'false' : 'true');
+      body.hidden = open;
     });
+    summary.replaceWith(button);
+    body.hidden = true;
+    block.classList.add('merchant-disclosure');
+  }
 
-    /* Le contenu marchand reste dans son bloc d origine : aucun deplacement de noeud.
-       On le replie seulement par classe CSS, ce qui conserve le rendu valide de la v3. */
-    block.prepend(button);
-    setDisclosureState(block, false);
+  function enhanceMerchantBlock(block) {
+    if (!(block instanceof HTMLElement)) return;
+    if (block.querySelector(':scope > .merchant-native-disclosure')) return;
+    if (!block.childNodes.length) return;
+
+    disclosureSequence += 1;
+    const count = disclosureLabel(block);
+
+    const details = document.createElement('details');
+    details.className = 'merchant-native-disclosure merchant-disclosure';
+    /* Pas d attribut open : les offres sont réellement repliees par defaut. */
+
+    const summary = document.createElement('summary');
+    summary.className = 'merchant-native-summary merchant-disclosure-summary';
+    summary.innerHTML = `
+      <span class="merchant-native-label merchant-native-label-closed">Voir les offres marchands</span>
+      <span class="merchant-native-label merchant-native-label-open">Masquer les offres marchands</span>
+      <span class="merchant-disclosure-count">${count}</span>
+    `;
+
+    const body = document.createElement('div');
+    body.id = `merchant-native-body-${disclosureSequence}`;
+    body.className = 'merchant-native-body merchant-disclosure-body';
+    summary.setAttribute('aria-controls', body.id);
+
+    [...block.childNodes].forEach(node => body.appendChild(node));
+    details.append(summary, body);
+    block.appendChild(details);
+
+    installLegacyFallback(details, block);
   }
 
   function compactAll(root = document) {
@@ -68,11 +88,12 @@
   }
 
   function install() {
+    const release = document.getElementById('appReleaseStatic');
+    if (release) release.textContent = 'Version : Pré-alpha v5';
+
     const result = document.getElementById('result');
     if (!result) return;
     compactAll(result);
-    // MutationObserver ne deplace aucun noeud : il ajoute seulement le controle
-    // aux nouveaux blocs marchands produits par un nouveau calcul.
     new MutationObserver(scheduleCompact).observe(result, { childList: true, subtree: true });
   }
 
@@ -80,7 +101,7 @@
     refresh: compactAll,
     setDisclosureState,
     version: 'v62',
-    release: 'Pre-alpha v4'
+    release: 'Pre-alpha v5'
   });
 
   document.readyState === 'loading'
