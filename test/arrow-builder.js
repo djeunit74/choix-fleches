@@ -1,17 +1,20 @@
-/* Assistant Archer TEST - parcours de fabrication Tube / Pointe / Empennage.
-   Le moteur de spine reste dans app.js ; ce module ne fait que guider le choix des composants. */
+/* Assistant Archer TEST - construction guidee Tube / Empennage / Pointe / Equilibre.
+   Le moteur de spine reste dans app.js. Ce module guide les composants et n'influence jamais la recommandation technique du tube. */
 (() => {
   'use strict';
 
   const state = {
-    part: 'point',
+    part: 'vane',
     tubes: [],
     tube: null,
     point: null,
     pointReviewed: false,
-    points: [],
     vane: null,
     vanes: [],
+    points: [],
+    balanceProfiles: [],
+    balanceMethod: null,
+    balanceReviewed: false,
     calculated: false,
     showAllVanes: false
   };
@@ -59,10 +62,30 @@
 
   const bow = () => document.getElementById('bowStyle')?.value === 'barebow' ? 'barebow' : 'classique';
 
-  const weight = () => {
+  const drawWeight = () => {
     const value = Number(document.getElementById('drawWeight')?.value);
     return Number.isFinite(value) ? value : null;
   };
+
+  const arrowLength = () => {
+    const value = Number(document.getElementById('arrowLength')?.value);
+    return Number.isFinite(value) && value > 0 ? value : null;
+  };
+
+  function numericText(value) {
+    const match = String(value ?? '').replace(',', '.').match(/-?\d+(?:\.\d+)?/);
+    return match ? Number(match[0]) : null;
+  }
+
+  function vaneWeight(vane) {
+    const direct = Number(vane?.weightGrains);
+    if (Number.isFinite(direct)) return direct;
+    return numericText(vane?.weight);
+  }
+
+  function vaneLength(vane) {
+    return numericText(vane?.length);
+  }
 
   function meta(name) {
     try {
@@ -152,14 +175,14 @@
     const model = norm(tube?.model);
     const wanted = norm(key);
     if (!wanted) return false;
-    // Les alias courts ne doivent jamais absorber une variante plus precise.
     if (wanted === 'x10') return model === 'x10';
     if (wanted === 'vap') return model === 'vap';
+    if (wanted === 'ace' || wanted === 'a c e') return model === 'a c e' || model === 'ace';
     return model === wanted || model.startsWith(`${wanted} `);
   }
 
-  function matchedTubeKey(point, tube) {
-    return (point?.tubeKeys || []).find(key => tubeMatchesKey(tube, key)) || '';
+  function matchedTubeKey(entry, tube) {
+    return (entry?.tubeKeys || []).find(key => tubeMatchesKey(tube, key)) || '';
   }
 
   function pointFit(point, tube) {
@@ -216,6 +239,111 @@
       .sort((a, b) => Number(b.exact) - Number(a.exact) || a.point.manufacturer.localeCompare(b.point.manufacturer));
   }
 
+  function balanceProfileForTube(tube) {
+    return state.balanceProfiles.find(profile => matchedTubeKey(profile, tube)) || null;
+  }
+
+  function estimateBalance(pointWeight) {
+    const profile = balanceProfileForTube(state.tube);
+    const length = arrowLength();
+    const selectedSpine = String(state.tube?.spine || '');
+    const gpi = Number(profile?.gpiBySpine?.[selectedSpine]);
+    const rearWeight = Number(profile?.rearAssembly?.weightGrains);
+    const singleVaneWeight = vaneWeight(state.vane);
+    const selectedVaneLength = vaneLength(state.vane);
+    const missing = [];
+
+    if (!profile) missing.push('masse du tube par spine');
+    if (!Number.isFinite(length)) missing.push('longueur de fleche');
+    if (!Number.isFinite(gpi)) missing.push('GPI du tube');
+    if (!Number.isFinite(singleVaneWeight)) missing.push('masse de la plume');
+    if (!Number.isFinite(selectedVaneLength)) missing.push('longueur de la plume');
+    if (!Number.isFinite(rearWeight)) missing.push('masse encoche / pin');
+    if (!Number.isFinite(Number(pointWeight))) missing.push('masse de pointe');
+
+    if (missing.length) {
+      return {
+        complete: false,
+        missing,
+        profile,
+        gpi: Number.isFinite(gpi) ? gpi : null,
+        shaftMass: Number.isFinite(gpi) && Number.isFinite(length) ? gpi * length : null
+      };
+    }
+
+    const method = state.balanceMethod || {};
+    const setback = Number.isFinite(Number(method.vaneSetbackInches)) ? Number(method.vaneSetbackInches) : 1;
+    const targetFoc = Number.isFinite(Number(method.targetFoc)) ? Number(method.targetFoc) : 12;
+    const range = Array.isArray(method.coherentFocRange) && method.coherentFocRange.length >= 2
+      ? method.coherentFocRange.map(Number)
+      : [10, 15];
+
+    const shaftMass = gpi * length;
+    const vanesMass = singleVaneWeight * 3;
+    const vaneCenter = Math.min(length * 0.35, setback + selectedVaneLength / 2);
+    const totalMass = shaftMass + Number(pointWeight) + vanesMass + rearWeight;
+    const moment = shaftMass * (length / 2)
+      + Number(pointWeight) * length
+      + vanesMass * vaneCenter;
+    const balancePoint = moment / totalMass;
+    const foc = ((balancePoint - length / 2) / length) * 100;
+    const coherent = foc >= Math.min(...range) && foc <= Math.max(...range);
+
+    return {
+      complete: true,
+      profile,
+      length,
+      gpi,
+      shaftMass,
+      singleVaneWeight,
+      vanesMass,
+      rearWeight,
+      totalMass,
+      vaneCenter,
+      balancePoint,
+      foc,
+      coherent,
+      targetFoc,
+      range,
+      distanceToTarget: Math.abs(foc - targetFoc)
+    };
+  }
+
+  function pointCandidates() {
+    const matches = pointCatalogForTube(state.tube).filter(match => match.exact && match.weights.length);
+    const candidates = [];
+    matches.forEach(match => {
+      match.weights.forEach(weightValue => {
+        candidates.push({
+          id: `${match.point.id}|${weightValue}`,
+          match,
+          weight: weightValue,
+          estimate: estimateBalance(weightValue)
+        });
+      });
+    });
+
+    const allWeights = candidates.map(candidate => candidate.weight).sort((a, b) => a - b);
+    const median = allWeights.length ? allWeights[Math.floor((allWeights.length - 1) / 2)] : null;
+
+    return candidates.sort((a, b) => {
+      const ac = a.estimate.complete;
+      const bc = b.estimate.complete;
+      if (ac !== bc) return Number(bc) - Number(ac);
+      if (ac && bc) {
+        if (a.estimate.coherent !== b.estimate.coherent) return Number(b.estimate.coherent) - Number(a.estimate.coherent);
+        if (a.estimate.distanceToTarget !== b.estimate.distanceToTarget) return a.estimate.distanceToTarget - b.estimate.distanceToTarget;
+      } else if (Number.isFinite(median)) {
+        const da = Math.abs(a.weight - median);
+        const db = Math.abs(b.weight - median);
+        if (da !== db) return da - db;
+      }
+      return a.match.point.manufacturer.localeCompare(b.match.point.manufacturer)
+        || a.match.point.model.localeCompare(b.match.point.model)
+        || a.weight - b.weight;
+    });
+  }
+
   function vaneScore(vane) {
     let score = 0;
     const reasons = [];
@@ -234,9 +362,14 @@
       if (tubeDiameter) reasons.push('diametre coherent');
     }
 
-    const drawWeight = weight();
-    if (!vane.drawWeight || !Number.isFinite(drawWeight) || (drawWeight >= vane.drawWeight[0] && drawWeight <= vane.drawWeight[1])) score += 1;
+    const power = drawWeight();
+    if (!vane.drawWeight || !Number.isFinite(power) || (power >= vane.drawWeight[0] && power <= vane.drawWeight[1])) score += 1;
     else score -= 2;
+
+    if (Number.isFinite(vaneWeight(vane))) {
+      score += 0.5;
+      reasons.push('masse documentee');
+    }
 
     return { score, reasons };
   }
@@ -249,6 +382,14 @@
         <path class="arrow-vane-wing" d="M48 20 C58 7 88 6 111 17 L111 21 L48 21 Z"></path>
         <path class="arrow-vane-wing arrow-vane-wing-lower" d="M48 28 C60 39 88 41 111 30 L111 27 L48 27 Z"></path>
       </svg>`;
+  }
+
+  function balanceGraphic() {
+    return `
+      <span class="arrow-balance-line" aria-hidden="true">
+        <span class="arrow-balance-mid"></span>
+        <span class="arrow-balance-dot"></span>
+      </span>`;
   }
 
   function ensureBuilder() {
@@ -268,22 +409,27 @@
           </div>
           <p class="arrow-builder-state" id="arrowBuilderState"></p>
         </div>
-        <p class="arrow-builder-intro">Suivez les etapes : choisissez d abord un tube dans les modeles coherents, puis sa pointe et enfin l empennage.</p>
+        <p class="arrow-builder-intro">Construisez dans l ordre : tube, empennage, pointe preselectionnee, puis controle de l equilibre.</p>
         <div class="arrow-assembly arrow-build-flow" aria-label="Etapes de fabrication de la fleche">
           <button type="button" class="arrow-part arrow-part-shaft" data-arrow-part="shaft" aria-label="Etape 1 : choisir le tube">
             <span class="arrow-step-number">1</span>
             <span class="arrow-part-art" aria-hidden="true"></span>
             <span>Tube</span>
           </button>
-          <button type="button" class="arrow-part arrow-part-point" data-arrow-part="point" aria-label="Etape 2 : choisir la pointe">
+          <button type="button" class="arrow-part arrow-part-vane" data-arrow-part="vane" aria-label="Etape 2 : choisir l empennage">
             <span class="arrow-step-number">2</span>
+            <span class="arrow-part-art">${vaneGraphic()}</span>
+            <span>Empennage</span>
+          </button>
+          <button type="button" class="arrow-part arrow-part-point" data-arrow-part="point" aria-label="Etape 3 : choisir la pointe recommandee">
+            <span class="arrow-step-number">3</span>
             <span class="arrow-part-art" aria-hidden="true"></span>
             <span>Pointe</span>
           </button>
-          <button type="button" class="arrow-part arrow-part-vane" data-arrow-part="vane" aria-label="Etape 3 : choisir l empennage">
-            <span class="arrow-step-number">3</span>
-            <span class="arrow-part-art">${vaneGraphic()}</span>
-            <span>Empennage</span>
+          <button type="button" class="arrow-part arrow-part-balance" data-arrow-part="balance" aria-label="Etape 4 : verifier l equilibre">
+            <span class="arrow-step-number">4</span>
+            <span class="arrow-part-art">${balanceGraphic()}</span>
+            <span>Equilibre</span>
           </button>
         </div>
         <div class="arrow-builder-selection-line" id="arrowBuilderSummary"></div>`;
@@ -292,8 +438,9 @@
         button.addEventListener('click', () => {
           const part = button.dataset.arrowPart;
           if (part === 'shaft') scrollToTubeChoices();
-          else if (part === 'point' && state.tube) openPart('point');
-          else if (part === 'vane' && state.tube && state.pointReviewed) openPart('vane');
+          else if (part === 'vane' && state.tube) openPart('vane');
+          else if (part === 'point' && state.tube && state.vane) openPart('point');
+          else if (part === 'balance' && state.pointReviewed) openPart('balance');
         });
       });
     }
@@ -352,11 +499,12 @@
       scrollToTubeChoices();
       return;
     }
-    if (part === 'point' && !state.tube) {
+    if (part === 'vane' && !state.tube) {
       scrollToTubeChoices();
       return;
     }
-    if (part === 'vane' && (!state.tube || !state.pointReviewed)) return;
+    if (part === 'point' && (!state.tube || !state.vane)) return;
+    if (part === 'balance' && !state.pointReviewed) return;
 
     state.part = part;
     const dialog = ensureDialog();
@@ -379,8 +527,9 @@
     state.point = null;
     state.pointReviewed = false;
     state.vane = null;
+    state.balanceReviewed = false;
     state.showAllVanes = false;
-    state.part = 'point';
+    state.part = 'vane';
   }
 
   function selectTube(id) {
@@ -390,11 +539,12 @@
     state.point = null;
     state.pointReviewed = false;
     state.vane = null;
+    state.balanceReviewed = false;
     state.showAllVanes = false;
-    state.part = 'point';
+    state.part = 'vane';
     decorateModelChoices();
     render();
-    openPart('point');
+    openPart('vane');
   }
 
   function decorateModelChoices() {
@@ -415,7 +565,7 @@
       button.dataset.selectTube = tube.id;
       const selected = state.tube?.id === tube.id;
       button.classList.toggle('is-selected', selected);
-      const label = selected ? '✓ Tube selectionne' : 'Selectionner ce tube';
+      const label = selected ? '✓ Tube selectionne' : 'Choisir ce tube';
       if (button.textContent !== label) button.textContent = label;
 
       if (!button.dataset.bound) {
@@ -429,18 +579,29 @@
     });
   }
 
+  function currentBalance() {
+    if (!state.point?.weight) return null;
+    return estimateBalance(state.point.weight);
+  }
+
   function renderSummary() {
     const summary = document.getElementById('arrowBuilderSummary');
     if (!summary) return;
     const tubeText = state.tube ? `${state.tube.model}${state.tube.spine ? ` ${state.tube.spine}` : ''}` : 'a choisir';
+    const vaneText = state.vane ? state.vane.model : 'a choisir';
     const pointText = state.point
       ? `${state.point.manufacturer} ${state.point.model} · ${state.point.weight} gr`
       : state.pointReviewed ? 'a documenter' : 'a choisir';
-    const vaneText = state.vane ? state.vane.model : 'a choisir';
+    const balance = currentBalance();
+    const balanceText = balance?.complete
+      ? `FOC estime ${balance.foc.toFixed(1)} %`
+      : state.pointReviewed ? 'estimation incomplete' : 'a verifier';
+
     summary.innerHTML = `
       <span><strong>Tube :</strong> ${esc(tubeText)}</span>
+      <span><strong>Empennage :</strong> ${esc(vaneText)}</span>
       <span><strong>Pointe :</strong> ${esc(pointText)}</span>
-      <span><strong>Empennage :</strong> ${esc(vaneText)}</span>`;
+      <span><strong>Equilibre :</strong> ${esc(balanceText)}</span>`;
   }
 
   function renderFlowState() {
@@ -448,8 +609,9 @@
     if (stateElement) {
       if (!state.calculated) stateElement.textContent = 'Calculez d abord les tubes';
       else if (!state.tube) stateElement.textContent = 'Etape 1 · choisissez un tube';
-      else if (!state.pointReviewed) stateElement.textContent = 'Etape 2 · choisissez la pointe';
-      else if (!state.vane) stateElement.textContent = 'Etape 3 · choisissez l empennage';
+      else if (!state.vane) stateElement.textContent = 'Etape 2 · choisissez l empennage';
+      else if (!state.pointReviewed) stateElement.textContent = 'Etape 3 · pointe preselectionnee';
+      else if (!state.balanceReviewed) stateElement.textContent = 'Etape 4 · verifiez l equilibre';
       else stateElement.textContent = 'Fleche composee';
     }
 
@@ -457,133 +619,183 @@
       const part = button.dataset.arrowPart;
       let status = 'locked';
       if (part === 'shaft') status = state.tube ? 'complete' : 'current';
-      if (part === 'point') status = state.pointReviewed ? 'complete' : state.tube ? 'current' : 'locked';
-      if (part === 'vane') status = state.vane ? 'complete' : state.pointReviewed ? 'current' : 'locked';
+      if (part === 'vane') status = state.vane ? 'complete' : state.tube ? 'current' : 'locked';
+      if (part === 'point') status = state.pointReviewed ? 'complete' : state.vane ? 'current' : 'locked';
+      if (part === 'balance') status = state.balanceReviewed ? 'complete' : state.pointReviewed ? 'current' : 'locked';
       button.dataset.stepState = status;
       button.disabled = status === 'locked';
     });
   }
 
-  function renderPointCard(match) {
+  function pointMedia(point) {
+    const media = POINT_MEDIA[point.id] || null;
+    if (!media) return '';
+    return `<figure class="arrow-point-media">
+      <a href="${esc(media.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="arrow-point-media-link">
+        <img src="${esc(media.imageUrl)}" alt="${esc(media.alt)}" loading="lazy" decoding="async" data-point-image>
+      </a>
+      <figcaption>Photo illustrative · <a href="${esc(media.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(media.sourceLabel)}</a></figcaption>
+    </figure>`;
+  }
+
+  function candidateBadge(candidate, index) {
+    if (candidate.estimate.complete) {
+      if (candidate.estimate.coherent && index === 0) return 'Equilibre conseille';
+      if (candidate.estimate.coherent) return 'Equilibre coherent';
+      return 'Le plus proche';
+    }
+    return index === 0 ? 'Point de depart fabricant' : 'Alternative compatible';
+  }
+
+  function renderCandidate(candidate, index) {
+    const { match, weight: pointWeight, estimate } = candidate;
     const point = match.point;
     const fitment = match.fitment
       ? ` · Taille compatible fabricant : ${String(match.fitment).replace(/^#/, 'n°')}`
       : '';
-    const selected = state.point?.id === point.id;
-    const media = POINT_MEDIA[point.id] || null;
-    const mediaBlock = media
-      ? `<figure class="arrow-point-media">
-          <a href="${esc(media.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="arrow-point-media-link">
-            <img src="${esc(media.imageUrl)}" alt="${esc(media.alt)}" loading="lazy" decoding="async" data-point-image>
-          </a>
-          <figcaption>Photo illustrative · <a href="${esc(media.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(media.sourceLabel)}</a></figcaption>
-        </figure>`
-      : '';
-    const weightButtons = match.weights.length
-      ? `<div class="arrow-point-choices">${match.weights.map(value => `
-          <button type="button" class="arrow-point-choice${selected && state.point?.weight === value ? ' is-selected' : ''}"
-            data-point-id="${esc(point.id)}" data-point-weight="${value}">
-            <strong>${value} gr</strong><span>selectionner</span>
-          </button>`).join('')}</div>`
-      : '<p class="muted">Poids non selectionnable tant que le spine fabricant exact n est pas confirme.</p>';
+    const selected = state.point?.id === point.id && state.point?.weight === pointWeight;
+    const balanceLine = estimate.complete
+      ? `<p class="arrow-balance-numbers"><strong>${pointWeight} gr</strong> · FOC estime <strong>${estimate.foc.toFixed(1)} %</strong> · masse estimee <strong>${Math.round(estimate.totalMass)} gr</strong></p>`
+      : `<p class="arrow-balance-numbers"><strong>${pointWeight} gr</strong> · poids compatible fabricant</p>`;
+    const quality = estimate.complete
+      ? `<p class="muted">Estimation avec ${estimate.gpi} GPI, 3 plumes de ${estimate.singleVaneWeight} gr et ${estimate.profile.rearAssembly.label}.</p>`
+      : `<p class="muted">FOC non calcule : ${esc(estimate.missing.join(', '))}. La preselection reste limitee aux poids compatibles fabricant.</p>`;
 
-    return `
-      <article class="arrow-component-card${selected ? ' is-selected' : ''}">
-        <div class="arrow-component-card-head">
-          <div>
-            <span class="arrow-component-brand">${esc(point.manufacturer)} · ${esc(point.family)}</span>
-            <h4>${esc(point.model)}</h4>
-          </div>
-          ${match.exact ? '<span class="arrow-builder-badge">Compatible</span>' : '<span class="arrow-builder-badge is-secondary">Spine a confirmer</span>'}
+    return `<article class="arrow-component-card arrow-point-recommendation${index === 0 ? ' is-recommended' : ''}${selected ? ' is-selected' : ''}">
+      <div class="arrow-component-card-head">
+        <div>
+          <span class="arrow-component-brand">${esc(point.manufacturer)} · ${esc(point.family)}</span>
+          <h4>${esc(point.model)}</h4>
         </div>
-        <p class="arrow-component-specs">${esc(point.material || 'Materiau non indique')} · ${esc(point.mount || 'Montage non indique')}${esc(fitment)}</p>
-        ${mediaBlock}
-        ${point.note ? `<p>${esc(pointUiText(point.note))}</p>` : ''}
-        ${weightButtons}
-        <p class="arrow-source"><a href="${esc(point.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source fabricant : ${esc(point.sourceLabel)}</a></p>
-      </article>`;
+        <span class="arrow-builder-badge">${esc(candidateBadge(candidate, index))}</span>
+      </div>
+      <p class="arrow-component-specs">${esc(point.material || 'Materiau non indique')} · ${esc(point.mount || 'Montage non indique')}${esc(fitment)}</p>
+      ${pointMedia(point)}
+      ${balanceLine}
+      ${quality}
+      <button type="button" class="arrow-select-component${index === 0 ? ' arrow-select-recommended' : ''}" data-point-config="${esc(candidate.id)}">${selected ? '✓ Configuration selectionnee' : index === 0 ? 'Choisir la configuration conseillee' : 'Choisir cette configuration'}</button>
+      <p class="arrow-source"><a href="${esc(point.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source fabricant : ${esc(point.sourceLabel)}</a></p>
+    </article>`;
+  }
+
+  function renderAdvancedPointWeights(candidates) {
+    if (!candidates.length) return '';
+    const groups = new Map();
+    candidates.forEach(candidate => {
+      const id = candidate.match.point.id;
+      if (!groups.has(id)) groups.set(id, { match: candidate.match, weights: [] });
+      groups.get(id).weights.push(candidate.weight);
+    });
+
+    return `<details class="arrow-point-advanced">
+      <summary>Voir tous les poids compatibles</summary>
+      <div class="arrow-point-advanced-body">
+        ${[...groups.values()].map(group => {
+          const point = group.match.point;
+          return `<div class="arrow-point-advanced-group">
+            <strong>${esc(point.manufacturer)} · ${esc(point.model)}</strong>
+            <div class="arrow-point-choices">${[...new Set(group.weights)].sort((a,b)=>a-b).map(value => `
+              <button type="button" class="arrow-point-choice" data-point-raw="${esc(point.id)}|${value}">
+                <strong>${value} gr</strong><span>choix expert</span>
+              </button>`).join('')}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </details>`;
+  }
+
+  function selectPointCandidate(candidate) {
+    if (!candidate) return;
+    const point = candidate.match.point;
+    state.point = {
+      id: point.id,
+      manufacturer: point.manufacturer,
+      model: point.model,
+      weight: candidate.weight
+    };
+    state.pointReviewed = true;
+    state.balanceReviewed = false;
+    state.part = 'balance';
+    render();
+    renderDialog();
+    scrollDialogTop();
   }
 
   function renderPointPanel(panel) {
-    if (!state.tube) {
-      panel.innerHTML = '<h3>2. Pointe</h3><p>Selectionnez d abord un tube dans les modeles coherents.</p>';
+    if (!state.tube || !state.vane) {
+      panel.innerHTML = '<h3>3. Pointe</h3><p>Selectionnez d abord le tube puis l empennage.</p>';
       return;
     }
 
-    const matches = pointCatalogForTube(state.tube);
-    const exact = matches.filter(match => match.exact && match.weights.length);
-    const unresolved = matches.filter(match => !match.exact);
+    const allMatches = pointCatalogForTube(state.tube);
+    const unresolved = allMatches.filter(match => !match.exact);
+    const candidates = pointCandidates();
     const range = pointRange(state.tube);
 
-    let body = '';
-    if (exact.length) {
-      body = `
+    if (candidates.length) {
+      const suggested = candidates.slice(0, 3);
+      panel.innerHTML = `
         <div class="arrow-builder-panel-head">
           <div>
-            <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
-            <p>References fabricant compatibles avec le tube et le spine selectionnes.</p>
+            <h3>3. Pointe preselectionnee pour ${esc(state.tube.model)}</h3>
+            <p>L app classe uniquement les poids autorises par le fabricant. Quand les masses sont documentees, elle favorise une zone de FOC coherente plutot qu un poids choisi au hasard.</p>
           </div>
-          <span class="arrow-builder-count">${exact.length} reference${exact.length > 1 ? 's' : ''}</span>
+          <span class="arrow-builder-count">${candidates.length} combinaison${candidates.length > 1 ? 's' : ''}</span>
         </div>
-        <div class="arrow-component-list">${exact.map(renderPointCard).join('')}</div>`;
-    } else if (unresolved.length) {
-      body = `
-        <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
+        <div class="arrow-point-recommendations">${suggested.map(renderCandidate).join('')}</div>
+        ${renderAdvancedPointWeights(candidates)}
+        <p class="arrow-builder-callout"><strong>Important :</strong> la pointe reste un point de depart. Une pointe plus lourde tend a assouplir le comportement dynamique ; validez ensuite au tir.</p>`;
+
+      panel.querySelectorAll('[data-point-image]').forEach(image => {
+        image.addEventListener('error', () => image.closest('.arrow-point-media')?.remove(), { once: true });
+      });
+      panel.querySelectorAll('[data-point-config]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectPointCandidate(candidates.find(candidate => candidate.id === button.dataset.pointConfig));
+        });
+      });
+      panel.querySelectorAll('[data-point-raw]').forEach(button => {
+        button.addEventListener('click', () => {
+          const [pointId, rawWeight] = button.dataset.pointRaw.split('|');
+          const pointWeightValue = Number(rawWeight);
+          const candidate = candidates.find(entry => entry.match.point.id === pointId && entry.weight === pointWeightValue);
+          selectPointCandidate(candidate);
+        });
+      });
+      return;
+    }
+
+    if (unresolved.length) {
+      panel.innerHTML = `
+        <h3>3. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
-          <strong>Le catalogue de pointes existe pour ce tube, mais le spine ${esc(state.tube.spine || 'non precise')} n est pas un spine fabricant documente dans cette source.</strong>
-          <p>Confirmez d abord la reference / le spine exact du tube avant de choisir la taille de pointe compatible.</p>
+          <strong>Le catalogue existe pour ce tube, mais le spine ${esc(state.tube.spine || 'non precise')} n est pas un spine fabricant documente dans cette source.</strong>
+          <p>La pointe ne sera pas devinee.</p>
         </div>
-        <div class="arrow-point-known-families">
-          ${unresolved.map(match => `<span>${esc(match.point.manufacturer)} · ${esc(match.point.model)}</span>`).join('')}
-        </div>
-        <button type="button" class="arrow-continue" data-continue-vane>Continuer vers l empennage sans valider de pointe</button>`;
+        <button type="button" class="arrow-continue" data-continue-balance>Continuer vers l equilibre sans valider de pointe</button>`;
     } else if (range) {
-      body = `
-        <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
+      panel.innerHTML = `
+        <h3>3. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
           <strong>Plage technique connue : ${range[0]}–${range[1]} gr.</strong>
-          <p>Aucune reference fabricant exacte n est encore reliee a ce modele dans le catalogue composants.</p>
+          <p>Aucune reference fabricant exacte n est encore reliee a ce modele.</p>
         </div>
-        <button type="button" class="arrow-continue" data-continue-vane>Continuer vers l empennage sans valider de pointe</button>`;
+        <button type="button" class="arrow-continue" data-continue-balance>Continuer vers l equilibre sans valider de pointe</button>`;
     } else {
-      body = `
-        <h3>2. Pointe pour ${esc(state.tube.model)}</h3>
+      panel.innerHTML = `
+        <h3>3. Pointe pour ${esc(state.tube.model)}</h3>
         <div class="arrow-builder-empty">
           <strong>Reference exacte pas encore documentee.</strong>
           <p>On n invente pas de pointe compatible.</p>
         </div>
-        <button type="button" class="arrow-continue" data-continue-vane>Continuer vers l empennage sans valider de pointe</button>`;
+        <button type="button" class="arrow-continue" data-continue-balance>Continuer vers l equilibre sans valider de pointe</button>`;
     }
 
-    panel.innerHTML = body;
-
-    panel.querySelectorAll('[data-point-image]').forEach(image => {
-      image.addEventListener('error', () => image.closest('.arrow-point-media')?.remove(), { once: true });
-    });
-
-    panel.querySelectorAll('[data-point-id]').forEach(button => {
-      button.addEventListener('click', () => {
-        const point = state.points.find(entry => entry.id === button.dataset.pointId);
-        const pointWeight = Number(button.dataset.pointWeight);
-        if (!point || !Number.isFinite(pointWeight)) return;
-        state.point = {
-          id: point.id,
-          manufacturer: point.manufacturer,
-          model: point.model,
-          weight: pointWeight
-        };
-        state.pointReviewed = true;
-        state.part = 'vane';
-        render();
-        renderDialog();
-        scrollDialogTop();
-      });
-    });
-
-    panel.querySelector('[data-continue-vane]')?.addEventListener('click', () => {
+    panel.querySelector('[data-continue-balance]')?.addEventListener('click', () => {
       state.point = null;
       state.pointReviewed = true;
-      state.part = 'vane';
+      state.balanceReviewed = false;
+      state.part = 'balance';
       render();
       renderDialog();
       scrollDialogTop();
@@ -591,12 +803,12 @@
   }
 
   function renderVanePanel(panel) {
-    if (!state.tube || !state.pointReviewed) {
-      panel.innerHTML = '<h3>3. Empennage</h3><p>Terminez d abord l etape Pointe.</p>';
+    if (!state.tube) {
+      panel.innerHTML = '<h3>2. Empennage</h3><p>Selectionnez d abord un tube dans les modeles coherents.</p>';
       return;
     }
     if (!state.vanes.length) {
-      panel.innerHTML = '<h3>3. Empennage</h3><p>Chargement du catalogue de plumes sourcees…</p>';
+      panel.innerHTML = '<h3>2. Empennage</h3><p>Chargement du catalogue de plumes sourcees…</p>';
       return;
     }
 
@@ -610,8 +822,8 @@
     panel.innerHTML = `
       <div class="arrow-builder-panel-head">
         <div>
-          <h3>3. Empennage</h3>
-          <p>Les plus coherents sont affiches en premier selon la discipline, le type d arc et le diametre du tube.</p>
+          <h3>2. Empennage</h3>
+          <p>Choisissez l empennage avant la pointe : sa masse intervient dans l equilibre de la fleche lorsqu elle est documentee.</p>
         </div>
         <span class="arrow-builder-count">${ranked.length} references sourcees</span>
       </div>
@@ -625,7 +837,7 @@
               </div>
               <span class="arrow-builder-badge">${match.score >= 7 ? 'Tres coherente' : match.score >= 5 ? 'A envisager' : 'Usage specifique'}</span>
             </div>
-            <p class="arrow-component-specs">Longueur ${esc(vane.length)}${vane.weight ? ` · ${esc(vane.weight)}` : ''} · ${esc(vane.stiffness)}</p>
+            <p class="arrow-component-specs">Longueur ${esc(vane.length)}${vane.weight ? ` · ${esc(vane.weight)}` : ' · masse non documentee'} · ${esc(vane.stiffness)}</p>
             <p>${esc(vane.use)}</p>
             ${match.reasons.length ? `<p class="muted">Pourquoi ici : ${esc(match.reasons.join(' · '))}.</p>` : ''}
             <p class="arrow-source"><a href="${esc(vane.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source fabricant : ${esc(vane.sourceLabel)}</a></p>
@@ -637,15 +849,72 @@
     panel.querySelectorAll('[data-vane]').forEach(button => {
       button.addEventListener('click', () => {
         state.vane = state.vanes.find(vane => vane.id === button.dataset.vane) || null;
+        state.point = null;
+        state.pointReviewed = false;
+        state.balanceReviewed = false;
+        state.part = 'point';
         render();
-        closeDialog();
-        document.getElementById('arrowBuilder')?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+        renderDialog();
+        scrollDialogTop();
       });
     });
 
     panel.querySelector('[data-show-all-vanes]')?.addEventListener('click', () => {
       state.showAllVanes = true;
       renderDialog();
+    });
+  }
+
+  function renderBalancePanel(panel) {
+    if (!state.pointReviewed) {
+      panel.innerHTML = '<h3>4. Equilibre</h3><p>Terminez d abord l etape Pointe.</p>';
+      return;
+    }
+
+    const estimate = currentBalance();
+    const method = state.balanceMethod || {};
+    const zone = Array.isArray(method.coherentFocRange) ? method.coherentFocRange : [10, 15];
+
+    if (!state.point || !estimate?.complete) {
+      const missing = estimate?.missing?.length ? estimate.missing.join(', ') : 'pointe non selectionnee';
+      panel.innerHTML = `
+        <h3>4. Equilibre de ma fleche</h3>
+        <div class="arrow-builder-empty">
+          <strong>Calcul d equilibre incomplet.</strong>
+          <p>Donnees manquantes : ${esc(missing)}.</p>
+          <p>L app ne fabrique pas un FOC fictif. La compatibilite fabricant reste valide, mais l equilibre devra etre mesure sur la fleche terminee.</p>
+        </div>
+        <button type="button" class="arrow-continue" data-balance-done>Terminer la composition</button>`;
+    } else {
+      const status = estimate.coherent ? 'Zone coherente' : 'A verifier';
+      panel.innerHTML = `
+        <div class="arrow-builder-panel-head">
+          <div>
+            <h3>4. Equilibre de ma fleche</h3>
+            <p>Estimation de depart, a confirmer sur une fleche montee et au tir.</p>
+          </div>
+          <span class="arrow-builder-badge">${status}</span>
+        </div>
+        <div class="arrow-balance-summary">
+          <div><span>Masse estimee</span><strong>${Math.round(estimate.totalMass)} gr</strong></div>
+          <div><span>FOC estime</span><strong>${estimate.foc.toFixed(1)} %</strong></div>
+          <div><span>Zone de depart</span><strong>${zone[0]}–${zone[1]} %</strong></div>
+        </div>
+        <div class="arrow-balance-visual" aria-label="Representation du centre geometrique et du centre de gravite estime">
+          <span class="arrow-balance-track"></span>
+          <span class="arrow-balance-center" title="Centre geometrique"></span>
+          <span class="arrow-balance-cg" style="left:${Math.max(5, Math.min(95, estimate.balancePoint / estimate.length * 100)).toFixed(1)}%" title="Centre de gravite estime"></span>
+        </div>
+        <p class="muted">Modele simplifie : tube uniforme, pointe a l extremite, 3 plumes et ensemble arriere ${esc(estimate.profile.rearAssembly.label)}. Il ne remplace pas la mesure du point d equilibre reel.</p>
+        <p class="arrow-source"><a href="${esc(estimate.profile.sourceUrl)}" target="_blank" rel="noopener noreferrer">Donnees tube : ${esc(estimate.profile.sourceLabel)}</a></p>
+        <button type="button" class="arrow-continue" data-balance-done>Valider ce point de depart</button>`;
+    }
+
+    panel.querySelector('[data-balance-done]')?.addEventListener('click', () => {
+      state.balanceReviewed = true;
+      render();
+      closeDialog();
+      document.getElementById('arrowBuilder')?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
     });
   }
 
@@ -657,11 +926,14 @@
     if (!panel) return;
 
     if (state.part === 'vane') {
-      if (title) title.textContent = 'Etape 3 · Empennage';
+      if (title) title.textContent = 'Etape 2 · Empennage';
       renderVanePanel(panel);
-    } else {
-      if (title) title.textContent = 'Etape 2 · Pointe';
+    } else if (state.part === 'point') {
+      if (title) title.textContent = 'Etape 3 · Pointe';
       renderPointPanel(panel);
+    } else {
+      if (title) title.textContent = 'Etape 4 · Equilibre';
+      renderBalancePanel(panel);
     }
   }
 
@@ -705,6 +977,18 @@
       state.points = [];
       state.vanes = [];
     }
+
+    try {
+      const response = await fetch('./arrow-balance.json', { cache: 'no-store' });
+      if (!response.ok) throw new Error(String(response.status));
+      const data = await response.json();
+      state.balanceProfiles = Array.isArray(data.profiles) ? data.profiles : [];
+      state.balanceMethod = data.method || null;
+    } catch (error) {
+      console.warn('[Assistant Archer] donnees equilibre indisponibles', error);
+      state.balanceProfiles = [];
+      state.balanceMethod = null;
+    }
     render();
   }
 
@@ -730,12 +1014,27 @@
 
     document.getElementById('themeSelect')?.addEventListener('change', () => {
       state.vane = null;
+      state.point = null;
+      state.pointReviewed = false;
+      state.balanceReviewed = false;
       state.showAllVanes = false;
+      state.part = 'vane';
       render();
     });
     document.getElementById('bowStyle')?.addEventListener('change', () => {
       state.vane = null;
+      state.point = null;
+      state.pointReviewed = false;
+      state.balanceReviewed = false;
       state.showAllVanes = false;
+      state.part = 'vane';
+      render();
+    });
+    document.getElementById('arrowLength')?.addEventListener('change', () => {
+      state.point = null;
+      state.pointReviewed = false;
+      state.balanceReviewed = false;
+      state.part = state.vane ? 'point' : 'vane';
       render();
     });
 
@@ -743,7 +1042,7 @@
     refresh();
   }
 
-  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v55' });
+  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v56' });
   document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', install, { once: true })
     : install();
