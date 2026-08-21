@@ -15,15 +15,15 @@ for (const id of [
   'sightMarkers','feedbackToggleBtn','feedbackPanel','discipline','disciplineWrap','shaftMaterial','themeSelect'
 ]) assert(index.includes(`id="${id}"`), `DOM essentiel manquant: ${id}`);
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
-for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
-for (const style of ['arrow-builder.css','ui-polish.css']) assert(index.includes(style), `Style non charge: ${style}`);
-assert(index.includes('20260821-v58'), 'Cache-buster v58 absent du shell TEST');
-assert(!index.includes('20260821-v57'), 'Ancien cache-buster v57 encore present dans le shell TEST');
+for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
+for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
+assert(index.includes('20260821-v59'), 'Cache-buster v59 absent du shell TEST');
+assert(!index.includes('20260821-v58'), 'Ancien cache-buster v58 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.08.21-v58'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.08.21-v59'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 
 const enhancements = read('test/app-enhancements.js');
 for (const feature of [
@@ -47,6 +47,12 @@ has(merchantUi, ['merchant-disclosure','Voir les offres marchands','merchant-dis
 has(uiPolish, ['.arrow-model-select','background:var(--accent-2)!important','.merchant-disclosure-summary','.merchant-disclosure-body'], 'Finition visuelle v58 incomplete');
 assert(!uiPolish.includes('background:transparent!important'), 'Le bouton tube ne doit pas redevenir transparent');
 
+const focMeasure = read('test/foc-measure.js');
+const focCss = read('test/foc-measure.css');
+has(focMeasure, ['calculateMeasuredFoc','classifyMeasuredFoc','100 * (balance - length / 2) / length','data-foc-length','data-foc-balance','Calculer mon FOC reel','eastonarchery.com/faqs/','version: \'v59\''], 'Mesure FOC v59 incomplete');
+has(focCss, ['.foc-measure-card','.foc-measure-grid','.foc-measure-result','.foc-measure-button'], 'Styles FOC v59 incomplets');
+execFileSync(process.execPath, ['-e', "require('./test/foc-measure.js'); const m=globalThis.AssistantArcherFocMeasureMath; if(!m) process.exit(1); const foc=m.calculateMeasuredFoc(72,43.2); if(Math.abs(foc-10)>1e-9) process.exit(2); if(m.calculateMeasuredFoc(72,73)!==null) process.exit(3); if(m.classifyMeasuredFoc(12).key!=='coherent') process.exit(4);"], { stdio: 'pipe' });
+
 const uiRefactor = read('test/ui-refactor.js');
 has(uiRefactor, ['bindDisciplineToTheme','themeSelect','disciplineWrap',"discipline.value=theme.value==='cible'?'target':'field'",'#disciplineWrap{display:none!important}'], 'Liaison theme/discipline incomplete');
 
@@ -55,11 +61,11 @@ has(refreshPrices, ['looksLikeMissingProduct','Soft 404 / product missing page',
 
 for (const module of [
   'test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js',
-  'test/avalon-addon.js','test/merchant-ui.js','test/arrow-builder.js'
+  'test/avalon-addon.js','test/merchant-ui.js','test/arrow-builder.js','test/foc-measure.js'
 ]) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
 
 for (const jsFile of [
-  'test/app.js','test/app-enhancements.js','test/merchant-ui.js','test/arrow-builder.js','test/refactor-smoke.js','test/ui-refactor.js',
+  'test/app.js','test/app-enhancements.js','test/merchant-ui.js','test/arrow-builder.js','test/foc-measure.js','test/refactor-smoke.js','test/ui-refactor.js',
   'test/onboarding.js','test/avalon-addon.js','test/expert-audit.js','test/barebow-guidance.js'
 ]) execFileSync(process.execPath, ['--check', jsFile], { stdio: 'pipe' });
 
@@ -75,18 +81,18 @@ const components = json('test/arrow-components.json');
 const jet6 = json('test/jet6-vanes.json');
 const balance = json('test/arrow-balance.json');
 
-// Parcours de fabrication v58 : Tube -> Empennage -> Pointe -> Equilibre.
+// Parcours de fabrication v58 conserve dans v59 : Tube -> Empennage -> Pointe -> Equilibre.
 has(builder, [
   'data-arrow-part="shaft"','data-arrow-part="vane"','data-arrow-part="point"','data-arrow-part="balance"',
   'modelEntries','decorateModelChoices',"insertAdjacentElement('beforebegin', builder)",'state.part = \'vane\'',
   'state.part = \'point\'','state.part = \'balance\'','scheduleRefresh(120)','arrow-balance.json','jet6-vanes.json'
-], 'Parcours de fabrication v58 incomplet');
+], 'Parcours de fabrication incomplet');
 assert(builder.indexOf('data-arrow-part="shaft"') < builder.indexOf('data-arrow-part="vane"'), 'Empennage doit suivre le tube');
 assert(builder.indexOf('data-arrow-part="vane"') < builder.indexOf('data-arrow-part="point"'), 'Pointe doit suivre l empennage');
 assert(builder.indexOf('data-arrow-part="point"') < builder.indexOf('data-arrow-part="balance"'), 'Equilibre doit suivre la pointe');
 assert(!builder.includes('state.tube = state.tubes[0]'), 'Le premier tube ne doit jamais etre selectionne automatiquement');
 assert(!builder.includes('renderTubePanel'), 'Le tube ne doit pas etre duplique dans le panneau flottant');
-assert(builder.includes("version: 'v58'"), 'Version interne arrow-builder non synchronisee');
+assert(builder.includes("version: 'v58'"), 'Version interne arrow-builder historique modifiee sans changement du module');
 
 // Pointe : uniquement compatibilites fabricant, puis classement d equilibre si les masses existent.
 has(builder, [
@@ -142,7 +148,7 @@ assert(jet6S?.weight === null && !Object.prototype.hasOwnProperty.call(jet6S, 'w
 assert(jet6S?.sourceTier === 'brand-distributor', 'Niveau de source Jet6 perdu');
 
 // Donnees d equilibre : profils separes, sources fabricant et inconnues explicites.
-assert(balance.method?.targetFoc === 12, 'Repere de classement FOC v58 modifie');
+assert(balance.method?.targetFoc === 12, 'Repere de classement FOC historique modifie');
 assert(JSON.stringify(balance.method?.coherentFocRange) === JSON.stringify([10,15]), 'Plage FOC de depart modifiee');
 assert(Array.isArray(balance.profiles) && balance.profiles.length >= 15, 'Profils de masse insuffisants');
 const balanceById = id => balance.profiles.find(profile => profile.id === id);
@@ -181,4 +187,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques v58 OK');
+console.log('Assistant Archer refactor: controles statiques et FOC mesure v59 OK');
