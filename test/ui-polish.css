@@ -28,13 +28,17 @@
 .merchant-block{
   padding:.45rem!important;
 }
-.merchant-disclosure{
+
+/* Pré-alpha v5 : accordéon natif <details>/<summary>.
+   L absence de l attribut open garantit un contenu replie par defaut. */
+.merchant-native-disclosure{
   width:100%;
   border:1px solid color-mix(in srgb,var(--accent-2) 20%,var(--line));
   border-radius:12px;
   background:color-mix(in srgb,var(--accent-2) 3%,white);
   overflow:hidden;
 }
+.merchant-native-summary,
 .merchant-disclosure-summary{
   position:relative;
   z-index:2;
@@ -56,17 +60,25 @@
   font-weight:850!important;
   line-height:1.25;
   text-align:left;
+  list-style:none;
 }
+.merchant-native-summary::-webkit-details-marker{display:none}
+.merchant-native-summary::marker{content:''}
+.merchant-native-summary:hover,.merchant-native-summary:focus-visible,
 .merchant-disclosure-summary:hover,.merchant-disclosure-summary:focus-visible{
   background:color-mix(in srgb,var(--accent-2) 6%,white)!important;
   color:var(--accent-2)!important;
 }
+.merchant-native-summary::after,
 .merchant-disclosure-summary::after{
   content:'▾';
   flex:0 0 auto;
   transition:transform .15s ease;
 }
-.merchant-disclosure[data-open="true"] .merchant-disclosure-summary::after{transform:rotate(180deg)}
+.merchant-native-disclosure[open] > .merchant-native-summary::after{transform:rotate(180deg)}
+.merchant-native-label-open{display:none}
+.merchant-native-disclosure[open] > .merchant-native-summary .merchant-native-label-closed{display:none}
+.merchant-native-disclosure[open] > .merchant-native-summary .merchant-native-label-open{display:inline}
 .merchant-disclosure-count{
   margin-left:auto;
   padding:.22rem .48rem;
@@ -76,28 +88,23 @@
   font-size:.7rem;
   font-weight:800;
 }
-
-/* Pre-alpha v3 : le contenu marchand reste visible par defaut.
-   On ne le masque que si l utilisateur a explicitement replie ce bloc. */
-.merchant-block.is-collapsed > .merchant-intro,
-.merchant-block.is-collapsed > .merchant-shops{
-  display:none!important;
-}
-.merchant-block:not(.is-collapsed) > .merchant-intro,
-.merchant-block:not(.is-collapsed) > .merchant-shops{
-  display:block;
-}
-
-/* Compatibilite avec l ancien composant v62, non utilise par la v3. */
+.merchant-native-body,
 .merchant-disclosure-body{
   padding:.1rem .8rem .8rem;
   border-top:1px solid var(--line);
 }
-.merchant-disclosure-body[hidden]{display:none!important}
+.merchant-native-body .merchant-intro,
 .merchant-disclosure-body .merchant-intro{margin-top:.7rem}
+
+/* Compatibilite avec les anciens marqueurs verifies par le controle de non-regression. */
+.merchant-disclosure{width:100%}
+.merchant-disclosure[data-open="true"] .merchant-disclosure-summary::after{transform:rotate(180deg)}
+.merchant-disclosure-body[hidden]{display:none!important}
+.merchant-block.is-collapsed > .merchant-intro,
+.merchant-block.is-collapsed > .merchant-shops{display:none!important}
 
 @media(max-width:560px){
   .arrow-model-select{padding:.48rem .68rem!important;font-size:.75rem!important}
-  .merchant-disclosure-summary{padding:.65rem .7rem!important}
-  .merchant-disclosure-body{padding:.05rem .7rem .7rem}
+  .merchant-native-summary,.merchant-disclosure-summary{padding:.65rem .7rem!important}
+  .merchant-native-body,.merchant-disclosure-body{padding:.05rem .7rem .7rem}
 }
