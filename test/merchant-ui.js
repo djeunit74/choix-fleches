@@ -1,12 +1,9 @@
-/* Assistant Archer TEST - presentation compacte des offres marchands. */
+/* Assistant Archer TEST - presentation robuste des offres marchands. */
 (() => {
   'use strict';
 
   let scheduled = false;
   let disclosureSequence = 0;
-  const openMerchantKeys = new Set();
-
-  const directChild = (parent, className) => [...parent.children].find(child => child.classList?.contains(className)) || null;
 
   function disclosureLabel(block) {
     const offerCount = block.querySelectorAll('.merchant-deals li').length;
@@ -16,83 +13,49 @@
     return 'details';
   }
 
-  function merchantKey(block) {
-    const text = String(block.textContent || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-    return text.slice(0, 800) || `merchant-${disclosureSequence + 1}`;
-  }
-
-  function setDisclosureState(wrapper, open) {
-    const button = directChild(wrapper, 'merchant-disclosure-summary');
-    const body = directChild(wrapper, 'merchant-disclosure-body');
-    if (!button || !body) return;
-    button.setAttribute('aria-expanded', open ? 'true' : 'false');
-    wrapper.dataset.open = open ? 'true' : 'false';
-    wrapper.classList.toggle('is-open', open);
-    body.hidden = !open;
-    body.style.display = open ? '' : 'none';
-  }
-
-  function rememberState(wrapper, open) {
-    const key = wrapper.dataset.merchantKey || '';
-    if (!key) return;
-    if (open) openMerchantKeys.add(key);
-    else openMerchantKeys.delete(key);
-  }
-
-  function toggleWrapper(wrapper) {
-    const button = directChild(wrapper, 'merchant-disclosure-summary');
+  function setDisclosureState(block, open) {
+    const button = block.querySelector(':scope > .merchant-disclosure-summary');
     if (!button) return;
-    const nextOpen = button.getAttribute('aria-expanded') !== 'true';
-    rememberState(wrapper, nextOpen);
-    setDisclosureState(wrapper, nextOpen);
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    block.dataset.open = open ? 'true' : 'false';
+    block.classList.toggle('is-collapsed', !open);
+    const label = button.querySelector('.merchant-disclosure-label');
+    if (label) label.textContent = open ? 'Masquer les offres marchands' : 'Voir les offres marchands';
   }
 
-  function compactMerchantBlock(block) {
+  function enhanceMerchantBlock(block) {
     if (!(block instanceof HTMLElement)) return;
-    if (directChild(block, 'merchant-disclosure')) return;
-    if (!block.childNodes.length) return;
+    if (block.querySelector(':scope > .merchant-disclosure-summary')) return;
 
-    const key = merchantKey(block);
     disclosureSequence += 1;
+    block.classList.add('merchant-disclosure');
 
-    const wrapper = document.createElement('section');
-    wrapper.className = 'merchant-disclosure';
-    wrapper.dataset.merchantKey = key;
+    const controlled = block.querySelector(':scope > .merchant-shops') || block.querySelector(':scope > .merchant-intro');
+    if (controlled && !controlled.id) controlled.id = `merchant-offers-${disclosureSequence}`;
 
-    const bodyId = `merchant-disclosure-body-${disclosureSequence}`;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'merchant-disclosure-summary';
-    button.setAttribute('aria-controls', bodyId);
-    button.innerHTML = `<span>Voir les offres marchands</span><span class="merchant-disclosure-count">${disclosureLabel(block)}</span>`;
+    button.setAttribute('aria-expanded', 'true');
+    if (controlled?.id) button.setAttribute('aria-controls', controlled.id);
+    button.innerHTML = `<span class="merchant-disclosure-label">Masquer les offres marchands</span><span class="merchant-disclosure-count">${disclosureLabel(block)}</span>`;
 
-    const body = document.createElement('div');
-    body.id = bodyId;
-    body.className = 'merchant-disclosure-body';
-    [...block.childNodes].forEach(node => body.appendChild(node));
-
-    // Fallback local : la delegation en capture est prioritaire. Si elle n a pas
-    // intercepte le clic, ce gestionnaire garantit quand meme l ouverture.
     button.addEventListener('click', event => {
-      if (event.defaultPrevented) return;
       event.preventDefault();
       event.stopPropagation();
-      toggleWrapper(wrapper);
+      const open = button.getAttribute('aria-expanded') === 'true';
+      setDisclosureState(block, !open);
     });
 
-    wrapper.append(button, body);
-    block.appendChild(wrapper);
-    setDisclosureState(wrapper, openMerchantKeys.has(key));
+    /* Progression fonctionnelle : le contenu reste ouvert par defaut. Ainsi, meme si
+       un navigateur ou un autre module intercepte le clic, les offres restent lisibles. */
+    block.prepend(button);
+    setDisclosureState(block, true);
   }
 
   function compactAll(root = document) {
-    if (root instanceof HTMLElement && root.matches('.merchant-block')) compactMerchantBlock(root);
-    root.querySelectorAll?.('.merchant-block').forEach(compactMerchantBlock);
+    if (root instanceof HTMLElement && root.matches('.merchant-block')) enhanceMerchantBlock(root);
+    root.querySelectorAll?.('.merchant-block').forEach(enhanceMerchantBlock);
   }
 
   function scheduleCompact() {
@@ -104,29 +67,12 @@
     });
   }
 
-  function handleMerchantToggle(event, result) {
-    const rawTarget = event.target;
-    const target = rawTarget instanceof Element ? rawTarget.closest('.merchant-disclosure-summary') : null;
-    if (!target || !result.contains(target)) return;
-
-    const wrapper = target.closest('.merchant-disclosure');
-    if (!wrapper) return;
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    toggleWrapper(wrapper);
-  }
-
   function install() {
     const result = document.getElementById('result');
     if (!result) return;
-
     compactAll(result);
-
-    // Delegation en capture : le bouton reste fonctionnel meme si le contenu marchand
-    // est remplace dynamiquement entre deux rendus de recommandation.
-    result.addEventListener('click', event => handleMerchantToggle(event, result), true);
-
+    // MutationObserver ne deplace plus aucun noeud : il ajoute seulement le controle
+    // aux nouveaux blocs marchands produits par un nouveau calcul.
     new MutationObserver(scheduleCompact).observe(result, { childList: true, subtree: true });
   }
 
@@ -134,7 +80,7 @@
     refresh: compactAll,
     setDisclosureState,
     version: 'v62',
-    release: 'Pre-alpha v2'
+    release: 'Pre-alpha v3'
   });
 
   document.readyState === 'loading'
