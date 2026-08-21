@@ -273,11 +273,11 @@
 
     state.part = part;
     const dialog = ensureDialog();
-    render();
     if (!dialog.open) {
       if (typeof dialog.showModal === 'function') dialog.showModal();
       else dialog.setAttribute('open', '');
     }
+    render();
     setTimeout(scrollDialogTop, 0);
   }
 
