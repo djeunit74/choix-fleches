@@ -37,6 +37,21 @@
     body.style.display = open ? '' : 'none';
   }
 
+  function rememberState(wrapper, open) {
+    const key = wrapper.dataset.merchantKey || '';
+    if (!key) return;
+    if (open) openMerchantKeys.add(key);
+    else openMerchantKeys.delete(key);
+  }
+
+  function toggleWrapper(wrapper) {
+    const button = directChild(wrapper, 'merchant-disclosure-summary');
+    if (!button) return;
+    const nextOpen = button.getAttribute('aria-expanded') !== 'true';
+    rememberState(wrapper, nextOpen);
+    setDisclosureState(wrapper, nextOpen);
+  }
+
   function compactMerchantBlock(block) {
     if (!(block instanceof HTMLElement)) return;
     if (directChild(block, 'merchant-disclosure')) return;
@@ -60,6 +75,15 @@
     body.id = bodyId;
     body.className = 'merchant-disclosure-body';
     [...block.childNodes].forEach(node => body.appendChild(node));
+
+    // Fallback local : la delegation en capture est prioritaire. Si elle n a pas
+    // intercepte le clic, ce gestionnaire garantit quand meme l ouverture.
+    button.addEventListener('click', event => {
+      if (event.defaultPrevented) return;
+      event.preventDefault();
+      event.stopPropagation();
+      toggleWrapper(wrapper);
+    });
 
     wrapper.append(button, body);
     block.appendChild(wrapper);
@@ -90,14 +114,7 @@
 
     event.preventDefault();
     event.stopImmediatePropagation();
-
-    const nextOpen = target.getAttribute('aria-expanded') !== 'true';
-    const key = wrapper.dataset.merchantKey || '';
-    if (key) {
-      if (nextOpen) openMerchantKeys.add(key);
-      else openMerchantKeys.delete(key);
-    }
-    setDisclosureState(wrapper, nextOpen);
+    toggleWrapper(wrapper);
   }
 
   function install() {
