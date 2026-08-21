@@ -36,6 +36,8 @@
   overflow:hidden;
 }
 .merchant-disclosure-summary{
+  position:relative;
+  z-index:2;
   display:flex!important;
   width:100%!important;
   align-items:center;
@@ -47,7 +49,8 @@
   border-radius:0!important;
   background:transparent!important;
   box-shadow:none!important;
-  cursor:pointer;
+  cursor:pointer!important;
+  pointer-events:auto!important;
   color:var(--accent-2)!important;
   font:inherit;
   font-weight:850!important;
@@ -73,6 +76,19 @@
   font-size:.7rem;
   font-weight:800;
 }
+
+/* Pre-alpha v3 : le contenu marchand reste visible par defaut.
+   On ne le masque que si l utilisateur a explicitement replie ce bloc. */
+.merchant-block.is-collapsed > .merchant-intro,
+.merchant-block.is-collapsed > .merchant-shops{
+  display:none!important;
+}
+.merchant-block:not(.is-collapsed) > .merchant-intro,
+.merchant-block:not(.is-collapsed) > .merchant-shops{
+  display:block;
+}
+
+/* Compatibilite avec l ancien composant v62, non utilise par la v3. */
 .merchant-disclosure-body{
   padding:.1rem .8rem .8rem;
   border-top:1px solid var(--line);
