@@ -8,7 +8,6 @@
       "family": "Spin vane",
       "length": "1,75\"",
       "weight": null,
-      "weightGrains": null,
       "stiffness": "Normal spin",
       "disciplines": ["cible", "campagne"],
       "diameters": ["thin"],
