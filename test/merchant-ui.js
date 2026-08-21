@@ -36,9 +36,9 @@
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'merchant-disclosure-summary';
-    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-expanded', 'false');
     if (controlled?.id) button.setAttribute('aria-controls', controlled.id);
-    button.innerHTML = `<span class="merchant-disclosure-label">Masquer les offres marchands</span><span class="merchant-disclosure-count">${disclosureLabel(block)}</span>`;
+    button.innerHTML = `<span class="merchant-disclosure-label">Voir les offres marchands</span><span class="merchant-disclosure-count">${disclosureLabel(block)}</span>`;
 
     button.addEventListener('click', event => {
       event.preventDefault();
@@ -47,10 +47,10 @@
       setDisclosureState(block, !open);
     });
 
-    /* Progression fonctionnelle : le contenu reste ouvert par defaut. Ainsi, meme si
-       un navigateur ou un autre module intercepte le clic, les offres restent lisibles. */
+    /* Le contenu marchand reste dans son bloc d origine : aucun deplacement de noeud.
+       On le replie seulement par classe CSS, ce qui conserve le rendu valide de la v3. */
     block.prepend(button);
-    setDisclosureState(block, true);
+    setDisclosureState(block, false);
   }
 
   function compactAll(root = document) {
@@ -71,7 +71,7 @@
     const result = document.getElementById('result');
     if (!result) return;
     compactAll(result);
-    // MutationObserver ne deplace plus aucun noeud : il ajoute seulement le controle
+    // MutationObserver ne deplace aucun noeud : il ajoute seulement le controle
     // aux nouveaux blocs marchands produits par un nouveau calcul.
     new MutationObserver(scheduleCompact).observe(result, { childList: true, subtree: true });
   }
@@ -80,7 +80,7 @@
     refresh: compactAll,
     setDisclosureState,
     version: 'v62',
-    release: 'Pre-alpha v3'
+    release: 'Pre-alpha v4'
   });
 
   document.readyState === 'loading'
