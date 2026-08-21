@@ -39,7 +39,7 @@
       "manufacturer": "Easton",
       "tubeKeys": ["vector", "vector ready to shoot"],
       "gpiBySpine": {"600":7.6,"800":6.2,"1000":5.4,"1200":5.1,"1400":4.2,"1600":3.8,"1800":3.6,"2000":3.4},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":7.0,"weightRangeGrains":[7.0,7.0],"label":"Easton G Nock 7 gr","sourceTier":"manufacturer-documented-component","confidence":"high","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2018/10/2018_Target_Catalog_email_web.pdf"},
       "sourceUrl": "https://eastonarchery.com/arrows_/vector-arrow/",
       "sourceLabel": "Easton — Vector"
     },
@@ -93,7 +93,7 @@
       "manufacturer": "Skylon",
       "tubeKeys": ["paragon"],
       "gpiBySpine": {"1000":4.70,"900":4.81,"850":4.94,"800":5.06,"750":5.31,"700":5.55,"650":5.83,"600":6.10,"550":6.50,"500":6.90,"450":7.42,"400":7.93,"350":8.47},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":10.4,"weightRangeGrains":[9.28,11.5],"label":"Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (estimation proxy)","sourceTier":"proxy-estimate","confidence":"low-medium","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2024/11/Easton-Target-2025-Small.pdf"},
       "sourceUrl": "https://www.skylonarchery.com/arrows/id-3-2/paragon",
       "sourceLabel": "Skylon — Paragon"
     },
@@ -102,7 +102,7 @@
       "manufacturer": "Skylon",
       "tubeKeys": ["performa"],
       "gpiBySpine": {"1000":4.70,"900":4.81,"850":4.94,"800":5.06,"750":5.31,"700":5.55,"650":5.83,"600":6.10,"550":6.50,"500":6.90,"450":7.42,"400":7.93,"350":8.47},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":10.4,"weightRangeGrains":[9.28,11.5],"label":"Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (estimation proxy)","sourceTier":"proxy-estimate","confidence":"low-medium","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2024/11/Easton-Target-2025-Small.pdf"},
       "sourceUrl": "https://www.skylonarchery.com/arrows/id-3-2/performa",
       "sourceLabel": "Skylon — Performa"
     },
@@ -111,7 +111,7 @@
       "manufacturer": "Skylon",
       "tubeKeys": ["precium"],
       "gpiBySpine": {"1000":4.70,"900":4.81,"850":4.94,"800":5.06,"750":5.31,"700":5.55,"650":5.83,"600":6.10,"550":6.50,"500":6.90,"450":7.42,"400":7.93,"350":8.47},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":10.4,"weightRangeGrains":[9.28,11.5],"label":"Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (estimation proxy)","sourceTier":"proxy-estimate","confidence":"low-medium","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2024/11/Easton-Target-2025-Small.pdf"},
       "sourceUrl": "https://www.skylonarchery.com/arrows/id-3-2/precium",
       "sourceLabel": "Skylon — Precium"
     },
@@ -120,7 +120,7 @@
       "manufacturer": "Skylon",
       "tubeKeys": ["preminens", "premiens"],
       "gpiBySpine": {"650":5.83,"600":6.10,"550":6.50,"500":6.90,"450":7.42,"400":7.93,"350":8.47},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":10.4,"weightRangeGrains":[9.28,11.5],"label":"Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (estimation proxy)","sourceTier":"proxy-estimate","confidence":"low-medium","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2024/11/Easton-Target-2025-Small.pdf"},
       "sourceUrl": "https://www.skylonarchery.com/arrows/id-3-2/preminens",
       "sourceLabel": "Skylon — Preminens"
     },
