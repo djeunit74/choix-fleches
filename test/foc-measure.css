@@ -1,0 +1,21 @@
+/* Assistant Archer TEST - mesure reelle du FOC d'une fleche terminee. */
+.foc-measure-card{margin:1rem 0 0;padding:.9rem;border:1px solid color-mix(in srgb,var(--accent-2) 28%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--accent-2) 4%,white)}
+.foc-measure-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:.55rem}
+.foc-measure-head h4{margin:.1rem 0 0;color:var(--ink)}
+.foc-measure-badge{flex:0 0 auto;padding:.28rem .5rem;border-radius:999px;background:color-mix(in srgb,var(--accent-2) 12%,white);font-size:.7rem;font-weight:850;color:var(--accent-2)}
+.foc-measure-card>p{line-height:1.42}
+.foc-measure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:.7rem 0}
+.foc-measure-grid label{display:grid;gap:.35rem;font-weight:800}
+.foc-measure-grid input{width:100%;padding:.62rem .7rem;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit}
+.foc-measure-grid small{font-weight:500;line-height:1.35;color:color-mix(in srgb,var(--ink) 68%,transparent)}
+.foc-measure-button{width:100%;margin:.25rem 0 0;padding:.7rem .8rem;border:1px solid var(--accent-2);border-radius:11px;background:var(--accent-2);color:#fff;font-weight:850;cursor:pointer}
+.foc-measure-button:hover,.foc-measure-button:focus-visible{background:color-mix(in srgb,var(--accent-2) 82%,#000)}
+.foc-measure-result{display:grid;gap:.12rem;margin:.75rem 0 0;padding:.68rem .75rem;border-radius:11px;background:#fff;border:1px solid var(--line)}
+.foc-measure-result span{font-size:.72rem;color:color-mix(in srgb,var(--ink) 70%,transparent)}
+.foc-measure-result strong{font-size:1.2rem;color:var(--accent-2)}
+.foc-measure-result small{line-height:1.35}
+.foc-measure-result[data-state="coherent"]{border-color:color-mix(in srgb,#248a3d 55%,var(--line));background:color-mix(in srgb,#248a3d 5%,white)}
+.foc-measure-result[data-state="invalid"],.foc-measure-result[data-state="negative"],.foc-measure-result[data-state="high"]{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.foc-measure-reference{margin:.7rem 0 0;font-size:.78rem;color:color-mix(in srgb,var(--ink) 72%,transparent)}
+.foc-measure-reference a{overflow-wrap:anywhere}
+@media(max-width:560px){.foc-measure-head{display:block}.foc-measure-badge{display:inline-block;margin-top:.45rem}.foc-measure-grid{grid-template-columns:1fr}}
