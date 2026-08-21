@@ -108,29 +108,50 @@ for (const spine of ['1000','1150','1400','1600','1800','2000']) {
   assert(JSON.stringify(avancePoint.weightsBySpine?.[spine]) === JSON.stringify([60,70,80]), `Avance ${spine}: la plage doit etre 60/70/80 gr`);
 }
 
-// Empennages : les donnees de masse manquantes restent explicitement manquantes.
-assert(Array.isArray(components.vanes) && components.vanes.length >= 5, 'Catalogue de plumes sourcees insuffisant');
+// Empennages : les masses fabricant connues sont structurees, les inconnues restent inconnues.
+assert(Array.isArray(components.vanes) && components.vanes.length >= 10, 'Catalogue de plumes sourcees insuffisant');
 for (const vane of components.vanes) {
   assert(vane.id && vane.manufacturer && vane.model && vane.sourceUrl, 'Plume sans identite ou source fabricant');
   assert(/^https:\/\//.test(vane.sourceUrl), `URL fabricant invalide pour ${vane.id}`);
 }
-const x3_175 = components.vanes.find(vane => vane.id === 'bohning-x3-175');
-const x3_225 = components.vanes.find(vane => vane.id === 'bohning-x3-225');
-assert(x3_175?.weight === '4,3 gr', 'Masse Bohning X3 1.75 perdue');
-assert(x3_225?.weight === '5,8 gr', 'Masse Bohning X3 2.25 perdue');
-assert(x3_225?.disciplines?.includes('cible') && x3_225?.disciplines?.includes('3d'), 'Disciplines Bohning X3 2.25 corrompues');
+const vaneById = id => components.vanes.find(vane => vane.id === id);
+assert(vaneById('bohning-air-2')?.weightGrains === 4.5, 'Masse Bohning Air 2 perdue');
+assert(vaneById('bohning-x-vane-15')?.weightGrains === 3.3, 'Masse Bohning X Vane 1.5 perdue');
+assert(vaneById('bohning-x-vane-175')?.weightGrains === 4.3, 'Masse Bohning X Vane 1.75 perdue');
+assert(vaneById('bohning-x3-175')?.weight === '4,3 gr', 'Masse Bohning X3 1.75 perdue');
+assert(vaneById('bohning-x3-225')?.weight === '5,8 gr', 'Masse Bohning X3 2.25 perdue');
+assert(vaneById('bohning-x3-225')?.disciplines?.includes('cible') && vaneById('bohning-x3-225')?.disciplines?.includes('3d'), 'Disciplines Bohning X3 2.25 corrompues');
+for (const gasProId of ['gaspro-olympic-efficient-175','gaspro-recurve-hp-175','gaspro-wind-efficient-2','gaspro-field-efficient-2','gaspro-indoor-efficient-4']) {
+  assert(vaneById(gasProId)?.weight === null, `Masse Gas Pro non documentee ne doit pas etre inventee: ${gasProId}`);
+}
 
-// Donnees d equilibre : profils separes et sources fabricant.
+// Donnees d equilibre : profils separes, sources fabricant et inconnues explicites.
 assert(balance.method?.targetFoc === 12, 'Repere de classement FOC v56 modifie');
 assert(JSON.stringify(balance.method?.coherentFocRange) === JSON.stringify([10,15]), 'Plage FOC de depart modifiee');
-assert(Array.isArray(balance.profiles) && balance.profiles.length >= 5, 'Profils de masse insuffisants');
+assert(Array.isArray(balance.profiles) && balance.profiles.length >= 15, 'Profils de masse insuffisants');
+const balanceById = id => balance.profiles.find(profile => profile.id === id);
 for (const profile of balance.profiles) {
   assert(profile.id && profile.manufacturer && Array.isArray(profile.tubeKeys) && profile.tubeKeys.length, 'Profil equilibre incomplet');
-  assert(profile.gpiBySpine && Object.keys(profile.gpiBySpine).length, `GPI absent: ${profile.id}`);
+  assert(profile.gpiBySpine && typeof profile.gpiBySpine === 'object', `Champ GPI absent: ${profile.id}`);
   assert(/^https:\/\//.test(profile.sourceUrl), `Source GPI invalide: ${profile.id}`);
 }
+for (const id of [
+  'easton-avance','easton-ace','easton-superdrive-micro','easton-vector','easton-x10',
+  'easton-x10-parallel-pro-32','easton-x10-parallel-pro-4','skylon-brixxon','skylon-radius',
+  'skylon-paragon','skylon-performa','skylon-precium','skylon-preminens','victory-vap','victory-vxt'
+]) assert(balanceById(id), `Profil equilibre attendu absent: ${id}`);
+for (const id of [
+  'easton-avance','easton-ace','easton-superdrive-micro','easton-vector','easton-x10',
+  'easton-x10-parallel-pro-32','easton-x10-parallel-pro-4','skylon-brixxon','skylon-radius',
+  'skylon-paragon','skylon-performa','skylon-precium','skylon-preminens'
+]) assert(Object.keys(balanceById(id)?.gpiBySpine || {}).length > 0, `GPI fabricant attendu absent: ${id}`);
+assert(Object.keys(balanceById('victory-vap')?.gpiBySpine || {}).length === 0, 'VAP ne doit pas recevoir un GPI non verifie');
+assert(Object.keys(balanceById('victory-vxt')?.gpiBySpine || {}).length === 0, 'VXT ne doit pas recevoir un GPI non verifie');
+assert(balanceById('victory-vap')?.rearAssembly?.weightGrains === 8, 'Masse arriere VAP officielle perdue');
+assert(balanceById('victory-vxt')?.rearAssembly?.weightGrains === 15, 'Masse arriere VXT officielle perdue');
 assert(balance.profiles.some(profile => profile.manufacturer === 'Easton' && profile.rearAssembly?.weightGrains === 11), 'Ensemble arriere Easton documente absent');
 assert(balance.profiles.some(profile => profile.manufacturer === 'Skylon' && profile.rearAssembly === null), 'Une masse arriere Skylon non documentee ne doit pas etre inventee');
+assert(balanceById('easton-vector')?.rearAssembly === null, 'Vector ne doit pas imposer un montage arriere unique');
 
 has(builderCss, ['.arrow-builder-inline','.arrow-model-select','.arrow-builder-dialog','.arrow-vane-svg','.arrow-part-balance','.arrow-balance-summary','.arrow-balance-visual','max-height:84vh'], 'Styles configurateur v56 incomplets');
 
