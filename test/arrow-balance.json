@@ -75,7 +75,7 @@
       "manufacturer": "Skylon",
       "tubeKeys": ["brixxon"],
       "gpiBySpine": {"1100":4.64,"1000":4.90,"900":5.34,"850":5.48,"800":5.80,"750":5.94,"700":6.17,"650":6.42,"600":7.09,"550":7.47,"500":8.00,"450":8.63,"400":9.47},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":13.2,"weightRangeGrains":[13.08,13.3],"label":"Pin ID4.2 10,8 gr + Recurve Pin Nock ≈2,4 gr (revendeurs recoupes)","sourceTier":"reseller-consensus","confidence":"medium-high","sourceUrl":"https://www.bogenladen-leipzig.de/Skylon-Pin-ID42"},
       "sourceUrl": "https://www.skylonarchery.com/arrows/2023-06-29-08-52-09/brixxon",
       "sourceLabel": "Skylon — Brixxon"
     },
@@ -84,7 +84,7 @@
       "manufacturer": "Skylon",
       "tubeKeys": ["radius"],
       "gpiBySpine": {"2000":3.60,"1800":3.89,"1500":4.00,"1300":4.16,"1100":4.64,"1000":4.90,"900":5.34,"850":5.48,"800":5.80,"750":5.94,"700":6.17,"650":6.42,"600":7.09,"550":7.47,"500":8.00,"450":8.63,"400":9.47},
-      "rearAssembly": null,
+      "rearAssembly": {"weightGrains":13.2,"weightRangeGrains":[13.08,13.3],"label":"Pin ID4.2 10,8 gr + Recurve Pin Nock ≈2,4 gr (revendeurs recoupes)","sourceTier":"reseller-consensus","confidence":"medium-high","sourceUrl":"https://bogensport-roemer.de/nl-nl/products/skylon-radius-pin-insert-12er-packung"},
       "sourceUrl": "https://skylonarchery.com/arrows/2023-06-29-08-52-09/radius",
       "sourceLabel": "Skylon — Radius"
     },
