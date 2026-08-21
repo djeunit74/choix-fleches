@@ -15,15 +15,15 @@ for (const id of [
   'sightMarkers','feedbackToggleBtn','feedbackPanel','discipline','disciplineWrap','shaftMaterial','themeSelect'
 ]) assert(index.includes(`id="${id}"`), `DOM essentiel manquant: ${id}`);
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
-for (const script of ['app-config.js','app.js','app-enhancements.js','arrow-builder.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
-assert(index.includes('arrow-builder.css'), 'Style du configurateur non charge');
-assert(index.includes('20260821-v57'), 'Cache-buster v57 absent du shell TEST');
-assert(!index.includes('20260821-v56'), 'Ancien cache-buster v56 encore present dans le shell TEST');
+for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
+for (const style of ['arrow-builder.css','ui-polish.css']) assert(index.includes(style), `Style non charge: ${style}`);
+assert(index.includes('20260821-v58'), 'Cache-buster v58 absent du shell TEST');
+assert(!index.includes('20260821-v57'), 'Ancien cache-buster v57 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.08.21-v57'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.08.21-v58'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 
 const enhancements = read('test/app-enhancements.js');
 for (const feature of [
@@ -41,6 +41,12 @@ assert(enhancements.includes("best.price <= next.price * 0.95"), 'Seuil Bonne af
 assert(enhancements.includes("entry.package.key === 'unknown'"), 'Conditionnement inconnu doit rester exclu des comparaisons');
 assert(!enhancements.includes('uniqueRecommendationModels(entry.rec?.models || []).slice('), 'Plafond arbitraire rajoute sur les modeles');
 
+const merchantUi = read('test/merchant-ui.js');
+const uiPolish = read('test/ui-polish.css');
+has(merchantUi, ['merchant-disclosure','Voir les offres marchands','merchant-disclosure-count','MutationObserver','version: \'v58\''], 'Sous-menu marchand v58 incomplet');
+has(uiPolish, ['.arrow-model-select','background:var(--accent-2)!important','.merchant-disclosure-summary','.merchant-disclosure-body'], 'Finition visuelle v58 incomplete');
+assert(!uiPolish.includes('background:transparent!important'), 'Le bouton tube ne doit pas redevenir transparent');
+
 const uiRefactor = read('test/ui-refactor.js');
 has(uiRefactor, ['bindDisciplineToTheme','themeSelect','disciplineWrap',"discipline.value=theme.value==='cible'?'target':'field'",'#disciplineWrap{display:none!important}'], 'Liaison theme/discipline incomplete');
 
@@ -49,11 +55,11 @@ has(refreshPrices, ['looksLikeMissingProduct','Soft 404 / product missing page',
 
 for (const module of [
   'test/barebow-guidance.js','test/ui-refactor.js','test/expert-audit.js','test/onboarding.js',
-  'test/avalon-addon.js','test/arrow-builder.js'
+  'test/avalon-addon.js','test/merchant-ui.js','test/arrow-builder.js'
 ]) assert(fs.existsSync(module), `Module fonctionnel manquant: ${module}`);
 
 for (const jsFile of [
-  'test/app.js','test/app-enhancements.js','test/arrow-builder.js','test/refactor-smoke.js','test/ui-refactor.js',
+  'test/app.js','test/app-enhancements.js','test/merchant-ui.js','test/arrow-builder.js','test/refactor-smoke.js','test/ui-refactor.js',
   'test/onboarding.js','test/avalon-addon.js','test/expert-audit.js','test/barebow-guidance.js'
 ]) execFileSync(process.execPath, ['--check', jsFile], { stdio: 'pipe' });
 
@@ -66,19 +72,21 @@ json('deals.json');
 const builder = read('test/arrow-builder.js');
 const builderCss = read('test/arrow-builder.css');
 const components = json('test/arrow-components.json');
+const jet6 = json('test/jet6-vanes.json');
 const balance = json('test/arrow-balance.json');
 
-// Parcours de fabrication v57 : Tube -> Empennage -> Pointe -> Equilibre.
+// Parcours de fabrication v58 : Tube -> Empennage -> Pointe -> Equilibre.
 has(builder, [
   'data-arrow-part="shaft"','data-arrow-part="vane"','data-arrow-part="point"','data-arrow-part="balance"',
   'modelEntries','decorateModelChoices',"insertAdjacentElement('beforebegin', builder)",'state.part = \'vane\'',
-  'state.part = \'point\'','state.part = \'balance\'','scheduleRefresh(120)','arrow-balance.json'
-], 'Parcours de fabrication v57 incomplet');
+  'state.part = \'point\'','state.part = \'balance\'','scheduleRefresh(120)','arrow-balance.json','jet6-vanes.json'
+], 'Parcours de fabrication v58 incomplet');
 assert(builder.indexOf('data-arrow-part="shaft"') < builder.indexOf('data-arrow-part="vane"'), 'Empennage doit suivre le tube');
 assert(builder.indexOf('data-arrow-part="vane"') < builder.indexOf('data-arrow-part="point"'), 'Pointe doit suivre l empennage');
 assert(builder.indexOf('data-arrow-part="point"') < builder.indexOf('data-arrow-part="balance"'), 'Equilibre doit suivre la pointe');
 assert(!builder.includes('state.tube = state.tubes[0]'), 'Le premier tube ne doit jamais etre selectionne automatiquement');
 assert(!builder.includes('renderTubePanel'), 'Le tube ne doit pas etre duplique dans le panneau flottant');
+assert(builder.includes("version: 'v58'"), 'Version interne arrow-builder non synchronisee');
 
 // Pointe : uniquement compatibilites fabricant, puis classement d equilibre si les masses existent.
 has(builder, [
@@ -111,7 +119,7 @@ for (const spine of ['1000','1150','1400','1600','1800','2000']) {
   assert(JSON.stringify(avancePoint.weightsBySpine?.[spine]) === JSON.stringify([60,70,80]), `Avance ${spine}: la plage doit etre 60/70/80 gr`);
 }
 
-// Empennages : les masses fabricant connues sont structurees, les inconnues restent inconnues.
+// Empennages : masses connues structurees, inconnues explicites, Jet6 S integree sans faux poids.
 assert(Array.isArray(components.vanes) && components.vanes.length >= 10, 'Catalogue de plumes sourcees insuffisant');
 for (const vane of components.vanes) {
   assert(vane.id && vane.manufacturer && vane.model && vane.sourceUrl, 'Plume sans identite ou source fabricant');
@@ -127,9 +135,14 @@ assert(vaneById('bohning-x3-225')?.disciplines?.includes('cible') && vaneById('b
 for (const gasProId of ['gaspro-olympic-efficient-175','gaspro-recurve-hp-175','gaspro-wind-efficient-2','gaspro-field-efficient-2','gaspro-indoor-efficient-4']) {
   assert(vaneById(gasProId)?.weight === null, `Masse Gas Pro non documentee ne doit pas etre inventee: ${gasProId}`);
 }
+assert(Array.isArray(jet6.vanes) && jet6.vanes.length === 1, 'Catalogue Jet6 attendu avec une reference S 1.75');
+const jet6S = jet6.vanes.find(vane => vane.id === 'jet6-s-175');
+assert(jet6S?.manufacturer === 'Jet6 Archery' && jet6S?.length === '1,75"', 'Jet6 S 1.75 mal renseignee');
+assert(jet6S?.weight === null && !Object.prototype.hasOwnProperty.call(jet6S, 'weightGrains'), 'Jet6 S ne doit pas recevoir une masse fictive');
+assert(jet6S?.sourceTier === 'brand-distributor', 'Niveau de source Jet6 perdu');
 
 // Donnees d equilibre : profils separes, sources fabricant et inconnues explicites.
-assert(balance.method?.targetFoc === 12, 'Repere de classement FOC v57 modifie');
+assert(balance.method?.targetFoc === 12, 'Repere de classement FOC v58 modifie');
 assert(JSON.stringify(balance.method?.coherentFocRange) === JSON.stringify([10,15]), 'Plage FOC de depart modifiee');
 assert(Array.isArray(balance.profiles) && balance.profiles.length >= 15, 'Profils de masse insuffisants');
 const balanceById = id => balance.profiles.find(profile => profile.id === id);
@@ -156,7 +169,7 @@ assert(balance.profiles.some(profile => profile.manufacturer === 'Easton' && pro
 assert(balance.profiles.some(profile => profile.manufacturer === 'Skylon' && profile.rearAssembly === null), 'Une masse arriere Skylon non documentee ne doit pas etre inventee');
 assert(balanceById('easton-vector')?.rearAssembly === null, 'Vector ne doit pas imposer un montage arriere unique');
 
-has(builderCss, ['.arrow-builder-inline','.arrow-model-select','.arrow-builder-dialog','.arrow-vane-svg','.arrow-part-balance','.arrow-balance-summary','.arrow-balance-visual','max-height:84vh'], 'Styles configurateur v57 incomplets');
+has(builderCss, ['.arrow-builder-inline','.arrow-model-select','.arrow-builder-dialog','.arrow-vane-svg','.arrow-part-balance','.arrow-balance-summary','.arrow-balance-visual','max-height:84vh'], 'Styles configurateur historiques incomplets');
 
 const expertAudit = read('test/expert-audit.js');
 assert(expertAudit.includes('window.AssistantArcherConfig?.version'), 'Avalon ne suit plus la version centrale');
@@ -168,4 +181,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques v57 OK');
+console.log('Assistant Archer refactor: controles statiques v58 OK');
