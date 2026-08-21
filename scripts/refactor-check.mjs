@@ -17,13 +17,13 @@ for (const id of [
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
-assert(index.includes('20260821-v61'), 'Cache-buster v61 absent du shell TEST');
-assert(!index.includes('20260821-v60'), 'Ancien cache-buster v60 encore present dans le shell TEST');
+assert(index.includes('20260821-v62'), 'Cache-buster v62 absent du shell TEST');
+assert(!index.includes('20260821-v61'), 'Ancien cache-buster v61 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.08.21-v61'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.08.21-v62'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 
 const enhancements = read('test/app-enhancements.js');
 for (const feature of [
@@ -43,9 +43,15 @@ assert(!enhancements.includes('uniqueRecommendationModels(entry.rec?.models || [
 
 const merchantUi = read('test/merchant-ui.js');
 const uiPolish = read('test/ui-polish.css');
-has(merchantUi, ['merchant-disclosure','Voir les offres marchands','merchant-disclosure-count','MutationObserver','version: \'v58\''], 'Sous-menu marchand v58 incomplet');
-has(uiPolish, ['.arrow-model-select','background:var(--accent-2)!important','.merchant-disclosure-summary','.merchant-disclosure-body'], 'Finition visuelle v58 incomplete');
-assert(!uiPolish.includes('background:transparent!important'), 'Le bouton tube ne doit pas redevenir transparent');
+has(merchantUi, [
+  'merchant-disclosure','Voir les offres marchands','merchant-disclosure-count','MutationObserver',
+  "version: 'v62'",'aria-expanded','aria-controls','setDisclosureState','button.addEventListener(\'click\''
+], 'Sous-menu marchand v62 incomplet');
+has(uiPolish, [
+  '.arrow-model-select','background:var(--accent-2)!important','.merchant-disclosure-summary',
+  '.merchant-disclosure-body[hidden]','.merchant-disclosure[data-open="true"]'
+], 'Finition visuelle v62 incomplete');
+assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.test(uiPolish), 'Le bouton tube ne doit pas redevenir transparent');
 
 const focMeasure = read('test/foc-measure.js');
 const focCss = read('test/foc-measure.css');
@@ -229,4 +235,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques, FOC mesure et masses arriere v61 OK');
+console.log('Assistant Archer refactor: controles statiques, FOC, masses arriere et menu marchand v62 OK');
