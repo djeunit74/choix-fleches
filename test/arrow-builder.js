@@ -1,5 +1,5 @@
 /* Assistant Archer TEST - parcours de fabrication Tube / Pointe / Empennage.
-   Le spine reste calcule par app.js ; ce module guide ensuite le choix des composants. */
+   Le moteur de spine reste dans app.js ; ce module ne fait que guider le choix des composants. */
 (() => {
   'use strict';
 
@@ -14,6 +14,8 @@
     calculated: false,
     showAllVanes: false
   };
+
+  let refreshTimer = 0;
 
   const norm = value => String(value || '')
     .toLowerCase()
@@ -70,48 +72,53 @@
       || '';
   }
 
-  function coherentModelLists() {
+  function modelEntries() {
     const result = document.getElementById('result');
     if (!result) return [];
-    return [...result.querySelectorAll('ul')].filter(list => {
-      if (list.closest('.merchant-panel,.merchant-block')) return false;
-      const marker = `${list.previousElementSibling?.textContent || ''} ${list.parentElement?.querySelector(':scope > .mini-card-subtitle')?.textContent || ''}`;
-      return /mod[eè]les\s+(conseill|coh[eé]rent)/i.test(marker);
-    });
-  }
+    const preferredBrand = document.getElementById('preferredBrand')?.value || 'all';
+    const output = [];
 
-  function tubeFromItem(item, list) {
-    const strong = item.querySelector('strong');
-    if (!strong) return null;
-    const model = strong.textContent.trim();
-    if (!model) return null;
-    const preferredBrand = document.getElementById('preferredBrand')?.value || '';
-    const card = list.closest('[data-aa-brand]');
-    const brand = card?.dataset?.aaBrand || (preferredBrand !== 'all' ? preferredBrand : inferBrand(model));
-    const advisedSpine = spine(item.textContent);
-    return {
-      id: `${brand || 'unknown'}|${norm(model)}|${advisedSpine || 'na'}`,
-      brand,
-      model,
-      spine: advisedSpine,
-      meta: meta(model)
-    };
+    result.querySelectorAll('ul').forEach(list => {
+      if (list.closest('.merchant-panel,.merchant-block')) return;
+      list.querySelectorAll(':scope > li').forEach(item => {
+        const strong = item.querySelector(':scope > strong');
+        if (!strong) return;
+        const model = strong.textContent.trim();
+        if (!model) return;
+
+        const card = list.closest('[data-aa-brand]');
+        const addedEaston = Boolean(item.dataset.aaAddedReference);
+        const modelMeta = meta(model);
+        const inferred = inferBrand(model);
+        const brand = card?.dataset?.aaBrand
+          || (addedEaston ? 'easton' : '')
+          || inferred
+          || (preferredBrand !== 'all' ? preferredBrand : '');
+
+        if (!brand && !modelMeta && !addedEaston) return;
+
+        const advisedSpine = spine(item.textContent);
+        const tube = {
+          id: `${brand || 'unknown'}|${norm(model)}|${advisedSpine || 'na'}`,
+          brand,
+          model,
+          spine: advisedSpine,
+          meta: modelMeta
+        };
+        output.push({ list, item, tube });
+      });
+    });
+
+    const seen = new Set();
+    return output.filter(entry => {
+      if (seen.has(entry.tube.id)) return false;
+      seen.add(entry.tube.id);
+      return true;
+    });
   }
 
   function collectTubes() {
-    const output = [];
-    coherentModelLists().forEach(list => {
-      list.querySelectorAll(':scope > li').forEach(item => {
-        const tube = tubeFromItem(item, list);
-        if (tube) output.push(tube);
-      });
-    });
-    const seen = new Set();
-    return output.filter(entry => {
-      if (seen.has(entry.id)) return false;
-      seen.add(entry.id);
-      return true;
-    });
+    return modelEntries().map(entry => entry.tube);
   }
 
   function pointChoices(tube) {
@@ -132,6 +139,7 @@
     let score = 0;
     const reasons = [];
     const tubeDiameter = Array.isArray(state.tube?.meta?.diameters) ? norm(state.tube.meta.diameters[0]) : '';
+
     if (vane.disciplines?.includes(theme())) {
       score += 4;
       reasons.push('discipline coherente');
@@ -144,9 +152,11 @@
       score += 2;
       if (tubeDiameter) reasons.push('diametre coherent');
     }
+
     const drawWeight = weight();
     if (!vane.drawWeight || !Number.isFinite(drawWeight) || (drawWeight >= vane.drawWeight[0] && drawWeight <= vane.drawWeight[1])) score += 1;
     else score -= 2;
+
     return { score, reasons };
   }
 
@@ -160,34 +170,15 @@
       </svg>`;
   }
 
-  function firstModelAnchor() {
-    const list = coherentModelLists()[0];
-    if (!list) return null;
-    const card = list.closest('.mini-card');
-    if (card) return card;
-    return list.previousElementSibling || list;
-  }
-
-  function placeBuilder(builder) {
-    const result = document.getElementById('result');
-    if (!result || !builder) return;
-    const anchor = firstModelAnchor();
-    if (anchor) {
-      if (builder.parentElement !== result || builder.nextElementSibling !== anchor) result.insertBefore(builder, anchor);
-    } else if (builder.parentElement !== result) {
-      result.appendChild(builder);
-    }
-  }
-
   function ensureBuilder() {
-    let builder = document.getElementById('arrowBuilder');
     const result = document.getElementById('result');
     if (!result) return null;
 
+    let builder = document.getElementById('arrowBuilder');
     if (!builder) {
       builder = document.createElement('section');
       builder.id = 'arrowBuilder';
-      builder.className = 'arrow-builder arrow-builder-compact arrow-builder-inline';
+      builder.className = 'card arrow-builder arrow-builder-compact arrow-builder-inline';
       builder.innerHTML = `
         <div class="arrow-builder-head">
           <div>
@@ -226,13 +217,16 @@
       });
     }
 
-    placeBuilder(builder);
+    if (builder.parentElement !== result.parentElement || builder.nextElementSibling !== result) {
+      result.insertAdjacentElement('beforebegin', builder);
+    }
     return builder;
   }
 
   function ensureDialog() {
     let dialog = document.getElementById('arrowBuilderDialog');
     if (dialog) return dialog;
+
     dialog = document.createElement('dialog');
     dialog.id = 'arrowBuilderDialog';
     dialog.className = 'arrow-builder-dialog';
@@ -247,12 +241,24 @@
         </header>
         <div class="arrow-builder-dialog-body" id="arrowBuilderPanel"></div>
       </div>`;
+
     document.body.appendChild(dialog);
     dialog.querySelector('[data-arrow-builder-close]')?.addEventListener('click', closeDialog);
+    dialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      closeDialog();
+    });
     dialog.addEventListener('click', event => {
       if (event.target === dialog) closeDialog();
     });
     return dialog;
+  }
+
+  function closeDialog() {
+    const dialog = document.getElementById('arrowBuilderDialog');
+    if (!dialog) return;
+    if (typeof dialog.close === 'function' && dialog.open) dialog.close();
+    else dialog.removeAttribute('open');
   }
 
   function scrollDialogTop() {
@@ -277,22 +283,23 @@
       if (typeof dialog.showModal === 'function') dialog.showModal();
       else dialog.setAttribute('open', '');
     }
-    render();
+    renderDialog();
     setTimeout(scrollDialogTop, 0);
   }
 
-  function closeDialog() {
-    const dialog = document.getElementById('arrowBuilderDialog');
-    if (!dialog) return;
-    if (typeof dialog.close === 'function' && dialog.open) dialog.close();
-    else dialog.removeAttribute('open');
+  function scrollToTubeChoices() {
+    const firstButton = document.querySelector('#result .arrow-model-select');
+    const target = firstButton?.closest('li') || document.getElementById('result');
+    target?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
   }
 
-  function scrollToTubeChoices() {
-    const list = coherentModelLists()[0];
-    if (!list) return;
-    const target = list.closest('.mini-card') || list.previousElementSibling || list;
-    target.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  function resetComposition() {
+    state.tube = null;
+    state.point = null;
+    state.pointReviewed = false;
+    state.vane = null;
+    state.showAllVanes = false;
+    state.part = 'point';
   }
 
   function selectTube(id) {
@@ -303,41 +310,42 @@
     state.pointReviewed = false;
     state.vane = null;
     state.showAllVanes = false;
+    state.part = 'point';
     decorateModelChoices();
     render();
     openPart('point');
   }
 
   function decorateModelChoices() {
-    coherentModelLists().forEach(list => {
-      list.querySelectorAll(':scope > li').forEach(item => {
-        const tube = tubeFromItem(item, list);
-        if (!tube) return;
-        let row = item.querySelector(':scope > .arrow-model-select-row');
-        if (!row) {
-          row = document.createElement('div');
-          row.className = 'arrow-model-select-row';
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'secondary arrow-model-select';
-          row.appendChild(button);
-          item.appendChild(row);
-        }
-        const button = row.querySelector('.arrow-model-select');
-        if (!button) return;
-        button.dataset.selectTube = tube.id;
-        const selected = state.tube?.id === tube.id;
-        button.classList.toggle('is-selected', selected);
-        button.textContent = selected ? '✓ Tube selectionne' : 'Selectionner ce tube';
-        if (!button.dataset.bound) {
-          button.dataset.bound = '1';
-          button.addEventListener('click', event => {
-            event.preventDefault();
-            event.stopPropagation();
-            selectTube(button.dataset.selectTube);
-          });
-        }
-      });
+    const entries = modelEntries();
+    entries.forEach(({ item, tube }) => {
+      let row = item.querySelector(':scope > .arrow-model-select-row');
+      if (!row) {
+        row = document.createElement('div');
+        row.className = 'arrow-model-select-row';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'secondary arrow-model-select';
+        row.appendChild(button);
+        item.appendChild(row);
+      }
+
+      const button = row.querySelector('.arrow-model-select');
+      if (!button) return;
+      button.dataset.selectTube = tube.id;
+      const selected = state.tube?.id === tube.id;
+      button.classList.toggle('is-selected', selected);
+      const label = selected ? '✓ Tube selectionne' : 'Selectionner ce tube';
+      if (button.textContent !== label) button.textContent = label;
+
+      if (!button.dataset.bound) {
+        button.dataset.bound = '1';
+        button.addEventListener('click', event => {
+          event.preventDefault();
+          event.stopPropagation();
+          selectTube(button.dataset.selectTube);
+        });
+      }
     });
   }
 
@@ -383,6 +391,7 @@
     const choices = pointChoices(state.tube);
     const range = pointRange(state.tube);
     let body = '';
+
     if (choices.length) {
       body = `
         <div class="arrow-point-choices">
@@ -419,31 +428,35 @@
         state.pointReviewed = true;
         state.part = 'vane';
         render();
+        renderDialog();
         scrollDialogTop();
       });
     });
+
     panel.querySelector('[data-continue-vane]')?.addEventListener('click', () => {
       state.point = null;
       state.pointReviewed = true;
       state.part = 'vane';
       render();
+      renderDialog();
       scrollDialogTop();
     });
   }
 
   function renderVanePanel(panel) {
     if (!state.tube || !state.pointReviewed) {
-      panel.innerHTML = '<h3>3. Empennage</h3><p>Validez d abord l etape Pointe.</p>';
+      panel.innerHTML = '<h3>3. Empennage</h3><p>Terminez d abord l etape Pointe.</p>';
       return;
     }
     if (!state.vanes.length) {
-      panel.innerHTML = '<h3>3. Empennage</h3><p>Chargement du catalogue d empennages sources…</p>';
+      panel.innerHTML = '<h3>3. Empennage</h3><p>Chargement du catalogue de plumes sourcees…</p>';
       return;
     }
 
     const ranked = state.vanes
       .map(vane => ({ vane, match: vaneScore(vane) }))
       .sort((a, b) => b.match.score - a.match.score || a.vane.manufacturer.localeCompare(b.vane.manufacturer));
+
     const visible = state.showAllVanes ? ranked : ranked.slice(0, 3);
     const remaining = Math.max(0, ranked.length - visible.length);
 
@@ -479,11 +492,13 @@
         state.vane = state.vanes.find(vane => vane.id === button.dataset.vane) || null;
         render();
         closeDialog();
+        document.getElementById('arrowBuilder')?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
       });
     });
+
     panel.querySelector('[data-show-all-vanes]')?.addEventListener('click', () => {
       state.showAllVanes = true;
-      render();
+      renderDialog();
     });
   }
 
@@ -493,34 +508,42 @@
     const title = document.getElementById('arrowBuilderDialogTitle');
     const panel = document.getElementById('arrowBuilderPanel');
     if (!panel) return;
+
     if (state.part === 'vane') {
-      if (title) title.textContent = '3. Choisir l empennage';
+      if (title) title.textContent = 'Etape 3 · Empennage';
       renderVanePanel(panel);
     } else {
-      if (title) title.textContent = '2. Choisir la pointe';
+      if (title) title.textContent = 'Etape 2 · Pointe';
       renderPointPanel(panel);
     }
   }
 
   function render() {
-    const builder = ensureBuilder();
-    if (!builder) return;
-    decorateModelChoices();
+    ensureBuilder();
     renderFlowState();
     renderSummary();
+    decorateModelChoices();
     renderDialog();
   }
 
   function refresh() {
-    state.tubes = collectTubes();
-    state.calculated = state.tubes.length > 0;
-    if (state.tube) state.tube = state.tubes.find(entry => entry.id === state.tube.id) || null;
-    if (!state.tube) {
-      state.point = null;
-      state.pointReviewed = false;
-      state.vane = null;
+    ensureBuilder();
+    const tubes = collectTubes();
+    state.tubes = tubes;
+    state.calculated = tubes.length > 0;
+
+    if (state.tube) {
+      const stillAvailable = tubes.find(entry => entry.id === state.tube.id) || null;
+      if (!stillAvailable) resetComposition();
+      else state.tube = stillAvailable;
     }
+
     render();
+  }
+
+  function scheduleRefresh(delay = 100) {
+    clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(refresh, delay);
   }
 
   async function loadVanes() {
@@ -543,32 +566,35 @@
     const result = document.getElementById('result');
     if (result && !result.dataset.arrowBuilderObserved) {
       result.dataset.arrowBuilderObserved = '1';
-      new MutationObserver(mutations => {
-        const externalChange = mutations.some(mutation => {
-          const target = mutation.target.nodeType === 1 ? mutation.target : mutation.target.parentElement;
-          return !target?.closest?.('#arrowBuilder') && !target?.closest?.('.arrow-model-select-row');
-        });
-        if (!externalChange) return;
-        clearTimeout(install.refreshTimer);
-        install.refreshTimer = setTimeout(refresh, 60);
-      }).observe(result, { childList: true, subtree: true });
+      new MutationObserver(() => scheduleRefresh(120)).observe(result, { childList: true, subtree: true });
     }
 
-    document.getElementById('spine-form')?.addEventListener('submit', () => {
-      state.tube = null;
-      state.point = null;
-      state.pointReviewed = false;
-      state.vane = null;
-      setTimeout(refresh, 180);
+    const form = document.getElementById('spine-form');
+    form?.addEventListener('submit', () => {
+      resetComposition();
+      state.tubes = [];
+      state.calculated = false;
+      render();
+      scheduleRefresh(180);
+      window.setTimeout(refresh, 450);
     });
-    document.getElementById('themeSelect')?.addEventListener('change', render);
-    document.getElementById('bowStyle')?.addEventListener('change', render);
+
+    document.getElementById('themeSelect')?.addEventListener('change', () => {
+      state.vane = null;
+      state.showAllVanes = false;
+      render();
+    });
+    document.getElementById('bowStyle')?.addEventListener('change', () => {
+      state.vane = null;
+      state.showAllVanes = false;
+      render();
+    });
 
     loadVanes();
     refresh();
   }
 
-  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v52' });
+  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v53' });
   document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', install, { once: true })
     : install();
