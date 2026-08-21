@@ -35,6 +35,15 @@
       "sourceLabel": "Easton — SuperDrive Micro"
     },
     {
+      "id": "easton-vector",
+      "manufacturer": "Easton",
+      "tubeKeys": ["vector", "vector ready to shoot"],
+      "gpiBySpine": {"600":7.6,"800":6.2,"1000":5.4,"1200":5.1,"1400":4.2,"1600":3.8,"1800":3.6,"2000":3.4},
+      "rearAssembly": null,
+      "sourceUrl": "https://eastonarchery.com/arrows_/vector-arrow/",
+      "sourceLabel": "Easton — Vector"
+    },
+    {
       "id": "easton-x10",
       "manufacturer": "Easton",
       "tubeKeys": ["x10"],
