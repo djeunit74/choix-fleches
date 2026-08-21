@@ -17,13 +17,13 @@ for (const id of [
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
-assert(index.includes('20260821-v60'), 'Cache-buster v60 absent du shell TEST');
-assert(!index.includes('20260821-v59'), 'Ancien cache-buster v59 encore present dans le shell TEST');
+assert(index.includes('20260821-v61'), 'Cache-buster v61 absent du shell TEST');
+assert(!index.includes('20260821-v60'), 'Ancien cache-buster v60 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.08.21-v60'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.08.21-v61'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 
 const enhancements = read('test/app-enhancements.js');
 for (const feature of [
@@ -149,22 +149,34 @@ assert(jet6S?.weightGrains === 0.9, 'Estimation Jet6 S 1.75 perdue');
 assert(JSON.stringify(jet6S?.weightRangeGrains) === JSON.stringify([0.8,1.0]), 'Plage recoupee Jet6 perdue');
 assert(jet6S?.weightSourceTier === 'reseller-consensus' && jet6S?.massDataFile === 'component-masses.json', 'Traceabilite masse Jet6 perdue');
 
-// Masses non constructeur : deux sources independantes minimum, plages conservees.
+// Masses non constructeur : recoupement quand possible, proxy explicite sinon.
 assert(componentMasses.policy?.resellerConsensusAllowed === true, 'Politique de recoupement revendeur desactivee');
-assert(componentMasses.policy?.minimumIndependentSources === 2, 'Deux sources independantes doivent rester requises');
+assert(componentMasses.policy?.minimumIndependentSources === 2, 'Deux sources independantes doivent rester requises pour un consensus');
+assert(componentMasses.policy?.comparableComponentProxyAllowed === true, 'Les estimations proxy documentees doivent rester autorisees comme repere');
 const rearMassById = id => componentMasses.rearComponents?.find(entry => entry.id === id);
 const skylonNockMass = rearMassById('skylon-recurve-pin-nock');
 const skylonPin42Mass = rearMassById('skylon-pin-id42');
+const skylonPin32Proxy = rearMassById('skylon-pin-id32-proxy');
+const vectorNock = rearMassById('easton-g-nock-vector');
 assert(skylonNockMass?.estimatedGrains === 2.4, 'Estimation encoche Skylon Recurve perdue');
 assert(JSON.stringify(skylonNockMass?.rangeGrains) === JSON.stringify([2.28,2.5]), 'Plage encoche Skylon perdue');
 assert(skylonNockMass?.sources?.length >= 2, 'Encoche Skylon sans deux sources');
 assert(skylonPin42Mass?.estimatedGrains === 10.8, 'Masse pin Skylon ID4.2 perdue');
 assert(skylonPin42Mass?.sources?.length >= 2, 'Pin Skylon ID4.2 sans deux sources');
+assert(skylonPin32Proxy?.estimatedGrains === 8, 'Proxy pin Skylon ID3.2 perdu');
+assert(JSON.stringify(skylonPin32Proxy?.rangeGrains) === JSON.stringify([7,9]), 'Plage prudente pin Skylon ID3.2 perdue');
+assert(skylonPin32Proxy?.sourceTier === 'comparable-component-proxy', 'Le pin ID3.2 doit rester identifie comme proxy');
+assert(vectorNock?.estimatedGrains === 7 && vectorNock?.confidence === 'high', 'Masse G Nock Vector perdue');
 const skylonRear42 = componentMasses.rearAssemblies?.find(entry => entry.id === 'skylon-id42-recurve-rear');
+const skylonRear32 = componentMasses.rearAssemblies?.find(entry => entry.id === 'skylon-id32-recurve-rear-proxy');
+const vectorRear = componentMasses.rearAssemblies?.find(entry => entry.id === 'easton-vector-g-nock-rear');
 assert(skylonRear42?.estimatedGrains === 13.2, 'Ensemble arriere Skylon ID4.2 perdu');
 assert(JSON.stringify(skylonRear42?.rangeGrains) === JSON.stringify([13.08,13.3]), 'Plage ensemble arriere Skylon ID4.2 perdue');
+assert(skylonRear32?.estimatedGrains === 10.4, 'Ensemble arriere proxy Skylon ID3.2 perdu');
+assert(JSON.stringify(skylonRear32?.rangeGrains) === JSON.stringify([9.28,11.5]), 'Plage ensemble arriere Skylon ID3.2 perdue');
+assert(vectorRear?.estimatedGrains === 7, 'Ensemble arriere Vector perdu');
 
-// Donnees d equilibre : profils separes, sources fabricant et estimations recoupees explicites.
+// Donnees d equilibre : chaque profil actuel possede maintenant une masse arriere exploitable.
 assert(balance.method?.targetFoc === 12, 'Repere de classement FOC historique modifie');
 assert(JSON.stringify(balance.method?.coherentFocRange) === JSON.stringify([10,15]), 'Plage FOC de depart modifiee');
 assert(Array.isArray(balance.profiles) && balance.profiles.length >= 15, 'Profils de masse insuffisants');
@@ -173,6 +185,7 @@ for (const profile of balance.profiles) {
   assert(profile.id && profile.manufacturer && Array.isArray(profile.tubeKeys) && profile.tubeKeys.length, 'Profil equilibre incomplet');
   assert(profile.gpiBySpine && typeof profile.gpiBySpine === 'object', `Champ GPI absent: ${profile.id}`);
   assert(/^https:\/\//.test(profile.sourceUrl), `Source GPI invalide: ${profile.id}`);
+  assert(Number.isFinite(Number(profile.rearAssembly?.weightGrains)), `Masse arriere absente: ${profile.id}`);
 }
 for (const id of [
   'easton-avance','easton-ace','easton-superdrive-micro','easton-vector','easton-x10',
@@ -189,14 +202,20 @@ assert(Object.keys(balanceById('victory-vxt')?.gpiBySpine || {}).length === 0, '
 assert(balanceById('victory-vap')?.rearAssembly?.weightGrains === 8, 'Masse arriere VAP officielle perdue');
 assert(balanceById('victory-vxt')?.rearAssembly?.weightGrains === 15, 'Masse arriere VXT officielle perdue');
 assert(balance.profiles.some(profile => profile.manufacturer === 'Easton' && profile.rearAssembly?.weightGrains === 11), 'Ensemble arriere Easton documente absent');
+assert(balanceById('easton-vector')?.rearAssembly?.weightGrains === 7, 'Vector doit utiliser le G Nock 7 gr comme repere arriere');
+assert(balanceById('easton-vector')?.rearAssembly?.sourceTier === 'manufacturer-documented-component', 'Source arriere Vector mal classee');
 for (const id of ['skylon-brixxon','skylon-radius']) {
   const rear = balanceById(id)?.rearAssembly;
   assert(rear?.weightGrains === 13.2, `${id}: ensemble arriere recoupe absent`);
   assert(JSON.stringify(rear?.weightRangeGrains) === JSON.stringify([13.08,13.3]), `${id}: plage arriere recoupee absente`);
   assert(rear?.sourceTier === 'reseller-consensus', `${id}: niveau de source arriere perdu`);
 }
-assert(['skylon-paragon','skylon-performa','skylon-precium','skylon-preminens'].some(id => balanceById(id)?.rearAssembly === null), 'Les pins Skylon 3.2 non recoupes ne doivent pas etre inventes');
-assert(balanceById('easton-vector')?.rearAssembly === null, 'Vector ne doit pas imposer un montage arriere unique');
+for (const id of ['skylon-paragon','skylon-performa','skylon-precium','skylon-preminens']) {
+  const rear = balanceById(id)?.rearAssembly;
+  assert(rear?.weightGrains === 10.4, `${id}: estimation arriere ID3.2 absente`);
+  assert(JSON.stringify(rear?.weightRangeGrains) === JSON.stringify([9.28,11.5]), `${id}: plage arriere ID3.2 absente`);
+  assert(rear?.sourceTier === 'proxy-estimate', `${id}: estimation ID3.2 ne doit pas etre presentee comme constructeur`);
+}
 
 has(builderCss, ['.arrow-builder-inline','.arrow-model-select','.arrow-builder-dialog','.arrow-vane-svg','.arrow-part-balance','.arrow-balance-summary','.arrow-balance-visual','max-height:84vh'], 'Styles configurateur historiques incomplets');
 
@@ -210,4 +229,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques, FOC mesure et masses recoupees v60 OK');
+console.log('Assistant Archer refactor: controles statiques, FOC mesure et masses arriere v61 OK');
