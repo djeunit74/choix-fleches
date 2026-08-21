@@ -50,10 +50,50 @@
         {
           "label": "Bogenladen Leipzig — fiche produit",
           "valueGrains": 2.5,
-          "url": "https://www.bogenladen-leipzig.de/Skylon-Recurve-Pin-Nock-schwarz"
+          "url": "https://www.bogenladen-leipzig.de/Skylon-Recurve-Pin-Nock"
         }
       ],
-      "note": "Cette masse d encoche ne suffit pas a calculer l ensemble arriere Skylon : la masse du pin adapter 3.2/4.2 reste a recouper par groupe de spine."
+      "note": "Valeur d estimation utilisee uniquement avec un pin compatible dont la masse est egalement recoupee."
+    },
+    {
+      "id": "skylon-pin-id42",
+      "manufacturer": "Skylon",
+      "componentType": "pin",
+      "component": "Pin Insert ID4.2",
+      "estimatedGrains": 10.8,
+      "rangeGrains": [10.8, 10.8],
+      "confidence": "high",
+      "sourceTier": "reseller-consensus",
+      "systems": ["4.2"],
+      "tubeKeys": ["brixxon", "radius"],
+      "spineGroups": ["400-650", "700-900", "1000-1300", "1500-2000"],
+      "sources": [
+        {
+          "label": "Bogenladen Leipzig — Skylon Pin ID4.2",
+          "valueGrains": 10.8,
+          "url": "https://www.bogenladen-leipzig.de/Skylon-Pin-ID42"
+        },
+        {
+          "label": "Bogensport Roemer — Skylon ID4.2 Pin Insert",
+          "valueGrains": 10.8,
+          "url": "https://bogensport-roemer.de/nl-nl/products/skylon-radius-pin-insert-12er-packung"
+        }
+      ],
+      "note": "Les deux revendeurs donnent 10,8 gr et listent les variantes de spine ID4.2 pour Radius/Brixxon."
+    }
+  ],
+  "rearAssemblies": [
+    {
+      "id": "skylon-id42-recurve-rear",
+      "manufacturer": "Skylon",
+      "tubeKeys": ["brixxon", "radius"],
+      "components": ["skylon-pin-id42", "skylon-recurve-pin-nock"],
+      "estimatedGrains": 13.2,
+      "rangeGrains": [13.08, 13.3],
+      "confidence": "medium-high",
+      "sourceTier": "reseller-consensus",
+      "label": "Pin ID4.2 10,8 gr + Recurve Pin Nock ≈2,4 gr",
+      "note": "Ensemble arriere estime pour arc recurve. La plage vient de 10,8 gr pour le pin et 2,28-2,5 gr pour l encoche."
     }
   ]
 }
