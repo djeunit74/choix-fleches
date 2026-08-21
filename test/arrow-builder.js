@@ -23,16 +23,16 @@
 
   const POINT_MEDIA = Object.freeze({
     'skylon-42-parallel': Object.freeze({
-      imageUrl: 'https://www.dutchbowstore.com/media/0f/e6/89/1648816905/radiusBreakoffPoint.jpg?ts=1648816905',
+      imageUrl: 'https://www.skylonarchery.com/images/components/42parallel.png',
       alt: 'Pointe Skylon 4.2 Break-off Parallel',
-      sourceUrl: 'https://www.dutchbowstore.com/Skylon-ID4.2-Parallel-Break-off-Point-Radius-Brixxon/150359007',
-      sourceLabel: 'DutchBowStore — photo produit'
+      sourceUrl: 'https://www.skylonarchery.com/components-for-arrow',
+      sourceLabel: 'Skylon — photo composant fabricant'
     }),
     'skylon-42-bulge': Object.freeze({
-      imageUrl: 'https://www.arrowforge.de/WebRoot/Store20/Shops/63122672/5F3A/7548/5FEC/66CB/3E43/0A0C/6D10/9735/101449_Skylon_Bulge_Break_Up_Einklebespitze_4.2_fuer_Radius_Brixxon_kaufen_new_3_2000_LEVOPT_V1.jpg',
+      imageUrl: 'https://www.skylonarchery.com/images/components/42bulge.png',
       alt: 'Pointe Skylon 4.2 Break-off Bulge',
-      sourceUrl: 'https://www.arrowforge.de/Skylon-Bulge-Break-Up-Einklebespitze-42-fuer-Radius/Brixxon',
-      sourceLabel: 'Arrowforge — photo produit'
+      sourceUrl: 'https://www.skylonarchery.com/components-for-arrow',
+      sourceLabel: 'Skylon — photo composant fabricant'
     })
   });
 
@@ -1037,7 +1037,7 @@
     refresh();
   }
 
-  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v56' });
+  window.AssistantArcherArrowBuilder = Object.freeze({ refresh, version: 'v57' });
   document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', install, { once: true })
     : install();
