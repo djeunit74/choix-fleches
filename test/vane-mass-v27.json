@@ -1,0 +1,270 @@
+{
+  "version": "2026-08-22-prealpha-v27",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "twoIndependentSourcesForEstimate": true,
+    "noInventedWeight": true,
+    "fletchingFixationIncludedForFoc": true,
+    "measuredFocFinalValidation": true
+  },
+  "mountingProfiles": {
+    "spin-tape": {
+      "massGrains": 1.75,
+      "rangeGrains": [1.5, 2.0],
+      "confidence": "moyenne",
+      "basis": "proxy documente : moyenne de la plage Bohning 1,5-2 gr par fleche pour double-face + ruban de fermeture",
+      "sources": ["https://www.bohning.com/the-best-fletching-options-for-your-olympic-recurve-arrows/"]
+    },
+    "glue-average": {
+      "massGrains": 1.0,
+      "rangeGrains": [1.0, 1.0],
+      "confidence": "moyenne",
+      "basis": "moyenne Bohning publiee pour la colle d'empennage par fleche",
+      "sources": ["https://www.bohning.com/the-best-fletching-options-for-your-olympic-recurve-arrows/"]
+    }
+  },
+  "additionalVanes": [
+    {
+      "id": "bohning-griffin-1",
+      "manufacturer": "Bohning",
+      "model": "Griffin 1\"",
+      "family": "Plume plastique helicoidale",
+      "length": "1\"",
+      "stiffness": "3.5",
+      "disciplines": ["cible", "campagne"],
+      "contexts": ["exterieur", "classique", "olympique", "vent"],
+      "diameters": ["thin", "standard"],
+      "bowStyles": ["classique"],
+      "drawWeight": null,
+      "use": "Bohning la destine au recurve olympique ; profil helicoidal integre et faible masse arriere.",
+      "sourceUrl": "https://www.bohning.com/the-best-fletching-options-for-your-olympic-recurve-arrows/",
+      "sourceLabel": "Bohning — Griffin Vane / Technical Guide 2026",
+      "sourceTier": "manufacturer-current"
+    }
+  ],
+  "masses": [
+    {
+      "id": "gaspro-olympic-efficient-175",
+      "weight": "0,5 gr / plume",
+      "rawWeightGrains": 0.5,
+      "rawWeightRangeGrains": [0.5, 0.5],
+      "weightConfidence": "elevee",
+      "mountingProfile": "spin-tape",
+      "focAssemblyMassGrains": 3.25,
+      "focAssemblyRangeGrains": [3.0, 3.5],
+      "focEffectivePerVaneGrains": 1.0833333333,
+      "focUsable": true,
+      "weightSources": ["https://www.disport.it/en/product/alet79087/gas-pro-aletta-vanes-soft-olympic-1-75", "https://www.bogensport-akademie.de/gas-pro/spin-vane-1-75-soft-plus-olympic-black-rh"]
+    },
+    {
+      "id": "gaspro-recurve-hp-175",
+      "weight": "0,7 gr / plume (plage observee 0,6-0,7)",
+      "rawWeightGrains": 0.7,
+      "rawWeightRangeGrains": [0.6, 0.7],
+      "weightConfidence": "moyenne",
+      "mountingProfile": "spin-tape",
+      "focAssemblyMassGrains": 3.85,
+      "focAssemblyRangeGrains": [3.3, 4.1],
+      "focEffectivePerVaneGrains": 1.2833333333,
+      "focUsable": true,
+      "note": "Deux detaillants concordent a 0,7 gr, Lancaster publie 0,6 gr ; le calcul central conserve 0,7 et affiche la plage.",
+      "weightSources": ["https://jvd-archery.com/webshop/arrows-bolts/arrow-bolts-components/vanes/gas-pro-spin-vane-recurve-efficient-hp-1-75", "https://butikk.pilogbue.com/butikk/piler/nocks-vanes-wraps/spin-vanes/gas-pro-spin-vane-recurve-efficient-hp-1-75-50pk/", "https://lancasterarchery.com/products/gas-pro-recurve-efficient-1-75-super-soft-spin-vanes"]
+    },
+    {
+      "id": "gaspro-x-shield-2",
+      "weight": "0,9 gr / plume",
+      "rawWeightGrains": 0.9,
+      "rawWeightRangeGrains": [0.9, 0.9],
+      "weightConfidence": "elevee",
+      "mountingProfile": "spin-tape",
+      "focAssemblyMassGrains": 4.45,
+      "focAssemblyRangeGrains": [4.2, 4.7],
+      "focEffectivePerVaneGrains": 1.4833333333,
+      "focUsable": true,
+      "weightSources": ["https://www.disport.it/en/product/alet79089/gas-pro-vanes-x-shield-2-soft", "https://archery.ixpesports.nl/contents/en-uk/p57702.html", "https://www.clickersarchery.co.uk/products/gas-pro-vanes-x-shield-2/"]
+    },
+    {
+      "id": "gaspro-field-efficient-2",
+      "focUsable": false,
+      "variants": [
+        {
+          "id": "gaspro-field-efficient-2-medium",
+          "label": "Medium",
+          "rawWeightGrains": 1.0,
+          "weight": "1,0 gr / plume",
+          "drawWeight": [10, 45],
+          "mountingProfile": "spin-tape",
+          "focAssemblyMassGrains": 4.75,
+          "focAssemblyRangeGrains": [4.5, 5.0],
+          "focEffectivePerVaneGrains": 1.5833333333,
+          "focUsable": true
+        },
+        {
+          "id": "gaspro-field-efficient-2-hard",
+          "label": "Hard",
+          "rawWeightGrains": 1.2,
+          "weight": "1,2 gr / plume",
+          "drawWeight": [45.5, 60],
+          "mountingProfile": "spin-tape",
+          "focAssemblyMassGrains": 5.35,
+          "focAssemblyRangeGrains": [5.1, 5.6],
+          "focEffectivePerVaneGrains": 1.7833333333,
+          "focUsable": true
+        }
+      ],
+      "weightConfidence": "elevee",
+      "weightSources": ["https://www.disport.it/en/product/alet79081/gas-pro-aletta-vanes-field-2-shield", "https://archery.ixpesports.nl/en-uk/contents/en-uk/p57691.html"]
+    },
+    {
+      "id": "spinwing-original-175",
+      "weight": "0,6 gr / plume",
+      "rawWeightGrains": 0.6,
+      "rawWeightRangeGrains": [0.6, 0.6],
+      "weightConfidence": "elevee",
+      "mountingProfile": "spin-tape",
+      "focAssemblyMassGrains": 3.55,
+      "focAssemblyRangeGrains": [3.3, 3.8],
+      "focEffectivePerVaneGrains": 1.1833333333,
+      "focUsable": true,
+      "weightSources": ["https://lancasterarchery.com/products/range-o-matic-spin-wing-vanes", "https://romarchery.com/spin-wing-archery-vanes/"]
+    },
+    {
+      "id": "spinwing-original-vld-175",
+      "weight": "0,6 gr / plume",
+      "rawWeightGrains": 0.6,
+      "rawWeightRangeGrains": [0.6, 0.6],
+      "weightConfidence": "elevee",
+      "mountingProfile": "spin-tape",
+      "focAssemblyMassGrains": 3.55,
+      "focAssemblyRangeGrains": [3.3, 3.8],
+      "focEffectivePerVaneGrains": 1.1833333333,
+      "focUsable": true,
+      "weightSources": ["https://lancasterarchery.com/products/range-o-matic-spin-wing-vanes", "https://romarchery.com/spin-wing-archery-vanes/"]
+    },
+    {
+      "id": "jet6-s-175",
+      "weight": "≈0,9 gr / plume (0,8-1,0)",
+      "rawWeightGrains": 0.9,
+      "rawWeightRangeGrains": [0.8, 1.0],
+      "weightConfidence": "moyenne-elevee",
+      "mountingProfile": "direct-measured-assembly",
+      "focAssemblyMassGrains": 4.8,
+      "focAssemblyRangeGrains": [4.8, 4.8],
+      "focEffectivePerVaneGrains": 1.6,
+      "focUsable": true,
+      "note": "Bohning a pese directement un empennage 1 3/4 Jet6 avec double-face + cap tape a 4,8 gr ; utilise comme mesure d'ensemble prioritaire.",
+      "weightSources": ["https://www.bohning.com/the-best-fletching-options-for-your-olympic-recurve-arrows/"]
+    },
+    {
+      "id": "bohning-griffin-1",
+      "weight": "1,2 gr / plume",
+      "rawWeightGrains": 1.2,
+      "rawWeightRangeGrains": [1.2, 1.2],
+      "weightConfidence": "fabricant-elevee",
+      "mountingProfile": "direct-measured-assembly",
+      "focAssemblyMassGrains": 4.0,
+      "focAssemblyRangeGrains": [4.0, 4.0],
+      "focEffectivePerVaneGrains": 1.3333333333,
+      "focUsable": true,
+      "weightSources": ["https://www.bohning.com/the-best-fletching-options-for-your-olympic-recurve-arrows/", "https://www.bohning.com/wp-content/uploads/2025/11/2026-Bohning-Technical-Guide.pdf"]
+    },
+    {
+      "id": "bohning-air-2",
+      "weight": "4,6 gr / plume (guide Bohning 2026)",
+      "rawWeightGrains": 4.6,
+      "rawWeightRangeGrains": [4.5, 4.6],
+      "weightConfidence": "fabricant-elevee",
+      "mountingProfile": "glue-average",
+      "focAssemblyMassGrains": 14.8,
+      "focAssemblyRangeGrains": [14.5, 14.8],
+      "focEffectivePerVaneGrains": 4.9333333333,
+      "focUsable": true,
+      "weightSources": ["https://www.bohning.com/wp-content/uploads/2025/11/2026-Bohning-Technical-Guide.pdf", "https://www.bohning.com/portfolio-item/fita-field-vanes/"]
+    },
+    {
+      "id": "bohning-x-vane-15",
+      "weight": "3,5 gr / plume (guide Bohning 2026)",
+      "rawWeightGrains": 3.5,
+      "rawWeightRangeGrains": [3.3, 3.5],
+      "weightConfidence": "fabricant-elevee",
+      "mountingProfile": "glue-average",
+      "focAssemblyMassGrains": 11.5,
+      "focAssemblyRangeGrains": [10.9, 11.5],
+      "focEffectivePerVaneGrains": 3.8333333333,
+      "focUsable": true,
+      "weightSources": ["https://www.bohning.com/wp-content/uploads/2025/11/2026-Bohning-Technical-Guide.pdf", "https://www.bohning.com/portfolio-item/fita-field-vanes/"]
+    },
+    {
+      "id": "bohning-x-vane-175",
+      "weight": "4,5 gr / plume (guide Bohning 2026)",
+      "rawWeightGrains": 4.5,
+      "rawWeightRangeGrains": [4.3, 4.5],
+      "weightConfidence": "fabricant-elevee",
+      "mountingProfile": "glue-average",
+      "focAssemblyMassGrains": 14.5,
+      "focAssemblyRangeGrains": [13.9, 14.5],
+      "focEffectivePerVaneGrains": 4.8333333333,
+      "focUsable": true,
+      "weightSources": ["https://www.bohning.com/wp-content/uploads/2025/11/2026-Bohning-Technical-Guide.pdf", "https://www.bohning.com/portfolio-item/fita-field-vanes/"]
+    },
+    {
+      "id": "bohning-x3-175",
+      "weight": "4,3 gr / plume",
+      "rawWeightGrains": 4.3,
+      "rawWeightRangeGrains": [4.3, 4.3],
+      "weightConfidence": "fabricant-elevee",
+      "mountingProfile": "glue-average",
+      "focAssemblyMassGrains": 13.9,
+      "focAssemblyRangeGrains": [13.9, 13.9],
+      "focEffectivePerVaneGrains": 4.6333333333,
+      "focUsable": true,
+      "weightSources": ["https://www.bohning.com/wp-content/uploads/2025/11/2026-Bohning-Technical-Guide.pdf"]
+    },
+    {
+      "id": "bohning-x3-225",
+      "weight": "5,5 gr / plume (guide Bohning 2026)",
+      "rawWeightGrains": 5.5,
+      "rawWeightRangeGrains": [5.5, 5.8],
+      "weightConfidence": "fabricant-elevee",
+      "mountingProfile": "glue-average",
+      "focAssemblyMassGrains": 17.5,
+      "focAssemblyRangeGrains": [17.5, 18.4],
+      "focEffectivePerVaneGrains": 5.8333333333,
+      "focUsable": true,
+      "weightSources": ["https://www.bohning.com/wp-content/uploads/2025/11/2026-Bohning-Technical-Guide.pdf"]
+    },
+    {
+      "id": "spinwing-elite-175",
+      "weight": "≈0,8 gr / plume",
+      "weightConfidence": "faible",
+      "focUsable": false,
+      "note": "Une seule pesee specifique exploitable et ambiguite avec les tables generiques 1 3/4 ; non utilisee pour le FOC."
+    },
+    {
+      "id": "gaspro-shield-28",
+      "weight": "masse contradictoire 1,0-1,3 gr",
+      "weightConfidence": "faible",
+      "focUsable": false,
+      "note": "Sources detailants discordantes ; aucune valeur injectee dans le FOC."
+    },
+    {
+      "id": "gaspro-indoor-efficient-4",
+      "weight": null,
+      "weightConfidence": "non verrouillee",
+      "focUsable": false
+    },
+    {
+      "id": "elivanes-p3",
+      "weight": "≈0,62 gr / plume (une source detaillee)",
+      "weightConfidence": "faible",
+      "focUsable": false
+    },
+    {
+      "id": "elivanes-s3",
+      "weight": null,
+      "weightConfidence": "non verrouillee",
+      "focUsable": false
+    }
+  ]
+}
