@@ -39,26 +39,36 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* TEST v25 : enrichit le JSON composants au moment de son chargement, sans
-   modifier le moteur historique du constructeur. Les entrees de meme id sont
-   completees par la bibliotheque v25; les nouvelles sont ajoutees. */
+/* TEST v26 : enrichit le JSON composants au moment de son chargement. Les
+   plumes sourcees dans vane-catalog-v25 sont ajoutees, puis les masses v26
+   sont appliquees uniquement lorsqu'elles sont jugees utilisables pour le FOC. */
 (() => {
-  if (typeof window.fetch !== 'function' || window.__vaneCatalogFetchV25) return;
+  if (typeof window.fetch !== 'function' || window.__vaneCatalogFetchV26) return;
   const originalFetch = window.fetch.bind(window);
   const catalogPromise = originalFetch('./vane-catalog-v25.json?v=20260822-prealpha-v25', { cache: 'no-store' })
     .then(response => response.ok ? response.json() : { vanes: [] })
     .catch(() => ({ vanes: [] }));
+  const massPromise = originalFetch('./vane-mass-v26.json?v=20260822-prealpha-v26', { cache: 'no-store' })
+    .then(response => response.ok ? response.json() : { masses: [] })
+    .catch(() => ({ masses: [] }));
 
   window.fetch = async function(input, init) {
     const response = await originalFetch(input, init);
     const url = typeof input === 'string' ? input : String(input?.url || '');
     if (!/arrow-components\.json(?:\?|$)/i.test(url)) return response;
     try {
-      const [base, extra] = await Promise.all([response.clone().json(), catalogPromise]);
+      const [base, extra, massData] = await Promise.all([response.clone().json(), catalogPromise, massPromise]);
       const byId = new Map((Array.isArray(base.vanes) ? base.vanes : []).map(vane => [vane.id, vane]));
       for (const vane of (Array.isArray(extra.vanes) ? extra.vanes : [])) {
         const previous = byId.get(vane.id) || {};
         byId.set(vane.id, { ...previous, ...vane });
+      }
+      for (const mass of (Array.isArray(massData.masses) ? massData.masses : [])) {
+        const previous = byId.get(mass.id);
+        if (!previous) continue;
+        const safeMass = { ...mass };
+        if (mass.focUsable !== true) delete safeMass.weightGrains;
+        byId.set(mass.id, { ...previous, ...safeMass });
       }
       const merged = { ...base, vanes: [...byId.values()] };
       return new Response(JSON.stringify(merged), {
@@ -70,7 +80,7 @@ window.AssistantArcherConfig = Object.freeze({
       return response;
     }
   };
-  window.__vaneCatalogFetchV25 = true;
+  window.__vaneCatalogFetchV26 = true;
 })();
 
 /* Cache-buster TEST pour la finition visuelle. */
@@ -97,4 +107,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('expert-model-ranking.js?v=20260822-prealpha-v24', 'expert-model-ranking');
   add('catalog-audit.js?v=20260822-prealpha-v25', 'catalog-audit');
   add('vane-library-v25.js?v=20260822-prealpha-v25', 'vane-library-v25');
+  add('vane-mass-v26.js?v=20260822-prealpha-v26', 'vane-mass-v26');
 })();
