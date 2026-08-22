@@ -50,6 +50,6 @@ window.AssistantArcherConfig = Object.freeze({
     script.setAttribute(`data-${marker}`, '1');
     document.head.appendChild(script);
   };
-  add('expert-model-ranking.js?v=20260822-prealpha-v23', 'expert-model-ranking');
+  add('expert-model-ranking.js?v=20260822-prealpha-v24', 'expert-model-ranking');
   add('catalog-audit.js?v=20260822-prealpha-v23', 'catalog-audit');
 })();
