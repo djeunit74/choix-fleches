@@ -37,7 +37,7 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* Boot TEST des couches expert puis audit catalogue. */
+/* Boot TEST des couches expert puis audit catalogue complet. */
 (() => {
   if (typeof document === 'undefined') return;
   if (!document.querySelector('script[data-expert-model-ranking]')) {
@@ -49,7 +49,7 @@ window.AssistantArcherConfig = Object.freeze({
   }
   if (!document.querySelector('script[data-catalog-audit]')) {
     const audit = document.createElement('script');
-    audit.src = 'catalog-audit.js?v=20260822-prealpha-v16';
+    audit.src = 'catalog-audit.js?v=20260822-prealpha-v17';
     audit.defer = true;
     audit.dataset.catalogAudit = '1';
     document.head.appendChild(audit);
