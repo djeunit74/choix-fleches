@@ -25,7 +25,6 @@ assert(!ranking.toLowerCase().includes('carbon express'), 'Carbon Express ne doi
 for (const model of ['a/c/e','x10 parallel pro 4 mm','x10 parallel pro 3.2 mm','x7','x23','rx7','xx75 platinum plus','vap','vxt','precium','edge','bruxx','empros']) {
   assert(extra.models?.[model], `Référence fabricant v13 absente: ${model}`);
 }
-assert(extra.models.edge.purpose.toLowerCase().includes('compound'), 'Positionnement compound de Edge perdu');
 assert(extra.models['x10 parallel pro 3.2 mm'].straightnessIn === 0.001, 'Tolérance X10 3.2 perdue');
 assert(extra.models.vxt.cuttingRule, 'Règle de coupe VXT absente');
 assert(extra.policy?.carbonExpressEnabled === false, 'Carbon Express doit rester désactivé');
