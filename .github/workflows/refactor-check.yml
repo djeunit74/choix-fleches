@@ -8,11 +8,13 @@ on:
     paths:
       - 'test/**'
       - 'scripts/refactor-check.mjs'
+      - 'scripts/manufacturer-reference-check.mjs'
       - '.github/workflows/refactor-check.yml'
   pull_request:
     paths:
       - 'test/**'
       - 'scripts/refactor-check.mjs'
+      - 'scripts/manufacturer-reference-check.mjs'
       - '.github/workflows/refactor-check.yml'
 
 jobs:
@@ -35,5 +37,8 @@ jobs:
           node --check test/expert-audit.js
           node --check test/onboarding.js
           node --check test/avalon-addon.js
+          node --check test/manufacturer-reference.js
       - name: Controles de non regression
         run: node scripts/refactor-check.mjs
+      - name: References fabricant
+        run: node scripts/manufacturer-reference-check.mjs
