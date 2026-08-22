@@ -34,12 +34,10 @@
 
     const details = document.createElement('details');
     details.className = 'merchant-native-disclosure merchant-disclosure';
-    details.dataset.merchantReady = 'prealpha-v6';
+    details.dataset.merchantReady = 'prealpha-v7';
 
     const summary = document.createElement('summary');
     summary.className = 'merchant-native-summary merchant-disclosure-summary';
-    /* Certains navigateurs perdent l activation native si summary est force en flex.
-       On restaure explicitement son mode natif et on met le flex dans un enfant. */
     summary.style.setProperty('display', 'list-item', 'important');
     summary.style.setProperty('list-style', 'none', 'important');
     summary.innerHTML = `
@@ -60,9 +58,6 @@
     details.append(summary, body);
     block.appendChild(details);
 
-    /* Filet de sécurité : on ne dépend plus exclusivement du comportement natif de
-       <summary>. Le clic pilote explicitement l attribut open. preventDefault évite
-       un double basculement quand le navigateur gère aussi summary correctement. */
     summary.addEventListener('click', event => {
       event.preventDefault();
       event.stopPropagation();
@@ -90,7 +85,7 @@
 
   function install() {
     const release = document.getElementById('appReleaseStatic');
-    if (release) release.textContent = 'Version : Pré-alpha v6';
+    if (release) release.textContent = 'Version : Pré-alpha v7';
 
     const result = document.getElementById('result');
     if (!result) return;
@@ -102,7 +97,7 @@
     refresh: compactAll,
     setDisclosureState,
     version: 'v62',
-    release: 'Pre-alpha v6'
+    release: 'Pre-alpha v7'
   });
 
   document.readyState === 'loading'
