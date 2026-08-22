@@ -25,15 +25,79 @@
   box-shadow:inset 0 0 0 1px var(--accent-2)!important;
 }
 
-/* Pré-alpha v9 : les offres restent affichées en permanence. */
+/* Pré-alpha v10 : interrupteur HTML natif checkbox + label, sans gestionnaire de clic JS. */
 .merchant-block{
   padding:.45rem!important;
 }
-.merchant-block > .merchant-intro,
-.merchant-block > .merchant-shops{
+.merchant-toggle-input{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  margin:-1px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+.merchant-toggle-label{
+  display:flex;
+  width:100%;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  padding:.7rem .8rem;
+  border:1px solid color-mix(in srgb,var(--accent-2) 25%,var(--line));
+  border-radius:12px;
+  background:color-mix(in srgb,var(--accent-2) 3%,white);
+  color:var(--accent-2);
+  font-weight:850;
+  line-height:1.25;
+  cursor:pointer;
+  user-select:none;
+}
+.merchant-toggle-label:hover{
+  background:color-mix(in srgb,var(--accent-2) 7%,white);
+}
+.merchant-toggle-input:focus-visible + .merchant-toggle-label{
+  outline:3px solid color-mix(in srgb,var(--accent-2) 45%,transparent);
+  outline-offset:2px;
+}
+.merchant-toggle-count{
+  margin-left:auto;
+  padding:.22rem .48rem;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--accent-2) 9%,white);
+  color:var(--ink);
+  font-size:.7rem;
+  font-weight:800;
+}
+.merchant-toggle-chevron{
+  flex:0 0 auto;
+  transition:transform .15s ease;
+}
+.merchant-toggle-content{
+  display:none!important;
+  padding-top:.5rem;
+}
+.merchant-toggle-label-open{
+  display:none;
+}
+.merchant-toggle-input:checked + .merchant-toggle-label + .merchant-toggle-content{
   display:block!important;
+}
+.merchant-toggle-input:checked + .merchant-toggle-label .merchant-toggle-label-closed{
+  display:none;
+}
+.merchant-toggle-input:checked + .merchant-toggle-label .merchant-toggle-label-open{
+  display:inline;
+}
+.merchant-toggle-input:checked + .merchant-toggle-label .merchant-toggle-chevron{
+  transform:rotate(180deg);
 }
 
 @media(max-width:560px){
   .arrow-model-select{padding:.48rem .68rem!important;font-size:.75rem!important}
+  .merchant-toggle-label{padding:.65rem .7rem}
 }
