@@ -17,7 +17,9 @@ for (const id of [
 for (const brand of ['skylon','easton','victory','carbon']) assert(index.includes(`value="${brand}"`), `Marque absente: ${brand}`);
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
-assert(index.includes('20260821-v62'), 'Cache-buster v62 absent du shell TEST');
+assert(index.includes('20260821-v62'), 'Cache-buster technique v62 absent du shell TEST');
+assert(index.includes('20260821-prealpha-v8'), 'Cache-buster marchand Pré-alpha v8 absent du shell TEST');
+assert(!index.includes('20260821-prealpha-v7'), 'Ancien cache-buster marchand Pré-alpha v7 encore present');
 assert(!index.includes('20260821-v61'), 'Ancien cache-buster v61 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
@@ -45,12 +47,15 @@ const merchantUi = read('test/merchant-ui.js');
 const uiPolish = read('test/ui-polish.css');
 has(merchantUi, [
   'merchant-disclosure','Voir les offres marchands','merchant-disclosure-count','MutationObserver',
-  "version: 'v62'",'aria-expanded','aria-controls','setDisclosureState','button.addEventListener(\'click\''
-], 'Sous-menu marchand v62 incomplet');
+  "version: 'v58'","release: 'Pre-alpha v8'","document.createElement('details')","document.createElement('summary')"
+], 'Sous-menu marchand natif Pré-alpha v8 incomplet');
+assert(!merchantUi.includes('preventDefault()'), 'Le menu marchand ne doit plus neutraliser le clic natif du summary');
+assert(!merchantUi.includes('setDisclosureState'), 'Le menu marchand ne doit plus piloter manuellement l etat open');
 has(uiPolish, [
   '.arrow-model-select','background:var(--accent-2)!important','.merchant-disclosure-summary',
-  '.merchant-disclosure-body[hidden]','.merchant-disclosure[data-open="true"]'
-], 'Finition visuelle v62 incomplete');
+  '.merchant-disclosure[open] .merchant-disclosure-summary::after','.merchant-disclosure-body'
+], 'Finition visuelle marchands Pré-alpha v8 incomplete');
+assert(!uiPolish.includes('.merchant-native-summary'), 'Ancien style marchand expérimental encore present');
 assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.test(uiPolish), 'Le bouton tube ne doit pas redevenir transparent');
 
 const focMeasure = read('test/foc-measure.js');
@@ -235,4 +240,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques, FOC, masses arriere et menu marchand v62 OK');
+console.log('Assistant Archer refactor: controles statiques, FOC, masses arriere et menu marchand Pré-alpha v8 OK');
