@@ -1,0 +1,194 @@
+{
+  "version": "2026-08-22-prealpha-v12",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "merchantDataMayAffectTechnicalRecommendation": false,
+    "unknownDataMustRemainUnknown": true,
+    "notes": "Données techniques utilisées uniquement si une source fabricant explicite est enregistrée. Les absences ne sont jamais complétées de mémoire."
+  },
+  "sources": {
+    "easton2026": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf",
+    "eastonAvance": "https://eastonarchery.com/arrows_/avance-avance-sport/",
+    "eastonX10": "https://eastonarchery.com/arrows_/x10/",
+    "eastonVector": "https://eastonarchery.com/arrows_/vector-arrow/",
+    "eastonSuperdriveMicro": "https://eastonarchery.com/arrows_/superdrive-micro/",
+    "victoryGuide": "https://victoryarchery.com/arrow-guide/",
+    "victoryVap": "https://victoryarchery.com/arrows-target/vap/",
+    "victoryVxt": "https://victoryarchery.com/arrows-target/vxt/",
+    "skylonBrixxon": "https://skylonarchery.com/arrows/2023-06-29-08-52-09/brixxon",
+    "skylonRadius": "https://skylonarchery.com/arrows/2023-06-29-08-52-09/radius",
+    "skylonPerforma": "https://www.skylonarchery.com/arrows/id-3-2/performa",
+    "skylonParagon": "https://www.skylonarchery.com/arrows/id-3-2/paragon",
+    "skylonPreminens": "https://www.skylonarchery.com/arrows/id-3-2/preminens",
+    "skylonComponents": "https://www.skylonarchery.com/components-for-arrow",
+    "carbonExpressRecurve": "https://thecarbonexpress.com/wp-content/uploads/2024/11/recurve-series-arrow-selection-chart.pdf"
+  },
+  "models": {
+    "avance": {
+      "brand": "Easton",
+      "name": "Avance",
+      "material": "100% carbone Acu-Carbon",
+      "innerDiameterIn": 0.168,
+      "profile": "parallel",
+      "straightnessIn": 0.0025,
+      "weightToleranceGr": 1,
+      "purpose": "cible extérieure recurve/compound, intermédiaire à performance",
+      "source": "eastonAvance",
+      "spines": {
+        "340": {"gpi":8.8,"odIn":0.240,"lengthIn":33.25,"pointGr":[100,110,120]},
+        "400": {"gpi":7.9,"odIn":0.234,"lengthIn":33.0,"pointGr":[100,110,120]},
+        "450": {"gpi":7.4,"odIn":0.230,"lengthIn":32.75,"pointGr":[100,110,120]},
+        "500": {"gpi":6.9,"odIn":0.227,"lengthIn":32.5,"pointGr":[90,100,110]},
+        "550": {"gpi":6.5,"odIn":0.224,"lengthIn":32.25,"pointGr":[90,100,110]},
+        "600": {"gpi":6.5,"odIn":0.224,"lengthIn":32.0,"pointGr":[90,100,110]},
+        "660": {"gpi":6.2,"odIn":0.220,"lengthIn":31.75,"pointGr":[90,100,110]},
+        "730": {"gpi":5.7,"odIn":0.217,"lengthIn":31.25,"pointGr":[70,80,90]},
+        "810": {"gpi":5.5,"odIn":0.215,"lengthIn":31.0,"pointGr":[70,80,90]},
+        "900": {"gpi":5.2,"odIn":0.211,"lengthIn":30.25,"pointGr":[70,80,90]},
+        "1000": {"gpi":4.9,"odIn":0.209,"lengthIn":30.0,"pointGr":[60,70,80]},
+        "1150": {"gpi":4.9,"odIn":0.208,"lengthIn":29.25,"pointGr":[60,70,80]},
+        "1400": {"gpi":4.2,"odIn":0.205,"lengthIn":29.0,"pointGr":[60,70,80]},
+        "1600": {"gpi":3.8,"odIn":0.202,"lengthIn":28.75,"pointGr":[60,70,80]},
+        "1800": {"gpi":3.6,"odIn":0.200,"lengthIn":28.5,"pointGr":[60,70,80]},
+        "2000": {"gpi":3.4,"odIn":0.198,"lengthIn":28.25,"pointGr":[60,70,80]}
+      }
+    },
+    "superdrive micro": {
+      "brand": "Easton",
+      "name": "SuperDrive Micro",
+      "material": "100% carbone multicouche",
+      "innerDiameterIn": 0.167,
+      "profile": "parallel",
+      "straightnessIn": 0.002,
+      "weightToleranceGr": 1,
+      "purpose": "tournoi extérieur cible/campagne/3D, vitesse et faible dérive",
+      "source": "eastonSuperdriveMicro",
+      "spines": {
+        "325":{"gpi":8.1,"odIn":0.233,"lengthIn":33.25,"pointGr":[80,90,100,110,120,130]},
+        "375":{"gpi":7.4,"odIn":0.228,"lengthIn":33.0,"pointGr":[80,90,100,110,120,130]},
+        "425":{"gpi":6.8,"odIn":0.224,"lengthIn":32.75,"pointGr":[80,90,100,110,120,130]},
+        "475":{"gpi":6.4,"odIn":0.221,"lengthIn":32.5,"pointGr":[80,90,100,110,120,130]},
+        "525":{"gpi":6.1,"odIn":0.218,"lengthIn":32.25,"pointGr":[80,90,100,110,120,130]},
+        "575":{"gpi":5.9,"odIn":0.217,"lengthIn":32.0,"pointGr":[80,90,100,110,120,130]},
+        "625":{"gpi":5.7,"odIn":0.216,"lengthIn":31.75,"pointGr":[80,90,100,110,120,130]},
+        "675":{"gpi":5.6,"odIn":0.215,"lengthIn":31.5,"pointGr":[80,90,100,110,120,130]},
+        "750":{"gpi":5.5,"odIn":0.214,"lengthIn":31.25,"pointGr":[80,90,100,110,120,130]},
+        "850":{"gpi":5.3,"odIn":0.213,"lengthIn":31.0,"pointGr":[80,90,100,110,120,130]},
+        "950":{"gpi":5.1,"odIn":0.210,"lengthIn":30.75,"pointGr":[80,90,100,110,120,130]}
+      }
+    },
+    "vector": {
+      "brand": "Easton",
+      "name": "Vector",
+      "material": "100% carbone multicouche",
+      "innerDiameterIn": 0.166,
+      "profile": "parallel 4 mm",
+      "straightness": "contrôlée, sans tolérance numérique publiée sur la fiche actuelle",
+      "purpose": "club, débutant et progression cible",
+      "source": "eastonVector",
+      "spines": {
+        "600":{"gpi":7.6,"odIn":0.228,"lengthIn":32.0},
+        "800":{"gpi":6.2,"odIn":0.219,"lengthIn":31.0},
+        "1000":{"gpi":5.4,"odIn":0.214,"lengthIn":30.0},
+        "1200":{"gpi":5.1,"odIn":0.211,"lengthIn":29.0},
+        "1400":{"gpi":4.2,"odIn":0.206,"lengthIn":28.0},
+        "1600":{"gpi":3.8,"odIn":0.202,"lengthIn":27.5},
+        "1800":{"gpi":3.6,"odIn":0.200,"lengthIn":27.0},
+        "2000":{"gpi":3.4,"odIn":0.198,"lengthIn":26.5}
+      }
+    },
+    "x10": {
+      "brand":"Easton",
+      "name":"X10",
+      "material":"carbone haute résistance sur âme aluminium 7075",
+      "profile":"barrelled",
+      "straightnessIn":0.001,
+      "weightToleranceGr":0.5,
+      "purpose":"compétition recurve extérieure haut niveau",
+      "source":"eastonX10",
+      "spines": {
+        "325":{"gpi":9.2,"odIn":0.221,"lengthIn":34.25,"frontMaxTrimIn":6.0},
+        "350":{"gpi":8.8,"odIn":0.218,"lengthIn":34.0,"frontMaxTrimIn":6.0},
+        "380":{"gpi":8.9,"odIn":0.215,"lengthIn":33.75,"frontMaxTrimIn":6.5},
+        "410":{"gpi":8.5,"odIn":0.212,"lengthIn":33.75,"frontMaxTrimIn":5.5},
+        "450":{"gpi":8.1,"odIn":0.209,"lengthIn":33.5,"frontMaxTrimIn":5.5},
+        "500":{"gpi":7.8,"odIn":0.206,"lengthIn":32.0,"frontMaxTrimIn":4.0},
+        "550":{"gpi":7.5,"odIn":0.203,"lengthIn":31.0,"frontMaxTrimIn":3.5},
+        "600":{"gpi":7.0,"odIn":0.200,"lengthIn":30.0,"frontMaxTrimIn":3.5},
+        "650":{"gpi":6.8,"odIn":0.197,"lengthIn":29.0,"frontMaxTrimIn":3.5},
+        "700":{"gpi":6.7,"odIn":0.194,"lengthIn":29.0,"frontMaxTrimIn":3.5},
+        "750":{"gpi":6.4,"odIn":0.191,"lengthIn":29.0,"frontMaxTrimIn":3.5},
+        "830":{"gpi":6.2,"odIn":0.188,"lengthIn":28.5,"frontMaxTrimIn":null},
+        "900":{"gpi":5.8,"odIn":0.185,"lengthIn":28.0,"frontMaxTrimIn":null},
+        "1000":{"gpi":5.3,"odIn":0.182,"lengthIn":28.0,"frontMaxTrimIn":null}
+      }
+    },
+    "vap": {
+      "brand":"Victory",
+      "name":"VAP",
+      "material":"100% carbone",
+      "innerDiameterIn":0.166,
+      "profile":"parallel micro-diamètre",
+      "grades":{"V1":0.001,"V3":0.003,"V6":0.006},
+      "weightMatchingGr":0.5,
+      "purpose":"cible compétition, faible dérive au vent",
+      "includedRear":{"ipNockGr":8},
+      "optionalRear":{"pinBushingGr":12,"pinNockGr":3},
+      "optionalPointsGr":[80,90,100,120,130,140],
+      "source":"victoryVap",
+      "spineDataStatus":"Le tableau de sélection Victory est utilisé séparément; aucun GPI n'est ajouté ici sans tableau fabricant lisible."
+    },
+    "vxt": {
+      "brand":"Victory",
+      "name":"VXT",
+      "material":"100% carbone haut module avec tissage 3K 90°",
+      "innerDiameterIn":0.166,
+      "profile":"avant parallèle / arrière conique",
+      "grades":{"V1":0.001,"V3":0.003,"V6":0.006},
+      "weightMatchingGr":0.5,
+      "purpose":"cible compétition haut niveau, FOC élevé, dégagement et récupération en vol",
+      "includedRear":{"pinNockGr":3,"goldPinBushingGr":12},
+      "optionalPointsGr":[80,90,100,120,130,140],
+      "cuttingRule":"Couper à l'avant assouplit; couper à l'arrière raidit; parts égales conservent le spine. Ne pas couper plus de 8 pouces à l'avant.",
+      "source":"victoryVxt",
+      "spineDataStatus":"Le VXT possède son propre tableau de coupe/spine; ne pas lui appliquer aveuglément un spine VAP."
+    },
+    "brixxon": {
+      "brand":"Skylon","name":"Brixxon","material":"24-TON Carbon","innerDiameterMm":4.2,"straightnessIn":0.0015,"source":"skylonBrixxon",
+      "spines":{"1100":{"odMm":5.22,"gpi":4.64,"lengthIn":32,"pointGr":[60,70,80]},"1000":{"odMm":5.32,"gpi":4.90,"lengthIn":32,"pointGr":[60,70,80]},"900":{"odMm":5.36,"gpi":5.34,"lengthIn":32,"pointGr":[60,70,80]},"850":{"odMm":5.42,"gpi":5.48,"lengthIn":32,"pointGr":[60,70,80,90,100]},"800":{"odMm":5.48,"gpi":5.80,"lengthIn":32,"pointGr":[60,70,80,90,100]},"750":{"odMm":5.50,"gpi":5.94,"lengthIn":32,"pointGr":[80,90,100]},"700":{"odMm":5.58,"gpi":6.17,"lengthIn":32,"pointGr":[80,90,100]},"650":{"odMm":5.60,"gpi":6.42,"lengthIn":32,"pointGr":[80,90,100]},"600":{"odMm":5.71,"gpi":7.09,"lengthIn":32,"pointGr":[80,90,100,110,120]},"550":{"odMm":5.77,"gpi":7.47,"lengthIn":32,"pointGr":[80,90,100,110,120]},"500":{"odMm":5.88,"gpi":8.00,"lengthIn":32,"pointGr":[80,90,100,110,120]},"450":{"odMm":5.99,"gpi":8.63,"lengthIn":32,"pointGr":[80,90,100,110,120]},"400":{"odMm":6.13,"gpi":9.47,"lengthIn":32,"pointGr":[80,90,100,110,120]}}
+    },
+    "radius": {
+      "brand":"Skylon","name":"Radius","material":"24-TON Carbon","innerDiameterMm":4.2,"straightnessIn":0.005,"source":"skylonRadius",
+      "spines":{"2000":{"odMm":4.96,"gpi":3.60,"lengthIn":32,"pointGr":[50]},"1800":{"odMm":5.00,"gpi":3.89,"lengthIn":32,"pointGr":[50]},"1500":{"odMm":5.05,"gpi":4.00,"lengthIn":32,"pointGr":[60,70,80]},"1300":{"odMm":5.18,"gpi":4.16,"lengthIn":32,"pointGr":[60,70,80]},"1100":{"odMm":5.22,"gpi":4.64,"lengthIn":32,"pointGr":[60,70,80]},"1000":{"odMm":5.32,"gpi":4.90,"lengthIn":32,"pointGr":[60,70,80]},"900":{"odMm":5.36,"gpi":5.34,"lengthIn":32,"pointGr":[60,70,80]},"850":{"odMm":5.42,"gpi":5.48,"lengthIn":32,"pointGr":[60,70,80,90,100]},"800":{"odMm":5.48,"gpi":5.80,"lengthIn":32,"pointGr":[60,70,80,90,100]},"750":{"odMm":5.50,"gpi":5.94,"lengthIn":32,"pointGr":[80,90,100]},"700":{"odMm":5.58,"gpi":6.17,"lengthIn":32,"pointGr":[80,90,100]},"650":{"odMm":5.60,"gpi":6.42,"lengthIn":32,"pointGr":[80,90,100]},"600":{"odMm":5.71,"gpi":7.09,"lengthIn":32,"pointGr":[80,90,100,110,120]},"550":{"odMm":5.77,"gpi":7.47,"lengthIn":32,"pointGr":[80,90,100,110,120]},"500":{"odMm":5.88,"gpi":8.00,"lengthIn":32,"pointGr":[80,90,100,110,120]},"450":{"odMm":5.99,"gpi":8.63,"lengthIn":32,"pointGr":[80,90,100,110,120]},"400":{"odMm":6.13,"gpi":9.47,"lengthIn":32,"pointGr":[80,90,100,110,120]}}
+    },
+    "performa": {
+      "brand":"Skylon","name":"Performa","material":"40-TON Carbon","innerDiameterMm":3.2,"straightnessIn":0.006,"source":"skylonPerforma",
+      "spines":{"1000":{"odMm":4.45,"gpi":4.70,"lengthIn":30,"pointGr":[60,70,80]},"900":{"odMm":4.50,"gpi":4.81,"lengthIn":30,"pointGr":[60,70,80]},"850":{"odMm":4.55,"gpi":4.94,"lengthIn":30,"pointGr":[80,90,100]},"800":{"odMm":4.59,"gpi":5.06,"lengthIn":31,"pointGr":[80,90,100]},"750":{"odMm":4.63,"gpi":5.31,"lengthIn":31,"pointGr":[80,90,100]},"700":{"odMm":4.67,"gpi":5.55,"lengthIn":31,"pointGr":[80,90,100]},"650":{"odMm":4.73,"gpi":5.83,"lengthIn":31,"pointGr":[80,90,100]},"600":{"odMm":4.78,"gpi":6.10,"lengthIn":32,"pointGr":[100,110,120]},"550":{"odMm":4.84,"gpi":6.50,"lengthIn":32,"pointGr":[100,110,120]},"500":{"odMm":4.90,"gpi":6.90,"lengthIn":32,"pointGr":[100,110,120]},"450":{"odMm":5.04,"gpi":7.42,"lengthIn":32,"pointGr":[100,110,120]},"400":{"odMm":5.17,"gpi":7.93,"lengthIn":32,"pointGr":[100,110,120]},"350":{"odMm":5.25,"gpi":8.47,"lengthIn":32,"pointGr":[100,110,120]}}
+    },
+    "paragon": {
+      "brand":"Skylon","name":"Paragon","material":"40-TON Carbon","innerDiameterMm":3.2,"straightnessIn":0.0015,"source":"skylonParagon",
+      "spines":{"1000":{"odMm":4.45,"gpi":4.70,"lengthIn":30,"pointGr":[60,70,80]},"900":{"odMm":4.50,"gpi":4.81,"lengthIn":30,"pointGr":[60,70,80]},"850":{"odMm":4.55,"gpi":4.94,"lengthIn":30,"pointGr":[80,90,100]},"800":{"odMm":4.59,"gpi":5.06,"lengthIn":31,"pointGr":[80,90,100]},"750":{"odMm":4.63,"gpi":5.31,"lengthIn":31,"pointGr":[80,90,100]},"700":{"odMm":4.67,"gpi":5.55,"lengthIn":31,"pointGr":[80,90,100]},"650":{"odMm":4.73,"gpi":5.83,"lengthIn":31,"pointGr":[80,90,100]},"600":{"odMm":4.78,"gpi":6.10,"lengthIn":32,"pointGr":[100,110,120]},"550":{"odMm":4.84,"gpi":6.50,"lengthIn":32,"pointGr":[100,110,120]},"500":{"odMm":4.90,"gpi":6.90,"lengthIn":32,"pointGr":[100,110,120]},"450":{"odMm":5.04,"gpi":7.42,"lengthIn":32,"pointGr":[100,110,120]},"400":{"odMm":5.17,"gpi":7.93,"lengthIn":32,"pointGr":[100,110,120]},"350":{"odMm":5.25,"gpi":8.47,"lengthIn":32,"pointGr":[100,110,120]}}
+    },
+    "preminens": {
+      "brand":"Skylon","name":"Preminens","material":"40-TON Carbon","innerDiameterMm":3.2,"straightnessIn":0.001,"source":"skylonPreminens",
+      "spines":{"650":{"odMm":4.73,"gpi":5.83,"lengthIn":31,"pointGr":[80,90,100]},"600":{"odMm":4.78,"gpi":6.10,"lengthIn":32,"pointGr":[100,110,120]},"550":{"odMm":4.84,"gpi":6.50,"lengthIn":32,"pointGr":[100,110,120]},"500":{"odMm":4.90,"gpi":6.90,"lengthIn":32,"pointGr":[100,110,120]},"450":{"odMm":5.04,"gpi":7.42,"lengthIn":32,"pointGr":[100,110,120]},"400":{"odMm":5.17,"gpi":7.93,"lengthIn":32,"pointGr":[100,110,120]},"350":{"odMm":5.25,"gpi":8.47,"lengthIn":32,"pointGr":[100,110,120]}}
+    }
+  },
+  "carbonExpressRecurveSeries": {
+    "lengthsIn":[23,24,25,26,27,28,29,30,31,32],
+    "rows":[
+      {"range":[18,23],"cells":["","","","NSST1000","NPX900|NSST900","NPX800|NSST800","NPX750|NSST750","","",""]},
+      {"range":[24,28],"cells":["","","NSST1000","NPX900|NSST900","NPX800|NSST800","NPX750|NSST750","NPX750|NSST700|MPR650","NPX650|NSST650|MPR650","MPR580",""]},
+      {"range":[29,34],"cells":["","NSST1000","NPX900|NSST900","NPX800|NSST800","NPX750|NSST750","NPX750|NSST700","NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR580",""]},
+      {"range":[35,39],"cells":["NSST1000","NPX900|NSST900","NPX800|NSST800","NPX750|NSST750","NPX750|NSST700","NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR500","NPX500|NSST500|MPR500","NPX450|NSST450|MPR420"]},
+      {"range":[40,45],"cells":["NPX900|NSST900","NPX800|NSST800","NPX750|NSST750","NPX750|NSST700|MPR650","NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR500","NPX500|NSST500|MPR500","NPX450|NSST450|MPR420","NPX400|NSST400|MPR420"]},
+      {"range":[46,51],"cells":["NPX800|NSST800","NPX750|NSST750","NPX750|NSST700|MPR650","NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR500","NPX500|NSST500|MPR500","NPX450|NSST450|MPR420","NPX400|NSST400|MPR420","NPX400|NSST400|MPR350"]},
+      {"range":[52,57],"cells":["NPX750|NSST750","NPX750|NSST700|MPR650","NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR500","NPX500|NSST500|MPR500","NPX450|NSST450|MPR420","NPX400|NSST400|MPR420","NPX400|NSST400|MPR350","NPX350|MPR350"]},
+      {"range":[58,63],"cells":["NPX750|NSST700|MPR650","NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR500","NPX500|NSST500|MPR500","NPX450|NSST450|MPR420","NPX400|NSST400|MPR420","NPX400|NSST400|MPR350","NPX350|MPR350","NPX350|MPR350"]},
+      {"range":[64,69],"cells":["NPX650|NSST650|MPR650","NPX600|NSST600|MPR580","NPX550|NSST550|MPR500","NPX500|NSST500|MPR500","NPX450|NSST450|MPR420","NPX400|NSST400|MPR420","NPX400|NSST400|MPR350","NPX350|MPR350","NPX350|MPR350",""]}
+    ],
+    "codeMap":{"NPX":"Nano-Pro Xtreme","NSST":"Nano SST","MPR":"Maxima Pro Recurve RZ"},
+    "source":"carbonExpressRecurve"
+  }
+}
