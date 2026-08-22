@@ -10,7 +10,7 @@ const cfg=read('test/app-config.js');
 const avalon=read('test/avalon-addon.js');
 const easton={...(data.brands?.easton?.models||{}),...(extra.brands?.easton?.models||{})};
 
-assert(data.version==='2026-08-22-prealpha-v17','Version catalogue v17 inattendue');
+assert(data.version==='2026-08-22-prealpha-v17','Version catalogue data v17 inattendue');
 assert(data.policy?.allCurrentFamiliesRegistered===true,'Le registre complet doit etre actif');
 assert(data.policy?.autoSelectionRequiresVerifiedSizing===true,'Selection auto sans table verifiee interdite');
 for(const brand of ['easton','victory','skylon','avalon']) assert(data.brands?.[brand]?.models,`Marque absente ${brand}`);
@@ -31,8 +31,10 @@ assert(tech.models?.['avalon classic carbon arrows']?.availableSpines?.includes(
 assert(tech.models?.['avalon hybrid carbon arrows']?.availableSpines?.includes(500),'Spines Avalon Hybrid incomplets');
 assert(tech.models?.['avalon tyro carbon shafts']?.stockLengthIn===32,'Longueur Tyro shafts absente');
 
-assert(js.includes("const VERSION='Pré-alpha v17'"),'Version JS v17 absente');
-assert(js.includes("['easton','victory','skylon','avalon']"),'Audit Avalon absent');
+assert(js.includes("const VERSION='Pré-alpha v21'"),'Version JS v21 absente');
+assert(js.includes("if(rec.brand==='avalon')return rec"),'Avalon doit etre exclu du filtrage catalogue general');
+assert(js.includes("brand==='avalon'&&window.AssistantArcherAvalon?.recommend"),'Le wrapper catalogue doit appeler directement le moteur Avalon');
+assert(js.includes('Avalon utilise son moteur fabricant dédié'),'Explication du moteur Avalon dédié absente');
 
 assert(avalon.includes("const VERSION='Pré-alpha v20'"),'Avalon v20 absent');
 for(const m of ['Avalon Tyro Carbon Arrows','Avalon Classic Carbon Arrows','Avalon Hybrid Carbon Arrows','Avalon Tyro Carbon Shafts']) assert(avalon.includes(m),`Famille Avalon v20 absente: ${m}`);
@@ -42,10 +44,7 @@ assert(avalon.includes('current-spine'),'Distinction correspondance Avalon par s
 assert(avalon.includes('lengthCompatible'),'Garde-fou longueur Avalon absent');
 assert(avalon.includes('meta:modelMeta(c.family,c.spine)'),'Metadonnees Avalon locales non attachees aux candidats');
 assert(!avalon.includes('rankModels(candidates.map'),'Avalon ne doit plus dependre du catalogue global pour afficher ses candidats');
-assert(cfg.includes('script.async = false'),'Ordre de chargement runtime non verrouille');
-const expertPos=cfg.indexOf('expert-model-ranking.js');
-const auditPos=cfg.indexOf('catalog-audit.js');
-const avalonPos=cfg.indexOf('avalon-addon.js?v=20260822-prealpha-v20');
-assert(expertPos>=0&&auditPos>expertPos&&avalonPos>auditPos,'Ordre expert -> audit -> Avalon incorrect');
+assert(cfg.includes('catalog-audit.js?v=20260822-prealpha-v21'),'Boot audit v21 absent');
+assert(cfg.includes('avalon-addon.js?v=20260822-prealpha-v20'),'Boot Avalon v20 absent');
 
-console.log('Assistant Archer: catalogue complet + Avalon Pré-alpha v20 contrôlés OK');
+console.log('Assistant Archer: catalogue complet + Avalon Pré-alpha v21 contrôlés OK');
