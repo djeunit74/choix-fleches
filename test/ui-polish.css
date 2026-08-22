@@ -25,6 +25,10 @@
   box-shadow:inset 0 0 0 1px var(--accent-2)!important;
 }
 
+/* Compatibilite du controle v9 : avant transformation, les enfants directs restent lisibles. */
+.merchant-block > .merchant-intro,
+.merchant-block > .merchant-shops{display:block!important}
+
 /* Pré-alpha v10 : interrupteur HTML natif checkbox + label, sans gestionnaire de clic JS. */
 .merchant-block{
   padding:.45rem!important;
