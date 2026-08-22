@@ -5,29 +5,31 @@
   let scheduled = false;
   let merchantBlockId = 0;
 
-  function setExpanded(panel, expanded) {
-    if (!(panel instanceof HTMLElement)) return;
-    const heading = panel.querySelector(':scope > h3');
-    const button = panel.querySelector(':scope > .merchant-toggle');
-    panel.dataset.merchantExpanded = expanded ? 'true' : 'false';
-    heading?.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  function directMerchantBlock(host) {
+    return [...host.children].find(child => child instanceof HTMLElement && child.classList.contains('merchant-block')) || null;
+  }
+
+  function setExpanded(host, expanded) {
+    if (!(host instanceof HTMLElement)) return;
+    const button = [...host.children].find(child => child instanceof HTMLButtonElement && child.classList.contains('merchant-toggle'));
+    host.dataset.merchantExpanded = expanded ? 'true' : 'false';
     if (button instanceof HTMLButtonElement) {
       button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
       button.textContent = expanded ? 'Masquer les offres ▴' : 'Afficher les offres ▾';
     }
   }
 
-  function togglePanel(panel) {
-    setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
+  function toggleHost(host) {
+    setExpanded(host, host.dataset.merchantExpanded !== 'true');
   }
 
-  function ensureToggleButton(panel, block) {
-    let button = panel.querySelector(':scope > .merchant-toggle');
+  function ensureToggleButton(host, block) {
+    let button = [...host.children].find(child => child instanceof HTMLButtonElement && child.classList.contains('merchant-toggle'));
     if (!(button instanceof HTMLButtonElement)) {
       button = document.createElement('button');
       button.type = 'button';
       button.className = 'merchant-toggle';
-      panel.insertBefore(button, block);
+      host.insertBefore(button, block);
     }
 
     if (!block.id) {
@@ -38,39 +40,31 @@
 
     if (button.dataset.merchantToggleBound !== '1') {
       button.dataset.merchantToggleBound = '1';
-      button.addEventListener('click', () => togglePanel(panel));
+      button.addEventListener('click', () => toggleHost(host));
     }
     return button;
   }
 
-  function bindPanel(panel) {
-    if (!(panel instanceof HTMLElement)) return;
-    const heading = panel.querySelector(':scope > h3');
-    const block = panel.querySelector(':scope > .merchant-block') || panel.querySelector('.merchant-block');
-    if (!(heading instanceof HTMLElement) || !(block instanceof HTMLElement)) return;
+  function bindHost(host) {
+    if (!(host instanceof HTMLElement)) return;
+    const block = directMerchantBlock(host);
+    if (!(block instanceof HTMLElement)) return;
 
-    ensureToggleButton(panel, block);
+    host.classList.add('merchant-offers-host');
+    ensureToggleButton(host, block);
 
-    /* Le titre reste aussi activable au clavier/souris comme zone secondaire. */
-    if (heading.dataset.merchantHeadingBound !== '1') {
-      heading.dataset.merchantHeadingBound = '1';
-      heading.setAttribute('role', 'button');
-      heading.setAttribute('tabindex', '0');
-      heading.addEventListener('click', () => togglePanel(panel));
-      heading.addEventListener('keydown', event => {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        event.preventDefault();
-        togglePanel(panel);
-      });
-    }
-
-    if (!panel.dataset.merchantExpanded) setExpanded(panel, false);
-    else setExpanded(panel, panel.dataset.merchantExpanded === 'true');
+    if (!host.dataset.merchantExpanded) setExpanded(host, false);
+    else setExpanded(host, host.dataset.merchantExpanded === 'true');
   }
 
   function bindAll(root = document) {
-    if (root instanceof HTMLElement && root.matches('.merchant-panel')) bindPanel(root);
-    root.querySelectorAll?.('.merchant-panel').forEach(bindPanel);
+    const scope = root instanceof Document || root instanceof HTMLElement ? root : document;
+
+    if (scope instanceof HTMLElement && (scope.matches('.merchant-panel') || scope.matches('.mini-card'))) {
+      bindHost(scope);
+    }
+
+    scope.querySelectorAll?.('.merchant-panel, .mini-card').forEach(bindHost);
   }
 
   function scheduleBind() {
@@ -94,7 +88,7 @@
 
   window.AssistantArcherMerchantUi = Object.freeze({
     refresh: bindAll,
-    mode: 'panel-attribute-toggle',
+    mode: 'host-sibling-toggle',
     release: 'Pre-alpha v11'
   });
 
