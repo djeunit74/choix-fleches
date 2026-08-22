@@ -39,8 +39,7 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* Boot TEST actif : expert -> audit catalogue. Avalon est volontairement
-   conserve dans l'historique du depot mais n'est plus charge ni recommande. */
+/* Boot TEST actif : expert -> audit catalogue. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -51,6 +50,6 @@ window.AssistantArcherConfig = Object.freeze({
     script.setAttribute(`data-${marker}`, '1');
     document.head.appendChild(script);
   };
-  add('expert-model-ranking.js?v=20260822-prealpha-v14', 'expert-model-ranking');
-  add('catalog-audit.js?v=20260822-prealpha-v22', 'catalog-audit');
+  add('expert-model-ranking.js?v=20260822-prealpha-v23', 'expert-model-ranking');
+  add('catalog-audit.js?v=20260822-prealpha-v23', 'catalog-audit');
 })();
