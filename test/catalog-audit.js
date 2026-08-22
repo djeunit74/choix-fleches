@@ -1,7 +1,7 @@
-/* Assistant Archer TEST - audit + injection catalogue fabricant Pré-alpha v17. */
+/* Assistant Archer TEST - audit + injection catalogue fabricant Pré-alpha v21. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v17';
+  const VERSION='Pré-alpha v21';
   const DATA_URL='catalog-audit-v17.json?v=20260822-prealpha-v17';
   const EXTRA_URL='catalog-audit-v17-extra.json?v=20260822-prealpha-v17';
   const TECH_URL='manufacturer-reference-v17.json?v=20260822-prealpha-v17';
@@ -101,6 +101,9 @@
 
   function auditRecommendation(rec,input){
     if(!rec||!Array.isArray(rec.models)||!['easton','victory','skylon','avalon'].includes(rec.brand))return rec;
+    /* Avalon possède son moteur fabricant dédié. Ses candidats ont déjà été
+       contrôlés par groupe, spine et longueur. Ne jamais les retraiter ici. */
+    if(rec.brand==='avalon')return rec;
     let unknown=0,blocked=0;const kept=[];
     for(const raw of rec.models){
       const entry=canonical(raw,rec.brand),info=entry.catalogAudit;
@@ -110,7 +113,7 @@
     }
     rec.models=kept;injectVerified(rec,input);
     if(window.AssistantArcherExpertModelRanking?.rankRecommendation&&['easton','victory','skylon'].includes(rec.brand))window.AssistantArcherExpertModelRanking.rankRecommendation(rec,input);
-    rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Catalogue ${VERSION} : toutes les familles actuelles Easton/Victory/Skylon/Avalon sont enregistrées; seules celles avec sélection exploitable peuvent être proposées automatiquement.`];
+    rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Catalogue ${VERSION} : seules les familles Easton/Victory/Skylon auditées et compatibles sont conservées. Avalon utilise son moteur fabricant dédié.`];
     if(unknown)rec.confidenceReasons.push(`${unknown} ancien libellé ou modèle non reconnu écarté par sécurité.`);
     if(blocked)rec.confidenceReasons.push(`${blocked} famille(s) enregistrée(s) mais hors contexte recurve courant ou sans table de sélection exploitable.`);
     return rec;
@@ -119,7 +122,13 @@
   function patch(){
     if(patched||!data||!tech||typeof window.buildBrandRecommendation!=='function'||!window.AssistantArcherExpertModelRanking)return false;
     const original=window.buildBrandRecommendation;
-    window.buildBrandRecommendation=function(input,brand){return auditRecommendation(original.apply(this,arguments),input);};
+    window.buildBrandRecommendation=function(input,brand){
+      if(brand==='avalon'&&window.AssistantArcherAvalon?.recommend){
+        const avalon=window.AssistantArcherAvalon.recommend(input);
+        if(avalon)return avalon;
+      }
+      return auditRecommendation(original.apply(this,arguments),input);
+    };
     patched=true;window.AssistantArcherCatalogAudit=Object.freeze({version:VERSION,data,tech,auditRecommendation});return true;
   }
 
@@ -133,10 +142,10 @@
 
   function installBanner(){
     const result=document.getElementById('result');if(!result)return;
-    document.getElementById('catalogAuditV15')?.remove();document.getElementById('catalogAuditV17')?.remove();
+    document.getElementById('catalogAuditV15')?.remove();document.getElementById('catalogAuditV17')?.remove();document.getElementById('catalogAuditV21')?.remove();
     const counts=Object.fromEntries(Object.entries(data.brands).map(([b,v])=>[b,Object.keys(v.models).length]));
-    const d=document.createElement('details');d.id='catalogAuditV17';d.className='manufacturer-reference-status';d.style.cssText='margin:.65rem 0;padding:.65rem .75rem;border:1px solid rgba(0,0,0,.12);border-radius:10px';
-    d.innerHTML=`<summary><strong>Catalogue complet audité — ${VERSION}</strong></summary><p style="margin:.55rem 0 0">Familles enregistrées : Easton ${counts.easton}, Victory ${counts.victory}, Skylon ${counts.skylon}, Avalon ${counts.avalon}. Une famille peut être présente dans le registre sans être auto-recommandable si son tableau fabricant n’est pas exploitable pour ce calcul.</p>`;
+    const d=document.createElement('details');d.id='catalogAuditV21';d.className='manufacturer-reference-status';d.style.cssText='margin:.65rem 0;padding:.65rem .75rem;border:1px solid rgba(0,0,0,.12);border-radius:10px';
+    d.innerHTML=`<summary><strong>Catalogue complet audité — ${VERSION}</strong></summary><p style="margin:.55rem 0 0">Familles enregistrées : Easton ${counts.easton}, Victory ${counts.victory}, Skylon ${counts.skylon}, Avalon ${counts.avalon}. Avalon est évalué par son moteur fabricant dédié afin que ses correspondances validées ne soient pas supprimées par le filtre catalogue général.</p>`;
     const ref=document.getElementById('manufacturerReferenceV13');if(ref?.nextSibling)result.insertBefore(d,ref.nextSibling);else result.prepend(d);
   }
 
@@ -146,7 +155,7 @@
       const [a,e,b]=await Promise.all([fetch(DATA_URL,{cache:'no-store'}),fetch(EXTRA_URL,{cache:'no-store'}),fetch(TECH_URL,{cache:'no-store'})]);
       if(!a.ok||!e.ok||!b.ok)throw new Error(`HTTP catalog=${a.status} extra=${e.status} tech=${b.status}`);
       data=mergeCatalog(await a.json(),await e.json());tech=await b.json();refresh();let n=0;const t=setInterval(()=>{n++;refresh();if(patched||n>100)clearInterval(t);},100);
-    }catch(e){console.error('Audit catalogue v17 indisponible',e);}
+    }catch(e){console.error('Audit catalogue v21 indisponible',e);}
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
 })();
