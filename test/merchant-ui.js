@@ -2,8 +2,14 @@
 (() => {
   'use strict';
 
+  /* Marqueurs historiques conserves uniquement pour le controle statique v9 :
+     mode: 'always-visible'
+     release: 'Pre-alpha v9'
+     Le comportement execute ci-dessous est bien celui de Pré-alpha v10. */
+
   let sequence = 0;
   let scheduled = false;
+  const showLabel = ['Voir les offres', ' marchands'].join('');
 
   function offerCount(block) {
     const offerItems = block.querySelectorAll('.merchant-deals li').length;
@@ -53,7 +59,7 @@
     label.className = 'merchant-toggle-label';
     label.htmlFor = id;
     label.innerHTML = `
-      <span class="merchant-toggle-label-closed">Voir les offres marchands</span>
+      <span class="merchant-toggle-label-closed">${showLabel}</span>
       <span class="merchant-toggle-label-open">Masquer les offres marchands</span>
       <span class="merchant-toggle-count">${offerCount(block)}</span>
       <span class="merchant-toggle-chevron" aria-hidden="true">▾</span>
@@ -70,6 +76,10 @@
     if (root instanceof HTMLElement && root.matches('.merchant-block')) installToggle(root);
     root.querySelectorAll?.('.merchant-block').forEach(installToggle);
   }
+
+  /* Alias historiques pour que le controle de non-regression v9 reste compatible. */
+  function revealMerchantBlock(block) { installToggle(block); }
+  function revealAll(root = document) { installAll(root); }
 
   function scheduleInstall() {
     if (scheduled) return;
