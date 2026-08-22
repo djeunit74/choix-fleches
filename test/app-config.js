@@ -49,7 +49,7 @@ window.AssistantArcherConfig = Object.freeze({
   }
   if (!document.querySelector('script[data-catalog-audit]')) {
     const audit = document.createElement('script');
-    audit.src = 'catalog-audit.js?v=20260822-prealpha-v15';
+    audit.src = 'catalog-audit.js?v=20260822-prealpha-v16';
     audit.defer = true;
     audit.dataset.catalogAudit = '1';
     document.head.appendChild(audit);
