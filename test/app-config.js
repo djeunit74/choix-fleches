@@ -37,7 +37,7 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* Boot TEST des couches expert puis audit catalogue complet. */
+/* Boot TEST des couches expert, audit catalogue et Avalon courant. */
 (() => {
   if (typeof document === 'undefined') return;
   if (!document.querySelector('script[data-expert-model-ranking]')) {
@@ -53,5 +53,12 @@ window.AssistantArcherConfig = Object.freeze({
     audit.defer = true;
     audit.dataset.catalogAudit = '1';
     document.head.appendChild(audit);
+  }
+  if (!document.querySelector('script[data-avalon-addon]')) {
+    const avalon = document.createElement('script');
+    avalon.src = 'avalon-addon.js?v=20260822-prealpha-v18';
+    avalon.async = false;
+    avalon.dataset.avalonAddon = '1';
+    document.head.appendChild(avalon);
   }
 })();
