@@ -7,6 +7,7 @@ const extra=json('test/catalog-audit-v17-extra.json');
 const tech=json('test/manufacturer-reference-v17.json');
 const js=read('test/catalog-audit.js');
 const cfg=read('test/app-config.js');
+const expert=read('test/expert-model-ranking.js');
 const avalon=read('test/avalon-addon.js');
 const easton={...(data.brands?.easton?.models||{}),...(extra.brands?.easton?.models||{})};
 
@@ -23,19 +24,28 @@ assert(easton['a/c/g'].status==='discontinued','ACG doit rester discontinué');
 assert(easton['x10 protour'].recurve===false,'ProTour doit rester hors recurve');
 assert(data.brands.skylon.models.edge.recurve===false,'Edge doit rester hors recurve');
 assert(data.brands.skylon.models.novice.status==='auto','Novice doit etre injectable apres verification fabricant');
-
 assert(tech.models?.novice?.spines?.['600']?.gpi===7.09,'Table Novice fabricant absente/corrompue');
 assert(tech.models?.inspire?.spines?.['900']?.gpi===7.7,'Table Inspire fabricant absente/corrompue');
 assert(tech.models?.['xx75 jazz']?.spines?.['2016']?.gpi===10.6,'Table Jazz fabricant absente/corrompue');
 assert(!Object.values(tech.models||{}).some(m=>m?.brand==='Avalon'),'Aucune reference technique Avalon ne doit rester active');
 assert(!Object.keys(tech.sources||{}).some(k=>k.toLowerCase().includes('avalon')),'Aucune source Avalon ne doit rester active');
 
-assert(js.includes("const VERSION='Pré-alpha v22'"),'Version JS v22 absente');
+assert(js.includes("const VERSION='Pré-alpha v23'"),'Version audit JS v23 absente');
 assert(js.includes("!['easton','victory','skylon'].includes(rec.brand)"),'Audit actif doit etre limite a Easton/Victory/Skylon');
 assert(js.includes('removeAvalonFromRuntime'),'Garde-fou retrait Avalon absent');
 assert(!js.includes('AssistantArcherAvalon'),'Le moteur d audit ne doit plus appeler Avalon');
-assert(cfg.includes('catalog-audit.js?v=20260822-prealpha-v22'),'Boot audit v22 absent');
+assert(js.includes("option[value=\"competition\"]")||js.includes("option[value='competition']")||js.includes("option[value=\"competition\"]"),'Le nettoyage de l ancienne option competition doit rester present');
+
+assert(expert.includes("const VERSION='Pré-alpha v24'"),'Classement expert v24 absent');
+assert(expert.includes('Performance / compétition'),'Categorie fusionnee performance/competition absente');
+assert(expert.includes('Performance maximale / tuning expert'),'Categorie tuning expert absente');
+assert(expert.includes('ELITE_OUTDOOR'),'Shortlist expert outdoor absente');
+assert(expert.includes('ELITE_INDOOR'),'Shortlist expert indoor absente');
+assert(expert.includes("if(c.objective==='elite')"),'Filtrage tuning expert absent');
+assert(expert.includes('if(specialized.length)'),'Fallback expert sans modele specialise absent');
+assert(cfg.includes('expert-model-ranking.js?v=20260822-prealpha-v24'),'Boot expert v24 absent');
+assert(cfg.includes('catalog-audit.js?v=20260822-prealpha-v23'),'Boot audit v23 absent');
 assert(!cfg.includes('avalon-addon.js'),'Avalon ne doit plus etre charge depuis app-config');
 assert(!/Tyro|Classic Carbon|Hybrid Carbon|Carbon Composite/.test(avalon),'Les donnees Avalon doivent etre effacees de l add-on');
 
-console.log('Assistant Archer: Easton/Victory/Skylon Pré-alpha v22 - Avalon retiré');
+console.log('Assistant Archer: Pré-alpha v24 - shortlist tuning expert différenciée');
