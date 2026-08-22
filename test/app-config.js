@@ -144,7 +144,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC. */
+/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC -> repere FOC graphique. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -159,4 +159,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('catalog-audit.js?v=20260822-prealpha-v25', 'catalog-audit');
   add('vane-library-v25.js?v=20260822-prealpha-v28', 'vane-library-v25');
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
+  add('foc-zone-v29.js?v=20260822-prealpha-v29', 'foc-zone-v29');
 })();
