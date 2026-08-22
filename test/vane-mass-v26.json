@@ -1,0 +1,89 @@
+{
+  "version": "2026-08-22-prealpha-v26",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "twoIndependentSourcesForEstimate": true,
+    "singleSourceEstimateNotUsedForFoc": true,
+    "noInventedWeight": true
+  },
+  "masses": [
+    {
+      "id": "gaspro-olympic-efficient-175",
+      "weight": "0,5 gr",
+      "weightGrains": 0.5,
+      "weightConfidence": "élevée",
+      "weightBasis": "2 sources concordantes",
+      "weightSources": [
+        "https://www.disport.it/en/product/alet79087/gas-pro-aletta-vanes-soft-olympic-1-75",
+        "https://www.bogensport-akademie.de/gas-pro/spin-vane-1-75-soft-plus-olympic-black-rh"
+      ],
+      "focUsable": true
+    },
+    {
+      "id": "gaspro-recurve-hp-175",
+      "weight": "0,7 gr",
+      "weightGrains": 0.7,
+      "weightConfidence": "élevée",
+      "weightBasis": "2 détaillants indépendants concordants",
+      "weightSources": [
+        "https://jvd-archery.com/webshop/arrows-bolts/arrow-bolts-components/vanes/gas-pro-spin-vane-recurve-efficient-hp-1-75",
+        "https://butikk.pilogbue.com/butikk/piler/nocks-vanes-wraps/spin-vanes/gas-pro-spin-vane-recurve-efficient-hp-1-75-50pk/"
+      ],
+      "focUsable": true
+    },
+    {
+      "id": "gaspro-x-shield-2",
+      "weight": "0,9 gr",
+      "weightGrains": 0.9,
+      "weightConfidence": "élevée",
+      "weightBasis": "distributeur + détaillants concordants",
+      "weightSources": [
+        "https://www.disport.it/en/product/alet79089/gas-pro-vanes-x-shield-2-soft",
+        "https://archery.ixpesports.nl/contents/en-uk/p57702.html",
+        "https://www.clickersarchery.co.uk/products/gas-pro-vanes-x-shield-2/"
+      ],
+      "focUsable": true
+    },
+    {
+      "id": "gaspro-field-efficient-2",
+      "weight": null,
+      "weightGrains": null,
+      "weightConfidence": "élevée",
+      "weightBasis": "masse dépendante de la rigidité",
+      "weightVariants": {
+        "Medium": 1.0,
+        "Hard": 1.2
+      },
+      "weightSources": [
+        "https://archery.ixpesports.nl/en-uk/contents/en-uk/p57691.html"
+      ],
+      "focUsable": false,
+      "note": "Le calcul FOC reste bloqué tant que l'utilisateur n'a pas choisi Medium ou Hard."
+    },
+    {
+      "id": "spinwing-elite-175",
+      "weight": "≈0,8 gr (mesure détaillant)",
+      "weightGrains": null,
+      "weightEstimateGrains": 0.8,
+      "weightConfidence": "faible",
+      "weightBasis": "1 mesure détaillant seulement",
+      "weightSources": [
+        "https://bogensportshop.eu/en/arrows/vanes-feathers/spin-vanes/rangeomatic-spin-wing-elite-1-75.html"
+      ],
+      "focUsable": false
+    },
+    {
+      "id": "elivanes-p3",
+      "weight": "≈0,62 gr (0,04 g détaillant)",
+      "weightGrains": null,
+      "weightEstimateGrains": 0.617,
+      "weightConfidence": "faible",
+      "weightBasis": "1 donnée détaillant seulement",
+      "weightSources": [
+        "https://centroae.cl/plumas-eli-vanes-p3-bolsa/"
+      ],
+      "focUsable": false
+    }
+  ]
+}
