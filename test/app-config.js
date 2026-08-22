@@ -37,8 +37,7 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* Boot TEST séquentiel : expert -> audit catalogue -> Avalon.
-   async=false sur les scripts dynamiques garantit l'ordre d'exécution. */
+/* Boot TEST séquentiel : expert -> audit catalogue -> Avalon. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -50,6 +49,6 @@ window.AssistantArcherConfig = Object.freeze({
     document.head.appendChild(script);
   };
   add('expert-model-ranking.js?v=20260822-prealpha-v14', 'expert-model-ranking');
-  add('catalog-audit.js?v=20260822-prealpha-v17', 'catalog-audit');
+  add('catalog-audit.js?v=20260822-prealpha-v21', 'catalog-audit');
   add('avalon-addon.js?v=20260822-prealpha-v20', 'avalon-addon');
 })();
