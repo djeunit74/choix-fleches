@@ -36,7 +36,7 @@ assert(js.includes('Photo fabricant'),'Mention photo fabricant absente');
 assert(js.includes('Silhouette de repère'),'Fallback miniature sécurisé absent');
 assert(js.includes('vane-context-tags'),'Etiquettes discipline/contexte absentes');
 assert(massJs.includes("const VERSION='Pré-alpha v28'"),'Masses empennages v28 non alignées');
-assert(mass.policy?.includeMountingMassForFoc===true,'Masse de fixation non incluse dans le FOC');
+assert(mass.policy?.fletchingFixationIncludedForFoc===true,'Masse de fixation non incluse dans le FOC');
 
 assert(rear.version==='2026-08-22-prealpha-v28','Audit arrière v28 absent');
 assert(rear.policy?.manufacturerFirst===true,'Priorité fabricant arrière absente');
