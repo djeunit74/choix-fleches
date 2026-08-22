@@ -1,9 +1,9 @@
-/* Assistant Archer TEST - classement expert des modèles, Pré-alpha v24.
+/* Assistant Archer TEST - classement expert des modèles, Pré-alpha v30.
    Les faits fabricant restent dans manufacturer-reference*.json.
    Ici : compatibilité physique puis interprétation explicable entre modèles compatibles. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v24';
+  const VERSION='Pré-alpha v30';
   let patched=false, observer=null;
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
   const aliases=[
@@ -21,7 +21,7 @@
     const form=document.getElementById('spine-form'); if(!form||document.getElementById('expertObjective'))return;
     const discipline=document.getElementById('disciplineWrap'),label=document.createElement('label');
     label.id='expertObjectiveWrap';
-    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression / simplicité</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Le spine reste celui du fabricant. Le mode expert réduit la sélection aux modèles réellement spécialisés lorsque les sources fabricant le permettent.</small>`;
+    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression / simplicité</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Le spine reste celui du fabricant. Le mode progression resserre la liste vers les tubes les plus simples/cohérents ; le mode expert vers les modèles réellement spécialisés.</small>`;
     if(discipline?.nextSibling)form.insertBefore(label,discipline.nextSibling);else form.appendChild(label);
   }
 
@@ -67,9 +67,18 @@
   function skylonRule(key,c){const r=SKYLON[key];if(!r)return{score:0,why:''};const indoor=c.environment==='indoor',field=c.discipline==='field';return{score:ow(c,r[0])+(indoor?r[3]:r[1])+(field?r[2]:0),why:r[4]};}
   const ruleFor=(brand,key,c)=>brand==='easton'?eastonRule(key,c):brand==='victory'?victoryRule(key,c):brand==='skylon'?skylonRule(key,c):{score:0,why:''};
 
-  /* Cette liste n'est pas un nouveau tableau de spine. Elle sert uniquement à
-     réduire la shortlist en mode expert, parmi des modèles déjà compatibles.
-     Si aucun modèle spécialisé n'est compatible, on conserve la sélection normale. */
+  /* Ces listes ne sont pas des tableaux de spine. Elles réduisent uniquement
+     la shortlist parmi des modèles déjà compatibles avec le spine fabricant. */
+  const PROGRESSION_OUTDOOR={
+    easton:new Set(['vector','avance']),
+    victory:new Set(['vap']),
+    skylon:new Set(['radius','brixxon','performa'])
+  };
+  const PROGRESSION_INDOOR={
+    easton:new Set(['xx75 platinum plus','vector']),
+    victory:new Set(['vap']),
+    skylon:new Set(['radius','brixxon'])
+  };
   const ELITE_OUTDOOR={
     easton:new Set(['x10','x10 parallel pro 3.2 mm','x10 parallel pro 4 mm']),
     victory:new Set(['vxt']),
@@ -80,6 +89,7 @@
     victory:new Set([]),
     skylon:new Set(['empros','bruxx'])
   };
+  function progressionSet(brand,c){return (c.environment==='indoor'?PROGRESSION_INDOOR:PROGRESSION_OUTDOOR)[brand]||new Set();}
   function eliteSet(brand,c){return (c.environment==='indoor'?ELITE_INDOOR:ELITE_OUTDOOR)[brand]||new Set();}
 
   function manufacturerLengthCompatible(entry,input){
@@ -100,7 +110,17 @@
     }
     ranked.sort((a,b)=>b.expertRankScore-a.expertRankScore);
 
-    if(c.objective==='elite'){
+    if(c.objective==='progression'){
+      const allowed=progressionSet(rec.brand,c);
+      const simple=ranked.filter(entry=>allowed.has(entry.expertModelKey));
+      if(simple.length){
+        rec.models=simple;
+        rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Mode progression ${VERSION} : shortlist resserrée aux modèles simples/intermédiaires documentés par le fabricant parmi ceux déjà compatibles.`];
+      }else{
+        rec.models=ranked.slice(0,Math.min(3,ranked.length));
+        rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Mode progression ${VERSION} : aucun modèle dédié progression n'est compatible ici ; l'app limite la liste aux 3 meilleurs candidats techniques plutôt que d'afficher tout le catalogue.`];
+      }
+    }else if(c.objective==='elite'){
       const allowed=eliteSet(rec.brand,c);
       const specialized=ranked.filter(entry=>allowed.has(entry.expertModelKey));
       if(specialized.length){
