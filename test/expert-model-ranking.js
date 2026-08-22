@@ -1,9 +1,9 @@
-/* Assistant Archer TEST - classement expert des modèles, Pré-alpha v23.
+/* Assistant Archer TEST - classement expert des modèles, Pré-alpha v24.
    Les faits fabricant restent dans manufacturer-reference*.json.
    Ici : compatibilité physique puis interprétation explicable entre modèles compatibles. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v23';
+  const VERSION='Pré-alpha v24';
   let patched=false, observer=null;
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
   const aliases=[
@@ -19,9 +19,9 @@
 
   function installObjectiveInput(){
     const form=document.getElementById('spine-form'); if(!form||document.getElementById('expertObjective'))return;
-    const discipline=document.getElementById('disciplineWrap'), label=document.createElement('label');
+    const discipline=document.getElementById('disciplineWrap'),label=document.createElement('label');
     label.id='expertObjectiveWrap';
-    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression / simplicité</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Ce choix ne change pas le spine fabricant. Il sert uniquement à départager plusieurs modèles techniquement compatibles.</small>`;
+    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression / simplicité</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Le spine reste celui du fabricant. Le mode expert réduit la sélection aux modèles réellement spécialisés lorsque les sources fabricant le permettent.</small>`;
     if(discipline?.nextSibling)form.insertBefore(label,discipline.nextSibling);else form.appendChild(label);
   }
 
@@ -67,15 +67,30 @@
   function skylonRule(key,c){const r=SKYLON[key];if(!r)return{score:0,why:''};const indoor=c.environment==='indoor',field=c.discipline==='field';return{score:ow(c,r[0])+(indoor?r[3]:r[1])+(field?r[2]:0),why:r[4]};}
   const ruleFor=(brand,key,c)=>brand==='easton'?eastonRule(key,c):brand==='victory'?victoryRule(key,c):brand==='skylon'?skylonRule(key,c):{score:0,why:''};
 
+  /* Cette liste n'est pas un nouveau tableau de spine. Elle sert uniquement à
+     réduire la shortlist en mode expert, parmi des modèles déjà compatibles.
+     Si aucun modèle spécialisé n'est compatible, on conserve la sélection normale. */
+  const ELITE_OUTDOOR={
+    easton:new Set(['x10','x10 parallel pro 3.2 mm','x10 parallel pro 4 mm']),
+    victory:new Set(['vxt']),
+    skylon:new Set(['preminens','paragon'])
+  };
+  const ELITE_INDOOR={
+    easton:new Set(['rx7','x7','x23']),
+    victory:new Set([]),
+    skylon:new Set(['empros','bruxx'])
+  };
+  function eliteSet(brand,c){return (c.environment==='indoor'?ELITE_INDOOR:ELITE_OUTDOOR)[brand]||new Set();}
+
   function manufacturerLengthCompatible(entry,input){
-    const stock=Number(entry?.manufacturerSpec?.lengthIn); const requested=Number(input?.arrowLength);
+    const stock=Number(entry?.manufacturerSpec?.lengthIn),requested=Number(input?.arrowLength);
     if(!Number.isFinite(stock)||!Number.isFinite(requested))return true;
     return stock+1e-9>=requested;
   }
 
   function rankRecommendation(rec,input){
     if(!rec||!Array.isArray(rec.models)||!['easton','victory','skylon'].includes(rec.brand))return rec;
-    const c=ctx(input), ranked=[]; let rejectedLength=0;
+    const c=ctx(input),ranked=[];let rejectedLength=0;
     for(const entry of rec.models){
       const key=modelKey(entry.model);
       if(rec.brand==='skylon'&&key==='edge'&&c.bowType==='recurve')continue;
@@ -83,8 +98,22 @@
       const expert=ruleFor(rec.brand,key,c),base=Number.isFinite(Number(entry.score))?Number(entry.score):0;
       ranked.push({...entry,expertRankScore:expert.score*100+base,expertWhy:expert.why,expertModelKey:key});
     }
-    ranked.sort((a,b)=>b.expertRankScore-a.expertRankScore); rec.models=ranked;
-    rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Interprétation app ${VERSION} : classement entre modèles compatibles selon discipline, environnement et priorité. Pour « Performance / compétition », les anciens niveaux Performance et Compétition sont fusionnés. Le spine fabricant n’est pas modifié.`];
+    ranked.sort((a,b)=>b.expertRankScore-a.expertRankScore);
+
+    if(c.objective==='elite'){
+      const allowed=eliteSet(rec.brand,c);
+      const specialized=ranked.filter(entry=>allowed.has(entry.expertModelKey));
+      if(specialized.length){
+        rec.models=specialized;
+        rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Mode tuning expert ${VERSION} : shortlist réduite aux modèles spécialisés/haut niveau documentés par le fabricant parmi ceux déjà compatibles.`];
+      }else{
+        rec.models=ranked;
+        rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Mode tuning expert ${VERSION} : aucun modèle spécialisé documenté n'est compatible ici ; l'app conserve la sélection technique normale plutôt que forcer un modèle.`];
+      }
+    }else{
+      rec.models=ranked;
+      rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Interprétation app ${VERSION} : classement entre modèles compatibles selon discipline, environnement et priorité. Le spine fabricant n’est pas modifié.`];
+    }
     if(rejectedLength)rec.confidenceReasons.push(`${rejectedLength} modèle(s) écarté(s) car la longueur stock fabricant est inférieure à la longueur de flèche demandée.`);
     return rec;
   }
