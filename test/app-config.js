@@ -20,18 +20,10 @@ window.AssistantArcherConfig = Object.freeze({
     if (material) {
       material.value = 'all';
       const label = material.closest('label');
-      if (label) {
-        label.hidden = true;
-        label.style.display = 'none';
-      }
+      if (label) { label.hidden = true; label.style.display = 'none'; }
     }
-
     const guidance = document.getElementById('materialGuidance');
-    if (guidance) {
-      guidance.hidden = true;
-      guidance.style.display = 'none';
-    }
-
+    if (guidance) { guidance.hidden = true; guidance.style.display = 'none'; }
     const brand = document.getElementById('preferredBrand');
     if (brand) {
       const all = brand.querySelector('option[value="all"]');
@@ -41,21 +33,25 @@ window.AssistantArcherConfig = Object.freeze({
       if (brand.value === 'carbon') brand.value = 'all';
     }
   };
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', simplifyArrowChoiceForm, { once: true });
-  } else {
-    simplifyArrowChoiceForm();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', simplifyArrowChoiceForm, { once: true });
+  else simplifyArrowChoiceForm();
 })();
 
-/* Boot TEST de la couche de classement expert. Elle attend elle-même que la
-   référence fabricant soit chargée avant de modifier l'ordre des modèles. */
+/* Boot TEST des couches expert puis audit catalogue. */
 (() => {
-  if (typeof document === 'undefined' || document.querySelector('script[data-expert-model-ranking]')) return;
-  const script = document.createElement('script');
-  script.src = 'expert-model-ranking.js?v=20260822-prealpha-v14';
-  script.defer = true;
-  script.dataset.expertModelRanking = '1';
-  document.head.appendChild(script);
+  if (typeof document === 'undefined') return;
+  if (!document.querySelector('script[data-expert-model-ranking]')) {
+    const script = document.createElement('script');
+    script.src = 'expert-model-ranking.js?v=20260822-prealpha-v14';
+    script.defer = true;
+    script.dataset.expertModelRanking = '1';
+    document.head.appendChild(script);
+  }
+  if (!document.querySelector('script[data-catalog-audit]')) {
+    const audit = document.createElement('script');
+    audit.src = 'catalog-audit.js?v=20260822-prealpha-v15';
+    audit.defer = true;
+    audit.dataset.catalogAudit = '1';
+    document.head.appendChild(audit);
+  }
 })();
