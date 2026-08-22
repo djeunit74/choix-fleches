@@ -18,8 +18,9 @@ for (const brand of ['skylon','easton','victory','carbon']) assert(index.include
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
 assert(index.includes('20260821-v62'), 'Cache-buster technique v62 absent du shell TEST');
-assert(index.includes('20260821-prealpha-v9'), 'Cache-buster marchand Pré-alpha v9 absent du shell TEST');
-assert(!index.includes('20260821-prealpha-v8'), 'Ancien cache-buster marchand Pré-alpha v8 encore present');
+assert(index.includes('20260821-prealpha-v11'), 'Cache-buster marchand Pré-alpha v11 absent du shell TEST');
+assert(index.includes('Version : Pré-alpha v11'), 'Version visible Pré-alpha v11 absente du shell TEST');
+assert(!index.includes('20260821-prealpha-v8') && !index.includes('20260821-prealpha-v9') && !index.includes('20260821-prealpha-v10'), 'Ancien cache-buster marchand encore present dans le shell TEST');
 assert(!index.includes('20260821-v61'), 'Ancien cache-buster v61 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
@@ -46,16 +47,22 @@ assert(!enhancements.includes('uniqueRecommendationModels(entry.rec?.models || [
 const merchantUi = read('test/merchant-ui.js');
 const uiPolish = read('test/ui-polish.css');
 has(merchantUi, [
-  'revealMerchantBlock','revealAll','MutationObserver',
-  "mode: 'always-visible'","release: 'Pre-alpha v9'"
-], 'Affichage marchand permanent Pré-alpha v9 incomplet');
-assert(!merchantUi.includes("document.createElement('details')"), 'Le menu marchand ne doit plus recreer d accordéon');
-assert(!merchantUi.includes('Voir les offres marchands'), 'Le bouton accordéon marchand ne doit plus etre genere');
+  'MutationObserver','panel.dataset.merchantExpanded','merchantToggleBound',
+  "mode: 'panel-attribute-toggle'","release: 'Pre-alpha v11'",
+  "heading.setAttribute('role', 'button')","heading.setAttribute('tabindex', '0')"
+], 'Controle marchand Pré-alpha v11 incomplet');
+assert(!merchantUi.includes('revealMerchantBlock') && !merchantUi.includes('revealAll'), 'Ancien affichage marchand permanent encore present');
+assert(!merchantUi.includes("mode: 'always-visible'") && !merchantUi.includes("release: 'Pre-alpha v9'"), 'Marqueur historique v9 encore present');
+assert(!merchantUi.includes("document.createElement('details')"), 'Le menu marchand ne doit plus recreer d accordeon');
+assert(!merchantUi.includes('Voir les offres marchands'), 'Le bouton accordeon marchand ne doit plus etre genere');
 has(uiPolish, [
-  '.arrow-model-select','background:var(--accent-2)!important','.merchant-block > .merchant-intro',
-  '.merchant-block > .merchant-shops','display:block!important'
-], 'Affichage visuel marchand permanent Pré-alpha v9 incomplet');
-assert(!uiPolish.includes('.merchant-disclosure'), 'Ancien style d accordéon marchand encore present');
+  '.arrow-model-select','background:var(--accent-2)!important',
+  '.merchant-panel[data-merchant-expanded="false"] > .merchant-block',
+  '.merchant-panel[data-merchant-expanded="true"] > .merchant-block',
+  "content:'Afficher les offres  ▾'","content:'Masquer les offres  ▴'"
+], 'Affichage/repli marchand Pré-alpha v11 incomplet');
+assert(!uiPolish.includes('.merchant-block > .merchant-intro') && !uiPolish.includes('.merchant-block > .merchant-shops'), 'Ancien forçage permanent des offres encore present');
+assert(!uiPolish.includes('.merchant-disclosure'), 'Ancien style d accordeon marchand encore present');
 assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.test(uiPolish), 'Le bouton tube ne doit pas redevenir transparent');
 
 const focMeasure = read('test/foc-measure.js');
@@ -240,4 +247,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: controles statiques, FOC, masses arriere et offres marchands toujours visibles Pré-alpha v9 OK');
+console.log('Assistant Archer refactor: controles statiques, FOC, masses arriere et panneau marchand Pré-alpha v11 OK');
