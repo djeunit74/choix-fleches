@@ -1,7 +1,7 @@
-/* Assistant Archer TEST - masse d'empennage complete et confiance FOC, Pré-alpha v27. */
+/* Assistant Archer TEST - masse d'empennage complete et confiance FOC, Pré-alpha v28. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v27';
+  const VERSION='Pré-alpha v28';
   const DATA_URL='./vane-mass-v27.json?v=20260822-prealpha-v27';
   let masses=new Map();
   const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
@@ -44,7 +44,7 @@
       const data=await response.json();masses=new Map(flatten(data).map(x=>[x.id,x]));annotate();
       let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;annotate();});}).observe(document.body,{childList:true,subtree:true});
       window.AssistantArcherVaneMass=Object.freeze({version:VERSION,data});
-    }catch(error){console.warn('[Assistant Archer] masses empennages v27 indisponibles',error);}
+    }catch(error){console.warn('[Assistant Archer] masses empennages v28 indisponibles',error);}
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
 })();
