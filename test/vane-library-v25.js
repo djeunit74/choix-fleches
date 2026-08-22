@@ -9,6 +9,27 @@
   const norm = value => String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
   const esc = value => String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 
+  function installStyles() {
+    if (document.getElementById('vaneLibraryV25Styles')) return;
+    const style = document.createElement('style');
+    style.id = 'vaneLibraryV25Styles';
+    style.textContent = `
+      .vane-brand-group{display:grid;gap:.65rem;margin:.8rem 0 1rem;padding:.7rem;border:1px solid color-mix(in srgb,var(--accent-2) 18%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--accent-2) 3%,white)}
+      .vane-brand-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;padding:.15rem .15rem .2rem;border-bottom:1px solid color-mix(in srgb,var(--accent-2) 18%,var(--line))}
+      .vane-brand-head h4{margin:0;color:var(--accent-2);font-size:1.02rem}
+      .vane-brand-head p{margin:.18rem 0 0;font-size:.78rem;opacity:.78}
+      .vane-brand-head>span{font-size:.72rem;font-weight:800;white-space:nowrap;padding:.24rem .45rem;border-radius:999px;background:color-mix(in srgb,var(--accent-2) 10%,white);color:var(--accent-2)}
+      .vane-brand-group>.arrow-component-card{margin:0}
+      .vane-product-media{display:grid;grid-template-columns:minmax(92px,150px) 1fr;align-items:center;gap:.65rem;margin:.45rem 0 .55rem;padding:.4rem;border:1px solid color-mix(in srgb,var(--line) 76%,transparent);border-radius:10px;background:#fff}
+      .vane-product-media img{display:block;width:100%;max-height:92px;object-fit:contain;border-radius:7px;background:#fff}
+      .vane-product-media figcaption{margin:0;font-size:.72rem;opacity:.66}
+      .vane-context-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin:.35rem 0 .5rem}
+      .vane-context-tags span{display:inline-flex;padding:.2rem .42rem;border-radius:999px;background:color-mix(in srgb,var(--accent-2) 8%,white);border:1px solid color-mix(in srgb,var(--accent-2) 18%,var(--line));font-size:.7rem;font-weight:750}
+      @media(max-width:560px){.vane-brand-group{padding:.55rem}.vane-product-media{grid-template-columns:92px 1fr}.vane-product-media img{max-height:78px}}
+    `;
+    document.head.appendChild(style);
+  }
+
   async function loadCatalog() {
     if (catalog) return catalog;
     const response = await fetch(DATA_URL, { cache: 'no-store' });
@@ -110,6 +131,7 @@
 
   async function install() {
     try {
+      installStyles();
       await loadCatalog();
       refresh();
       let queued = false;
