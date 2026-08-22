@@ -2,12 +2,6 @@
 (() => {
   'use strict';
 
-  /* Marqueurs historiques temporaires pour le controle statique existant :
-     revealMerchantBlock revealAll
-     mode: 'always-visible'
-     release: 'Pre-alpha v9'
-     Le comportement execute est Pré-alpha v11. */
-
   let scheduled = false;
 
   function setExpanded(panel, expanded) {
