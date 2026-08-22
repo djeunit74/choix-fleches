@@ -34,17 +34,18 @@ assert(tech.models?.['avalon tyro carbon shafts']?.stockLengthIn===32,'Longueur 
 assert(js.includes("const VERSION='Pré-alpha v17'"),'Version JS v17 absente');
 assert(js.includes("['easton','victory','skylon','avalon']"),'Audit Avalon absent');
 
-assert(avalon.includes("const VERSION='Pré-alpha v19'"),'Avalon v19 absent');
-for(const m of ['Avalon Tyro Carbon Arrows','Avalon Classic Carbon Arrows','Avalon Hybrid Carbon Arrows','Avalon Tyro Carbon Shafts']) assert(avalon.includes(m),`Famille Avalon v19 absente: ${m}`);
+assert(avalon.includes("const VERSION='Pré-alpha v20'"),'Avalon v20 absent');
+for(const m of ['Avalon Tyro Carbon Arrows','Avalon Classic Carbon Arrows','Avalon Hybrid Carbon Arrows','Avalon Tyro Carbon Shafts']) assert(avalon.includes(m),`Famille Avalon v20 absente: ${m}`);
 assert(avalon.includes('function buildAvalonRecommendation'),'Moteur Avalon explicite absent');
 assert(avalon.includes('window.AssistantArcherAvalon'),'API runtime Avalon absente');
 assert(avalon.includes('current-spine'),'Distinction correspondance Avalon par spine absente');
 assert(avalon.includes('lengthCompatible'),'Garde-fou longueur Avalon absent');
-assert(avalon.includes('setTimeout(install,2200)'),'Retry Avalon runtime absent');
+assert(avalon.includes('meta:modelMeta(c.family,c.spine)'),'Metadonnees Avalon locales non attachees aux candidats');
+assert(!avalon.includes('rankModels(candidates.map'),'Avalon ne doit plus dependre du catalogue global pour afficher ses candidats');
 assert(cfg.includes('script.async = false'),'Ordre de chargement runtime non verrouille');
 const expertPos=cfg.indexOf('expert-model-ranking.js');
 const auditPos=cfg.indexOf('catalog-audit.js');
-const avalonPos=cfg.indexOf('avalon-addon.js?v=20260822-prealpha-v19');
+const avalonPos=cfg.indexOf('avalon-addon.js?v=20260822-prealpha-v20');
 assert(expertPos>=0&&auditPos>expertPos&&avalonPos>auditPos,'Ordre expert -> audit -> Avalon incorrect');
 
-console.log('Assistant Archer: catalogue complet + Avalon Pré-alpha v19 contrôlés OK');
+console.log('Assistant Archer: catalogue complet + Avalon Pré-alpha v20 contrôlés OK');
