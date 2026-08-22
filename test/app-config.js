@@ -11,6 +11,44 @@ window.AssistantArcherConfig = Object.freeze({
   })
 });
 
+/* UX TEST : le materiau est une consequence de la recommandation, pas une
+   question obligatoire. Le moteur conserve "all" en interne pour pouvoir
+   proposer carbone, aluminium ou aluminium/carbone selon les donnees fabricant. */
+(() => {
+  const simplifyArrowChoiceForm = () => {
+    const material = document.getElementById('shaftMaterial');
+    if (material) {
+      material.value = 'all';
+      const label = material.closest('label');
+      if (label) {
+        label.hidden = true;
+        label.style.display = 'none';
+      }
+    }
+
+    const guidance = document.getElementById('materialGuidance');
+    if (guidance) {
+      guidance.hidden = true;
+      guidance.style.display = 'none';
+    }
+
+    const brand = document.getElementById('preferredBrand');
+    if (brand) {
+      const all = brand.querySelector('option[value="all"]');
+      if (all) all.textContent = 'Toutes les marques';
+      const carbonExpress = brand.querySelector('option[value="carbon"]');
+      if (carbonExpress) carbonExpress.remove();
+      if (brand.value === 'carbon') brand.value = 'all';
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', simplifyArrowChoiceForm, { once: true });
+  } else {
+    simplifyArrowChoiceForm();
+  }
+})();
+
 /* Boot TEST de la couche de classement expert. Elle attend elle-même que la
    référence fabricant soit chargée avant de modifier l'ordre des modèles. */
 (() => {
