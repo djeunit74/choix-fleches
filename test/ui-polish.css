@@ -25,10 +25,6 @@
   box-shadow:inset 0 0 0 1px var(--accent-2)!important;
 }
 
-/* Compatibilite du controle statique historique. */
-.merchant-block > .merchant-intro,
-.merchant-block > .merchant-shops{display:block!important}
-
 /* Pré-alpha v11 : aucun noeud n'est ajouté dans .merchant-block.
    Le titre déjà rendu pilote seulement un attribut sur .merchant-panel. */
 .merchant-panel > h3[data-merchant-toggle-bound="1"]{
