@@ -1,9 +1,9 @@
-/* Assistant Archer TEST - classement expert des modèles, Pré-alpha v14.
+/* Assistant Archer TEST - classement expert des modèles, Pré-alpha v23.
    Les faits fabricant restent dans manufacturer-reference*.json.
    Ici : compatibilité physique puis interprétation explicable entre modèles compatibles. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v14';
+  const VERSION='Pré-alpha v23';
   let patched=false, observer=null;
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
   const aliases=[
@@ -21,12 +21,18 @@
     const form=document.getElementById('spine-form'); if(!form||document.getElementById('expertObjective'))return;
     const discipline=document.getElementById('disciplineWrap'), label=document.createElement('label');
     label.id='expertObjectiveWrap';
-    label.innerHTML=`Objectif de pratique<select id="expertObjective"><option value="progression">Progression / club</option><option value="performance" selected>Performance</option><option value="competition">Compétition</option><option value="elite">Compétition haut niveau</option></select><small class="field-hint">Ce choix ne change pas le spine fabricant. Il sert uniquement à départager plusieurs modèles techniquement compatibles.</small>`;
+    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression / simplicité</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Ce choix ne change pas le spine fabricant. Il sert uniquement à départager plusieurs modèles techniquement compatibles.</small>`;
     if(discipline?.nextSibling)form.insertBefore(label,discipline.nextSibling);else form.appendChild(label);
   }
 
   const ctx=input=>({objective:objective(),discipline:input?.discipline||document.getElementById('discipline')?.value||'target',environment:input?.shootingEnvironment||'outdoor',bowType:input?.bowType||'recurve'});
-  const ow=(c,t)=>Number(t?.[c.objective]||0);
+  const ow=(c,t)=>{
+    if(c.objective==='performance'){
+      const a=Number(t?.performance||0),b=Number(t?.competition||a);
+      return (a+b)/2;
+    }
+    return Number(t?.[c.objective]||0);
+  };
 
   const EASTON={
     'x10 parallel pro 3.2 mm':[{progression:-6,performance:7,competition:13,elite:18},9,5,-8,'Micro-diamètre 3,2 mm aluminium/carbone, conçu par Easton pour la compétition extérieure de très haut niveau, faible dérive et réglage parallèle.'],
@@ -75,12 +81,10 @@
       if(rec.brand==='skylon'&&key==='edge'&&c.bowType==='recurve')continue;
       if(!manufacturerLengthCompatible(entry,input)){rejectedLength++;continue;}
       const expert=ruleFor(rec.brand,key,c),base=Number.isFinite(Number(entry.score))?Number(entry.score):0;
-      /* L'interprétation fabricant/objectifs prime sur l'ancien score heuristique, mais ne peut agir
-         que sur des modèles déjà déclarés techniquement compatibles par le moteur de spine. */
       ranked.push({...entry,expertRankScore:expert.score*100+base,expertWhy:expert.why,expertModelKey:key});
     }
     ranked.sort((a,b)=>b.expertRankScore-a.expertRankScore); rec.models=ranked;
-    rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Interprétation app ${VERSION} : classement entre modèles compatibles selon discipline, environnement et objectif. Le spine fabricant n’est pas modifié.`];
+    rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Interprétation app ${VERSION} : classement entre modèles compatibles selon discipline, environnement et priorité. Pour « Performance / compétition », les anciens niveaux Performance et Compétition sont fusionnés. Le spine fabricant n’est pas modifié.`];
     if(rejectedLength)rec.confidenceReasons.push(`${rejectedLength} modèle(s) écarté(s) car la longueur stock fabricant est inférieure à la longueur de flèche demandée.`);
     return rec;
   }
