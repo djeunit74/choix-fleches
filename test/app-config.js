@@ -39,6 +39,16 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
+/* Cache-buster TEST pour la finition visuelle v24, sans toucher au HTML PUBLIC. */
+(() => {
+  const refreshUiPolish = () => {
+    const link = [...document.querySelectorAll('link[rel="stylesheet"]')].find(el => /ui-polish\.css/i.test(el.getAttribute('href') || ''));
+    if (link) link.href = 'ui-polish.css?v=20260822-prealpha-v24';
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refreshUiPolish, { once: true });
+  else refreshUiPolish();
+})();
+
 /* Boot TEST actif : expert -> audit catalogue. */
 (() => {
   if (typeof document === 'undefined') return;
@@ -51,5 +61,5 @@ window.AssistantArcherConfig = Object.freeze({
     document.head.appendChild(script);
   };
   add('expert-model-ranking.js?v=20260822-prealpha-v24', 'expert-model-ranking');
-  add('catalog-audit.js?v=20260822-prealpha-v23', 'catalog-audit');
+  add('catalog-audit.js?v=20260822-prealpha-v24', 'catalog-audit');
 })();
