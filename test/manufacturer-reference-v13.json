@@ -1,0 +1,86 @@
+{
+  "version": "2026-08-22-prealpha-v13",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "unknownDataMustRemainUnknown": true,
+    "carbonExpressEnabled": false,
+    "notes": "Complément fabricant vérifié. Easton/Skylon utilisent des tailles réellement fabriquées par modèle. Victory conserve séparément les données de gamme, grades et règles de coupe publiées."
+  },
+  "sources": {
+    "eastonAce": "https://eastonarchery.com/arrows_/a-c-e/",
+    "eastonParallel4": "https://eastonarchery.com/arrows_/x10-parallel-pro/",
+    "eastonParallel32": "https://eastonarchery.com/arrows_/x10_3-2_mm_parallel_pro/",
+    "eastonX7": "https://eastonarchery.com/arrows_/x7-eclipse/",
+    "eastonX23": "https://eastonarchery.com/arrows_/legendary-x23/",
+    "eastonRx7": "https://eastonarchery.com/arrows_/rx7-the-ultimate-indoor-recurve-arrow-shaft/",
+    "eastonXx75": "https://eastonarchery.com/arrows_/xx75-platinum-plus/",
+    "victoryVap": "https://victoryarchery.com/arrows-target/vap/",
+    "victoryVxt": "https://victoryarchery.com/arrows-target/vxt/",
+    "skylonPrecium": "https://skylonarchery.com/arrows/id-3-2/precium",
+    "skylonEdge": "https://www.skylonarchery.com/arrows/id-6-2/edge",
+    "skylonBruxx": "https://www.skylonarchery.com/arrows/id-8-0/bruxx",
+    "skylonEmpros": "https://www.skylonarchery.com/arrows/id-8-0/empros"
+  },
+  "models": {
+    "a/c/e": {
+      "brand": "Easton", "name": "A/C/E", "material": "carbone haute résistance sur âme aluminium 7075", "profile": "barrelled", "straightnessIn": 0.0015, "weightToleranceGr": 0.5, "purpose": "cible extérieure haut niveau, tube léger aluminium/carbone", "source": "eastonAce",
+      "notes": ["Le GPI publié est une moyenne sur un tube de 29 pouces du fait du profil barrelled.", "Respecter le Max Trim avant publié par Easton."],
+      "spines": {
+        "370":{"gpi":7.9,"odIn":0.230,"lengthIn":32.62,"maxTrimIn":4.0}, "400":{"gpi":7.5,"odIn":0.230,"lengthIn":32.62,"maxTrimIn":4.0}, "430":{"gpi":7.0,"odIn":0.224,"lengthIn":32.62,"maxTrimIn":5.5}, "470":{"gpi":6.8,"odIn":0.223,"lengthIn":32.62,"maxTrimIn":6.5}, "520":{"gpi":6.7,"odIn":0.216,"lengthIn":31.62,"maxTrimIn":4.5}, "570":{"gpi":6.3,"odIn":0.216,"lengthIn":31.62,"maxTrimIn":10.0}, "620":{"gpi":6.1,"odIn":0.214,"lengthIn":30.62,"maxTrimIn":null}, "670":{"gpi":5.9,"odIn":0.212,"lengthIn":30.62,"maxTrimIn":null}, "720":{"gpi":6.4,"odIn":0.215,"lengthIn":29.62,"maxTrimIn":6.0}, "780":{"gpi":6.0,"odIn":0.216,"lengthIn":29.62,"maxTrimIn":null}, "850":{"gpi":5.7,"odIn":0.213,"lengthIn":28.62,"maxTrimIn":null}, "920":{"gpi":5.8,"odIn":0.213,"lengthIn":28.62,"maxTrimIn":9.5}, "1000":{"gpi":5.7,"odIn":0.213,"lengthIn":28.62,"maxTrimIn":null}, "1100":{"gpi":5.1,"odIn":0.205,"lengthIn":28.62,"maxTrimIn":null}, "1250":{"gpi":5.1,"odIn":0.205,"lengthIn":26.62,"maxTrimIn":null}
+      }
+    },
+    "x10 parallel pro 4 mm": {
+      "brand":"Easton","name":"X10 Parallel Pro 4 mm","material":"aluminium/carbone","profile":"parallel 4 mm","purpose":"compétition cible/campagne, micro-diamètre","source":"eastonParallel4",
+      "spines": {
+        "250":{"gpi":10.8,"odIn":0.245,"lengthIn":34.0,"pointFit":"#4","pinFit":"#4"}, "300":{"gpi":9.5,"odIn":0.236,"lengthIn":33.63,"pointFit":"#4","pinFit":"#4"}, "340":{"gpi":8.9,"odIn":0.231,"lengthIn":33.63,"pointFit":"#4","pinFit":"#4"}, "380":{"gpi":8.3,"odIn":0.227,"lengthIn":32.63,"pointFit":"#3","pinFit":"#4"}, "420":{"gpi":7.8,"odIn":0.224,"lengthIn":32.63,"pointFit":"#3","pinFit":"#3"}, "470":{"gpi":7.3,"odIn":0.220,"lengthIn":32.63,"pointFit":"#2","pinFit":"#3"}, "520":{"gpi":7.0,"odIn":0.217,"lengthIn":32.63,"pointFit":"#2","pinFit":"#2"}, "570":{"gpi":6.6,"odIn":0.215,"lengthIn":32.63,"pointFit":"#2","pinFit":"#2"}, "610":{"gpi":7.3,"odIn":0.218,"lengthIn":31.0,"pointFit":"#2","pinFit":"#2"}, "660":{"gpi":6.9,"odIn":0.215,"lengthIn":30.75,"pointFit":"#2","pinFit":"#2"}, "710":{"gpi":6.5,"odIn":0.213,"lengthIn":30.5,"pointFit":"#1","pinFit":"#2"}, "810":{"gpi":6.1,"odIn":0.209,"lengthIn":30.0,"pointFit":"#1","pinFit":"#2"}, "880":{"gpi":5.9,"odIn":0.207,"lengthIn":29.5,"pointFit":"#1","pinFit":"#2"}, "1000":{"gpi":5.5,"odIn":0.204,"lengthIn":29.0,"pointFit":"#1","pinFit":"#1"}, "1150":{"gpi":5.5,"odIn":0.208,"lengthIn":28.5,"pointFit":"#1","pinFit":"#1"}
+      }
+    },
+    "x10 parallel pro 3.2 mm": {
+      "brand":"Easton","name":"X10 Parallel Pro 3.2 mm","material":"aluminium/carbone","profile":"parallel 3.2 mm","purpose":"compétition extérieure, diamètre extrêmement réduit","source":"eastonParallel32",
+      "spines": {
+        "340":{"gpi":10.0,"odIn":0.215,"lengthIn":34.0,"pointFit":"#4","pinFit":"2"}, "380":{"gpi":9.3,"odIn":0.209,"lengthIn":33.75,"pointFit":"#3","pinFit":"2"}, "420":{"gpi":8.9,"odIn":0.207,"lengthIn":33.5,"pointFit":"#3","pinFit":"2"}, "460":{"gpi":8.5,"odIn":0.203,"lengthIn":33.25,"pointFit":"#3","pinFit":"2"}, "500":{"gpi":8.0,"odIn":0.200,"lengthIn":33.0,"pointFit":"#3","pinFit":"2"}, "550":{"gpi":7.6,"odIn":0.197,"lengthIn":32.5,"pointFit":"#2","pinFit":"2"}, "600":{"gpi":7.3,"odIn":0.194,"lengthIn":32.0,"pointFit":"#2","pinFit":"2"}, "650":{"gpi":7.0,"odIn":0.191,"lengthIn":31.5,"pointFit":"#2","pinFit":"2"}, "700":{"gpi":6.8,"odIn":0.187,"lengthIn":31.0,"pointFit":"#2","pinFit":"1"}, "750":{"gpi":6.5,"odIn":0.186,"lengthIn":30.5,"pointFit":"#1","pinFit":"1"}, "800":{"gpi":6.0,"odIn":0.181,"lengthIn":29.5,"pointFit":"#1","pinFit":"1"}, "900":{"gpi":5.8,"odIn":0.180,"lengthIn":29.5,"pointFit":"#1","pinFit":"1"}, "1000":{"gpi":5.5,"odIn":0.177,"lengthIn":29.0,"pointFit":"#1","pinFit":"1"}
+      }
+    },
+    "x7": {
+      "brand":"Easton","name":"X7 Eclipse","material":"7178-T9 aluminium","straightnessIn":0.001,"weightTolerancePercent":0.75,"purpose":"cible salle, précision aluminium","source":"eastonX7",
+      "spines": {
+        "1514":{"deflection":1.384,"gpi":6.8,"odIn":0.244,"lengthIn":26.5,"pointGr":[50]}, "1614":{"deflection":1.157,"gpi":7.7,"odIn":0.251,"lengthIn":28.25,"pointGr":[50]}, "1714":{"deflection":0.967,"gpi":8.1,"odIn":0.268,"lengthIn":29.38,"pointGr":[60]}, "1814":{"deflection":0.804,"gpi":8.6,"odIn":0.284,"lengthIn":29.88,"pointGr":[65]}, "1914":{"deflection":0.663,"gpi":9.3,"odIn":0.300,"lengthIn":30.88,"pointGr":[90]}, "2014":{"deflection":0.584,"gpi":9.6,"odIn":0.314,"lengthIn":31.63,"pointGr":[90]}, "2114":{"deflection":0.511,"gpi":9.9,"odIn":0.328,"lengthIn":32.5,"pointGr":[90]}, "2213":{"deflection":0.464,"gpi":9.9,"odIn":0.344,"lengthIn":33.5,"pointGr":[90]}, "2214":{"deflection":0.431,"gpi":10.4,"odIn":0.348,"lengthIn":33.38,"pointGr":[100]}, "2413":{"deflection":0.372,"gpi":10.5,"odIn":0.372,"lengthIn":34.0,"pointGr":[100]}, "2512":{"deflection":0.329,"gpi":10.3,"odIn":0.398,"lengthIn":34.5,"pointGr":[100]}, "2613":{"deflection":0.272,"gpi":11.5,"odIn":0.414,"lengthIn":34.75,"pointGr":[150]}
+      }
+    },
+    "x23": {
+      "brand":"Easton","name":"X23","material":"7178-T9 aluminium","straightnessIn":0.001,"weightTolerancePercent":0.75,"purpose":"cible salle compétition, grand diamètre World Archery","source":"eastonX23",
+      "spines": {"2312":{"deflection":0.429,"gpi":9.5,"odIn":0.363,"lengthIn":31.75},"2314":{"deflection":0.397,"gpi":10.8,"odIn":0.357,"lengthIn":32.25},"2315":{"deflection":0.348,"gpi":11.8,"odIn":0.365,"lengthIn":32.6},"2318":{"deflection":0.304,"gpi":13.7,"odIn":0.365,"lengthIn":32.75}}
+    },
+    "rx7": {
+      "brand":"Easton","name":"RX7","material":"7178-T9 aluminium","profile":"rear taper / dual spine","straightnessIn":0.001,"weightTolerancePercent":0.75,"purpose":"salle recurve, grand diamètre avec dégagement amélioré","source":"eastonRx7",
+      "spines": {"23-420":{"deflection":0.420,"gpi":10.4,"odIn":0.365,"lengthIn":33.75,"pointGr":[100]},"22-475":{"deflection":0.475,"gpi":9.7,"odIn":0.348,"lengthIn":33.5,"pointGr":[100,103]},"21-525":{"deflection":0.525,"gpi":9.3,"odIn":0.328,"lengthIn":32.5,"pointGr":[78,100]}}
+    },
+    "xx75 platinum plus": {
+      "brand":"Easton","name":"XX75 Platinum Plus","material":"7075-T9 aluminium","straightnessIn":0.002,"weightTolerancePercent":1,"purpose":"salle/loisir/compétition, aluminium intermédiaire","source":"eastonXx75",
+      "spines": {"1416":{"deflection":1.685,"gpi":7.2,"odIn":0.219,"lengthIn":26.25,"pointGr":[50,61]},"1516":{"deflection":1.405,"gpi":7.3,"odIn":0.234,"lengthIn":26.75,"pointGr":[50,51]},"1616":{"deflection":1.082,"gpi":8.4,"odIn":0.250,"lengthIn":27.5,"pointGr":[60,56]},"1716":{"deflection":0.882,"gpi":9.0,"odIn":0.266,"lengthIn":29.0,"pointGr":[64]},"1816":{"deflection":0.759,"gpi":9.3,"odIn":0.281,"lengthIn":29.0,"pointGr":[75,78]},"1913":{"deflection":0.738,"gpi":8.3,"odIn":0.298,"lengthIn":31.0,"pointGr":[90,88]},"1916":{"deflection":0.627,"gpi":10.0,"odIn":0.297,"lengthIn":30.0,"pointGr":[90,88]},"2013":{"deflection":0.616,"gpi":9.0,"odIn":0.313,"lengthIn":32.0,"pointGr":[90,103]},"2016":{"deflection":0.537,"gpi":10.6,"odIn":0.312,"lengthIn":31.0,"pointGr":[90,110]},"2114":{"deflection":0.513,"gpi":9.9,"odIn":0.328,"lengthIn":30.0,"pointGr":[90,108]},"2213":{"deflection":0.464,"gpi":9.8,"odIn":0.344,"lengthIn":30.5,"pointGr":[90,108]}}
+    },
+    "vap": {
+      "brand":"Victory","name":"VAP","material":"100% carbone","innerDiameterIn":0.166,"profile":"parallel micro-diamètre","grades":{"V1":0.001,"V3":0.003,"V6":0.006},"weightMatchingGr":0.5,"spineAligned":true,"coating":"ICE nano-céramique","includedRear":{"ipNockGr":8},"optionalRear":{"pinBushingGr":12,"pinNockGr":3},"optionalPointsGr":[80,90,100,120,130,140],"purpose":"cible, vitesse/précision, faible dérive au vent","source":"victoryVap","namingRule":"La gamme cible actuelle est VAP déclinée en grades V1/V3/V6. Les libellés Sport/Gamer/Elite appartiennent à d'autres usages historiques/commerciaux et ne doivent pas servir de noms de modèles cible."
+    },
+    "vxt": {
+      "brand":"Victory","name":"VXT","material":"carbone haut module avec tissage 3K 90°","innerDiameterIn":0.166,"profile":"avant parallèle / arrière conique","grades":{"V1":0.001,"V3":0.003,"V6":0.006},"weightMatchingGr":0.5,"spineAligned":true,"coating":"ICE nano-céramique","frontParallelIn":9,"maxFrontCutIn":8,"includedRear":{"pinNockGr":3,"goldPinBushingGr":12},"optionalPointsGr":[80,90,100,120,130,140],"purpose":"cible haut niveau, FOC élevé et dégagement au départ","source":"victoryVxt","cuttingRule":"Couper à l'avant assouplit; couper à l'arrière raidit; couper autant aux deux extrémités conserve le spine de départ."
+    },
+    "precium": {
+      "brand":"Skylon","name":"Precium","material":"40-TON Carbon","innerDiameterMm":3.2,"straightnessIn":0.004,"source":"skylonPrecium",
+      "spines":{"1000":{"odMm":4.45,"gpi":4.70,"lengthIn":30,"pointGr":[60,70,80]},"900":{"odMm":4.50,"gpi":4.81,"lengthIn":30,"pointGr":[60,70,80]},"850":{"odMm":4.55,"gpi":4.94,"lengthIn":30,"pointGr":[80,90,100]},"800":{"odMm":4.59,"gpi":5.06,"lengthIn":31,"pointGr":[80,90,100]},"750":{"odMm":4.63,"gpi":5.31,"lengthIn":31,"pointGr":[80,90,100]},"700":{"odMm":4.67,"gpi":5.55,"lengthIn":31,"pointGr":[80,90,100]},"650":{"odMm":4.73,"gpi":5.83,"lengthIn":31,"pointGr":[80,90,100]},"600":{"odMm":4.78,"gpi":6.10,"lengthIn":32,"pointGr":[100,110,120]},"550":{"odMm":4.84,"gpi":6.50,"lengthIn":32,"pointGr":[100,110,120]},"500":{"odMm":4.90,"gpi":6.90,"lengthIn":32,"pointGr":[100,110,120]},"450":{"odMm":5.04,"gpi":7.42,"lengthIn":32,"pointGr":[100,110,120]},"400":{"odMm":5.17,"gpi":7.93,"lengthIn":32,"pointGr":[100,110,120]},"350":{"odMm":5.25,"gpi":8.47,"lengthIn":32,"pointGr":[100,110,120]}}
+    },
+    "edge": {
+      "brand":"Skylon","name":"Edge","material":"24-TON Carbon","innerDiameterMm":6.2,"straightnessIn":0.005,"source":"skylonEdge","componentPointsGr":[80,90,100,85,100,125],
+      "spines":{"800":{"odMm":6.85,"gpi":4.20,"lengthIn":33},"700":{"odMm":7.00,"gpi":5.12,"lengthIn":33},"600":{"odMm":7.05,"gpi":5.58,"lengthIn":33},"500":{"odMm":7.12,"gpi":5.80,"lengthIn":33},"400":{"odMm":7.35,"gpi":7.33,"lengthIn":33},"350":{"odMm":7.39,"gpi":7.61,"lengthIn":33},"300":{"odMm":7.55,"gpi":8.50,"lengthIn":33}}
+    },
+    "bruxx": {
+      "brand":"Skylon","name":"Bruxx","material":"24-TON Carbon","innerDiameterMm":8.0,"straightnessIn":0.0015,"source":"skylonBruxx","componentPointsGr":[100,120,140],
+      "spines":{"500":{"odMm":8.84,"gpi":6.61,"lengthIn":33},"400":{"odMm":8.95,"gpi":7.42,"lengthIn":33},"350":{"odMm":8.97,"gpi":7.92,"lengthIn":33},"300":{"odMm":9.02,"gpi":8.52,"lengthIn":33}}
+    },
+    "empros": {
+      "brand":"Skylon","name":"Empros","material":"24-TON 3K Carbon","innerDiameterMm":8.0,"straightnessIn":0.003,"source":"skylonEmpros","componentPointsGr":[100,120,140],
+      "spines":{"500":{"odMm":8.97,"gpi":7.27,"lengthIn":33},"400":{"odMm":9.07,"gpi":8.49,"lengthIn":33},"350":{"odMm":9.10,"gpi":8.69,"lengthIn":33},"300":{"odMm":9.20,"gpi":9.50,"lengthIn":33}}
+    }
+  }
+}
