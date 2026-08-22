@@ -1,7 +1,7 @@
-/* Assistant Archer TEST - audit + injection catalogue fabricant Pré-alpha v22. */
+/* Assistant Archer TEST - audit + injection catalogue fabricant Pré-alpha v23. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v22';
+  const VERSION='Pré-alpha v23';
   const DATA_URL='catalog-audit-v17.json?v=20260822-prealpha-v22';
   const EXTRA_URL='catalog-audit-v17-extra.json?v=20260822-prealpha-v17';
   const TECH_URL='manufacturer-reference-v17.json?v=20260822-prealpha-v22';
@@ -121,15 +121,17 @@
   function polishObjective(){
     const select=document.getElementById('expertObjective'),label=select?.closest('label');if(!select||!label)return;
     const first=label.childNodes[0];if(first?.nodeType===Node.TEXT_NODE)first.nodeValue='Priorité de sélection';
-    const labels={progression:'Progression / simplicité',performance:'Polyvalence / performance',competition:'Compétition',elite:'Performance maximale / tuning expert'};
+    const oldCompetition=select.querySelector('option[value="competition"]');
+    if(oldCompetition){if(select.value==='competition')select.value='performance';oldCompetition.remove();}
+    const labels={progression:'Progression / simplicité',performance:'Performance / compétition',elite:'Performance maximale / tuning expert'};
     [...select.options].forEach(o=>{if(labels[o.value])o.textContent=labels[o.value]});
-    const hint=label.querySelector('.field-hint');if(hint)hint.textContent='Ce réglage ne classe pas les flèches par niveau. Il départage uniquement des modèles déjà compatibles techniquement.';
+    const hint=label.querySelector('.field-hint');if(hint)hint.textContent='Trois niveaux seulement : progression, performance/compétition, ou tuning expert. Le spine fabricant n’est pas modifié.';
   }
   function installBanner(){
     const result=document.getElementById('result');if(!result)return;
-    ['catalogAuditV15','catalogAuditV17','catalogAuditV21','catalogAuditV22'].forEach(id=>document.getElementById(id)?.remove());
+    ['catalogAuditV15','catalogAuditV17','catalogAuditV21','catalogAuditV22','catalogAuditV23'].forEach(id=>document.getElementById(id)?.remove());
     const counts=Object.fromEntries(Object.entries(data.brands).map(([b,v])=>[b,Object.keys(v.models).length]));
-    const d=document.createElement('details');d.id='catalogAuditV22';d.className='manufacturer-reference-status';d.style.cssText='margin:.65rem 0;padding:.65rem .75rem;border:1px solid rgba(0,0,0,.12);border-radius:10px';
+    const d=document.createElement('details');d.id='catalogAuditV23';d.className='manufacturer-reference-status';d.style.cssText='margin:.65rem 0;padding:.65rem .75rem;border:1px solid rgba(0,0,0,.12);border-radius:10px';
     d.innerHTML=`<summary><strong>Catalogue audité — ${VERSION}</strong></summary><p style="margin:.55rem 0 0">Familles enregistrées : Easton ${counts.easton||0}, Victory ${counts.victory||0}, Skylon ${counts.skylon||0}. Avalon a été retiré du périmètre TEST.</p>`;
     const ref=document.getElementById('manufacturerReferenceV13');if(ref?.nextSibling)result.insertBefore(d,ref.nextSibling);else result.prepend(d);
   }
@@ -139,7 +141,7 @@
       const [a,e,b]=await Promise.all([fetch(DATA_URL,{cache:'no-store'}),fetch(EXTRA_URL,{cache:'no-store'}),fetch(TECH_URL,{cache:'no-store'})]);
       if(!a.ok||!e.ok||!b.ok)throw new Error(`HTTP catalog=${a.status} extra=${e.status} tech=${b.status}`);
       data=mergeCatalog(await a.json(),await e.json());tech=await b.json();refresh();let n=0;const t=setInterval(()=>{n++;refresh();if(patched||n>100)clearInterval(t);},100);
-    }catch(e){console.error('Audit catalogue v22 indisponible',e);}
+    }catch(e){console.error('Audit catalogue v23 indisponible',e);}
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
 })();
