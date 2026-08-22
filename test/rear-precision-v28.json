@@ -1,0 +1,188 @@
+{
+  "version": "2026-08-22-prealpha-v28",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "manufacturerCatalogMirrorAllowed": true,
+    "retailerConsensusDoesNotOverrideManufacturer": true,
+    "rearSystemMustBeExplicitWhenSeveralExist": true,
+    "noInventedMass": true
+  },
+  "profiles": {
+    "easton-x10": {
+      "rearAssembly": {
+        "weightGrains": 10,
+        "weightRangeGrains": [10, 10],
+        "label": "3.2MM X10 Pin 8 gr + Pin Nock 2 gr",
+        "sourceTier": "manufacturer-current",
+        "confidence": "high",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      }
+    },
+    "easton-x10-parallel-pro-32": {
+      "rearAssembly": {
+        "weightGrains": 10,
+        "weightRangeGrains": [10, 10],
+        "label": "3.2MM X10 Pin 8 gr + Pin Nock 2 gr",
+        "sourceTier": "manufacturer-current",
+        "confidence": "high",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      }
+    },
+    "easton-ace": {
+      "rearAssembly": {
+        "weightGrains": 11,
+        "weightRangeGrains": [11, 11],
+        "label": "Hypothèse montage pin : 4MM Pin 9 gr + Pin Nock 2 gr",
+        "sourceTier": "manufacturer-current",
+        "confidence": "high-for-selected-system",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      },
+      "rearAssemblyAlternatives": [
+        {
+          "id": "4mm-g-nock-direct",
+          "weightGrains": 7,
+          "label": "4MM G Nock direct 7 gr",
+          "sourceTier": "manufacturer-current",
+          "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+        }
+      ],
+      "rearSystemNote": "A/C/E accepte plusieurs systèmes arrière. Le FOC est exact seulement si le montage réel est le montage pin affiché."
+    },
+    "easton-x10-parallel-pro-4": {
+      "rearAssembly": {
+        "weightGrains": 11,
+        "weightRangeGrains": [11, 11],
+        "label": "Hypothèse montage pin : 4MM Pin 9 gr + Pin Nock 2 gr",
+        "sourceTier": "manufacturer-current",
+        "confidence": "high-for-selected-system",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      },
+      "rearAssemblyAlternatives": [
+        {
+          "id": "4mm-g-nock-direct",
+          "weightGrains": 7,
+          "label": "4MM G Nock direct 7 gr",
+          "sourceTier": "manufacturer-current",
+          "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+        }
+      ],
+      "rearSystemNote": "Le 4MM Parallel Pro peut être monté en pin ou en direct-fit. L'application conserve le montage pin comme hypothèse tant que l'utilisateur ne choisit pas son système arrière."
+    },
+    "victory-vap": {
+      "gpiBySpine": {
+        "350": 7.8,
+        "400": 7.2,
+        "450": 6.6,
+        "500": 6.1,
+        "600": 5.5,
+        "700": 5.7,
+        "800": 5.4,
+        "900": 5.0,
+        "1000": 4.7,
+        "1100": 4.7,
+        "1200": 4.6
+      },
+      "gpiSourceTier": "manufacturer-catalog-mirror",
+      "gpiSourceUrl": "https://assets.unilogcorp.com/187/ITEM/DOC/Victory_ARCHERY_103267307_Catalog.pdf",
+      "rearAssembly": {
+        "weightGrains": 8,
+        "weightRangeGrains": [8, 8],
+        "label": "IP Nock .166 8 gr (montage livré d'origine)",
+        "sourceTier": "manufacturer-current",
+        "confidence": "high",
+        "sourceUrl": "https://victoryarchery.com/arrows-target/vap/"
+      },
+      "rearAssemblyAlternatives": [
+        {
+          "id": "vap-pin-system",
+          "weightGrains": 15,
+          "label": "Pin Bushing 12 gr + Pin Nock 3 gr (option)",
+          "sourceTier": "manufacturer-current",
+          "sourceUrl": "https://victoryarchery.com/arrows-target/vap/"
+        }
+      ],
+      "rearSystemNote": "Le VAP est livré avec IP Nock 8 gr. Le montage pin optionnel porte l'ensemble arrière à 15 gr."
+    },
+    "victory-vxt": {
+      "gpiBySpine": {
+        "300": 8.3,
+        "355": 7.4,
+        "450": 7.4,
+        "550": 7.1,
+        "630": 7.4
+      },
+      "gpiSourceTier": "manufacturer-brochure-mirror",
+      "gpiSourceUrl": "https://www.kingdomarchery.com/Uploads/Galleries/2022%20Victory%20Archery%20-%20Target.pdf",
+      "rearAssembly": {
+        "weightGrains": 15,
+        "weightRangeGrains": [15, 15],
+        "label": "Gold Pin Bushing 12 gr + Pin Nock 3 gr (livrés d'origine)",
+        "sourceTier": "manufacturer-current",
+        "confidence": "high",
+        "sourceUrl": "https://victoryarchery.com/arrows-target/vxt/"
+      }
+    },
+    "skylon-brixxon": {
+      "rearAssembly": {
+        "weightGrains": 13.2,
+        "weightRangeGrains": [13.08, 13.3],
+        "label": "Pin ID4.2 10,8 gr + Recurve Pin Nock ≈2,4 gr",
+        "sourceTier": "reseller-consensus",
+        "confidence": "medium-high",
+        "sourceUrl": "https://www.bogenladen-leipzig.de/Skylon-Pin-ID42"
+      }
+    },
+    "skylon-radius": {
+      "rearAssembly": {
+        "weightGrains": 13.2,
+        "weightRangeGrains": [13.08, 13.3],
+        "label": "Pin ID4.2 10,8 gr + Recurve Pin Nock ≈2,4 gr",
+        "sourceTier": "reseller-consensus",
+        "confidence": "medium-high",
+        "sourceUrl": "https://bogensport-roemer.de/nl-nl/products/skylon-radius-pin-insert-12er-packung"
+      }
+    },
+    "skylon-paragon": {
+      "rearAssembly": {
+        "weightGrains": 10.4,
+        "weightRangeGrains": [9.28, 11.5],
+        "label": "Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (proxy)",
+        "sourceTier": "proxy-estimate",
+        "confidence": "low-medium",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      },
+      "rearSystemNote": "La masse exacte du pin Skylon ID3.2 n'est toujours pas publiée de façon exploitable ; le proxy reste volontairement signalé."
+    },
+    "skylon-performa": {
+      "rearAssembly": {
+        "weightGrains": 10.4,
+        "weightRangeGrains": [9.28, 11.5],
+        "label": "Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (proxy)",
+        "sourceTier": "proxy-estimate",
+        "confidence": "low-medium",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      }
+    },
+    "skylon-precium": {
+      "rearAssembly": {
+        "weightGrains": 10.4,
+        "weightRangeGrains": [9.28, 11.5],
+        "label": "Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (proxy)",
+        "sourceTier": "proxy-estimate",
+        "confidence": "low-medium",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      }
+    },
+    "skylon-preminens": {
+      "rearAssembly": {
+        "weightGrains": 10.4,
+        "weightRangeGrains": [9.28, 11.5],
+        "label": "Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr (proxy)",
+        "sourceTier": "proxy-estimate",
+        "confidence": "low-medium",
+        "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"
+      }
+    }
+  }
+}
