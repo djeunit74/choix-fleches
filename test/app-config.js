@@ -37,28 +37,19 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* Boot TEST des couches expert, audit catalogue et Avalon courant. */
+/* Boot TEST séquentiel : expert -> audit catalogue -> Avalon.
+   async=false sur les scripts dynamiques garantit l'ordre d'exécution. */
 (() => {
   if (typeof document === 'undefined') return;
-  if (!document.querySelector('script[data-expert-model-ranking]')) {
+  const add = (src, marker) => {
+    if (document.querySelector(`script[data-${marker}]`)) return;
     const script = document.createElement('script');
-    script.src = 'expert-model-ranking.js?v=20260822-prealpha-v14';
-    script.defer = true;
-    script.dataset.expertModelRanking = '1';
+    script.src = src;
+    script.async = false;
+    script.setAttribute(`data-${marker}`, '1');
     document.head.appendChild(script);
-  }
-  if (!document.querySelector('script[data-catalog-audit]')) {
-    const audit = document.createElement('script');
-    audit.src = 'catalog-audit.js?v=20260822-prealpha-v17';
-    audit.defer = true;
-    audit.dataset.catalogAudit = '1';
-    document.head.appendChild(audit);
-  }
-  if (!document.querySelector('script[data-avalon-addon]')) {
-    const avalon = document.createElement('script');
-    avalon.src = 'avalon-addon.js?v=20260822-prealpha-v18';
-    avalon.async = false;
-    avalon.dataset.avalonAddon = '1';
-    document.head.appendChild(avalon);
-  }
+  };
+  add('expert-model-ranking.js?v=20260822-prealpha-v14', 'expert-model-ranking');
+  add('catalog-audit.js?v=20260822-prealpha-v17', 'catalog-audit');
+  add('avalon-addon.js?v=20260822-prealpha-v19', 'avalon-addon');
 })();
