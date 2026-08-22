@@ -1,12 +1,12 @@
 {
-  "version": "2026-08-22-prealpha-v17",
+  "version": "2026-08-22-prealpha-v22",
   "channel": "test",
   "policy": {
     "manufacturerFirst": true,
     "allCurrentFamiliesRegistered": true,
     "unknownModelsBlocked": true,
     "autoSelectionRequiresVerifiedSizing": true,
-    "notes": "Registre complet des familles actuellement visibles chez Easton, Victory, Skylon et Avalon. Présence au catalogue ne signifie pas auto-recommandation."
+    "notes": "Registre actif limité à Easton, Victory et Skylon. Avalon retiré du périmètre TEST."
   },
   "brands": {
     "easton": {
@@ -115,15 +115,6 @@
         "phoric":{"label":"Phoric","category":"outdoor/hunting compound","status":"registered_only","recurve":false},
         "frontier":{"label":"Frontier","category":"traditional","status":"registered_only","recurve":false},
         "bentwood":{"label":"Bentwood","category":"traditional","status":"registered_only","recurve":false}
-      }
-    },
-    "avalon": {
-      "source": "https://www.avalon-archery.com/fletched_arrows_shafts",
-      "models": {
-        "tyro carbon arrows":{"label":"Tyro Carbon Arrows","category":"target/beginner","status":"auto_historical_selector","recurve":true},
-        "classic carbon arrows":{"label":"Classic Carbon Arrows","category":"target/club","status":"auto_historical_selector","recurve":true},
-        "hybrid carbon arrows":{"label":"Hybrid Carbon Arrows","category":"target/beginner","status":"registered_only","recurve":true},
-        "tyro carbon shafts":{"label":"Tyro Carbon Shafts","category":"target/beginner","status":"registered_only","recurve":true}
       }
     }
   }
