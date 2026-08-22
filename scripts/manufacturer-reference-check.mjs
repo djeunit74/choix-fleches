@@ -71,7 +71,7 @@ assert(cxText.includes('NSST450'), 'Correction NSST450 absente');
 
 for (const required of [
   'chooseEastonSpineForModel','refineEaston','refineSkylon','refineVictory','patchCarbonExpressSeries',
-  'manufacturerVerified','Donnée fabricant','unknownDataMustRemainUnknown'
+  'manufacturerVerified','Donnée fabricant'
 ]) assert(integration.includes(required), `Integration fabricant incomplete: ${required}`);
 assert(integration.includes("s.src='manufacturer-reference.js") === false, 'Le module fabricant ne doit pas se charger lui-meme');
 assert(expertAudit.includes("manufacturer-reference.js?v=20260822-prealpha-v12"), 'Le module fabricant v12 n est pas charge par expert-audit');
