@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(p,'utf8');
+const json=p=>JSON.parse(read(p));
+const assert=(c,m)=>{if(!c)throw new Error(m)};
+const data=json('test/vane-mass-v27.json');
+const cfg=read('test/app-config.js');
+const ui=read('test/vane-mass-v27.js');
+const byId=new Map((data.masses||[]).map(x=>[x.id,x]));
+assert(data.version==='2026-08-22-prealpha-v27','Version masse v27 inattendue');
+assert(data.policy?.fletchingFixationIncludedForFoc===true,'Fixation empennage non incluse dans politique FOC');
+assert(data.policy?.measuredFocFinalValidation===true,'Validation FOC mesure absente');
+assert(data.mountingProfiles?.['spin-tape']?.rangeGrains?.[0]===1.5,'Proxy ruban incomplet');
+assert(data.mountingProfiles?.['spin-tape']?.rangeGrains?.[1]===2.0,'Proxy ruban incomplet');
+assert(data.mountingProfiles?.['glue-average']?.massGrains===1.0,'Proxy colle incomplet');
+for(const id of ['gaspro-olympic-efficient-175','gaspro-recurve-hp-175','gaspro-x-shield-2','spinwing-original-175','spinwing-original-vld-175','jet6-s-175','bohning-griffin-1','bohning-air-2','bohning-x-vane-15','bohning-x-vane-175','bohning-x3-175','bohning-x3-225']){
+  const m=byId.get(id);assert(m,`Masse absente ${id}`);assert(m.focUsable===true,`FOC non actif ${id}`);assert(Number.isFinite(Number(m.focAssemblyMassGrains)),`Masse empennage complete absente ${id}`);assert(Number.isFinite(Number(m.focEffectivePerVaneGrains)),`Equivalent FOC absent ${id}`);
+}
+const field=byId.get('gaspro-field-efficient-2');assert(field?.variants?.length===2,'Variantes Gas Pro Field absentes');
+assert(field.variants.find(x=>x.label==='Medium')?.rawWeightGrains===1.0,'Field Medium incorrect');
+assert(field.variants.find(x=>x.label==='Hard')?.rawWeightGrains===1.2,'Field Hard incorrect');
+assert(byId.get('spinwing-elite-175')?.focUsable===false,'SpinWing Elite ambigu ne doit pas entrer au FOC');
+assert(byId.get('gaspro-shield-28')?.focUsable===false,'Gas Pro Shield 2.8 contradictoire ne doit pas entrer au FOC');
+assert(byId.get('elivanes-p3')?.focUsable===false,'EliVanes P3 mono-source ne doit pas entrer au FOC');
+assert((data.additionalVanes||[]).some(v=>v.id==='bohning-griffin-1'),'Bohning Griffin doit etre ajoutee');
+assert(cfg.includes('vane-mass-v27.json?v=20260822-prealpha-v27'),'Data v27 non chargee');
+assert(cfg.includes('focEffectivePerVaneGrains'),'Masse equivalente empennage non injectee');
+assert(cfg.includes('__vaneCatalogFetchV27'),'Intercepteur v27 absent');
+assert(cfg.includes('vane-mass-v27.js?v=20260822-prealpha-v27'),'UI masse v27 non chargee');
+assert(ui.includes("const VERSION='Pré-alpha v27'"),'UI v27 absente');
+assert(ui.includes('empennage complet'),'Affichage masse complete absent');
+console.log('Assistant Archer: masses empennages + fixation Pré-alpha v27 contrôlées OK');
