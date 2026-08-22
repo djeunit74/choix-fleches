@@ -25,6 +25,45 @@
   box-shadow:inset 0 0 0 1px var(--accent-2)!important;
 }
 
+/* Pré-alpha v25 : chaque proposition de tube devient un bloc visuel identifiable.
+   :has() cible uniquement les lignes qui possèdent l'action "Choisir ce tube". */
+#result li:has(.arrow-model-select){
+  list-style:none;
+  position:relative;
+  margin:.65rem 0;
+  padding:.75rem .8rem .72rem;
+  border:1px solid color-mix(in srgb,var(--accent-2) 18%,var(--line));
+  border-radius:12px;
+  background:color-mix(in srgb,var(--accent-2) 3%,white);
+}
+#result li:has(.arrow-model-select)::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:.65rem;
+  bottom:.65rem;
+  width:3px;
+  border-radius:0 4px 4px 0;
+  background:var(--accent-2);
+}
+#result li:has(.arrow-model-select) > strong:first-child{
+  display:inline-block;
+  margin:0 .28rem .28rem 0;
+  color:var(--accent-2);
+  font-size:1.08rem;
+  font-weight:900;
+  line-height:1.18;
+  letter-spacing:-.01em;
+}
+#result li:has(.arrow-model-select) > .arrow-model-select{
+  float:right;
+  margin-left:.7rem!important;
+  margin-bottom:.35rem!important;
+}
+#result li:has(.arrow-model-select) > p{
+  clear:both;
+}
+
 /* Pré-alpha v11 : le bouton est toujours un frere direct de .merchant-block.
    Le moteur marchand peut donc reecrire le contenu du bloc sans detruire le controle. */
 .merchant-toggle{
@@ -62,5 +101,8 @@
 
 @media(max-width:560px){
   .arrow-model-select{padding:.48rem .68rem!important;font-size:.75rem!important}
+  #result li:has(.arrow-model-select){padding:.72rem .68rem .68rem;margin:.58rem 0}
+  #result li:has(.arrow-model-select) > strong:first-child{font-size:1.04rem;display:block;margin-right:7.2rem}
+  #result li:has(.arrow-model-select) > .arrow-model-select{position:absolute;right:.6rem;top:.58rem;float:none;margin:0!important}
   .merchant-toggle{width:100%;margin:.3rem 0 .65rem}
 }
