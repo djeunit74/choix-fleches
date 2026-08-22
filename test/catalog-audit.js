@@ -3,6 +3,7 @@
   'use strict';
   const VERSION='Pré-alpha v17';
   const DATA_URL='catalog-audit-v17.json?v=20260822-prealpha-v17';
+  const EXTRA_URL='catalog-audit-v17-extra.json?v=20260822-prealpha-v17';
   const TECH_URL='manufacturer-reference-v17.json?v=20260822-prealpha-v17';
   let data=null,tech=null,patched=false;
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
@@ -18,17 +19,20 @@
     ['hybrid carbon arrows','hybrid carbon arrows'],['tyro carbon shafts','tyro carbon shafts']
   ].sort((a,b)=>b[0].length-a[0].length);
   const keyOf=name=>{const t=norm(name);for(const [a,k] of aliases)if(t.includes(a))return k;return t;};
+  const mergeCatalog=(base,extra)=>{
+    const merged={...(base||{}),brands:{...(base?.brands||{})}};
+    for(const [brand,b] of Object.entries(extra?.brands||{})){
+      merged.brands[brand]={...(merged.brands[brand]||{}),...(b||{}),models:{...(merged.brands[brand]?.models||{}),...(b?.models||{})}};
+    }
+    return merged;
+  };
   const registry=(brand,key)=>data?.brands?.[brand]?.models?.[key]||null;
   const autoStatus=new Set(['auto','auto_variant','auto_specialized','auto_if_selector','auto_historical_selector']);
   const numericParts=v=>(String(v||'').match(/\d+(?:\.\d+)?/g)||[]).map(Number).filter(Number.isFinite);
   const closest=(values,target)=>values.slice().sort((a,b)=>Math.abs(a-target)-Math.abs(b-target))[0];
 
-  function mergedTechnicalModels(){
-    return {...(window.AssistantArcherManufacturerReference?.data?.models||{}),...(tech?.models||{})};
-  }
-  function mergedSources(){
-    return {...(window.AssistantArcherManufacturerReference?.data?.sources||{}),...(tech?.sources||{})};
-  }
+  function mergedTechnicalModels(){return {...(window.AssistantArcherManufacturerReference?.data?.models||{}),...(tech?.models||{})};}
+  function mergedSources(){return {...(window.AssistantArcherManufacturerReference?.data?.sources||{}),...(tech?.sources||{})};}
   function sourceFor(spec){const s=spec?.source;return s?mergedSources()[s]||'':'';}
 
   function canonical(entry,brand){
@@ -51,7 +55,7 @@
   function targetFromRecommendation(rec){
     const nums=numericParts(rec?.primary||rec?.comparisonSpine||'').filter(n=>n>=200&&n<=2500);
     if(!nums.length)return Number(rec?.comparisonSpine)||null;
-    return Math.max(...nums); // côté le plus souple d'une plage recurve quand applicable.
+    return Math.max(...nums);
   }
 
   function chooseSpecRow(spec,rec){
@@ -89,11 +93,7 @@
       const info=registry(rec.brand,key);if(!info||!autoStatus.has(info.status)||!contextAllows(info,input))continue;
       const spec=modelSpec(rec.brand,key);if(!spec)continue;
       const chosen=chooseSpecRow(spec,rec);if(!chosen||!stockLengthCompatible(chosen.row,input))continue;
-      rec.models.push({
-        model:info.label,advisedSpine:chosen.size,score:0,meta:null,
-        manufacturerVerified:true,manufacturerSpec:chosen.row,manufacturerSource:sourceFor(spec),manufacturerModelKey:key,
-        catalogAuditKey:key,catalogAudit:info,verifiedCatalogInjection:true
-      });
+      rec.models.push({model:info.label,advisedSpine:chosen.size,score:0,meta:null,manufacturerVerified:true,manufacturerSpec:chosen.row,manufacturerSource:sourceFor(spec),manufacturerModelKey:key,catalogAuditKey:key,catalogAudit:info,verifiedCatalogInjection:true});
       seen.add(key);
     }
     return rec;
@@ -108,11 +108,8 @@
       if(!autoStatus.has(info.status)||!contextAllows(info,input)){blocked++;continue;}
       kept.push(entry);
     }
-    rec.models=kept;
-    injectVerified(rec,input);
-    if(window.AssistantArcherExpertModelRanking?.rankRecommendation&&['easton','victory','skylon'].includes(rec.brand)){
-      window.AssistantArcherExpertModelRanking.rankRecommendation(rec,input);
-    }
+    rec.models=kept;injectVerified(rec,input);
+    if(window.AssistantArcherExpertModelRanking?.rankRecommendation&&['easton','victory','skylon'].includes(rec.brand))window.AssistantArcherExpertModelRanking.rankRecommendation(rec,input);
     rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Catalogue ${VERSION} : toutes les familles actuelles Easton/Victory/Skylon/Avalon sont enregistrées; seules celles avec sélection exploitable peuvent être proposées automatiquement.`];
     if(unknown)rec.confidenceReasons.push(`${unknown} ancien libellé ou modèle non reconnu écarté par sécurité.`);
     if(blocked)rec.confidenceReasons.push(`${blocked} famille(s) enregistrée(s) mais hors contexte recurve courant ou sans table de sélection exploitable.`);
@@ -146,9 +143,9 @@
   function refresh(){polishObjective();patch();installBanner();const release=document.getElementById('appReleaseStatic');if(release&&patched)release.textContent=`Version : ${VERSION}`;}
   async function install(){
     try{
-      const [a,b]=await Promise.all([fetch(DATA_URL,{cache:'no-store'}),fetch(TECH_URL,{cache:'no-store'})]);
-      if(!a.ok||!b.ok)throw new Error(`HTTP catalog=${a.status} tech=${b.status}`);
-      data=await a.json();tech=await b.json();refresh();let n=0;const t=setInterval(()=>{n++;refresh();if(patched||n>100)clearInterval(t);},100);
+      const [a,e,b]=await Promise.all([fetch(DATA_URL,{cache:'no-store'}),fetch(EXTRA_URL,{cache:'no-store'}),fetch(TECH_URL,{cache:'no-store'})]);
+      if(!a.ok||!e.ok||!b.ok)throw new Error(`HTTP catalog=${a.status} extra=${e.status} tech=${b.status}`);
+      data=mergeCatalog(await a.json(),await e.json());tech=await b.json();refresh();let n=0;const t=setInterval(()=>{n++;refresh();if(patched||n>100)clearInterval(t);},100);
     }catch(e){console.error('Audit catalogue v17 indisponible',e);}
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
