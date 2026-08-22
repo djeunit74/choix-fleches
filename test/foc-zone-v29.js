@@ -1,7 +1,7 @@
-/* Assistant Archer TEST - zone FOC recommandee sur le graphique d'equilibre, Pre-alpha v29. */
+/* Assistant Archer TEST - zone FOC recommandee sur le graphique d'equilibre, Pre-alpha v30. */
 (() => {
   'use strict';
-  const VERSION = 'Pre-alpha v29';
+  const VERSION = 'Pre-alpha v30';
 
   function installStyles() {
     if (document.getElementById('focZoneV29Styles')) return;
