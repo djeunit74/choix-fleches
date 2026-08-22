@@ -25,51 +25,15 @@
   box-shadow:inset 0 0 0 1px var(--accent-2)!important;
 }
 
+/* Pré-alpha v9 : les offres restent affichées en permanence. */
 .merchant-block{
   padding:.45rem!important;
 }
-.merchant-disclosure{
-  width:100%;
-  border:1px solid color-mix(in srgb,var(--accent-2) 20%,var(--line));
-  border-radius:12px;
-  background:color-mix(in srgb,var(--accent-2) 3%,white);
-  overflow:hidden;
+.merchant-block > .merchant-intro,
+.merchant-block > .merchant-shops{
+  display:block!important;
 }
-.merchant-disclosure-summary{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:.75rem;
-  padding:.7rem .8rem;
-  cursor:pointer;
-  color:var(--accent-2);
-  font-weight:850;
-  list-style:none;
-}
-.merchant-disclosure-summary::-webkit-details-marker{display:none}
-.merchant-disclosure-summary::after{
-  content:'▾';
-  flex:0 0 auto;
-  transition:transform .15s ease;
-}
-.merchant-disclosure[open] .merchant-disclosure-summary::after{transform:rotate(180deg)}
-.merchant-disclosure-count{
-  margin-left:auto;
-  padding:.22rem .48rem;
-  border-radius:999px;
-  background:color-mix(in srgb,var(--accent-2) 9%,white);
-  color:var(--ink);
-  font-size:.7rem;
-  font-weight:800;
-}
-.merchant-disclosure-body{
-  padding:.1rem .8rem .8rem;
-  border-top:1px solid var(--line);
-}
-.merchant-disclosure-body .merchant-intro{margin-top:.7rem}
 
 @media(max-width:560px){
   .arrow-model-select{padding:.48rem .68rem!important;font-size:.75rem!important}
-  .merchant-disclosure-summary{padding:.65rem .7rem}
-  .merchant-disclosure-body{padding:.05rem .7rem .7rem}
 }
