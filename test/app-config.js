@@ -51,5 +51,5 @@ window.AssistantArcherConfig = Object.freeze({
   };
   add('expert-model-ranking.js?v=20260822-prealpha-v14', 'expert-model-ranking');
   add('catalog-audit.js?v=20260822-prealpha-v17', 'catalog-audit');
-  add('avalon-addon.js?v=20260822-prealpha-v19', 'avalon-addon');
+  add('avalon-addon.js?v=20260822-prealpha-v20', 'avalon-addon');
 })();
