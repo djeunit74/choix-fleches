@@ -1,0 +1,18 @@
+{
+  "version":"2026-08-22-prealpha-v17-extra",
+  "brands":{
+    "easton":{
+      "models":{
+        "superdrive 19":{"label":"SuperDrive 19","category":"target/3d","status":"registered_only","recurve":false},
+        "6.5 matrix match grade":{"label":"6.5 Matrix / Match Grade","category":"hunting","status":"registered_only","recurve":false},
+        "6.5 flatline":{"label":"6.5MM Flatline","category":"hunting","status":"registered_only","recurve":false},
+        "full bore":{"label":"Full Bore","category":"3d/indoor compound","status":"registered_only","recurve":false},
+        "xx75 genesis":{"label":"XX75 Genesis","category":"NASP","status":"registered_only","recurve":false},
+        "xx75 tribute":{"label":"XX75 Tribute","category":"target/recreational","status":"registered_only","recurve":true},
+        "xx75 neos":{"label":"XX75 Neos","category":"target/recreational","status":"registered_only","recurve":true},
+        "6mm aftermath":{"label":"6MM Aftermath","category":"hunting","status":"registered_only","recurve":false},
+        "xx75 magnum crossbow":{"label":"XX75 Magnum Crossbow","category":"crossbow","status":"registered_only","recurve":false}
+      }
+    }
+  }
+}
