@@ -29,7 +29,8 @@
 
   function updateCount(block) {
     const count = block.querySelector(':scope > .merchant-toggle-label .merchant-toggle-count');
-    if (count) count.textContent = offerCount(block);
+    const next = offerCount(block);
+    if (count && count.textContent !== next) count.textContent = next;
   }
 
   function installToggle(block) {
