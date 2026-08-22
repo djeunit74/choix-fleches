@@ -1,11 +1,10 @@
 {
-  "version":"2026-08-22-prealpha-v17",
+  "version":"2026-08-22-prealpha-v22",
   "channel":"test",
   "sources":{
     "eastonInspire":"https://eastonarchery.com/arrows_/inspire/",
     "eastonJazz":"https://eastonarchery.com/arrows_/xx75-jazz/",
-    "skylonNovice":"https://www.skylonarchery.com/arrows/2023-06-29-08-52-09/novice",
-    "avalonCurrent":"https://www.avalon-archery.com/fletched_arrows_shafts"
+    "skylonNovice":"https://www.skylonarchery.com/arrows/2023-06-29-08-52-09/novice"
   },
   "models":{
     "inspire":{
@@ -50,22 +49,6 @@
         "1800":{"odMm":5.00,"gpi":3.89,"lengthIn":27,"pointGr":[50]},
         "2000":{"odMm":4.96,"gpi":3.60,"lengthIn":26,"pointGr":[50]}
       }
-    },
-    "avalon classic carbon arrows":{
-      "brand":"Avalon","name":"Classic Carbon Arrows","material":"carbone","innerDiameterMm":4.2,"straightnessIn":0.005,"stockLengthIn":32,"source":"avalonCurrent",
-      "availableSpines":[400,500,600,700,800,900,1000,1100,1300,1500,1800,2000],"pointGr":[50,60,70,80,90,100,110,120]
-    },
-    "avalon hybrid carbon arrows":{
-      "brand":"Avalon","name":"Hybrid Carbon Arrows","material":"carbone","innerDiameterMm":4.2,"straightnessIn":0.009,"stockLengthIn":32,"source":"avalonCurrent",
-      "availableSpines":[500,600,700,800,900,1000,1100,1300,1500,1800,2000],"pointGr":[50,70,90]
-    },
-    "avalon tyro carbon arrows":{
-      "brand":"Avalon","name":"Tyro Carbon Arrows","material":"carbone","innerDiameterMm":4.2,"straightnessIn":0.007,"source":"avalonCurrent",
-      "availableLengthsIn":[26,27,28,29,30,31],"availableSpines":[600,700,800,900,1000,1100,1300,1500,1800,2000],"pointGr":[50,70,90],"note":"La page fabricant ne publie pas la correspondance spine↔longueur ; ne pas l'inventer."
-    },
-    "avalon tyro carbon shafts":{
-      "brand":"Avalon","name":"Tyro Carbon Shafts","material":"carbone","innerDiameterMm":4.2,"straightnessIn":0.007,"stockLengthIn":32,"source":"avalonCurrent",
-      "availableSpines":[600,700,800,900,1000,1100,1300,1500,1800]
     }
   }
 }
