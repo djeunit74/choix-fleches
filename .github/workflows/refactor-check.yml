@@ -12,6 +12,7 @@ on:
       - 'scripts/expert-model-ranking-check.mjs'
       - 'scripts/catalog-audit-check.mjs'
       - 'scripts/vane-library-check.mjs'
+      - 'scripts/vane-mass-check.mjs'
       - '.github/workflows/refactor-check.yml'
   pull_request:
     paths:
@@ -21,6 +22,7 @@ on:
       - 'scripts/expert-model-ranking-check.mjs'
       - 'scripts/catalog-audit-check.mjs'
       - 'scripts/vane-library-check.mjs'
+      - 'scripts/vane-mass-check.mjs'
       - '.github/workflows/refactor-check.yml'
 
 jobs:
@@ -47,6 +49,7 @@ jobs:
           node --check test/expert-model-ranking.js
           node --check test/catalog-audit.js
           node --check test/vane-library-v25.js
+          node --check test/vane-mass-v27.js
       - name: Controles de non regression
         run: node scripts/refactor-check.mjs
       - name: References fabricant
@@ -57,3 +60,5 @@ jobs:
         run: node scripts/catalog-audit-check.mjs
       - name: Bibliotheque empennages
         run: node scripts/vane-library-check.mjs
+      - name: Masses empennages et FOC
+        run: node scripts/vane-mass-check.mjs
