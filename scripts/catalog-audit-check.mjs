@@ -30,11 +30,11 @@ assert(tech.models?.['xx75 jazz']?.spines?.['2016']?.gpi===10.6,'Table Jazz fabr
 assert(!Object.values(tech.models||{}).some(m=>m?.brand==='Avalon'),'Aucune reference technique Avalon ne doit rester active');
 assert(!Object.keys(tech.sources||{}).some(k=>k.toLowerCase().includes('avalon')),'Aucune source Avalon ne doit rester active');
 
-assert(js.includes("const VERSION='Pré-alpha v23'"),'Version audit JS v23 absente');
+assert(js.includes("const VERSION='Pré-alpha v25'"),'Version audit JS v25 absente');
 assert(js.includes("!['easton','victory','skylon'].includes(rec.brand)"),'Audit actif doit etre limite a Easton/Victory/Skylon');
 assert(js.includes('removeAvalonFromRuntime'),'Garde-fou retrait Avalon absent');
 assert(!js.includes('AssistantArcherAvalon'),'Le moteur d audit ne doit plus appeler Avalon');
-assert(js.includes("option[value=\"competition\"]")||js.includes("option[value='competition']")||js.includes("option[value=\"competition\"]"),'Le nettoyage de l ancienne option competition doit rester present');
+assert(js.includes("option[value=\"competition\"]")||js.includes("option[value='competition']"),'Le nettoyage de l ancienne option competition doit rester present');
 
 assert(expert.includes("const VERSION='Pré-alpha v24'"),'Classement expert v24 absent');
 assert(expert.includes('Performance / compétition'),'Categorie fusionnee performance/competition absente');
@@ -44,8 +44,8 @@ assert(expert.includes('ELITE_INDOOR'),'Shortlist expert indoor absente');
 assert(expert.includes("if(c.objective==='elite')"),'Filtrage tuning expert absent');
 assert(expert.includes('if(specialized.length)'),'Fallback expert sans modele specialise absent');
 assert(cfg.includes('expert-model-ranking.js?v=20260822-prealpha-v24'),'Boot expert v24 absent');
-assert(cfg.includes('catalog-audit.js?v=20260822-prealpha-v23'),'Boot audit v23 absent');
+assert(cfg.includes('catalog-audit.js?v=20260822-prealpha-v25'),'Boot audit v25 absent');
 assert(!cfg.includes('avalon-addon.js'),'Avalon ne doit plus etre charge depuis app-config');
 assert(!/Tyro|Classic Carbon|Hybrid Carbon|Carbon Composite/.test(avalon),'Les donnees Avalon doivent etre effacees de l add-on');
 
-console.log('Assistant Archer: Pré-alpha v24 - shortlist tuning expert différenciée');
+console.log('Assistant Archer: Pré-alpha v25 - catalogue et shortlist expert alignés');
