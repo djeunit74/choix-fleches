@@ -39,18 +39,19 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* TEST v26 : enrichit le JSON composants au moment de son chargement. Les
-   plumes sourcees dans vane-catalog-v25 sont ajoutees, puis les masses v26
-   sont appliquees uniquement lorsqu'elles sont jugees utilisables pour le FOC. */
+/* TEST v27 : enrichit arrow-components avant arrow-builder. Pour le FOC, le
+   champ weightGrains devient une masse equivalente par plume = masse de
+   l'empennage complet (3 plumes + fixation documentee) / 3. La masse brute de
+   la plume reste conservee dans rawWeightGrains et affichee separement. */
 (() => {
-  if (typeof window.fetch !== 'function' || window.__vaneCatalogFetchV26) return;
+  if (typeof window.fetch !== 'function' || window.__vaneCatalogFetchV27) return;
   const originalFetch = window.fetch.bind(window);
   const catalogPromise = originalFetch('./vane-catalog-v25.json?v=20260822-prealpha-v25', { cache: 'no-store' })
     .then(response => response.ok ? response.json() : { vanes: [] })
     .catch(() => ({ vanes: [] }));
-  const massPromise = originalFetch('./vane-mass-v26.json?v=20260822-prealpha-v26', { cache: 'no-store' })
-    .then(response => response.ok ? response.json() : { masses: [] })
-    .catch(() => ({ masses: [] }));
+  const massPromise = originalFetch('./vane-mass-v27.json?v=20260822-prealpha-v27', { cache: 'no-store' })
+    .then(response => response.ok ? response.json() : { masses: [], additionalVanes: [] })
+    .catch(() => ({ masses: [], additionalVanes: [] }));
 
   window.fetch = async function(input, init) {
     const response = await originalFetch(input, init);
@@ -63,12 +64,30 @@ window.AssistantArcherConfig = Object.freeze({
         const previous = byId.get(vane.id) || {};
         byId.set(vane.id, { ...previous, ...vane });
       }
+      for (const vane of (Array.isArray(massData.additionalVanes) ? massData.additionalVanes : [])) {
+        const previous = byId.get(vane.id) || {};
+        byId.set(vane.id, { ...previous, ...vane });
+      }
       for (const mass of (Array.isArray(massData.masses) ? massData.masses : [])) {
         const previous = byId.get(mass.id);
+        if (Array.isArray(mass.variants) && previous) {
+          byId.delete(mass.id);
+          for (const variant of mass.variants) {
+            const clone = { ...previous, ...mass, ...variant, variants: undefined };
+            clone.model = `${previous.model} ${variant.label}`;
+            clone.stiffness = variant.label;
+            clone.rawWeightGrains = variant.rawWeightGrains;
+            clone.weightGrains = variant.focUsable === true ? Number(variant.focEffectivePerVaneGrains) : undefined;
+            byId.set(variant.id, clone);
+          }
+          continue;
+        }
         if (!previous) continue;
-        const safeMass = { ...mass };
-        if (mass.focUsable !== true) delete safeMass.weightGrains;
-        byId.set(mass.id, { ...previous, ...safeMass });
+        const mergedMass = { ...previous, ...mass };
+        mergedMass.rawWeightGrains = mass.rawWeightGrains;
+        if (mass.focUsable === true && Number.isFinite(Number(mass.focEffectivePerVaneGrains))) mergedMass.weightGrains = Number(mass.focEffectivePerVaneGrains);
+        else delete mergedMass.weightGrains;
+        byId.set(mass.id, mergedMass);
       }
       const merged = { ...base, vanes: [...byId.values()] };
       return new Response(JSON.stringify(merged), {
@@ -80,7 +99,7 @@ window.AssistantArcherConfig = Object.freeze({
       return response;
     }
   };
-  window.__vaneCatalogFetchV26 = true;
+  window.__vaneCatalogFetchV27 = true;
 })();
 
 /* Cache-buster TEST pour la finition visuelle. */
@@ -93,7 +112,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : expert -> audit catalogue -> bibliothèque empennages. */
+/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -107,5 +126,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('expert-model-ranking.js?v=20260822-prealpha-v24', 'expert-model-ranking');
   add('catalog-audit.js?v=20260822-prealpha-v25', 'catalog-audit');
   add('vane-library-v25.js?v=20260822-prealpha-v25', 'vane-library-v25');
-  add('vane-mass-v26.js?v=20260822-prealpha-v26', 'vane-mass-v26');
+  add('vane-mass-v27.js?v=20260822-prealpha-v27', 'vane-mass-v27');
 })();
