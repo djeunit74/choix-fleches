@@ -33,7 +33,6 @@
     heading.dataset.merchantToggleBound = '1';
     heading.setAttribute('role', 'button');
     heading.setAttribute('tabindex', '0');
-    heading.setAttribute('aria-controls', 'merchant-offers');
     heading.setAttribute('aria-expanded', panel.dataset.merchantExpanded === 'true' ? 'true' : 'false');
 
     heading.addEventListener('click', () => togglePanel(panel));
@@ -59,6 +58,9 @@
   }
 
   function install() {
+    const release = document.getElementById('appReleaseStatic');
+    if (release) release.textContent = 'Version : Pré-alpha v11';
+
     bindAll();
     const result = document.getElementById('result');
     if (!result) return;
