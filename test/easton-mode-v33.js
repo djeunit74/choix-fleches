@@ -1,4 +1,4 @@
-/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v43.
+/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v44.
    Compatibilité de chargement : ce fichier conserve son ancien nom pour ne pas
    modifier l'architecture de boot. Il ne contient aucune logique Easton.
 
@@ -8,7 +8,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v43';
+  const VERSION = 'Pré-alpha v44';
   const LABEL = `Version : ${VERSION}`;
 
   function apply() {
@@ -27,6 +27,15 @@
     document.head.appendChild(script);
   }
 
+  function loadVaneSizing() {
+    if (document.querySelector('script[data-vane-sizing-v44]')) return;
+    const script = document.createElement('script');
+    script.src = 'vane-sizing.js?v=20260823-prealpha-v44';
+    script.async = false;
+    script.dataset.vaneSizingV44 = '1';
+    document.head.appendChild(script);
+  }
+
   function install() {
     const release = apply();
     if (release) {
@@ -37,6 +46,7 @@
       });
     }
     loadRecommendationUi();
+    loadVaneSizing();
     window.AssistantArcherRelease = Object.freeze({ version: VERSION, apply });
   }
 
