@@ -1,19 +1,15 @@
-/* Assistant Archer TEST - Victory Recurve Spine Chart, Pré-alpha v48.
-   Source fabricant: Victory Archery Arrow Guide, Recurve Spine Chart 2024 actuellement publié.
-   Le tableau est une référence générale Victory. Aucune taille de modèle n'est inventée:
-   le spine calculé n'est appliqué comme taille fabricant exacte que si cette taille existe
-   dans la fiche technique Victory déjà documentée pour le modèle.
+/* Assistant Archer TEST - Victory Recurve Spine Chart, Pré-alpha v49.
+   Source fabricant: Victory Archery Arrow Guide, Recurve Spine Chart actuellement publié.
+   Une seule table alimente le calculateur principal et la validation pointe/insert.
 */
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v48';
+  const VERSION = 'Pré-alpha v49';
   const CHART_SOURCE = 'https://victoryarchery.com/arrow-guide/';
   const CHART_IMAGE = 'https://victoryarchery.com/wp-content/uploads/2025/03/Recurve-Spine-2024-768x427.png';
   const LENGTHS = Object.freeze([23,24,25,26,27,28,29,30,31]);
 
-  // Tableau Victory recurve officiel. Deux bandes de masse avant sont publiées.
-  // front=100-125 gr utilise la colonne de droite; front=150-175 gr la colonne de gauche.
   const ROWS_100_125 = Object.freeze([
     { min:12,max:14, values:[null,null,null,1200,1100,1000,900,900,800] },
     { min:14,max:16, values:[1200,1200,1200,1100,1000,900,800,800,800] },
@@ -59,11 +55,11 @@
     return '';
   }
 
-  function roundedLength() {
-    const n = Number(document.getElementById('arrowLength')?.value);
+  function roundedLength(value = document.getElementById('arrowLength')?.value) {
+    const n = Number(value);
     return Number.isFinite(n) ? Math.floor(n + 0.5) : null;
   }
-  function frontWeight() {
+  function selectedFrontWeight() {
     const point = Number(document.getElementById('victoryPointWeightV48')?.value);
     const insert = Number(document.getElementById('victoryInsertWeightV48')?.value);
     return (Number.isFinite(point) ? point : 100) + (Number.isFinite(insert) ? insert : 0);
@@ -76,10 +72,10 @@
   function findRow(rows, draw) {
     return rows.find(row => draw >= row.min && draw <= row.max) || null;
   }
-  function selectorResult() {
-    const draw = Number(document.getElementById('drawWeight')?.value);
-    const length = roundedLength();
-    const front = frontWeight();
+  function selectorResultForFront(frontWeight, drawValue = document.getElementById('drawWeight')?.value, lengthValue = document.getElementById('arrowLength')?.value) {
+    const draw = Number(drawValue);
+    const length = roundedLength(lengthValue);
+    const front = Number(frontWeight);
     const band = weightBand(front);
     if (!Number.isFinite(draw) || !Number.isFinite(length) || !band) return null;
     const col = LENGTHS.indexOf(length);
@@ -89,6 +85,9 @@
     const spine = row.values[col];
     if (!Number.isFinite(spine)) return null;
     return { spine,drawWeight:draw,length,frontWeight:front,frontBand:band.label };
+  }
+  function selectorResult() {
+    return selectorResultForFront(selectedFrontWeight());
   }
 
   function specFor(key) {
@@ -103,32 +102,23 @@
     const row = spec?.spines?.[String(spine)] || null;
     return row ? { spec,row } : null;
   }
-
   function enrichModel(entry,result) {
     const key = familyKey(entry.model);
     if (!key) return entry;
     const exact = exactManufacturedRow(key,result.spine);
-    if (!exact) {
-      return {
-        ...entry,
-        victoryChartSpine:String(result.spine),
-        victoryChartExact:false,
-        victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}. Taille exacte du modèle non vérifiée dans la fiche locale.`
-      };
-    }
+    if (!exact) return {
+      ...entry,
+      victoryChartSpine:String(result.spine), victoryChartExact:false,
+      victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}. Taille exacte du modèle non vérifiée dans la fiche locale.`
+    };
     return {
       ...entry,
-      advisedSpine:String(result.spine),
-      manufacturerVerified:true,
-      manufacturerSpec:exact.row,
-      manufacturerSource:sourceFor(exact.spec),
-      manufacturerModelKey:key,
-      victoryChartSpine:String(result.spine),
-      victoryChartExact:true,
+      advisedSpine:String(result.spine), manufacturerVerified:true,
+      manufacturerSpec:exact.row, manufacturerSource:sourceFor(exact.spec), manufacturerModelKey:key,
+      victoryChartSpine:String(result.spine), victoryChartExact:true,
       victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}; taille présente dans la fiche fabricant ${exact.spec.name || key}.`
     };
   }
-
   function applySelector(rec,input) {
     if (!rec || rec.brand !== 'victory' || !Array.isArray(rec.models)) return rec;
     const result = selectorResult();
@@ -140,20 +130,18 @@
     rec.victorySelector = { version:VERSION,...result,source:CHART_SOURCE,image:CHART_IMAGE,exactModelCount:exactCount };
     rec.confidenceReasons = [...(rec.confidenceReasons || []),
       `Sélecteur Victory ${VERSION} : ${result.drawWeight} lbs, longueur ${result.length}\", poids avant ${result.frontWeight} gr (${result.frontBand}) → spine ${result.spine}.`,
-      `${exactCount} modèle(s) Victory ont cette taille confirmée dans une fiche technique locale; les autres restent informatifs et ne sont pas présentés comme taille fabricant exacte.`
+      `${exactCount} modèle(s) Victory ont cette taille confirmée dans une fiche technique locale; les autres restent informatifs.`
     ];
     return rec;
   }
-
   function ensureWrapped() {
     const current = window.buildBrandRecommendation;
-    if (typeof current !== 'function' || current.__victorySelectorV48) return false;
+    if (typeof current !== 'function' || current.__victorySelectorV49) return false;
     const wrapped = function(input,brand) { return applySelector(current.apply(this,arguments),input); };
-    wrapped.__victorySelectorV48 = true;
+    wrapped.__victorySelectorV49 = true;
     window.buildBrandRecommendation = wrapped;
     return true;
   }
-
   function updateVisibility() {
     const brand = document.getElementById('preferredBrand')?.value;
     const wrap = document.getElementById('victorySelectorV48');
@@ -161,69 +149,41 @@
     if (brand !== 'victory') return;
     const output = document.getElementById('victorySelectorResultV48');
     if (!output) return;
-    const draw = Number(document.getElementById('drawWeight')?.value);
-    const length = roundedLength();
-    const front = frontWeight();
+    const front = selectedFrontWeight();
     const band = weightBand(front);
     const result = selectorResult();
     if (result) output.innerHTML = `<strong>Victory :</strong> ${result.spine} spine · ${result.drawWeight} lbs · ${result.length}\" · avant ${result.frontWeight} gr (${result.frontBand})`;
-    else if (!band) output.textContent = `Le tableau Victory publié couvre 100–125 gr ou 150–175 gr à l'avant. Valeur actuelle : ${front} gr. Aucun spine ne sera extrapolé.`;
+    else if (!band) output.textContent = `Le tableau Victory couvre 100–125 gr ou 150–175 gr à l'avant. Valeur actuelle : ${front} gr. Aucun spine ne sera extrapolé.`;
     else output.textContent = `Renseignez une puissance et une longueur couvertes par le tableau Victory (23–31\").`;
   }
-
   function installFields() {
     const form = document.getElementById('spine-form');
     const brand = document.getElementById('preferredBrand');
     if (!form || !brand) return;
     if (!document.getElementById('victorySelectorV48')) {
       const fieldset = document.createElement('fieldset');
-      fieldset.id = 'victorySelectorV48';
-      fieldset.hidden = true;
+      fieldset.id = 'victorySelectorV48'; fieldset.hidden = true;
       fieldset.className = 'manufacturer-selector victory-selector';
       fieldset.innerHTML = `<legend>Calculateur Victory — recurve</legend>
-        <label>Poids de pointe
-          <select id="victoryPointWeightV48">
-            <option value="80">80 grains</option><option value="90">90 grains</option>
-            <option value="100" selected>100 grains</option><option value="120">120 grains</option>
-            <option value="125">125 grains</option><option value="150">150 grains</option>
-          </select>
-        </label>
-        <label>Poids d'insert
-          <select id="victoryInsertWeightV48">
-            <option value="0" selected>0 grain</option><option value="11">11 grains</option>
-            <option value="12">12 grains</option><option value="22">22 grains</option>
-            <option value="33">33 grains</option>
-          </select>
-        </label>
+        <label>Poids de pointe<select id="victoryPointWeightV48"><option value="80">80 grains</option><option value="90">90 grains</option><option value="100" selected>100 grains</option><option value="120">120 grains</option><option value="125">125 grains</option><option value="150">150 grains</option></select></label>
+        <label>Poids d'insert<select id="victoryInsertWeightV48"><option value="0" selected>0 grain</option><option value="11">11 grains</option><option value="12">12 grains</option><option value="22">22 grains</option><option value="33">33 grains</option></select></label>
         <p id="victorySelectorResultV48" class="field-hint"></p>
-        <small class="field-hint">Tableau fabricant Victory Recurve Spine Chart actuellement publié. Le poids avant = pointe + insert. Hors des plages publiées, l'app n'extrapole pas.</small>`;
+        <small class="field-hint">Tableau fabricant Victory Recurve Spine Chart. Poids avant = pointe + insert. Hors des plages publiées, l'app n'extrapole pas.</small>`;
       const anchor = document.getElementById('arrowLength')?.closest('label');
       anchor?.insertAdjacentElement('afterend',fieldset) || form.appendChild(fieldset);
       fieldset.querySelectorAll('select').forEach(el => el.addEventListener('change',updateVisibility));
     }
-    if (!brand.dataset.victorySelectorV48) {
-      brand.dataset.victorySelectorV48='1';
-      brand.addEventListener('change',updateVisibility);
-    }
-    ['drawWeight','arrowLength'].forEach(id => {
-      const el=document.getElementById(id);
-      if (el && !el.dataset.victorySelectorV48) {
-        el.dataset.victorySelectorV48='1';
-        el.addEventListener('input',updateVisibility);
-      }
-    });
-    form.addEventListener('submit',() => { ensureWrapped(); updateVisibility(); },{capture:true});
+    if (!brand.dataset.victorySelectorV49) { brand.dataset.victorySelectorV49='1'; brand.addEventListener('change',updateVisibility); }
+    ['drawWeight','arrowLength'].forEach(id => { const el=document.getElementById(id); if (el && !el.dataset.victorySelectorV49) { el.dataset.victorySelectorV49='1'; el.addEventListener('input',updateVisibility); }});
+    if (!form.dataset.victorySelectorV49) { form.dataset.victorySelectorV49='1'; form.addEventListener('submit',() => { ensureWrapped(); updateVisibility(); },{capture:true}); }
     updateVisibility();
   }
-
   function install() {
-    installFields();
-    ensureWrapped();
-    [250,800,1800].forEach(ms => setTimeout(ensureWrapped,ms));
-    window.AssistantArcherVictorySelector = Object.freeze({version:VERSION,selectorResult,applySelector,sources:Object.freeze({chart:CHART_SOURCE,image:CHART_IMAGE})});
+    installFields(); ensureWrapped(); [250,800,1800].forEach(ms => setTimeout(ensureWrapped,ms));
+    window.AssistantArcherVictorySelector = Object.freeze({
+      version:VERSION, selectorResult, selectorResultForFront, applySelector, familyKey,
+      sources:Object.freeze({chart:CHART_SOURCE,image:CHART_IMAGE})
+    });
   }
-
-  document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded',install,{once:true})
-    : install();
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded',install,{once:true}) : install();
 })();
