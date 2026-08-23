@@ -150,6 +150,31 @@
   opacity:.65!important;
 }
 
+/* Pré-alpha v45 : la présélection recommandée doit rester une vraie action visible.
+   Le style précédent utilisait un fond très clair tout en héritant d'un texte blanc. */
+.arrow-builder-dialog .arrow-select-component.arrow-select-recommended{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:42px!important;
+  border:1px solid var(--accent-2)!important;
+  border-radius:10px!important;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2))!important;
+  color:#fff!important;
+  opacity:1!important;
+  visibility:visible!important;
+  cursor:pointer!important;
+  font-weight:850!important;
+  box-shadow:0 4px 10px color-mix(in srgb,var(--accent-2) 22%,transparent)!important;
+}
+.arrow-builder-dialog .arrow-select-component.arrow-select-recommended:hover,
+.arrow-builder-dialog .arrow-select-component.arrow-select-recommended:focus-visible{
+  filter:brightness(.96);
+  color:#fff!important;
+  outline:2px solid color-mix(in srgb,var(--accent-2) 30%,transparent)!important;
+  outline-offset:2px;
+}
+
 @media(max-width:560px){
   .arrow-model-select{padding:.48rem .68rem!important;font-size:.75rem!important}
   #result li:has(.arrow-model-select){padding:.72rem .68rem .68rem;margin:.58rem 0}
@@ -158,4 +183,5 @@
   .merchant-toggle{width:100%;margin:.3rem 0 .65rem}
   #eastonSelectorV38{grid-template-columns:1fr!important;gap:.24rem!important}
   #eastonSelectorHintV38,#eastonSelectorCalcV38,#eastonSelectorV38 > .field-hint:last-child{grid-column:1!important}
+  .arrow-builder-dialog .arrow-select-component.arrow-select-recommended{width:100%!important}
 }
