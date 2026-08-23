@@ -11,9 +11,8 @@ window.AssistantArcherConfig = Object.freeze({
   })
 });
 
-/* UX TEST : le materiau est une consequence de la recommandation, pas une
-   question obligatoire. Le moteur conserve "all" en interne pour pouvoir
-   proposer carbone, aluminium ou aluminium/carbone selon les donnees fabricant. */
+/* UX TEST v33 : choix direct d'une marque active.
+   Le materiau reste une consequence de la recommandation et non une question obligatoire. */
 (() => {
   const simplifyArrowChoiceForm = () => {
     const material = document.getElementById('shaftMaterial');
@@ -26,13 +25,12 @@ window.AssistantArcherConfig = Object.freeze({
     if (guidance) { guidance.hidden = true; guidance.style.display = 'none'; }
     const brand = document.getElementById('preferredBrand');
     if (brand) {
-      const all = brand.querySelector('option[value="all"]');
-      if (all) all.textContent = 'Toutes les marques';
-      for (const value of ['carbon','avalon']) {
+      for (const value of ['all','carbon','avalon']) {
         const option = brand.querySelector(`option[value="${value}"]`);
         if (option) option.remove();
       }
-      if (['carbon','avalon'].includes(brand.value)) brand.value = 'all';
+      const allowed = ['easton','victory','skylon'];
+      if (!allowed.includes(brand.value)) brand.value = brand.querySelector('option[value="easton"]') ? 'easton' : (brand.options[0]?.value || '');
     }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', simplifyArrowChoiceForm, { once: true });
@@ -172,8 +170,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : calcul tube historique -> audit catalogue -> composants/FOC/pointes.
-   Le garde-fou Easton v32 est volontairement désactivé : retour au calcul précédent. */
+/* Boot TEST actif : calcul historique -> classement -> composants -> mode fabricant dédié Easton. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -190,4 +187,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32', 'point-audit-v31');
+  add('easton-mode-v33.js?v=20260823-prealpha-v33', 'easton-mode-v33');
 })();
