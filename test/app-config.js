@@ -121,10 +121,10 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-mass-v27.js?v=20260822-prealpha-v28','vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30','foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32','point-audit-v31');
-  add('easton-mode-v33.js?v=20260824-prealpha-v50-release','easton-mode-v33');
+  add('easton-mode-v33.js?v=20260824-prealpha-v51-release','easton-mode-v33');
   add('easton-groups-v34.js?v=20260823-prealpha-v34-disabled','easton-groups-v34');
   add('easton-precision-v37.js?v=20260823-prealpha-v38','easton-precision-v37');
   add('vane-sizing.js?v=20260823-prealpha-v44','vane-sizing');
-  add('victory-selector-v48.js?v=20260824-prealpha-v50','victory-selector-v48');
+  add('victory-selector-v48.js?v=20260824-prealpha-v51','victory-selector-v48');
   add('victory-front-balance-v49.js?v=20260824-prealpha-v49','victory-front-balance-v49');
 })();
