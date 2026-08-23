@@ -4,17 +4,21 @@ const read = p => fs.readFileSync(p, 'utf8');
 const assert = (ok, msg) => { if (!ok) throw new Error(msg); };
 
 const config = read('test/app-config.js');
-const easton = read('test/easton-mode-v33.js');
+const loader = read('test/easton-mode-v33.js');
+const groups = read('test/easton-groups-v34.js');
+const easton = read('test/easton-mode-v35.js');
 
-assert(config.includes("option[value=\"all\"]") || config.includes("['all','carbon','avalon']"), 'Le retrait explicite de Toutes les marques doit rester présent');
-assert(config.includes("brand.value = brand.querySelector('option[value=\"easton\"]') ? 'easton'"), 'Easton doit devenir le choix par défaut si all était sélectionné');
-assert(config.includes('easton-mode-v33.js?v=20260823-prealpha-v33'), 'Le mode Easton v33 doit être chargé');
-assert(easton.includes("const VERSION = 'Pré-alpha v33'"), 'Version Easton v33 absente');
+assert(config.includes("['all','carbon','avalon']"), 'Le retrait explicite de Toutes les marques doit rester présent');
+assert(loader.includes('easton-mode-v35.js?v=20260823-prealpha-v35-performance'), 'Le shim v33 doit charger le mode Easton v35');
+assert(groups.includes('EastonGroupsV34Disabled'), 'La couche v34 doit rester désactivée');
+assert(easton.includes("const VERSION = 'Pré-alpha v35'"), 'Version Easton v35 absente');
 assert(easton.includes('Poids de pointe de référence (gr)'), 'Champ poids de pointe Easton absent');
 assert(easton.includes('Type de branches'), 'Champ type de branches Easton absent');
-assert(easton.includes('rec.models = rec.models'), 'Le mode Easton doit reclasser les modèles');
-assert(!easton.includes('rec.models = rec.models.filter'), 'Le mode Easton v33 ne doit pas filtrer brutalement les modèles');
-assert(easton.includes("['720-625'"), 'La table Easton doit contenir la plage 720-625');
-assert(easton.includes('sans exclusion automatique'), 'Le caractère non destructif du mode Easton doit être explicite');
+assert(easton.includes("'720-625':'T4'"), 'Correspondance Easton 720-625 -> T4 absente');
+assert(easton.includes('T4:[650,700]'), 'Correspondance X10 T4 absente');
+assert(easton.includes('T4:[670,720]'), 'Correspondance A/C/E T4 absente');
+assert(easton.includes('sizes[sizes.length - 1]'), 'La taille recurve R doit être la valeur retenue');
+assert(!easton.includes('new MutationObserver'), 'Le mode Easton v35 ne doit pas observer tout le DOM');
+assert(!easton.includes('rec.models = rec.models.filter'), 'Le mode Easton ne doit pas supprimer brutalement les modèles');
 
-console.log('Assistant Archer: mode Easton Pré-alpha v33 contrôlé OK');
+console.log('Assistant Archer: mode Easton Pré-alpha v35 contrôlé OK');
