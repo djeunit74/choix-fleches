@@ -16,6 +16,7 @@ on:
       - 'scripts/point-catalog-check.mjs'
       - 'scripts/easton-mode-check.mjs'
       - 'scripts/easton-groups-check.mjs'
+      - 'scripts/easton-precision-check.mjs'
       - '.github/workflows/refactor-check.yml'
   pull_request:
     paths:
@@ -29,6 +30,7 @@ on:
       - 'scripts/point-catalog-check.mjs'
       - 'scripts/easton-mode-check.mjs'
       - 'scripts/easton-groups-check.mjs'
+      - 'scripts/easton-precision-check.mjs'
       - '.github/workflows/refactor-check.yml'
 
 jobs:
@@ -60,6 +62,7 @@ jobs:
           node --check test/easton-mode-v33.js
           node --check test/easton-groups-v34.js
           node --check test/easton-mode-v35.js
+          node --check test/easton-precision-v37.js
       - name: Controles de non regression
         run: node scripts/refactor-check.mjs
       - name: References fabricant
@@ -78,3 +81,5 @@ jobs:
         run: node scripts/easton-mode-check.mjs
       - name: Groupes Easton recurve
         run: node scripts/easton-groups-check.mjs
+      - name: Precision Easton v37
+        run: node scripts/easton-precision-check.mjs
