@@ -1,6 +1,7 @@
 /* Assistant Archer TEST - groupes fabricant Easton, Pré-alpha v34.
-   Principe: paramètres -> groupe Easton -> taille(s) propres au modèle.
-   Les correspondances X10/A-C-E proviennent des pages officielles Group Txx.
+   Principe: paramètres -> groupe Easton -> taille RECURVE propre au modèle.
+   Dans les tableaux Easton, la taille marquée R est la recommandation recurve.
+   Exemple T4: X10 *650•700R => X10 700 en recurve ; A/C/E *670•720R => A/C/E 720.
    Les autres modèles Easton restent gérés par le moteur historique tant que leur
    correspondance de groupe actuelle n'est pas assez documentée. */
 (() => {
@@ -15,16 +16,15 @@
     '400-340':'T11','370-310':'T12','340-300':'T13','300-250':'T14','250-200':'T14'
   });
 
+  /* Valeurs RECURVE uniquement: deuxième valeur lorsqu'Easton publie *A•BR. */
   const MODEL_GROUPS = Object.freeze({
     x10: Object.freeze({
-      T01:[900,1000], T2:[750,830], T3:[700,750], T4:[650,700],
-      T5:[600,650], T6:[550,600], T7:[500,550], T8:[450,500],
-      T9:[410,450], T10:[380,410], T11:[380], T12:[350], T13:[325]
+      T01:1000, T2:830, T3:750, T4:700, T5:650, T6:600, T7:550,
+      T8:500, T9:450, T10:410, T11:380, T12:350, T13:325
     }),
     ace: Object.freeze({
-      '03':[1100], T01:[920,1000], T2:[780,850], T3:[720,780], T4:[670,720],
-      T5:[620,670], T6:[570,620], T7:[520,570], T8:[470,520],
-      T9:[430,470], T10:[400,430], T11:[370,400], T12:[370]
+      '03':1100, T01:1000, T2:850, T3:780, T4:720, T5:670, T6:620,
+      T7:570, T8:520, T9:470, T10:430, T11:400, T12:370
     })
   });
 
@@ -38,13 +38,6 @@
     return '';
   }
 
-  function spineOf(entry) {
-    const direct = Number(entry?.advisedSpine ?? entry?.spine ?? entry?.manufacturerSpec?.spine);
-    if (Number.isFinite(direct)) return direct;
-    const matches = String(entry?.model || '').match(/(?:^|\s)(\d{3,4})(?=\s|$)/g);
-    return matches?.length ? Number(matches[matches.length - 1].trim()) : null;
-  }
-
   function currentRange() {
     return window.AssistantArcherEastonMode?.manufacturerRange?.() || null;
   }
@@ -54,35 +47,41 @@
     return range?.label ? (RANGE_TO_GROUP[range.label] || null) : null;
   }
 
-  function exactSizes(name, group = currentGroup()) {
+  function exactSpine(name, group = currentGroup()) {
     const key = modelKey(name);
-    return key && group ? (MODEL_GROUPS[key]?.[group] || null) : null;
+    return key && group ? (MODEL_GROUPS[key]?.[group] ?? null) : null;
   }
 
-  function rankExact(rec) {
+  function applyExactGroupSpines(rec) {
     if (!rec || rec.brand !== 'easton' || !Array.isArray(rec.models)) return rec;
     const group = currentGroup();
     if (!group) return rec;
 
-    const decorated = rec.models.map((entry,index) => {
-      const key = modelKey(entry.model);
-      const sizes = key ? MODEL_GROUPS[key]?.[group] : null;
-      const spine = spineOf(entry);
-      const exact = Boolean(sizes && Number.isFinite(spine) && sizes.includes(spine));
-      const familyKnown = Boolean(sizes);
-      return {entry,index,key,sizes,spine,exact,familyKnown};
+    let exactCount = 0;
+    rec.models = rec.models.map(entry => {
+      const exact = exactSpine(entry.model, group);
+      if (!Number.isFinite(exact)) return entry;
+      exactCount++;
+      return {
+        ...entry,
+        advisedSpine: exact,
+        eastonGroup: group,
+        eastonGroupVerified: true,
+        eastonGroupSource: `https://eastonarchery.com/group-${String(group).toLowerCase()}/`
+      };
     });
 
-    decorated.sort((a,b) => Number(b.exact)-Number(a.exact)
-      || Number(b.familyKnown)-Number(a.familyKnown)
-      || a.index-b.index);
-    rec.models = decorated.map(x => x.entry);
+    /* Les familles dont la table groupe est vérifiée passent devant, sans supprimer
+       les autres références Easton encore gérées par le moteur historique. */
+    rec.models = rec.models
+      .map((entry,index)=>({entry,index,verified:entry.eastonGroupVerified===true}))
+      .sort((a,b)=>Number(b.verified)-Number(a.verified)||a.index-b.index)
+      .map(({entry})=>entry);
 
-    const exactCount = decorated.filter(x => x.exact).length;
     const x10 = MODEL_GROUPS.x10[group];
     const ace = MODEL_GROUPS.ace[group];
     rec.confidenceReasons = [...(rec.confidenceReasons || []),
-      `Easton ${VERSION} : groupe fabricant ${group}. Correspondances exactes prioritaires${x10 ? ` · X10 ${x10.join('/')}` : ''}${ace ? ` · A/C/E ${ace.join('/')}` : ''}. ${exactCount} candidat(s) affiché(s) correspondent exactement au groupe ; les autres familles Easton ne sont pas supprimées tant que leur table groupe actuelle n'est pas documentée.`
+      `Easton ${VERSION} : groupe fabricant ${group}. Taille recurve exacte${Number.isFinite(x10) ? ` · X10 ${x10}` : ''}${Number.isFinite(ace) ? ` · A/C/E ${ace}` : ''}. ${exactCount} famille(s) affichée(s) utilisent directement la taille marquée R par Easton ; les autres modèles ne sont pas extrapolés.`
     ];
     return rec;
   }
@@ -92,7 +91,7 @@
     if (typeof window.buildBrandRecommendation !== 'function') return false;
     const original = window.buildBrandRecommendation;
     const wrapped = function(input,brand) {
-      return rankExact(original.apply(this,arguments));
+      return applyExactGroupSpines(original.apply(this,arguments));
     };
     wrapped.__eastonGroupsV34 = true;
     window.buildBrandRecommendation = wrapped;
@@ -106,7 +105,7 @@
     if (!range || !group) return;
     const x10 = MODEL_GROUPS.x10[group];
     const ace = MODEL_GROUPS.ace[group];
-    hint.textContent = `Référence Easton : ${range.label} → groupe ${group}${x10 ? ` · X10 ${x10.join(' / ')}` : ''}${ace ? ` · A/C/E ${ace.join(' / ')}` : ''}. Les tailles sont propres au modèle, pas une plage générique.`;
+    hint.textContent = `Référence Easton : ${range.label} → groupe ${group}${Number.isFinite(x10) ? ` · X10 recurve ${x10}` : ''}${Number.isFinite(ace) ? ` · A/C/E recurve ${ace}` : ''}. La taille marquée R du tableau fabricant est utilisée directement.`;
   }
 
   function refresh() {
@@ -121,7 +120,7 @@
     let tries=0;
     const timer=setInterval(()=>{tries++;refresh();if(window.buildBrandRecommendation?.__eastonGroupsV34||tries>80)clearInterval(timer);},100);
     new MutationObserver(()=>requestAnimationFrame(refresh)).observe(document.body,{childList:true,subtree:true});
-    window.AssistantArcherEastonGroups = Object.freeze({version:VERSION,currentGroup,exactSizes,modelGroups:MODEL_GROUPS});
+    window.AssistantArcherEastonGroups = Object.freeze({version:VERSION,currentGroup,exactSpine,modelGroups:MODEL_GROUPS});
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
 })();
