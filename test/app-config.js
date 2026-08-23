@@ -39,12 +39,13 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* TEST v28 : enrichit les composants avant arrow-builder.
-   - arrow-components : catalogue d'empennages + masses FOC v27.
-   - arrow-balance : audit de precision de l'ensemble arriere v28.
+/* TEST v31 : enrichit les composants avant arrow-builder.
+   - empennages : catalogue + masses FOC,
+   - pointes : audit fabricant Easton/Victory/Skylon,
+   - equilibre : precision de l'ensemble arriere.
    Les donnees fabricant restent prioritaires et les proxies restent explicitement signales. */
 (() => {
-  if (typeof window.fetch !== 'function' || window.__componentPrecisionFetchV28) return;
+  if (typeof window.fetch !== 'function' || window.__componentPrecisionFetchV31) return;
   const originalFetch = window.fetch.bind(window);
   const catalogPromise = originalFetch('./vane-catalog-v25.json?v=20260822-prealpha-v25', { cache: 'no-store' })
     .then(response => response.ok ? response.json() : { vanes: [] })
@@ -55,6 +56,25 @@ window.AssistantArcherConfig = Object.freeze({
   const rearPromise = originalFetch('./rear-precision-v28.json?v=20260822-prealpha-v28', { cache: 'no-store' })
     .then(response => response.ok ? response.json() : { profiles: {} })
     .catch(() => ({ profiles: {} }));
+  const pointPromise = originalFetch('./point-catalog-v31.json?v=20260823-prealpha-v31', { cache: 'no-store' })
+    .then(response => response.ok ? response.json() : { points: [] })
+    .catch(() => ({ points: [] }));
+
+  const normPointKey = value => String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const expandSpecialPointAliases = point => {
+    const keys = new Set(Array.isArray(point?.tubeKeys) ? point.tubeKeys : []);
+    const spines = new Set([
+      ...(Array.isArray(point?.spines) ? point.spines : []),
+      ...Object.keys(point?.weightsBySpine || {}),
+      ...Object.values(point?.recommendedWeightsByTubeSpine || {}).flatMap(table => Object.keys(table || {}))
+    ].map(String));
+    for (const key of [...keys]) {
+      const normalized = normPointKey(key);
+      if (!['x10', 'vap', 'a c e', 'ace'].includes(normalized)) continue;
+      for (const spine of spines) keys.add(`${key} ${spine}`);
+    }
+    return { ...point, tubeKeys: [...keys] };
+  };
 
   window.fetch = async function(input, init) {
     const response = await originalFetch(input, init);
@@ -62,7 +82,7 @@ window.AssistantArcherConfig = Object.freeze({
 
     if (/arrow-components\.json(?:\?|$)/i.test(url)) {
       try {
-        const [base, extra, massData] = await Promise.all([response.clone().json(), catalogPromise, massPromise]);
+        const [base, extra, massData, pointData] = await Promise.all([response.clone().json(), catalogPromise, massPromise, pointPromise]);
         const byId = new Map((Array.isArray(base.vanes) ? base.vanes : []).map(vane => [vane.id, vane]));
         for (const vane of (Array.isArray(extra.vanes) ? extra.vanes : [])) {
           const previous = byId.get(vane.id) || {};
@@ -93,7 +113,15 @@ window.AssistantArcherConfig = Object.freeze({
           else delete mergedMass.weightGrains;
           byId.set(mass.id, mergedMass);
         }
-        const merged = { ...base, vanes: [...byId.values()] };
+
+        const pointById = new Map((Array.isArray(base.points) ? base.points : []).map(point => [point.id, point]));
+        for (const point of (Array.isArray(pointData.points) ? pointData.points : [])) {
+          const previous = pointById.get(point.id) || {};
+          pointById.set(point.id, { ...previous, ...point });
+        }
+        const points = [...pointById.values()].map(expandSpecialPointAliases);
+
+        const merged = { ...base, vanes: [...byId.values()], points, pointAuditVersion: pointData.version || null };
         return new Response(JSON.stringify(merged), {
           status: response.status,
           statusText: response.statusText,
@@ -118,7 +146,7 @@ window.AssistantArcherConfig = Object.freeze({
             rearAssembly: { ...(profile.rearAssembly || {}), ...(patch.rearAssembly || {}) }
           };
         });
-        const merged = { ...base, updatedAt: '2026-08-22', precisionVersion: precision.version, profiles };
+        const merged = { ...base, updatedAt: '2026-08-23', precisionVersion: precision.version, profiles };
         return new Response(JSON.stringify(merged), {
           status: response.status,
           statusText: response.statusText,
@@ -131,7 +159,7 @@ window.AssistantArcherConfig = Object.freeze({
 
     return response;
   };
-  window.__componentPrecisionFetchV28 = true;
+  window.__componentPrecisionFetchV31 = true;
 })();
 
 /* Cache-buster TEST pour la finition visuelle. */
@@ -144,7 +172,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC -> repere FOC graphique. */
+/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC -> repere FOC -> audit pointes. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -160,4 +188,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-library-v25.js?v=20260822-prealpha-v28', 'vane-library-v25');
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
+  add('point-audit-v31.js?v=20260823-prealpha-v31', 'point-audit-v31');
 })();
