@@ -21,7 +21,7 @@
     const form=document.getElementById('spine-form'); if(!form||document.getElementById('expertObjective'))return;
     const discipline=document.getElementById('disciplineWrap'),label=document.createElement('label');
     label.id='expertObjectiveWrap';
-    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression / simplicité</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Le spine reste celui du fabricant. Le mode progression resserre la liste vers les tubes les plus simples/cohérents ; le mode expert vers les modèles réellement spécialisés.</small>`;
+    label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Le spine reste celui du fabricant. Le mode progression resserre la liste vers les tubes les plus simples/cohérents ; le mode expert vers les modèles réellement spécialisés.</small>`;
     if(discipline?.nextSibling)form.insertBefore(label,discipline.nextSibling);else form.appendChild(label);
   }
 
