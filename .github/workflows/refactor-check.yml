@@ -81,5 +81,5 @@ jobs:
         run: node scripts/easton-mode-check.mjs
       - name: Groupes Easton recurve
         run: node scripts/easton-groups-check.mjs
-      - name: Precision Easton v37
+      - name: Precision Easton v38
         run: node scripts/easton-precision-check.mjs
