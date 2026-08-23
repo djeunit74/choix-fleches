@@ -1,13 +1,16 @@
-/* Assistant Archer TEST - Victory Recurve Spine Chart, Pré-alpha v49.
-   Source fabricant: Victory Archery Arrow Guide, Recurve Spine Chart actuellement publié.
+/* Assistant Archer TEST - Victory Recurve Spine Chart, Pré-alpha v50.
+   Sources fabricant: Victory Arrow Guide + catalogue Target 2026.
    Une seule table alimente le calculateur principal et la validation pointe/insert.
+   Les modèles ne sont injectés comme exacts que si le spine calculé existe réellement
+   dans la table de tailles fabricant du modèle.
 */
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v49';
+  const VERSION = 'Pré-alpha v50';
   const CHART_SOURCE = 'https://victoryarchery.com/arrow-guide/';
   const CHART_IMAGE = 'https://victoryarchery.com/wp-content/uploads/2025/03/Recurve-Spine-2024-768x427.png';
+  const CATALOG_SOURCE = 'https://issuu.com/rublinemarketing/docs/victory_archery_2026_digital_catalog_-_target';
   const LENGTHS = Object.freeze([23,24,25,26,27,28,29,30,31]);
 
   const ROWS_100_125 = Object.freeze([
@@ -38,6 +41,34 @@
     { min:52,max:56, values:[600,500,500,500,400,400,350,350,350] },
     { min:57,max:61, values:[500,500,500,400,400,350,350,350,300] }
   ]);
+
+  /* Tables Target 2026 recopiées depuis le catalogue Victory.
+     V1/V3/V6 sont des grades de rectitude d'une même famille, pas des modèles distincts. */
+  const VERIFIED_MODELS = Object.freeze({
+    vap:Object.freeze({
+      name:'VAP', source:'https://victoryarchery.com/arrows-target/vap/', material:'100% carbone', idIn:0.166,
+      grades:Object.freeze({V1:0.001,V3:0.003,V6:0.006}),
+      spines:Object.freeze({
+        350:{gpi:7.8,lengthIn:31,odIn:0.232},400:{gpi:7.2,lengthIn:31,odIn:0.227},
+        450:{gpi:6.6,lengthIn:31,odIn:0.223},500:{gpi:6.1,lengthIn:31,odIn:0.218},
+        600:{gpi:5.5,lengthIn:31,odIn:0.214},700:{gpi:5.7,lengthIn:31,odIn:0.216},
+        800:{gpi:5.4,lengthIn:31,odIn:0.213},900:{gpi:5.0,lengthIn:31,odIn:0.210},
+        1000:{gpi:4.7,lengthIn:31,odIn:0.208},1100:{gpi:4.7,lengthIn:31,odIn:0.208},
+        1200:{gpi:4.6,lengthIn:31,odIn:0.206}
+      })
+    }),
+    vxt:Object.freeze({
+      name:'VXT', source:'https://victoryarchery.com/arrows-target/vxt/', material:'100% carbone', idIn:0.166,
+      grades:Object.freeze({V1:0.001,V3:0.003,V6:0.006}),
+      spines:Object.freeze({
+        300:{gpi:8.3,lengthIn:31,frontOdIn:0.241,middleOdIn:0.236,backOdIn:0.212},
+        355:{gpi:7.4,lengthIn:31,frontOdIn:0.237,middleOdIn:0.229,backOdIn:0.207},
+        450:{gpi:7.4,lengthIn:31,frontOdIn:0.236,middleOdIn:0.230,backOdIn:0.210},
+        550:{gpi:7.1,lengthIn:31,frontOdIn:0.234,middleOdIn:0.228,backOdIn:0.210},
+        630:{gpi:7.4,lengthIn:31,frontOdIn:0.235,middleOdIn:0.229,backOdIn:0.209}
+      })
+    })
+  });
 
   const norm = value => String(value || '').toLowerCase().normalize('NFD')
     .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
@@ -86,21 +117,32 @@
     if (!Number.isFinite(spine)) return null;
     return { spine,drawWeight:draw,length,frontWeight:front,frontBand:band.label };
   }
-  function selectorResult() {
-    return selectorResultForFront(selectedFrontWeight());
-  }
+  function selectorResult() { return selectorResultForFront(selectedFrontWeight()); }
 
-  function specFor(key) {
+  function runtimeSpecFor(key) {
     return window.AssistantArcherManufacturerReference?.data?.models?.[key] || null;
   }
+  function verifiedSpecFor(key) { return VERIFIED_MODELS[key] || null; }
+  function specFor(key) { return verifiedSpecFor(key) || runtimeSpecFor(key); }
   function sourceFor(spec) {
+    if (spec?.source && /^https?:/i.test(spec.source)) return spec.source;
     const sourceKey = spec?.source;
-    return sourceKey ? window.AssistantArcherManufacturerReference?.data?.sources?.[sourceKey] || '' : '';
+    return sourceKey ? window.AssistantArcherManufacturerReference?.data?.sources?.[sourceKey] || CATALOG_SOURCE : CATALOG_SOURCE;
   }
   function exactManufacturedRow(key,spine) {
     const spec = specFor(key);
-    const row = spec?.spines?.[String(spine)] || null;
+    const row = spec?.spines?.[String(spine)] || spec?.spines?.[Number(spine)] || null;
     return row ? { spec,row } : null;
+  }
+  function metaFor(key,spec,row,previous={}) {
+    return {
+      ...previous,
+      material:'carbon', diameters:['thin'], environments:['outdoor'], disciplines:['target','field'], bowTypes:['recurve'],
+      goals:['performance','competition','elite'], componentSystem:'manufacturer', distanceBand:'long', useCase:'target',
+      manufacturerMaterial:spec.material, manufacturerInnerDiameterIn:spec.idIn ?? null,
+      manufacturerGrades:spec.grades || null, manufacturerGpi:row.gpi ?? null,
+      manufacturerLengthIn:row.lengthIn ?? null, manufacturerOdIn:row.odIn ?? null
+    };
   }
   function enrichModel(entry,result) {
     const key = familyKey(entry.model);
@@ -109,15 +151,37 @@
     if (!exact) return {
       ...entry,
       victoryChartSpine:String(result.spine), victoryChartExact:false,
-      victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}. Taille exacte du modèle non vérifiée dans la fiche locale.`
+      victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}. Ce spine n'est pas une taille publiée pour ${entry.model}.`
     };
     return {
       ...entry,
+      model:exact.spec.name || entry.model,
       advisedSpine:String(result.spine), manufacturerVerified:true,
       manufacturerSpec:exact.row, manufacturerSource:sourceFor(exact.spec), manufacturerModelKey:key,
       victoryChartSpine:String(result.spine), victoryChartExact:true,
-      victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}; taille présente dans la fiche fabricant ${exact.spec.name || key}.`
+      meta:metaFor(key,exact.spec,exact.row,entry.meta),
+      victorySelectionBasis:`Victory Recurve Spine Chart: ${result.drawWeight} lbs, ${result.length}\", avant ${result.frontBand} → spine ${result.spine}; taille publiée pour ${exact.spec.name || key}.`
     };
+  }
+  function injectExactModels(models,result,input) {
+    const out = [...models];
+    const seen = new Set(out.map(entry => familyKey(entry.model)).filter(Boolean));
+    for (const key of ['vap','vxt']) {
+      if (seen.has(key)) continue;
+      const exact = exactManufacturedRow(key,result.spine);
+      if (!exact) continue;
+      const requested = Number(input?.arrowLength ?? document.getElementById('arrowLength')?.value);
+      if (Number.isFinite(requested) && Number(exact.row.lengthIn) < requested) continue;
+      out.push({
+        model:exact.spec.name, advisedSpine:String(result.spine), score:100,
+        manufacturerVerified:true, manufacturerSpec:exact.row, manufacturerSource:sourceFor(exact.spec), manufacturerModelKey:key,
+        victoryChartSpine:String(result.spine), victoryChartExact:true, verifiedCatalogInjection:true,
+        meta:metaFor(key,exact.spec,exact.row),
+        victorySelectionBasis:`Victory Target 2026 + Recurve Spine Chart : spine ${result.spine} réellement fabriqué pour ${exact.spec.name}.`
+      });
+      seen.add(key);
+    }
+    return out;
   }
   function applySelector(rec,input) {
     if (!rec || rec.brand !== 'victory' || !Array.isArray(rec.models)) return rec;
@@ -125,20 +189,20 @@
     if (!result) return rec;
     rec.primary = String(result.spine);
     rec.comparisonSpine = result.spine;
-    rec.models = rec.models.map(entry => enrichModel(entry,result));
+    rec.models = injectExactModels(rec.models.map(entry => enrichModel(entry,result)),result,input);
     const exactCount = rec.models.filter(entry => entry.victoryChartExact).length;
-    rec.victorySelector = { version:VERSION,...result,source:CHART_SOURCE,image:CHART_IMAGE,exactModelCount:exactCount };
+    rec.victorySelector = { version:VERSION,...result,source:CHART_SOURCE,catalogSource:CATALOG_SOURCE,image:CHART_IMAGE,exactModelCount:exactCount };
     rec.confidenceReasons = [...(rec.confidenceReasons || []),
       `Sélecteur Victory ${VERSION} : ${result.drawWeight} lbs, longueur ${result.length}\", poids avant ${result.frontWeight} gr (${result.frontBand}) → spine ${result.spine}.`,
-      `${exactCount} modèle(s) Victory ont cette taille confirmée dans une fiche technique locale; les autres restent informatifs.`
+      `${exactCount} modèle(s) Victory ont exactement ce spine dans la table fabricant 2026. Les tailles voisines ne sont pas présentées comme équivalentes.`
     ];
     return rec;
   }
   function ensureWrapped() {
     const current = window.buildBrandRecommendation;
-    if (typeof current !== 'function' || current.__victorySelectorV49) return false;
+    if (typeof current !== 'function' || current.__victorySelectorV50) return false;
     const wrapped = function(input,brand) { return applySelector(current.apply(this,arguments),input); };
-    wrapped.__victorySelectorV49 = true;
+    wrapped.__victorySelectorV50 = true;
     window.buildBrandRecommendation = wrapped;
     return true;
   }
@@ -173,16 +237,16 @@
       anchor?.insertAdjacentElement('afterend',fieldset) || form.appendChild(fieldset);
       fieldset.querySelectorAll('select').forEach(el => el.addEventListener('change',updateVisibility));
     }
-    if (!brand.dataset.victorySelectorV49) { brand.dataset.victorySelectorV49='1'; brand.addEventListener('change',updateVisibility); }
-    ['drawWeight','arrowLength'].forEach(id => { const el=document.getElementById(id); if (el && !el.dataset.victorySelectorV49) { el.dataset.victorySelectorV49='1'; el.addEventListener('input',updateVisibility); }});
-    if (!form.dataset.victorySelectorV49) { form.dataset.victorySelectorV49='1'; form.addEventListener('submit',() => { ensureWrapped(); updateVisibility(); },{capture:true}); }
+    if (!brand.dataset.victorySelectorV50) { brand.dataset.victorySelectorV50='1'; brand.addEventListener('change',updateVisibility); }
+    ['drawWeight','arrowLength'].forEach(id => { const el=document.getElementById(id); if (el && !el.dataset.victorySelectorV50) { el.dataset.victorySelectorV50='1'; el.addEventListener('input',updateVisibility); }});
+    if (!form.dataset.victorySelectorV50) { form.dataset.victorySelectorV50='1'; form.addEventListener('submit',() => { ensureWrapped(); updateVisibility(); },{capture:true}); }
     updateVisibility();
   }
   function install() {
     installFields(); ensureWrapped(); [250,800,1800].forEach(ms => setTimeout(ensureWrapped,ms));
     window.AssistantArcherVictorySelector = Object.freeze({
-      version:VERSION, selectorResult, selectorResultForFront, applySelector, familyKey,
-      sources:Object.freeze({chart:CHART_SOURCE,image:CHART_IMAGE})
+      version:VERSION, selectorResult, selectorResultForFront, applySelector, familyKey, exactManufacturedRow,
+      sources:Object.freeze({chart:CHART_SOURCE,catalog:CATALOG_SOURCE,image:CHART_IMAGE})
     });
   }
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded',install,{once:true}) : install();
