@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-23-prealpha-v31",
+  "version": "2026-08-23-prealpha-v41",
   "channel": "test",
   "policy": {
     "manufacturerFirst": true,
@@ -8,7 +8,7 @@
     "pointWeightAffectsFocOnlyAfterTubeCompatibility": true
   },
   "audit": {
-    "Easton": "Complète les références déjà présentes pour X10, X10 Parallel Pro, A/C/E, Avance, SuperDrive Micro et Vector avec les principales familles salle X7, X23, RX7, XX75 Platinum Plus et Jazz.",
+    "Easton": "Complète les références déjà présentes pour X10, X10 Parallel Pro, A/C/E, Avance, SuperDrive Micro et Vector avec les principales familles salle X7, X23, RX7, XX75 Platinum Plus et Jazz. Ajoute aussi des alias de libellé strictement techniques pour relier 4MM X10 Parallel Pro à sa référence de pointe déjà documentée.",
     "Victory": "VAP et VXT étaient déjà documentées avec les deux plages de pointes break-off ; VFT est ajoutée avec la pointe VForce SS publiée par Victory.",
     "Skylon": "Les familles 3.2 mm et 4.2 mm principales étaient déjà documentées par type de pointe et recommandation de poids selon le spine ; elles restent inchangées."
   },
@@ -95,6 +95,11 @@
       "sourceUrl": "https://eastonarchery.com/arrows_/xx75-jazz/",
       "sourceLabel": "Easton — XX75 Jazz 2026",
       "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "easton-pp4-4mm-hl",
+      "tubeKeys": ["x10 parallel pro 4 mm", "4mm x10 parallel pro", "4 mm x10 parallel pro"],
+      "note": "Alias de libellé uniquement : les trois formes désignent le même 4MM X10 Parallel Pro. Les spines, fitments et poids restent ceux de la référence Easton déjà enregistrée dans arrow-components.json."
     },
     {
       "id": "victory-vft-vforce-ss-point",
