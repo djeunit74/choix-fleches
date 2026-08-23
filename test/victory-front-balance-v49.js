@@ -1,14 +1,13 @@
 /* Assistant Archer TEST - Victory point + insert + FOC, Pré-alpha v49.
    S'applique uniquement au constructeur quand le tube choisi est Victory.
    La table de spine reste centralisée dans AssistantArcherVictorySelector.
-   Observation limitée au panneau du constructeur, jamais au document global.
+   Aucun observer global ni boucle permanente : mise à jour sur événements utiles seulement.
 */
 (() => {
   'use strict';
   const VERSION = 'Pré-alpha v49';
   let selectedInsert = 0;
   let selectedPoint = null;
-  let panelObserver = null;
 
   const norm = value => String(value || '').toLowerCase().normalize('NFD')
     .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
@@ -37,22 +36,27 @@
   }
 
   function insertConfig(key) {
-    if (key === 'vft') return { values:[0,11,22,33], source:'Victory VFT', note:'Inserts avant VForce 11/22 gr ou VForce SS 33 gr.' };
-    if (key === 'v-tac 23' || key === 'v-tac 25') return { values:[0,44], source:'Victory V-Tac', note:'Insert avant Victory 44 gr disponible.' };
-    if (key === 'vap' || key === 'vxt') return { values:[0], source:`Victory ${key.toUpperCase()}`, note:'Pas d’insert avant ajouté dans le montage cible documenté : les pin bushings sont des composants arrière.' };
-    return { values:[0], source:'Victory', note:'Aucun insert avant documenté pour ce montage dans la base active.' };
+    if (key === 'vft') return { values:[0,11,22,33], note:'Inserts avant VForce 11/22 gr ou VForce SS 33 gr.' };
+    if (key === 'v-tac 23' || key === 'v-tac 25') return { values:[0,44], note:'Insert avant Victory 44 gr disponible.' };
+    if (key === 'vap' || key === 'vxt') return { values:[0], note:'Pas d’insert avant ajouté dans le montage cible documenté : les pin bushings sont des composants arrière.' };
+    return { values:[0], note:'Aucun insert avant documenté pour ce montage dans la base active.' };
   }
 
   function selectorFor(front) {
     return window.AssistantArcherVictorySelector?.selectorResultForFront?.(front) || null;
   }
 
-  function parseCard(card) {
-    const line = card.querySelector('.arrow-balance-numbers')?.textContent || '';
-    const point = Number(line.match(/(\d+(?:\.\d+)?)\s*gr/i)?.[1]);
-    const foc = Number(line.match(/FOC\s*estim[eé]\s*(\d+(?:[.,]\d+)?)\s*%/i)?.[1]?.replace(',','.'));
-    const mass = Number(line.match(/masse\s*estim[eé]e?\s*(\d+(?:[.,]\d+)?)\s*gr/i)?.[1]?.replace(',','.'));
+  function parseOriginalLine(text) {
+    const point = Number(text.match(/(\d+(?:\.\d+)?)\s*gr/i)?.[1]);
+    const foc = Number(text.match(/FOC\s*estim[eé]\s*(\d+(?:[.,]\d+)?)\s*%/i)?.[1]?.replace(',','.'));
+    const mass = Number(text.match(/masse\s*estim[eé]e?\s*(\d+(?:[.,]\d+)?)\s*gr/i)?.[1]?.replace(',','.'));
     return { point, foc, mass };
+  }
+
+  function parseCard(card) {
+    const line = card.querySelector('.arrow-balance-numbers');
+    const source = line?.dataset?.victoryOriginal || line?.textContent || '';
+    return parseOriginalLine(source);
   }
 
   function correctedEstimate(oldFoc, oldMass, insert) {
@@ -68,8 +72,7 @@
 
   function ensureInsertChooser(panel,tube) {
     if (!panel || tube.brand !== 'victory') return;
-    const key = family(tube.model);
-    const config = insertConfig(key);
+    const config = insertConfig(family(tube.model));
     if (!config.values.includes(selectedInsert)) selectedInsert = config.values[0];
     let box = panel.querySelector('#victoryBuilderFrontV49');
     if (!box) {
@@ -79,6 +82,9 @@
       const head = panel.querySelector('.arrow-builder-panel-head') || panel.firstElementChild;
       head?.insertAdjacentElement('afterend',box) || panel.prepend(box);
     }
+    const signature = `${family(tube.model)}|${selectedInsert}`;
+    if (box.dataset.signature === signature) return;
+    box.dataset.signature = signature;
     box.innerHTML = `<strong>Montage avant Victory</strong>
       <label style="display:block;margin:.4rem 0 0">Insert avant
         <select id="victoryBuilderInsertV49" style="margin-left:.35rem">
@@ -88,15 +94,15 @@
       <small style="display:block;margin-top:.3rem">${config.note} Le spine est recalculé avec pointe + insert avant.</small>`;
     box.querySelector('#victoryBuilderInsertV49')?.addEventListener('change',event => {
       selectedInsert = Number(event.target.value) || 0;
+      box.dataset.signature = '';
       const mainInsert = document.getElementById('victoryInsertWeightV48');
       if (mainInsert && [...mainInsert.options].some(o => Number(o.value) === selectedInsert)) mainInsert.value = String(selectedInsert);
       patchPanel();
-    },{once:true});
+    });
   }
 
   function patchPointCards(panel,tube) {
-    const cards = [...panel.querySelectorAll('.arrow-point-recommendation')];
-    cards.forEach(card => {
+    [...panel.querySelectorAll('.arrow-point-recommendation')].forEach(card => {
       const parsed = parseCard(card);
       if (!Number.isFinite(parsed.point)) return;
       const front = parsed.point + selectedInsert;
@@ -109,27 +115,22 @@
         status.className = 'victory-front-status-v49 muted';
         (card.querySelector('.arrow-balance-numbers') || card.querySelector('h4'))?.insertAdjacentElement('afterend',status);
       }
-      if (!result) {
-        status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Hors des bandes Victory publiées (100–125 / 150–175 gr) : aucun spine extrapolé.`;
-      } else if (compatible) {
-        status.innerHTML = `<strong>Avant total : ${parsed.point} + ${selectedInsert} = ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong> : cohérent avec le tube choisi.`;
-      } else {
-        status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong>, alors que le tube choisi est ${tube.spine || 'non précisé'} : combinaison non validable.`;
-      }
+      if (!result) status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Hors des bandes Victory publiées (100–125 / 150–175 gr) : aucun spine extrapolé.`;
+      else if (compatible) status.innerHTML = `<strong>Avant total : ${parsed.point} + ${selectedInsert} = ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong> : cohérent avec le tube choisi.`;
+      else status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong>, alors que le tube choisi est ${tube.spine || 'non précisé'} : combinaison non validable.`;
+
       if (button) {
         button.disabled = !compatible;
         button.setAttribute('aria-disabled',String(!compatible));
         if (!compatible) button.title = result ? `Victory recommande spine ${result.spine} avec ${front} gr devant` : 'Poids avant hors tableau Victory publié';
         else button.removeAttribute('title');
       }
+
       const line = card.querySelector('.arrow-balance-numbers');
       const corrected = correctedEstimate(parsed.foc,parsed.mass,selectedInsert);
-      if (line && corrected && !line.dataset.victoryOriginal) {
-        line.dataset.victoryOriginal = line.textContent;
-      }
-      if (line && corrected) {
-        line.innerHTML = `<strong>${parsed.point} gr</strong> + insert ${selectedInsert} gr · avant <strong>${front} gr</strong> · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
-      }
+      if (line && !line.dataset.victoryOriginal) line.dataset.victoryOriginal = line.textContent;
+      if (line && corrected) line.innerHTML = `<strong>${parsed.point} gr</strong> + insert ${selectedInsert} gr · avant <strong>${front} gr</strong> · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
+
       if (button && !button.dataset.victoryFrontBoundV49) {
         button.dataset.victoryFrontBoundV49='1';
         button.addEventListener('click',() => {
@@ -177,24 +178,13 @@
     const tube = currentTube();
     if (tube.brand !== 'victory') return;
     const title = document.getElementById('arrowBuilderDialogTitle')?.textContent || '';
-    if (/Pointe/i.test(title)) {
-      ensureInsertChooser(panel,tube);
-      patchPointCards(panel,tube);
-    } else if (/Equilibre|Équilibre/i.test(title)) {
-      patchBalancePanel(panel,tube);
-      patchSummary();
-    }
+    if (/Pointe/i.test(title)) { ensureInsertChooser(panel,tube); patchPointCards(panel,tube); }
+    else if (/Equilibre|Équilibre/i.test(title)) { patchBalancePanel(panel,tube); patchSummary(); }
   }
 
   function install() {
-    const panel = document.getElementById('arrowBuilderPanel');
-    if (!panel) { setTimeout(install,250); return; }
-    if (!panelObserver) {
-      panelObserver = new MutationObserver(() => queueMicrotask(patchPanel));
-      panelObserver.observe(panel,{childList:true,subtree:true});
-    }
     document.addEventListener('click',event => {
-      if (event.target.closest('[data-arrow-part="point"],[data-arrow-part="balance"]')) setTimeout(patchPanel,0);
+      if (event.target.closest('[data-arrow-part="point"],[data-arrow-part="balance"],[data-vane]')) setTimeout(patchPanel,0);
     });
     window.AssistantArcherVictoryFrontBalance = Object.freeze({version:VERSION,patchPanel,insertConfig});
   }
