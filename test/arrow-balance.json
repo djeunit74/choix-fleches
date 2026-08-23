@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-21",
+  "updatedAt": "2026-08-23",
   "method": {
     "targetFoc": 12,
     "coherentFocRange": [10, 15],
@@ -64,7 +64,7 @@
     {
       "id": "easton-x10-parallel-pro-4",
       "manufacturer": "Easton",
-      "tubeKeys": ["x10 parallel pro 4 mm"],
+      "tubeKeys": ["x10 parallel pro 4 mm", "4mm x10 parallel pro", "4 mm x10 parallel pro"],
       "gpiBySpine": {"250":10.8,"300":9.5,"340":8.9,"380":8.3,"420":7.8,"470":7.3,"520":7.0,"570":6.6,"610":7.3,"660":6.9,"710":6.5,"810":6.1,"880":5.9,"1000":5.5,"1150":5.5},
       "rearAssembly": {"weightGrains":11,"label":"4MM Pin 9 gr + Pin Nock 2 gr","sourceUrl":"https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf"},
       "sourceUrl": "https://eastonarchery.com/arrows_/x10-parallel-pro/",
