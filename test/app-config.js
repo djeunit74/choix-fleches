@@ -170,8 +170,9 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST : couches stables puis précision Easton v37. Les anciens fichiers
-   Easton v33/v34 restent chargés uniquement comme contrôleur version / shim inerte. */
+/* Boot TEST : couches stables puis calculateur Easton v38.
+   Le fichier easton-precision-v37.js conserve son nom historique mais contient
+   désormais la logique v38 afin d'éviter une chaîne de fichiers correctifs. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -188,7 +189,7 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32', 'point-audit-v31');
-  add('easton-mode-v33.js?v=20260823-prealpha-v37-release', 'easton-mode-v33');
+  add('easton-mode-v33.js?v=20260823-prealpha-v38-release', 'easton-mode-v33');
   add('easton-groups-v34.js?v=20260823-prealpha-v34-disabled', 'easton-groups-v34');
-  add('easton-precision-v37.js?v=20260823-prealpha-v37', 'easton-precision-v37');
+  add('easton-precision-v37.js?v=20260823-prealpha-v38', 'easton-precision-v37');
 })();
