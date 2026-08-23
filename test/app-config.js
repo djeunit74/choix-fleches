@@ -179,7 +179,7 @@ window.AssistantArcherConfig = Object.freeze({
 (() => {
   const refreshUiPolish = () => {
     const link = [...document.querySelectorAll('link[rel="stylesheet"]')].find(el => /ui-polish\.css/i.test(el.getAttribute('href') || ''));
-    if (link) link.href = 'ui-polish.css?v=20260823-prealpha-v39';
+    if (link) link.href = 'ui-polish.css?v=20260823-prealpha-v45';
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refreshUiPolish, { once: true });
   else refreshUiPolish();
@@ -207,4 +207,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('easton-mode-v33.js?v=20260823-prealpha-v39-release', 'easton-mode-v33');
   add('easton-groups-v34.js?v=20260823-prealpha-v34-disabled', 'easton-groups-v34');
   add('easton-precision-v37.js?v=20260823-prealpha-v38', 'easton-precision-v37');
+  add('vane-sizing.js?v=20260823-prealpha-v44', 'vane-sizing');
 })();
