@@ -172,7 +172,8 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC -> repere FOC -> audit pointes -> garde-fou Easton 2026. */
+/* Boot TEST actif : calcul tube historique -> audit catalogue -> composants/FOC/pointes.
+   Le garde-fou Easton v32 est volontairement désactivé : retour au calcul précédent. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -188,6 +189,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-library-v25.js?v=20260822-prealpha-v28', 'vane-library-v25');
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
-  add('point-audit-v31.js?v=20260823-prealpha-v31', 'point-audit-v31');
-  add('easton-spine-v32.js?v=20260823-prealpha-v32', 'easton-spine-v32');
+  add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32', 'point-audit-v31');
 })();
