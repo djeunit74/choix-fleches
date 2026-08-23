@@ -185,7 +185,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST : couches stables puis calculateur Easton v38. */
+/* Boot TEST : couches stables, calculateur Easton puis calculateur Victory. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -206,4 +206,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('easton-groups-v34.js?v=20260823-prealpha-v34-disabled', 'easton-groups-v34');
   add('easton-precision-v37.js?v=20260823-prealpha-v38', 'easton-precision-v37');
   add('vane-sizing.js?v=20260823-prealpha-v44', 'vane-sizing');
+  add('victory-selector-v48.js?v=20260823-prealpha-v48', 'victory-selector-v48');
 })();
