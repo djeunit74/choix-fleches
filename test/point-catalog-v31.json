@@ -1,0 +1,114 @@
+{
+  "version": "2026-08-23-prealpha-v31",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "threeActiveBrandsVerified": ["Easton", "Victory", "Skylon"],
+    "noInventedWeights": true,
+    "pointWeightAffectsFocOnlyAfterTubeCompatibility": true
+  },
+  "audit": {
+    "Easton": "Complète les références déjà présentes pour X10, X10 Parallel Pro, A/C/E, Avance, SuperDrive Micro et Vector avec les principales familles salle X7, X23, RX7, XX75 Platinum Plus et Jazz.",
+    "Victory": "VAP et VXT étaient déjà documentées avec les deux plages de pointes break-off ; VFT est ajoutée avec la pointe VForce SS publiée par Victory.",
+    "Skylon": "Les familles 3.2 mm et 4.2 mm principales étaient déjà documentées par type de pointe et recommandation de poids selon le spine ; elles restent inchangées."
+  },
+  "points": [
+    {
+      "id": "easton-rx7-adjustable-bullet-100",
+      "manufacturer": "Easton",
+      "model": "Adjustable Bullet Point 100 gr",
+      "family": "Bullet ajustable",
+      "material": "Acier",
+      "mount": "Compatible RX7 selon taille 2114 / 2214 / 2315",
+      "tubeKeys": ["rx7"],
+      "spines": [420, 475, 525],
+      "weights": [100],
+      "note": "Easton 2026 publie l'Adjustable Bullet Point à 100 grains pour RX7. Des modules 10/20/50 grains existent, mais l'app ne combine pas automatiquement ces modules tant que la combinaison exacte n'est pas explicitement validée.",
+      "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf",
+      "sourceLabel": "Easton Target 2026 — RX7 components",
+      "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "easton-x23-adjustable-bullet-100",
+      "manufacturer": "Easton",
+      "model": "Adjustable Bullet Point X23 100 gr",
+      "family": "Bullet ajustable",
+      "material": "Acier",
+      "mount": "X23",
+      "tubeKeys": ["x23"],
+      "spines": [2312, 2314, 2315, 2318],
+      "weights": [100],
+      "note": "Easton 2026 indique 100 grains pour l'Adjustable Bullet Point X23. Les modules 10/20/50 grains sont enregistrés comme possibilité de réglage, sans extrapoler ici toutes les combinaisons possibles.",
+      "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf",
+      "sourceLabel": "Easton Target 2026 — X23 components",
+      "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "easton-x7-bullet-point",
+      "manufacturer": "Easton",
+      "model": "X7 Eclipse Bullet Point",
+      "family": "Bullet monobloc",
+      "material": "Acier",
+      "mount": "Selon taille aluminium Easton",
+      "tubeKeys": ["x7", "x7 eclipse"],
+      "weightsBySpine": {
+        "1514": [50], "1614": [50], "1714": [60], "1814": [65],
+        "1914": [90], "2014": [90], "2114": [90], "2213": [90],
+        "2214": [100], "2413": [100], "2512": [100], "2613": [150]
+      },
+      "note": "Poids Bullet Point publiés par Easton 2026, liés à la taille X7.",
+      "sourceUrl": "https://eastonarchery.com/arrows_/x7-eclipse/",
+      "sourceLabel": "Easton — X7 Eclipse 2026",
+      "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "easton-xx75-platinum-plus-bullet",
+      "manufacturer": "Easton",
+      "model": "XX75 Platinum Plus Bullet Point",
+      "family": "Bullet monobloc",
+      "material": "Acier",
+      "mount": "Selon taille aluminium Easton",
+      "tubeKeys": ["xx75 platinum plus", "platinum plus"],
+      "weightsBySpine": {
+        "1416": [50], "1516": [50], "1616": [60], "1716": [65],
+        "1816": [75], "1913": [90], "1916": [90], "2013": [90],
+        "2016": [90], "2114": [90], "2213": [90]
+      },
+      "note": "Poids Bullet Point publiés dans le guide Easton Target 2026 pour XX75 Platinum Plus.",
+      "sourceUrl": "https://eastonarchery.com/wp-content/uploads/2026/03/Easton-2026.pdf",
+      "sourceLabel": "Easton Target 2026 — XX75 Platinum Plus",
+      "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "easton-xx75-jazz-bullet",
+      "manufacturer": "Easton",
+      "model": "XX75 Jazz Bullet Point",
+      "family": "Bullet monobloc",
+      "material": "Acier",
+      "mount": "Selon taille aluminium Easton",
+      "tubeKeys": ["xx75 jazz", "jazz"],
+      "weightsBySpine": {
+        "1214": [45], "1416": [50], "1516": [50], "1616": [60],
+        "1716": [65], "1816": [75], "1916": [90], "2016": [90]
+      },
+      "note": "Poids Bullet Point publiés par Easton 2026 pour la gamme Jazz.",
+      "sourceUrl": "https://eastonarchery.com/arrows_/xx75-jazz/",
+      "sourceLabel": "Easton — XX75 Jazz 2026",
+      "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "victory-vft-vforce-ss-point",
+      "manufacturer": "Victory",
+      "model": "VForce SS Point",
+      "family": "Pointe cible à coller",
+      "material": "Acier inoxydable",
+      "mount": "Série .245 / VFT",
+      "tubeKeys": ["vft"],
+      "weights": [80, 100, 120, 150],
+      "note": "Victory publie ces quatre masses comme accessoires optionnels du VFT.",
+      "sourceUrl": "https://www.victoryarchery.com/arrows-target/vft/",
+      "sourceLabel": "Victory — VFT Accessories",
+      "sourceTier": "manufacturer-current"
+    }
+  ]
+}
