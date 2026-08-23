@@ -59,6 +59,7 @@ jobs:
           node --check test/point-audit-v31.js
           node --check test/easton-mode-v33.js
           node --check test/easton-groups-v34.js
+          node --check test/easton-mode-v35.js
       - name: Controles de non regression
         run: node scripts/refactor-check.mjs
       - name: References fabricant
