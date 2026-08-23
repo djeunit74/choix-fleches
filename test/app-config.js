@@ -155,7 +155,7 @@ window.AssistantArcherConfig = Object.freeze({
     script.setAttribute(`data-${marker}`, '1');
     document.head.appendChild(script);
   };
-  add('expert-model-ranking.js?v=20260823-prealpha-v30', 'expert-model-ranking');
+  add('expert-model-ranking.js?v=20260823-prealpha-v30-label', 'expert-model-ranking');
   add('catalog-audit.js?v=20260822-prealpha-v25', 'catalog-audit');
   add('vane-library-v25.js?v=20260822-prealpha-v28', 'vane-library-v25');
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
