@@ -1,7 +1,7 @@
-/* Assistant Archer TEST - audit + injection catalogue fabricant Pré-alpha v25. */
+/* Assistant Archer TEST - audit + injection catalogue fabricant Pré-alpha v47. */
 (() => {
   'use strict';
-  const VERSION='Pré-alpha v25';
+  const VERSION='Pré-alpha v47';
   const DATA_URL='catalog-audit-v17.json?v=20260822-prealpha-v22';
   const EXTRA_URL='catalog-audit-v17-extra.json?v=20260822-prealpha-v17';
   const TECH_URL='manufacturer-reference-v17.json?v=20260822-prealpha-v22';
@@ -10,11 +10,15 @@
   const aliases=[
     ['x10 parallel pro 3 2 mm','x10 parallel pro 3.2 mm'],['x10 parallel pro 4 mm','x10 parallel pro 4 mm'],
     ['xx75 platinum plus','xx75 platinum plus'],['xx75 jazz','xx75 jazz'],['inspire','inspire'],
-    ['v tac 23','v-tac 23'],['v tac23','v-tac 23'],['vft gamer v3','vft'],['vft','vft'],['3dhv','3dhv'],['vx 27','vx-27'],
+    ['v tac 23 elite','v-tac 23'],['v tac 23','v-tac 23'],['v tac23','v-tac 23'],['v tac 25','v-tac 25'],['v tac 27','v-tac 27'],
+    ['vft gamer v3','vft'],['vft elite v1','vft'],['vft sport v6','vft'],['vft','vft'],
+    ['vxt elite v1','vxt'],['vxt gamer v3','vxt'],['vxt sport v6','vxt'],['vxt','vxt'],
+    ['vap target','vap'],['vap gamer v3','vap'],['vap elite v1','vap'],['vap sport','vap'],['vap v3','vap'],['vap v1','vap'],['vap v6','vap'],['vap','vap'],
+    ['3dhv','3dhv'],['vx 27','vx-27'],
     ['premiens','preminens'],['preminens','preminens'],['superdrive micro','superdrive micro'],['avance sport','avance sport'],['avance','avance'],
     ['vector','vector'],['a c e','a/c/e'],['ace','a/c/e'],['rx7','rx7'],['x23','x23'],['x7','x7'],['x10','x10'],
     ['novice','novice'],['radius','radius'],['brixxon','brixxon'],['performa','performa'],['precium','precium'],['paragon','paragon'],
-    ['bruxx','bruxx'],['empros','empros'],['edge','edge'],['vap','vap'],['vxt','vxt']
+    ['bruxx','bruxx'],['empros','empros'],['edge','edge']
   ].sort((a,b)=>b[0].length-a[0].length);
   const keyOf=name=>{const t=norm(name);for(const [a,k] of aliases)if(t.includes(a))return k;return t;};
   const mergeCatalog=(base,extra)=>{
@@ -35,8 +39,10 @@
   function canonical(entry,brand){
     let model=String(entry.model||'');const key=keyOf(model);
     if(key==='preminens')model=model.replace(/premiens/i,'Preminens');
-    if(key==='vft')model=/v3|gamer/i.test(model)?'VFT V3':'VFT';
-    if(key==='v-tac 23')model=/elite|v1/i.test(model)?'V-Tac 23 V1':'V-Tac 23';
+    if(brand==='victory'){
+      const current={vap:'VAP',vxt:'VXT',vft:'VFT','v-tac 23':'V-Tac 23','v-tac 25':'V-Tac 25','v-tac 27':'V-Tac 27','3dhv':'3DHV','vx-27':'VX-27'};
+      if(current[key])model=current[key];
+    }
     return {...entry,model,catalogAuditKey:key,catalogAudit:registry(brand,key)||null};
   }
   function environment(input){return input?.shootingEnvironment||document.getElementById('shootingEnvironment')?.value||'outdoor';}
@@ -68,6 +74,7 @@
   }
   const INJECTABLE={
     easton:['x10 parallel pro 3.2 mm','x10 parallel pro 4 mm','x10','a/c/e','avance','avance sport','superdrive micro','vector','inspire','rx7','x7','x23','xx75 platinum plus','xx75 jazz'],
+    victory:['vap','vxt'],
     skylon:['novice','radius','brixxon','performa','precium','paragon','preminens','bruxx','empros']
   };
   function modelSpec(brand,key){
@@ -98,16 +105,20 @@
   }
   function auditRecommendation(rec,input){
     if(!rec||!Array.isArray(rec.models)||!['easton','victory','skylon'].includes(rec.brand))return rec;
-    let unknown=0,blocked=0;const kept=[];
+    let unknown=0,blocked=0;const kept=[];const seenKeys=new Set();
     for(const raw of rec.models){
       const entry=canonical(raw,rec.brand),info=entry.catalogAudit;
       if(!info){unknown++;continue;}
       if(!autoStatus.has(info.status)||!contextAllows(info,input)){blocked++;continue;}
+      const dedupeKey=`${entry.catalogAuditKey}|${entry.advisedSpine||''}`;
+      if(seenKeys.has(dedupeKey))continue;
+      seenKeys.add(dedupeKey);
       kept.push(entry);
     }
     rec.models=kept;injectVerified(rec,input);
     if(window.AssistantArcherExpertModelRanking?.rankRecommendation)window.AssistantArcherExpertModelRanking.rankRecommendation(rec,input);
     rec.confidenceReasons=[...(rec.confidenceReasons||[]),`Catalogue ${VERSION} : seules les familles Easton/Victory/Skylon auditées et compatibles sont conservées.`];
+    if(rec.brand==='victory')rec.confidenceReasons.push('Victory 2026 : les libellés V1/V3/V6 sont traités comme grades de rectitude d une même famille, pas comme des modèles distincts.');
     if(unknown)rec.confidenceReasons.push(`${unknown} ancien libellé ou modèle non reconnu écarté par sécurité.`);
     if(blocked)rec.confidenceReasons.push(`${blocked} famille(s) enregistrée(s) mais hors contexte recurve courant ou sans table de sélection exploitable.`);
     return rec;
@@ -141,7 +152,7 @@
       const [a,e,b]=await Promise.all([fetch(DATA_URL,{cache:'no-store'}),fetch(EXTRA_URL,{cache:'no-store'}),fetch(TECH_URL,{cache:'no-store'})]);
       if(!a.ok||!e.ok||!b.ok)throw new Error(`HTTP catalog=${a.status} extra=${e.status} tech=${b.status}`);
       data=mergeCatalog(await a.json(),await e.json());tech=await b.json();refresh();let n=0;const t=setInterval(()=>{n++;refresh();if(patched||n>100)clearInterval(t);},100);
-    }catch(e){console.error('Audit catalogue v25 indisponible',e);}
+    }catch(e){console.error('Audit catalogue v47 indisponible',e);}
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
 })();
