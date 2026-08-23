@@ -1,4 +1,4 @@
-/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v39.
+/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v40.
    Compatibilité de chargement : ce fichier conserve son ancien nom pour ne pas
    modifier l'architecture de boot. Il ne contient aucune logique Easton.
 
@@ -8,7 +8,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v39';
+  const VERSION = 'Pré-alpha v40';
   const LABEL = `Version : ${VERSION}`;
 
   function apply() {
@@ -16,6 +16,15 @@
     if (!release) return null;
     if (release.textContent !== LABEL) release.textContent = LABEL;
     return release;
+  }
+
+  function loadRecommendationUi() {
+    if (document.querySelector('script[data-recommendation-ui-v40]')) return;
+    const script = document.createElement('script');
+    script.src = 'recommendation-ui-v40.js?v=20260823-prealpha-v40';
+    script.async = false;
+    script.dataset.recommendationUiV40 = '1';
+    document.head.appendChild(script);
   }
 
   function install() {
@@ -27,6 +36,7 @@
         subtree: true
       });
     }
+    loadRecommendationUi();
     window.AssistantArcherRelease = Object.freeze({ version: VERSION, apply });
   }
 
