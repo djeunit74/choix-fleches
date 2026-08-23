@@ -170,7 +170,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : calcul historique -> classement -> composants -> mode fabricant dédié Easton. */
+/* Boot TEST actif : calcul historique -> classement -> composants -> mode Easton -> groupes fabricant Easton. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -188,4 +188,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32', 'point-audit-v31');
   add('easton-mode-v33.js?v=20260823-prealpha-v33', 'easton-mode-v33');
+  add('easton-groups-v34.js?v=20260823-prealpha-v34', 'easton-groups-v34');
 })();
