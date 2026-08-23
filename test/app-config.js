@@ -185,9 +185,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST : couches stables puis calculateur Easton v38.
-   Le fichier easton-precision-v37.js conserve son nom historique mais contient
-   désormais la logique v38 afin d'éviter une chaîne de fichiers correctifs. */
+/* Boot TEST : couches stables puis calculateur Easton v38. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -199,7 +197,7 @@ window.AssistantArcherConfig = Object.freeze({
     document.head.appendChild(script);
   };
   add('expert-model-ranking.js?v=20260823-prealpha-v30-label', 'expert-model-ranking');
-  add('catalog-audit.js?v=20260822-prealpha-v25', 'catalog-audit');
+  add('catalog-audit.js?v=20260823-prealpha-v47-victory', 'catalog-audit');
   add('vane-library-v25.js?v=20260822-prealpha-v28', 'vane-library-v25');
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
