@@ -1,7 +1,6 @@
-/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v36.
+/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v37.
    Compatibilité de chargement : ce fichier conserve son ancien nom pour ne pas
-   modifier le boot pendant le retour à la stabilité. Il ne contient plus aucune
-   logique Easton.
+   modifier l'architecture de boot. Il ne contient aucune logique Easton.
 
    Règle : la version globale de l'application est pilotée ici uniquement.
    Les versions des modules restent des versions de composants et ne doivent pas
@@ -9,7 +8,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v36';
+  const VERSION = 'Pré-alpha v37';
   const LABEL = `Version : ${VERSION}`;
 
   function apply() {
@@ -22,8 +21,6 @@
   function install() {
     const release = apply();
     if (release) {
-      /* Observer strictement limité au libellé de version. Il empêche un ancien
-         module de réécrire v28/v30/v31 sans observer le reste du DOM. */
       new MutationObserver(() => apply()).observe(release, {
         childList: true,
         characterData: true,
@@ -31,7 +28,6 @@
       });
     }
     window.AssistantArcherRelease = Object.freeze({ version: VERSION, apply });
-    window.AssistantArcherEastonModeDisabled = true;
   }
 
   document.readyState === 'loading'
