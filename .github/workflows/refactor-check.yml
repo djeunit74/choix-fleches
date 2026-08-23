@@ -14,6 +14,7 @@ on:
       - 'scripts/vane-library-check.mjs'
       - 'scripts/vane-mass-check.mjs'
       - 'scripts/point-catalog-check.mjs'
+      - 'scripts/easton-mode-check.mjs'
       - '.github/workflows/refactor-check.yml'
   pull_request:
     paths:
@@ -25,6 +26,7 @@ on:
       - 'scripts/vane-library-check.mjs'
       - 'scripts/vane-mass-check.mjs'
       - 'scripts/point-catalog-check.mjs'
+      - 'scripts/easton-mode-check.mjs'
       - '.github/workflows/refactor-check.yml'
 
 jobs:
@@ -53,6 +55,7 @@ jobs:
           node --check test/vane-library-v25.js
           node --check test/vane-mass-v27.js
           node --check test/point-audit-v31.js
+          node --check test/easton-mode-v33.js
       - name: Controles de non regression
         run: node scripts/refactor-check.mjs
       - name: References fabricant
@@ -67,3 +70,5 @@ jobs:
         run: node scripts/vane-mass-check.mjs
       - name: Pointes Easton Victory Skylon
         run: node scripts/point-catalog-check.mjs
+      - name: Mode Easton
+        run: node scripts/easton-mode-check.mjs
