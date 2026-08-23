@@ -99,10 +99,63 @@
   display:block!important;
 }
 
+/* Pré-alpha v39 : le calculateur Easton reste visible mais ne doit pas dominer le formulaire. */
+#eastonSelectorV38{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  column-gap:.6rem!important;
+  row-gap:.28rem!important;
+  margin:.35rem 0 .5rem!important;
+  padding:.45rem .55rem .5rem!important;
+  border-radius:9px!important;
+}
+#eastonSelectorV38 > legend{
+  font-size:.82rem!important;
+  line-height:1.15!important;
+  margin:0!important;
+}
+#eastonSelectorV38 > label{
+  margin:0!important;
+  font-size:.73rem!important;
+  line-height:1.15!important;
+}
+#eastonSelectorV38 > label select{
+  margin-top:.18rem!important;
+  min-height:34px!important;
+  padding:.35rem .5rem!important;
+  font-size:.78rem!important;
+}
+#eastonSelectorHintV38,
+#eastonSelectorCalcV38,
+#eastonSelectorV38 > .field-hint:last-child{
+  grid-column:1 / -1!important;
+}
+#eastonSelectorHintV38{
+  margin:.02rem 0 0!important;
+  font-size:.7rem!important;
+  line-height:1.2!important;
+}
+#eastonSelectorCalcV38{
+  margin:.05rem 0 0!important;
+  padding:.3rem .42rem!important;
+  border-radius:7px!important;
+  background:color-mix(in srgb,var(--accent-2) 5%,white)!important;
+  font-size:.72rem!important;
+  line-height:1.25!important;
+}
+#eastonSelectorV38 > .field-hint:last-child{
+  margin:0!important;
+  font-size:.64rem!important;
+  line-height:1.18!important;
+  opacity:.65!important;
+}
+
 @media(max-width:560px){
   .arrow-model-select{padding:.48rem .68rem!important;font-size:.75rem!important}
   #result li:has(.arrow-model-select){padding:.72rem .68rem .68rem;margin:.58rem 0}
   #result li:has(.arrow-model-select) > strong:first-child{font-size:1.04rem;display:block;margin-right:7.2rem}
   #result li:has(.arrow-model-select) > .arrow-model-select{position:absolute;right:.6rem;top:.58rem;float:none;margin:0!important}
   .merchant-toggle{width:100%;margin:.3rem 0 .65rem}
+  #eastonSelectorV38{grid-template-columns:1fr!important;gap:.24rem!important}
+  #eastonSelectorHintV38,#eastonSelectorCalcV38,#eastonSelectorV38 > .field-hint:last-child{grid-column:1!important}
 }
