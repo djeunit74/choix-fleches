@@ -109,6 +109,16 @@
       "sourceUrl": "https://www.victoryarchery.com/arrows-target/vft/",
       "sourceLabel": "Victory — VFT Accessories",
       "sourceTier": "manufacturer-current"
+    },
+    {
+      "id": "victory-vap-ss-breakoff-80-100",
+      "tubeKeys": ["vap", "vap target", "vap v1", "vap v3", "vap v6", "vap 250", "vap 300", "vap 350", "vap 400", "vap 450", "vap 500", "vap 550", "vap 600", "vap 650", "vap 700", "vap 750", "vap 800", "vap 850", "vap 900", "vap 1000"],
+      "note": "Accessoire officiel VAP 80–100 gr. Les alias numériques servent uniquement à faire correspondre les libellés d'affichage de l'app ; ils ne créent aucun spine fabricant."
+    },
+    {
+      "id": "victory-vap-ss-breakoff-120-140",
+      "tubeKeys": ["vap", "vap target", "vap v1", "vap v3", "vap v6", "vap 250", "vap 300", "vap 350", "vap 400", "vap 450", "vap 500", "vap 550", "vap 600", "vap 650", "vap 700", "vap 750", "vap 800", "vap 850", "vap 900", "vap 1000"],
+      "note": "Accessoire officiel VAP 120–140 gr. Les alias numériques servent uniquement à faire correspondre les libellés d'affichage de l'app ; ils ne créent aucun spine fabricant."
     }
   ]
 }
