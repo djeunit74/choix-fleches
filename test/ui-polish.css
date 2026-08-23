@@ -99,6 +99,9 @@
   display:block!important;
 }
 
+/* Pré-alpha v46 : le calculateur Easton n'est visible que si la marque Easton est sélectionnée. */
+#eastonSelectorV38[hidden]{display:none!important}
+
 /* Pré-alpha v39 : le calculateur Easton reste visible mais ne doit pas dominer le formulaire. */
 #eastonSelectorV38{
   display:grid!important;
@@ -182,6 +185,7 @@
   #result li:has(.arrow-model-select) > .arrow-model-select{position:absolute;right:.6rem;top:.58rem;float:none;margin:0!important}
   .merchant-toggle{width:100%;margin:.3rem 0 .65rem}
   #eastonSelectorV38{grid-template-columns:1fr!important;gap:.24rem!important}
+  #eastonSelectorV38[hidden]{display:none!important}
   #eastonSelectorHintV38,#eastonSelectorCalcV38,#eastonSelectorV38 > .field-hint:last-child{grid-column:1!important}
   .arrow-builder-dialog .arrow-select-component.arrow-select-recommended{width:100%!important}
 }
