@@ -172,7 +172,7 @@ window.AssistantArcherConfig = Object.freeze({
   else refreshUiPolish();
 })();
 
-/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC -> repere FOC -> audit pointes. */
+/* Boot TEST actif : expert -> audit catalogue -> bibliotheque empennages -> masses FOC -> repere FOC -> audit pointes -> garde-fou Easton 2026. */
 (() => {
   if (typeof document === 'undefined') return;
   const add = (src, marker) => {
@@ -189,4 +189,5 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-mass-v27.js?v=20260822-prealpha-v28', 'vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30', 'foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31', 'point-audit-v31');
+  add('easton-spine-v32.js?v=20260823-prealpha-v32', 'easton-spine-v32');
 })();
