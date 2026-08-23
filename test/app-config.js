@@ -37,8 +37,8 @@ window.AssistantArcherConfig = Object.freeze({
   else simplifyArrowChoiceForm();
 })();
 
-/* TEST v31 : enrichit les composants avant arrow-builder.
-   - empennages : catalogue + masses FOC,
+/* TEST v43 : enrichit les composants avant arrow-builder.
+   - empennages : seuls les profils avec masse FOC exploitable entrent dans le constructeur,
    - pointes : audit fabricant Easton/Victory/Skylon,
    - equilibre : precision de l'ensemble arriere.
    Les donnees fabricant restent prioritaires et les proxies restent explicitement signales. */
@@ -112,6 +112,9 @@ window.AssistantArcherConfig = Object.freeze({
           byId.set(mass.id, mergedMass);
         }
 
+        const allVanes = [...byId.values()];
+        const focReadyVanes = allVanes.filter(vane => Number.isFinite(Number(vane.weightGrains)) && Number(vane.weightGrains) > 0);
+
         const pointById = new Map((Array.isArray(base.points) ? base.points : []).map(point => [point.id, point]));
         for (const point of (Array.isArray(pointData.points) ? pointData.points : [])) {
           const previous = pointById.get(point.id) || {};
@@ -119,7 +122,19 @@ window.AssistantArcherConfig = Object.freeze({
         }
         const points = [...pointById.values()].map(expandSpecialPointAliases);
 
-        const merged = { ...base, vanes: [...byId.values()], points, pointAuditVersion: pointData.version || null };
+        const merged = {
+          ...base,
+          vanes: focReadyVanes,
+          vaneFocPolicy: {
+            version: 'prealpha-v43',
+            focReadyOnly: true,
+            available: focReadyVanes.length,
+            excludedWithoutValidatedMass: Math.max(0, allVanes.length - focReadyVanes.length),
+            note: 'Le constructeur ne propose que les empennages avec une masse FOC numérique exploitable. Le catalogue général peut conserver des références sans masse validée.'
+          },
+          points,
+          pointAuditVersion: pointData.version || null
+        };
         return new Response(JSON.stringify(merged), {
           status: response.status,
           statusText: response.statusText,
