@@ -1,12 +1,13 @@
-/* Assistant Archer TEST - Victory point + insert + rear assembly + FOC, Pré-alpha v52.
+/* Assistant Archer TEST - Victory point + insert + rear assembly + FOC, Pré-alpha v53.
    S'applique uniquement au constructeur quand le tube choisi est Victory.
    La table de spine reste centralisée dans AssistantArcherVictorySelector.
    Le FOC distingue masse avant et masse arrière réellement sélectionnées.
+   Les pointes Victory sont filtrées par compatibilité de spine avant le classement FOC.
    Aucun observer global ni boucle permanente : mise à jour sur événements utiles seulement.
 */
 (() => {
   'use strict';
-  const VERSION = 'Pré-alpha v52';
+  const VERSION = 'Pré-alpha v53';
   let selectedInsert = 0;
   let selectedPoint = null;
   let selectedRearWeight = null;
@@ -93,7 +94,6 @@
     const oldMoment = oldBalance * oldMass;
     const newMass = oldMass + insert + rearDelta;
     if (!(newMass > 0)) return null;
-    // L'insert avant est placé à l'extrémité du tube; le supplément arrière est placé à l'origine encoche.
     const newMoment = oldMoment + insert * length;
     const newBalance = newMoment / newMass;
     const foc = ((newBalance - length / 2) / length) * 100;
@@ -150,15 +150,45 @@
     });
   }
 
+  function pointCompatibility(pointWeight,tube) {
+    const front = Number(pointWeight) + selectedInsert;
+    const result = selectorFor(front);
+    const compatible = Boolean(result && Number.isFinite(tube.spine) && Number(result.spine) === Number(tube.spine));
+    return { front, result, compatible };
+  }
+
+  function patchAdvancedPointChoices(panel,tube) {
+    panel.querySelectorAll('[data-point-raw]').forEach(button => {
+      const raw = String(button.dataset.pointRaw || '').split('|');
+      const pointWeight = Number(raw[raw.length - 1]);
+      if (!Number.isFinite(pointWeight)) return;
+      const { front, result, compatible } = pointCompatibility(pointWeight,tube);
+      button.disabled = !compatible;
+      button.setAttribute('aria-disabled',String(!compatible));
+      if (!compatible) button.title = result ? `Victory recommande spine ${result.spine} avec ${front} gr devant` : 'Poids avant hors tableau Victory publié';
+      else button.removeAttribute('title');
+      if (compatible && !button.dataset.victoryFrontBoundV53) {
+        button.dataset.victoryFrontBoundV53='1';
+        button.addEventListener('click',() => {
+          selectedPoint = pointWeight;
+          const mainPoint = document.getElementById('victoryPointWeightV48');
+          if (mainPoint && [...mainPoint.options].some(o => Number(o.value) === pointWeight)) mainPoint.value = String(pointWeight);
+        },{capture:true});
+      }
+    });
+  }
+
   function patchPointCards(panel,tube) {
     const { rearDelta } = correctionContext(tube);
-    [...panel.querySelectorAll('.arrow-point-recommendation')].forEach(card => {
+    const cards = [...panel.querySelectorAll('.arrow-point-recommendation')];
+    const ranked = [];
+
+    cards.forEach((card,index) => {
       const parsed = parseCard(card);
       if (!Number.isFinite(parsed.point)) return;
-      const front = parsed.point + selectedInsert;
-      const result = selectorFor(front);
-      const compatible = Boolean(result && Number.isFinite(tube.spine) && Number(result.spine) === Number(tube.spine));
+      const { front, result, compatible } = pointCompatibility(parsed.point,tube);
       const button = card.querySelector('[data-point-config]');
+      const badge = card.querySelector('.arrow-builder-badge');
       let status = card.querySelector('.victory-front-status-v49');
       if (!status) {
         status = document.createElement('p');
@@ -184,23 +214,66 @@
         line.innerHTML = `<strong>${parsed.point} gr</strong> + insert ${selectedInsert} gr · avant <strong>${front} gr</strong>${rearText} · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
       }
 
-      if (button && !button.dataset.victoryFrontBoundV49) {
-        button.dataset.victoryFrontBoundV49='1';
+      if (button && compatible && !button.dataset.victoryFrontBoundV53) {
+        button.dataset.victoryFrontBoundV53='1';
         button.addEventListener('click',() => {
-          if (button.disabled) return;
           selectedPoint = parsed.point;
           const mainPoint = document.getElementById('victoryPointWeightV48');
           if (mainPoint && [...mainPoint.options].some(o => Number(o.value) === parsed.point)) mainPoint.value = String(parsed.point);
           setTimeout(() => { patchPanel(); patchSummary(); },0);
         },{capture:true});
       }
+
+      ranked.push({card,index,parsed,compatible});
+      card.dataset.victoryCompatible = compatible ? '1' : '0';
+      card.classList.toggle('victory-incompatible-v53',!compatible);
+      if (!compatible && badge) badge.textContent = 'Hors table Victory';
     });
+
+    const parent = cards[0]?.parentElement;
+    if (parent) {
+      ranked.sort((a,b) => Number(b.compatible)-Number(a.compatible) || a.index-b.index).forEach(entry => parent.appendChild(entry.card));
+    }
+
+    const compatibleCards = ranked.filter(entry => entry.compatible).sort((a,b)=>a.index-b.index);
+    compatibleCards.forEach((entry,position) => {
+      const button = entry.card.querySelector('[data-point-config]');
+      const badge = entry.card.querySelector('.arrow-builder-badge');
+      entry.card.classList.toggle('is-recommended',position === 0);
+      if (badge) badge.textContent = position === 0 ? 'Présélection Victory' : 'Compatible Victory';
+      if (button) {
+        button.classList.toggle('arrow-select-recommended',position === 0);
+        if (!/Configuration selectionnee/i.test(button.textContent || '')) button.textContent = position === 0 ? 'Choisir cette présélection' : 'Choisir cette configuration';
+      }
+    });
+
+    const invalidCards = ranked.filter(entry => !entry.compatible);
+    invalidCards.forEach(entry => {
+      const button = entry.card.querySelector('[data-point-config]');
+      entry.card.classList.remove('is-recommended');
+      button?.classList.remove('arrow-select-recommended');
+    });
+
+    let notice = panel.querySelector('.victory-point-priority-v53');
+    if (!notice) {
+      notice = document.createElement('p');
+      notice.className = 'arrow-builder-callout victory-point-priority-v53';
+      const list = panel.querySelector('.arrow-point-recommendations');
+      list?.insertAdjacentElement('beforebegin',notice);
+    }
+    if (notice) {
+      notice.innerHTML = compatibleCards.length
+        ? `<strong>Victory :</strong> ${compatibleCards.length} combinaison(s) conservent le spine ${tube.spine}. Elles sont classées avant l'optimisation du FOC.`
+        : `<strong>Victory :</strong> aucune masse avant affichée ne conserve le spine ${tube.spine}. Aucune pointe n'est validable sans revoir la configuration.`;
+    }
+
+    patchAdvancedPointChoices(panel,tube);
   }
 
   function patchBalancePanel(panel,tube) {
     if (!selectedPoint || tube.brand !== 'victory') return;
     const summary = panel.querySelector('.arrow-balance-summary');
-    if (!summary || summary.dataset.victoryFrontV52) return;
+    if (!summary || summary.dataset.victoryFrontV53) return;
     const strongs = [...summary.querySelectorAll('strong')];
     const massEl = strongs.find(el => /gr/i.test(el.textContent));
     const focEl = strongs.find(el => /%/.test(el.textContent));
@@ -211,7 +284,7 @@
     if (!corrected) return;
     if (massEl) massEl.textContent = `${Math.round(corrected.mass)} gr`;
     if (focEl) focEl.textContent = `${corrected.foc.toFixed(1)} %`;
-    summary.dataset.victoryFrontV52='1';
+    summary.dataset.victoryFrontV53='1';
     const note = document.createElement('p');
     note.className='muted victory-front-balance-note-v49';
     note.textContent=`Victory : pointe ${selectedPoint} gr + insert avant ${selectedInsert} gr = ${selectedPoint + selectedInsert} gr devant ; montage arrière ${selectedRearWeight ?? 'non précisé'} gr. Le FOC affiché intègre ces masses aux bonnes extrémités.`;
