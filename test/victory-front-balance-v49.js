@@ -1,13 +1,15 @@
-/* Assistant Archer TEST - Victory point + insert + FOC, Pré-alpha v49.
+/* Assistant Archer TEST - Victory point + insert + rear assembly + FOC, Pré-alpha v52.
    S'applique uniquement au constructeur quand le tube choisi est Victory.
    La table de spine reste centralisée dans AssistantArcherVictorySelector.
+   Le FOC distingue masse avant et masse arrière réellement sélectionnées.
    Aucun observer global ni boucle permanente : mise à jour sur événements utiles seulement.
 */
 (() => {
   'use strict';
-  const VERSION = 'Pré-alpha v49';
+  const VERSION = 'Pré-alpha v52';
   let selectedInsert = 0;
   let selectedPoint = null;
+  let selectedRearWeight = null;
 
   const norm = value => String(value || '').toLowerCase().normalize('NFD')
     .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
@@ -42,6 +44,23 @@
     return { values:[0], note:'Aucun insert avant documenté pour ce montage dans la base active.' };
   }
 
+  function rearConfig(key) {
+    if (key === 'vap') return {
+      baseWeight:8,
+      options:[
+        { weight:8, label:'IP Nock .166 — 8 gr (livré d’origine)' },
+        { weight:15, label:'Pin Bushing 12 gr + Pin Nock 3 gr — 15 gr (option)' }
+      ],
+      note:'Victory VAP : les deux montages arrière sont publiés par le fabricant.'
+    };
+    if (key === 'vxt') return {
+      baseWeight:15,
+      options:[{ weight:15, label:'Gold Pin Bushing 12 gr + Pin Nock 3 gr — 15 gr (livrés d’origine)' }],
+      note:'Victory VXT : montage arrière livré d’origine.'
+    };
+    return { baseWeight:0, options:[], note:'' };
+  }
+
   function selectorFor(front) {
     return window.AssistantArcherVictorySelector?.selectorResultForFront?.(front) || null;
   }
@@ -59,21 +78,36 @@
     return parseOriginalLine(source);
   }
 
-  function correctedEstimate(oldFoc, oldMass, insert) {
+  function correctionContext(tube) {
+    const rear = rearConfig(family(tube.model));
+    if (selectedRearWeight === null || !rear.options.some(option => option.weight === selectedRearWeight)) {
+      selectedRearWeight = rear.options[0]?.weight ?? rear.baseWeight;
+    }
+    return { rear, rearDelta:Number(selectedRearWeight || 0) - Number(rear.baseWeight || 0) };
+  }
+
+  function correctedEstimate(oldFoc, oldMass, insert, rearDelta) {
     const length = Number(document.getElementById('arrowLength')?.value);
-    if (![oldFoc,oldMass,insert,length].every(Number.isFinite) || length <= 0) return null;
+    if (![oldFoc,oldMass,insert,rearDelta,length].every(Number.isFinite) || length <= 0) return null;
     const oldBalance = length / 2 + (oldFoc / 100) * length;
     const oldMoment = oldBalance * oldMass;
-    const newMass = oldMass + insert;
-    const newBalance = (oldMoment + insert * length) / newMass;
+    const newMass = oldMass + insert + rearDelta;
+    if (!(newMass > 0)) return null;
+    // L'insert avant est placé à l'extrémité du tube; le supplément arrière est placé à l'origine encoche.
+    const newMoment = oldMoment + insert * length;
+    const newBalance = newMoment / newMass;
     const foc = ((newBalance - length / 2) / length) * 100;
     return { foc, mass:newMass };
   }
 
-  function ensureInsertChooser(panel,tube) {
+  function ensureAssemblyChooser(panel,tube) {
     if (!panel || tube.brand !== 'victory') return;
-    const config = insertConfig(family(tube.model));
-    if (!config.values.includes(selectedInsert)) selectedInsert = config.values[0];
+    const key = family(tube.model);
+    const front = insertConfig(key);
+    const rear = rearConfig(key);
+    if (!front.values.includes(selectedInsert)) selectedInsert = front.values[0];
+    if (selectedRearWeight === null || !rear.options.some(option => option.weight === selectedRearWeight)) selectedRearWeight = rear.options[0]?.weight ?? rear.baseWeight;
+
     let box = panel.querySelector('#victoryBuilderFrontV49');
     if (!box) {
       box = document.createElement('div');
@@ -82,16 +116,25 @@
       const head = panel.querySelector('.arrow-builder-panel-head') || panel.firstElementChild;
       head?.insertAdjacentElement('afterend',box) || panel.prepend(box);
     }
-    const signature = `${family(tube.model)}|${selectedInsert}`;
+    const signature = `${key}|${selectedInsert}|${selectedRearWeight}`;
     if (box.dataset.signature === signature) return;
     box.dataset.signature = signature;
-    box.innerHTML = `<strong>Montage avant Victory</strong>
+    const rearSelect = rear.options.length
+      ? `<label style="display:block;margin:.4rem 0 0">Montage arrière
+          <select id="victoryBuilderRearV52" style="margin-left:.35rem">
+            ${rear.options.map(option => `<option value="${option.weight}"${option.weight===selectedRearWeight?' selected':''}>${option.label}</option>`).join('')}
+          </select>
+        </label>`
+      : '';
+    box.innerHTML = `<strong>Montage Victory</strong>
       <label style="display:block;margin:.4rem 0 0">Insert avant
         <select id="victoryBuilderInsertV49" style="margin-left:.35rem">
-          ${config.values.map(v => `<option value="${v}"${v===selectedInsert?' selected':''}>${v} gr</option>`).join('')}
+          ${front.values.map(v => `<option value="${v}"${v===selectedInsert?' selected':''}>${v} gr</option>`).join('')}
         </select>
       </label>
-      <small style="display:block;margin-top:.3rem">${config.note} Le spine est recalculé avec pointe + insert avant.</small>`;
+      ${rearSelect}
+      <small style="display:block;margin-top:.3rem">${front.note}${rear.note ? ` ${rear.note}` : ''} Le spine dépend du poids avant ; le FOC dépend aussi du montage arrière.</small>`;
+
     box.querySelector('#victoryBuilderInsertV49')?.addEventListener('change',event => {
       selectedInsert = Number(event.target.value) || 0;
       box.dataset.signature = '';
@@ -99,9 +142,16 @@
       if (mainInsert && [...mainInsert.options].some(o => Number(o.value) === selectedInsert)) mainInsert.value = String(selectedInsert);
       patchPanel();
     });
+    box.querySelector('#victoryBuilderRearV52')?.addEventListener('change',event => {
+      selectedRearWeight = Number(event.target.value);
+      box.dataset.signature = '';
+      patchPanel();
+      patchSummary();
+    });
   }
 
   function patchPointCards(panel,tube) {
+    const { rearDelta } = correctionContext(tube);
     [...panel.querySelectorAll('.arrow-point-recommendation')].forEach(card => {
       const parsed = parseCard(card);
       if (!Number.isFinite(parsed.point)) return;
@@ -127,9 +177,12 @@
       }
 
       const line = card.querySelector('.arrow-balance-numbers');
-      const corrected = correctedEstimate(parsed.foc,parsed.mass,selectedInsert);
+      const corrected = correctedEstimate(parsed.foc,parsed.mass,selectedInsert,rearDelta);
       if (line && !line.dataset.victoryOriginal) line.dataset.victoryOriginal = line.textContent;
-      if (line && corrected) line.innerHTML = `<strong>${parsed.point} gr</strong> + insert ${selectedInsert} gr · avant <strong>${front} gr</strong> · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
+      if (line && corrected) {
+        const rearText = selectedRearWeight ? ` · arrière ${selectedRearWeight} gr` : '';
+        line.innerHTML = `<strong>${parsed.point} gr</strong> + insert ${selectedInsert} gr · avant <strong>${front} gr</strong>${rearText} · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
+      }
 
       if (button && !button.dataset.victoryFrontBoundV49) {
         button.dataset.victoryFrontBoundV49='1';
@@ -147,20 +200,21 @@
   function patchBalancePanel(panel,tube) {
     if (!selectedPoint || tube.brand !== 'victory') return;
     const summary = panel.querySelector('.arrow-balance-summary');
-    if (!summary || summary.dataset.victoryFrontV49) return;
+    if (!summary || summary.dataset.victoryFrontV52) return;
     const strongs = [...summary.querySelectorAll('strong')];
     const massEl = strongs.find(el => /gr/i.test(el.textContent));
     const focEl = strongs.find(el => /%/.test(el.textContent));
     const oldMass = Number(massEl?.textContent.match(/\d+(?:[.,]\d+)?/)?.[0]?.replace(',','.'));
     const oldFoc = Number(focEl?.textContent.match(/\d+(?:[.,]\d+)?/)?.[0]?.replace(',','.'));
-    const corrected = correctedEstimate(oldFoc,oldMass,selectedInsert);
+    const { rearDelta } = correctionContext(tube);
+    const corrected = correctedEstimate(oldFoc,oldMass,selectedInsert,rearDelta);
     if (!corrected) return;
     if (massEl) massEl.textContent = `${Math.round(corrected.mass)} gr`;
     if (focEl) focEl.textContent = `${corrected.foc.toFixed(1)} %`;
-    summary.dataset.victoryFrontV49='1';
+    summary.dataset.victoryFrontV52='1';
     const note = document.createElement('p');
     note.className='muted victory-front-balance-note-v49';
-    note.textContent=`Victory : pointe ${selectedPoint} gr + insert avant ${selectedInsert} gr = ${selectedPoint + selectedInsert} gr devant. Le FOC affiché intègre cet insert à l’avant.`;
+    note.textContent=`Victory : pointe ${selectedPoint} gr + insert avant ${selectedInsert} gr = ${selectedPoint + selectedInsert} gr devant ; montage arrière ${selectedRearWeight ?? 'non précisé'} gr. Le FOC affiché intègre ces masses aux bonnes extrémités.`;
     summary.insertAdjacentElement('afterend',note);
   }
 
@@ -169,7 +223,7 @@
     const summary = document.getElementById('arrowBuilderSummary');
     if (!summary || document.getElementById('preferredBrand')?.value !== 'victory') return;
     const pointSpan = [...summary.querySelectorAll('span')].find(s => /Pointe\s*:/i.test(s.textContent));
-    if (pointSpan) pointSpan.innerHTML = `<strong>Pointe :</strong> ${selectedPoint} gr + insert ${selectedInsert} gr · avant ${selectedPoint + selectedInsert} gr`;
+    if (pointSpan) pointSpan.innerHTML = `<strong>Pointe :</strong> ${selectedPoint} gr + insert ${selectedInsert} gr · avant ${selectedPoint + selectedInsert} gr${selectedRearWeight ? ` · arrière ${selectedRearWeight} gr` : ''}`;
   }
 
   function patchPanel() {
@@ -178,7 +232,7 @@
     const tube = currentTube();
     if (tube.brand !== 'victory') return;
     const title = document.getElementById('arrowBuilderDialogTitle')?.textContent || '';
-    if (/Pointe/i.test(title)) { ensureInsertChooser(panel,tube); patchPointCards(panel,tube); }
+    if (/Pointe/i.test(title)) { ensureAssemblyChooser(panel,tube); patchPointCards(panel,tube); }
     else if (/Equilibre|Équilibre/i.test(title)) { patchBalancePanel(panel,tube); patchSummary(); }
   }
 
@@ -186,7 +240,7 @@
     document.addEventListener('click',event => {
       if (event.target.closest('[data-arrow-part="point"],[data-arrow-part="balance"],[data-vane]')) setTimeout(patchPanel,0);
     });
-    window.AssistantArcherVictoryFrontBalance = Object.freeze({version:VERSION,patchPanel,insertConfig});
+    window.AssistantArcherVictoryFrontBalance = Object.freeze({version:VERSION,patchPanel,insertConfig,rearConfig});
   }
 
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded',install,{once:true}) : install();
