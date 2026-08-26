@@ -1,4 +1,4 @@
-/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v55.
+/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v56.
    Compatibilité de chargement : ce fichier conserve son ancien nom pour ne pas
    modifier l'architecture de boot. Il ne contient aucune logique Easton.
 
@@ -8,7 +8,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v55';
+  const VERSION = 'Pré-alpha v56';
   const LABEL = `Version : ${VERSION}`;
 
   function apply() {
@@ -39,7 +39,7 @@
   function loadSkylonSelector() {
     if (document.querySelector('script[data-skylon-selector-v55]')) return;
     const script = document.createElement('script');
-    script.src = 'skylon-selector-v55.js?v=20260826-prealpha-v55';
+    script.src = 'skylon-selector-v55.js?v=20260826-prealpha-v56';
     script.async = false;
     script.dataset.skylonSelectorV55 = '1';
     document.head.appendChild(script);
