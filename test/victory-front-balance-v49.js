@@ -1,13 +1,14 @@
-/* Assistant Archer TEST - Victory point + insert + rear assembly + FOC, Pré-alpha v53.
+/* Assistant Archer TEST - Victory point + insert + rear assembly + FOC, Pré-alpha v54.
    S'applique uniquement au constructeur quand le tube choisi est Victory.
    La table de spine reste centralisée dans AssistantArcherVictorySelector.
-   Le FOC distingue masse avant et masse arrière réellement sélectionnées.
+   Le montage arrière fabricant standard est utilisé automatiquement pour le FOC.
+   Les alternatives arrière restent disponibles uniquement en option avancée.
    Les pointes Victory sont filtrées par compatibilité de spine avant le classement FOC.
    Aucun observer global ni boucle permanente : mise à jour sur événements utiles seulement.
 */
 (() => {
   'use strict';
-  const VERSION = 'Pré-alpha v53';
+  const VERSION = 'Pré-alpha v54';
   let selectedInsert = 0;
   let selectedPoint = null;
   let selectedRearWeight = null;
@@ -41,7 +42,7 @@
   function insertConfig(key) {
     if (key === 'vft') return { values:[0,11,22,33], note:'Inserts avant VForce 11/22 gr ou VForce SS 33 gr.' };
     if (key === 'v-tac 23' || key === 'v-tac 25') return { values:[0,44], note:'Insert avant Victory 44 gr disponible.' };
-    if (key === 'vap' || key === 'vxt') return { values:[0], note:'Pas d’insert avant ajouté dans le montage cible documenté : les pin bushings sont des composants arrière.' };
+    if (key === 'vap' || key === 'vxt') return { values:[0], note:'Aucun insert avant dans le montage cible standard documenté.' };
     return { values:[0], note:'Aucun insert avant documenté pour ce montage dans la base active.' };
   }
 
@@ -52,12 +53,12 @@
         { weight:8, label:'IP Nock .166 — 8 gr (livré d’origine)' },
         { weight:15, label:'Pin Bushing 12 gr + Pin Nock 3 gr — 15 gr (option)' }
       ],
-      note:'Victory VAP : les deux montages arrière sont publiés par le fabricant.'
+      note:'Montage standard retenu automatiquement : IP Nock .166 8 gr.'
     };
     if (key === 'vxt') return {
       baseWeight:15,
       options:[{ weight:15, label:'Gold Pin Bushing 12 gr + Pin Nock 3 gr — 15 gr (livrés d’origine)' }],
-      note:'Victory VXT : montage arrière livré d’origine.'
+      note:'Montage arrière fabricant standard inclus automatiquement.'
     };
     return { baseWeight:0, options:[], note:'' };
   }
@@ -82,7 +83,7 @@
   function correctionContext(tube) {
     const rear = rearConfig(family(tube.model));
     if (selectedRearWeight === null || !rear.options.some(option => option.weight === selectedRearWeight)) {
-      selectedRearWeight = rear.options[0]?.weight ?? rear.baseWeight;
+      selectedRearWeight = rear.baseWeight;
     }
     return { rear, rearDelta:Number(selectedRearWeight || 0) - Number(rear.baseWeight || 0) };
   }
@@ -106,7 +107,7 @@
     const front = insertConfig(key);
     const rear = rearConfig(key);
     if (!front.values.includes(selectedInsert)) selectedInsert = front.values[0];
-    if (selectedRearWeight === null || !rear.options.some(option => option.weight === selectedRearWeight)) selectedRearWeight = rear.options[0]?.weight ?? rear.baseWeight;
+    if (selectedRearWeight === null || !rear.options.some(option => option.weight === selectedRearWeight)) selectedRearWeight = rear.baseWeight;
 
     let box = panel.querySelector('#victoryBuilderFrontV49');
     if (!box) {
@@ -119,21 +120,30 @@
     const signature = `${key}|${selectedInsert}|${selectedRearWeight}`;
     if (box.dataset.signature === signature) return;
     box.dataset.signature = signature;
-    const rearSelect = rear.options.length
-      ? `<label style="display:block;margin:.4rem 0 0">Montage arrière
-          <select id="victoryBuilderRearV52" style="margin-left:.35rem">
-            ${rear.options.map(option => `<option value="${option.weight}"${option.weight===selectedRearWeight?' selected':''}>${option.label}</option>`).join('')}
+
+    const insertChooser = front.values.length > 1
+      ? `<label style="display:block;margin:.4rem 0 0">Insert avant
+          <select id="victoryBuilderInsertV49" style="margin-left:.35rem">
+            ${front.values.map(v => `<option value="${v}"${v===selectedInsert?' selected':''}>${v} gr</option>`).join('')}
           </select>
         </label>`
       : '';
+    const rearAdvanced = rear.options.length > 1
+      ? `<details class="victory-rear-advanced-v54" style="margin-top:.45rem">
+          <summary>Option avancée : montage arrière</summary>
+          <label style="display:block;margin:.4rem 0 0">Montage arrière
+            <select id="victoryBuilderRearV52" style="margin-left:.35rem">
+              ${rear.options.map(option => `<option value="${option.weight}"${option.weight===selectedRearWeight?' selected':''}>${option.label}</option>`).join('')}
+            </select>
+          </label>
+          <small style="display:block;margin-top:.3rem">Cette option sert uniquement à affiner la masse totale et le FOC ; elle ne change pas le spine Victory.</small>
+        </details>`
+      : '';
+
     box.innerHTML = `<strong>Montage Victory</strong>
-      <label style="display:block;margin:.4rem 0 0">Insert avant
-        <select id="victoryBuilderInsertV49" style="margin-left:.35rem">
-          ${front.values.map(v => `<option value="${v}"${v===selectedInsert?' selected':''}>${v} gr</option>`).join('')}
-        </select>
-      </label>
-      ${rearSelect}
-      <small style="display:block;margin-top:.3rem">${front.note}${rear.note ? ` ${rear.note}` : ''} Le spine dépend du poids avant ; le FOC dépend aussi du montage arrière.</small>`;
+      ${insertChooser}
+      <small style="display:block;margin-top:.3rem">${front.note} ${rear.note} Le spine dépend du poids avant ; le montage arrière standard est inclus automatiquement dans le FOC.</small>
+      ${rearAdvanced}`;
 
     box.querySelector('#victoryBuilderInsertV49')?.addEventListener('change',event => {
       selectedInsert = Number(event.target.value) || 0;
@@ -167,8 +177,8 @@
       button.setAttribute('aria-disabled',String(!compatible));
       if (!compatible) button.title = result ? `Victory recommande spine ${result.spine} avec ${front} gr devant` : 'Poids avant hors tableau Victory publié';
       else button.removeAttribute('title');
-      if (compatible && !button.dataset.victoryFrontBoundV53) {
-        button.dataset.victoryFrontBoundV53='1';
+      if (compatible && !button.dataset.victoryFrontBoundV54) {
+        button.dataset.victoryFrontBoundV54='1';
         button.addEventListener('click',() => {
           selectedPoint = pointWeight;
           const mainPoint = document.getElementById('victoryPointWeightV48');
@@ -196,7 +206,7 @@
         (card.querySelector('.arrow-balance-numbers') || card.querySelector('h4'))?.insertAdjacentElement('afterend',status);
       }
       if (!result) status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Hors des bandes Victory publiées (100–125 / 150–175 gr) : aucun spine extrapolé.`;
-      else if (compatible) status.innerHTML = `<strong>Avant total : ${parsed.point} + ${selectedInsert} = ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong> : cohérent avec le tube choisi.`;
+      else if (compatible) status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong> : cohérent avec le tube choisi.`;
       else status.innerHTML = `<strong>Avant total : ${front} gr.</strong> Victory recalcule spine <strong>${result.spine}</strong>, alors que le tube choisi est ${tube.spine || 'non précisé'} : combinaison non validable.`;
 
       if (button) {
@@ -210,12 +220,11 @@
       const corrected = correctedEstimate(parsed.foc,parsed.mass,selectedInsert,rearDelta);
       if (line && !line.dataset.victoryOriginal) line.dataset.victoryOriginal = line.textContent;
       if (line && corrected) {
-        const rearText = selectedRearWeight ? ` · arrière ${selectedRearWeight} gr` : '';
-        line.innerHTML = `<strong>${parsed.point} gr</strong> + insert ${selectedInsert} gr · avant <strong>${front} gr</strong>${rearText} · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
+        line.innerHTML = `<strong>${parsed.point} gr</strong>${selectedInsert ? ` + insert ${selectedInsert} gr · avant <strong>${front} gr</strong>` : ''} · FOC estimé <strong>${corrected.foc.toFixed(1)} %</strong> · masse estimée <strong>${Math.round(corrected.mass)} gr</strong>`;
       }
 
-      if (button && compatible && !button.dataset.victoryFrontBoundV53) {
-        button.dataset.victoryFrontBoundV53='1';
+      if (button && compatible && !button.dataset.victoryFrontBoundV54) {
+        button.dataset.victoryFrontBoundV54='1';
         button.addEventListener('click',() => {
           selectedPoint = parsed.point;
           const mainPoint = document.getElementById('victoryPointWeightV48');
@@ -231,9 +240,7 @@
     });
 
     const parent = cards[0]?.parentElement;
-    if (parent) {
-      ranked.sort((a,b) => Number(b.compatible)-Number(a.compatible) || a.index-b.index).forEach(entry => parent.appendChild(entry.card));
-    }
+    if (parent) ranked.sort((a,b) => Number(b.compatible)-Number(a.compatible) || a.index-b.index).forEach(entry => parent.appendChild(entry.card));
 
     const compatibleCards = ranked.filter(entry => entry.compatible).sort((a,b)=>a.index-b.index);
     compatibleCards.forEach((entry,position) => {
@@ -247,8 +254,7 @@
       }
     });
 
-    const invalidCards = ranked.filter(entry => !entry.compatible);
-    invalidCards.forEach(entry => {
+    ranked.filter(entry => !entry.compatible).forEach(entry => {
       const button = entry.card.querySelector('[data-point-config]');
       entry.card.classList.remove('is-recommended');
       button?.classList.remove('arrow-select-recommended');
@@ -258,12 +264,11 @@
     if (!notice) {
       notice = document.createElement('p');
       notice.className = 'arrow-builder-callout victory-point-priority-v53';
-      const list = panel.querySelector('.arrow-point-recommendations');
-      list?.insertAdjacentElement('beforebegin',notice);
+      panel.querySelector('.arrow-point-recommendations')?.insertAdjacentElement('beforebegin',notice);
     }
     if (notice) {
       notice.innerHTML = compatibleCards.length
-        ? `<strong>Victory :</strong> ${compatibleCards.length} combinaison(s) conservent le spine ${tube.spine}. Elles sont classées avant l'optimisation du FOC.`
+        ? `<strong>Victory :</strong> ${compatibleCards.length} combinaison(s) conservent le spine ${tube.spine}. Le FOC est ensuite utilisé pour les départager.`
         : `<strong>Victory :</strong> aucune masse avant affichée ne conserve le spine ${tube.spine}. Aucune pointe n'est validable sans revoir la configuration.`;
     }
 
@@ -273,21 +278,24 @@
   function patchBalancePanel(panel,tube) {
     if (!selectedPoint || tube.brand !== 'victory') return;
     const summary = panel.querySelector('.arrow-balance-summary');
-    if (!summary || summary.dataset.victoryFrontV53) return;
+    if (!summary || summary.dataset.victoryFrontV54) return;
     const strongs = [...summary.querySelectorAll('strong')];
     const massEl = strongs.find(el => /gr/i.test(el.textContent));
     const focEl = strongs.find(el => /%/.test(el.textContent));
     const oldMass = Number(massEl?.textContent.match(/\d+(?:[.,]\d+)?/)?.[0]?.replace(',','.'));
     const oldFoc = Number(focEl?.textContent.match(/\d+(?:[.,]\d+)?/)?.[0]?.replace(',','.'));
-    const { rearDelta } = correctionContext(tube);
+    const { rear, rearDelta } = correctionContext(tube);
     const corrected = correctedEstimate(oldFoc,oldMass,selectedInsert,rearDelta);
     if (!corrected) return;
     if (massEl) massEl.textContent = `${Math.round(corrected.mass)} gr`;
     if (focEl) focEl.textContent = `${corrected.foc.toFixed(1)} %`;
-    summary.dataset.victoryFrontV53='1';
+    summary.dataset.victoryFrontV54='1';
     const note = document.createElement('p');
     note.className='muted victory-front-balance-note-v49';
-    note.textContent=`Victory : pointe ${selectedPoint} gr + insert avant ${selectedInsert} gr = ${selectedPoint + selectedInsert} gr devant ; montage arrière ${selectedRearWeight ?? 'non précisé'} gr. Le FOC affiché intègre ces masses aux bonnes extrémités.`;
+    const standard = selectedRearWeight === rear.baseWeight;
+    note.textContent = standard
+      ? `Victory : FOC calculé avec ${selectedPoint + selectedInsert} gr devant et le montage arrière fabricant standard.`
+      : `Victory : FOC calculé avec ${selectedPoint + selectedInsert} gr devant et le montage arrière optionnel sélectionné.`;
     summary.insertAdjacentElement('afterend',note);
   }
 
@@ -296,7 +304,7 @@
     const summary = document.getElementById('arrowBuilderSummary');
     if (!summary || document.getElementById('preferredBrand')?.value !== 'victory') return;
     const pointSpan = [...summary.querySelectorAll('span')].find(s => /Pointe\s*:/i.test(s.textContent));
-    if (pointSpan) pointSpan.innerHTML = `<strong>Pointe :</strong> ${selectedPoint} gr + insert ${selectedInsert} gr · avant ${selectedPoint + selectedInsert} gr${selectedRearWeight ? ` · arrière ${selectedRearWeight} gr` : ''}`;
+    if (pointSpan) pointSpan.innerHTML = `<strong>Pointe :</strong> ${selectedPoint} gr${selectedInsert ? ` + insert ${selectedInsert} gr · avant ${selectedPoint + selectedInsert} gr` : ''}`;
   }
 
   function patchPanel() {
