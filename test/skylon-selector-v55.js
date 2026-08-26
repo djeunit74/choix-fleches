@@ -1,11 +1,11 @@
-/* Assistant Archer TEST - Skylon official target/field/3D chart, Pré-alpha v55.
+/* Assistant Archer TEST - Skylon official target/field/3D chart, Pré-alpha v56.
    Source fabricant : https://www.skylonarchery.com/images/chart/chart%20target.pdf
    La longueur Skylon est mesurée CUT TO CUT. Le tableau donne d'abord un groupe,
    puis une ou plusieurs tailles par famille. Aucune formule générique n'est utilisée.
 */
 (() => {
   'use strict';
-  const VERSION = 'Pré-alpha v55';
+  const VERSION = 'Pré-alpha v56';
   const SOURCE = 'https://www.skylonarchery.com/images/chart/chart%20target.pdf';
   const LENGTHS = Object.freeze([23,24,25,26,27,28,29,30,31,32]);
 
@@ -106,9 +106,9 @@
 
   function ensureRecommendationWrapper() {
     const current=window.buildBrandRecommendation;
-    if (typeof current!=='function' || current.__skylonChartV55) return false;
+    if (typeof current!=='function' || current.__skylonChartV56) return false;
     const wrapped=function(input,brand){ return applySelector(current.apply(this,arguments),input); };
-    wrapped.__skylonChartV55=true;
+    wrapped.__skylonChartV56=true;
     window.buildBrandRecommendation=wrapped;
     return true;
   }
@@ -116,13 +116,13 @@
   function renderEntries(rec) {
     return (rec.models||[]).map(entry=>{
       const choices=(entry.skylonChartChoices||[]).join(' / ');
-      return `<li data-skylon-chart="1"><strong>${esc(entry.model)}</strong> - spine fabricant <strong>${esc(entry.advisedSpine)}</strong>${choices?` <span class="result-subvalue">(groupe ${esc(entry.skylonGroup)} : ${esc(choices)})</span>`:''}<div class="aa-model-why" style="margin-top:.28rem;line-height:1.35"><strong>Pourquoi ce modèle :</strong> taille explicitement publiée dans le groupe Skylon ${esc(entry.skylonGroup)} pour cette puissance et cette longueur.</div></li>`;
+      return `<li data-skylon-chart="1" data-skylon-spine="${esc(entry.advisedSpine)}"><strong>${esc(entry.model)}</strong> - spine conseillé <strong>${esc(entry.advisedSpine)}</strong>${choices?` <span class="result-subvalue">(tableau fabricant, groupe ${esc(entry.skylonGroup)} : ${esc(choices)})</span>`:''}<div class="aa-model-why" style="margin-top:.28rem;line-height:1.35"><strong>Pourquoi ce modèle :</strong> taille explicitement publiée dans le groupe Skylon ${esc(entry.skylonGroup)} pour cette puissance et cette longueur.</div></li>`;
     }).join('');
   }
 
   function ensureRenderWrapper() {
     const current=window.renderModelList;
-    if (typeof current!=='function' || current.__skylonChartV55) return false;
+    if (typeof current!=='function' || current.__skylonChartV56) return false;
     const wrapped=function(recommendation,input){
       if (recommendation?.brand==='skylon' && recommendation?.skylonSelector) {
         const html=renderEntries(recommendation);
@@ -130,7 +130,7 @@
       }
       return current.apply(this,arguments);
     };
-    wrapped.__skylonChartV55=true;
+    wrapped.__skylonChartV56=true;
     window.renderModelList=wrapped;
     return true;
   }
