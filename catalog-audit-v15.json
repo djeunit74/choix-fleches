@@ -1,0 +1,80 @@
+{
+  "version": "2026-08-22-prealpha-v15",
+  "channel": "test",
+  "policy": {
+    "manufacturerFirst": true,
+    "unknownModelsBlocked": true,
+    "discontinuedModelsBlocked": true,
+    "nonRecurveModelsBlocked": true,
+    "notes": "Inventaire catalogue fabricant actuel. Une famille non auditee ne doit pas remonter silencieusement dans une recommandation Easton/Victory/Skylon."
+  },
+  "brands": {
+    "easton": {
+      "source": "https://eastonarchery.com/arrows_/",
+      "models": {
+        "x10 parallel pro 3.2 mm": {"label":"3.2MM X10 Parallel Pro","status":"recommended","contexts":["outdoor","target","field","3d"],"recurve":true},
+        "x10 parallel pro 4 mm": {"label":"4MM X10 Parallel Pro","status":"recommended","contexts":["outdoor","indoor","target","field","3d"],"recurve":true},
+        "x10": {"label":"X10","status":"recommended","contexts":["outdoor","target"],"recurve":true},
+        "a/c/e": {"label":"A/C/E","status":"recommended","contexts":["outdoor","target"],"recurve":true},
+        "avance": {"label":"Avance","status":"recommended","contexts":["outdoor","target","field"],"recurve":true},
+        "avance sport": {"label":"Avance Sport","status":"audited_variant","contexts":["outdoor","target","field"],"recurve":true,"note":"Même construction que Avance, triée à ±.005\" au lieu de ±.0025\"."},
+        "superdrive micro": {"label":"SuperDrive Micro","status":"recommended","contexts":["outdoor","indoor","field","3d"],"recurve":true},
+        "vector": {"label":"Vector","status":"recommended","contexts":["outdoor","target"],"recurve":true},
+        "rx7": {"label":"RX7","status":"specialized","contexts":["indoor","target"],"recurve":true},
+        "x7": {"label":"X7 Eclipse","status":"specialized","contexts":["indoor","target"],"recurve":true},
+        "x23": {"label":"X23","status":"specialized","contexts":["indoor","target"],"recurve":true},
+        "xx75 platinum plus": {"label":"XX75 Platinum Plus","status":"specialized","contexts":["indoor","target"],"recurve":true},
+        "superdrive 23": {"label":"SuperDrive 23","status":"nonrecurve_default","contexts":["indoor","3d"],"recurve":false,"note":"Fiche actuelle Easton: compound indoor/3D."},
+        "superdrive 25": {"label":"SuperDrive 25","status":"nonrecurve_default","contexts":["3d"],"recurve":false},
+        "superdrive 27": {"label":"SuperDrive 27","status":"nonrecurve_default","contexts":["indoor","3d"],"recurve":false},
+        "x27": {"label":"X27","status":"nonrecurve_default","contexts":["indoor"],"recurve":false},
+        "x10 protour": {"label":"X10 ProTour","status":"nonrecurve_default","contexts":["outdoor","target"],"recurve":false,"note":"Easton le décrit comme compound-specific."},
+        "a/c/g": {"label":"A/C/G","status":"discontinued","recurve":true},
+        "a/c/c": {"label":"A/C/C","status":"discontinued","recurve":true},
+        "carbon one": {"label":"Carbon One","status":"discontinued","recurve":true},
+        "apollo": {"label":"Apollo","status":"discontinued","recurve":true},
+        "fmj match": {"label":"FMJ Match","status":"discontinued","recurve":true},
+        "xx75 jazz": {"label":"XX75 Jazz","status":"out_of_scope","recurve":true},
+        "xx75 genesis": {"label":"XX75 Genesis","status":"out_of_scope","recurve":false}
+      }
+    },
+    "victory": {
+      "source": "https://victoryarchery.com/arrows-target/",
+      "models": {
+        "vap": {"label":"VAP","status":"recommended","contexts":["outdoor","target","field"],"recurve":true},
+        "vxt": {"label":"VXT","status":"recommended","contexts":["outdoor","target"],"recurve":true},
+        "vft": {"label":"VFT","status":"recommended","contexts":["target","indoor","outdoor"],"recurve":true,"note":"Gamme Target actuelle, diamètre standard .245."},
+        "3dhv": {"label":"3DHV","status":"specialized","contexts":["3d"],"recurve":true,"note":"Gamme Target légère/petit diamètre, mise en avant pour distances courtes/3D."},
+        "v-tac 23": {"label":"V-Tac 23","status":"specialized","contexts":["indoor","3d","target"],"recurve":true},
+        "v-tac 25": {"label":"V-Tac 25","status":"ruleset_required","contexts":["indoor","3d"],"recurve":false},
+        "v-tac 27": {"label":"V-Tac 27","status":"ruleset_required","contexts":["indoor"],"recurve":false},
+        "vx-27": {"label":"VX-27","status":"ruleset_required","contexts":["indoor"],"recurve":false}
+      }
+    },
+    "skylon": {
+      "source": "https://www.skylonarchery.com/",
+      "models": {
+        "novice": {"label":"Novice","status":"audited_pending_selector","contexts":["target","outdoor"],"recurve":true,"note":"Beginner arrow for recurve; ne pas auto-selectionner tant que la case exacte du tableau de sélection n'est pas recoupée."},
+        "radius": {"label":"Radius","status":"recommended","contexts":["target","outdoor"],"recurve":true},
+        "brixxon": {"label":"Brixxon","status":"recommended","contexts":["target","outdoor"],"recurve":true},
+        "performa": {"label":"Performa","status":"recommended","contexts":["target","outdoor"],"recurve":true},
+        "precium": {"label":"Precium","status":"recommended","contexts":["target","outdoor"],"recurve":true},
+        "paragon": {"label":"Paragon","status":"recommended","contexts":["target","outdoor"],"recurve":true},
+        "preminens": {"label":"Preminens","status":"recommended","contexts":["target","outdoor"],"recurve":true},
+        "bruxx": {"label":"Bruxx","status":"specialized","contexts":["indoor","3d"],"recurve":true},
+        "empros": {"label":"Empros","status":"specialized","contexts":["indoor","3d"],"recurve":true},
+        "quantic": {"label":"Quantic","status":"nonrecurve_default","recurve":false},
+        "instec": {"label":"Instec","status":"nonrecurve_default","recurve":false},
+        "savage": {"label":"Savage","status":"nonrecurve_default","recurve":false},
+        "edge": {"label":"Edge","status":"nonrecurve_default","recurve":false},
+        "phoric": {"label":"Phoric","status":"nonrecurve_default","recurve":false},
+        "maverick": {"label":"Maverick","status":"nonrecurve_default","recurve":false},
+        "rove": {"label":"Rove","status":"nonrecurve_default","recurve":false},
+        "ebony": {"label":"Ebony","status":"traditional","recurve":false},
+        "frontier": {"label":"Frontier","status":"traditional","recurve":false},
+        "bentwood": {"label":"Bentwood","status":"traditional","recurve":false},
+        "fast wing": {"label":"Fast Wing","status":"out_of_scope","recurve":false}
+      }
+    }
+  }
+}

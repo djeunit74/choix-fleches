@@ -1,0 +1,54 @@
+{
+  "version":"2026-08-22-prealpha-v22",
+  "channel":"test",
+  "sources":{
+    "eastonInspire":"https://eastonarchery.com/arrows_/inspire/",
+    "eastonJazz":"https://eastonarchery.com/arrows_/xx75-jazz/",
+    "skylonNovice":"https://www.skylonarchery.com/arrows/2023-06-29-08-52-09/novice"
+  },
+  "models":{
+    "inspire":{
+      "brand":"Easton","name":"Inspire","material":"carbone","profile":"parallel","purpose":"débutant / progression cible","source":"eastonInspire",
+      "spines":{
+        "570":{"gpi":8.2,"odIn":0.256,"lengthIn":31.5},
+        "630":{"gpi":7.9,"odIn":0.254,"lengthIn":30.5},
+        "750":{"gpi":8.1,"odIn":0.227,"lengthIn":29.5},
+        "900":{"gpi":7.7,"odIn":0.223,"lengthIn":28.5},
+        "1000":{"gpi":7.2,"odIn":0.220,"lengthIn":27.5},
+        "1200":{"gpi":7.2,"odIn":0.220,"lengthIn":27.25},
+        "1400":{"gpi":4.2,"odIn":0.205,"lengthIn":29},
+        "1600":{"gpi":3.8,"odIn":0.202,"lengthIn":28.75},
+        "1800":{"gpi":3.6,"odIn":0.200,"lengthIn":28.5},
+        "2000":{"gpi":3.4,"odIn":0.198,"lengthIn":28.25}
+      }
+    },
+    "xx75 jazz":{
+      "brand":"Easton","name":"XX75 Jazz","material":"7075 aluminium","straightnessIn":0.005,"weightTolerancePercent":2,"purpose":"débutant / club cible","source":"eastonJazz",
+      "spines":{
+        "1214":{"deflection":2.501,"gpi":5.9,"odIn":0.197,"lengthIn":26.5,"pointGr":[45]},
+        "1416":{"deflection":1.685,"gpi":7.2,"odIn":0.219,"lengthIn":27,"pointGr":[40,46,50]},
+        "1516":{"deflection":1.405,"gpi":7.3,"odIn":0.234,"lengthIn":27.5,"pointGr":[45,48,50]},
+        "1616":{"deflection":1.082,"gpi":8.4,"odIn":0.250,"lengthIn":28.5,"pointGr":[50,56,60]},
+        "1716":{"deflection":0.882,"gpi":9.0,"odIn":0.266,"lengthIn":29,"pointGr":[55,60,65]},
+        "1816":{"deflection":0.759,"gpi":9.3,"odIn":0.281,"lengthIn":30,"pointGr":[60,63,75]},
+        "1916":{"deflection":0.627,"gpi":10.0,"odIn":0.297,"lengthIn":31,"pointGr":[65,72,90]},
+        "2016":{"deflection":0.567,"gpi":10.6,"odIn":0.312,"lengthIn":32,"pointGr":[70,80,90]}
+      }
+    },
+    "novice":{
+      "brand":"Skylon","name":"Novice","material":"24-TON Carbon","innerDiameterMm":4.2,"straightnessIn":0.007,"purpose":"beginner arrow for recurve","source":"skylonNovice",
+      "spines":{
+        "600":{"odMm":5.71,"gpi":7.09,"lengthIn":31,"pointGr":[90]},
+        "700":{"odMm":5.58,"gpi":6.17,"lengthIn":30,"pointGr":[90]},
+        "800":{"odMm":5.48,"gpi":5.80,"lengthIn":30,"pointGr":[90]},
+        "900":{"odMm":5.36,"gpi":5.34,"lengthIn":29,"pointGr":[70]},
+        "1000":{"odMm":5.32,"gpi":4.90,"lengthIn":29,"pointGr":[70]},
+        "1100":{"odMm":5.22,"gpi":4.64,"lengthIn":28,"pointGr":[70]},
+        "1300":{"odMm":5.18,"gpi":4.16,"lengthIn":28,"pointGr":[70]},
+        "1500":{"odMm":5.05,"gpi":4.00,"lengthIn":28,"pointGr":[70]},
+        "1800":{"odMm":5.00,"gpi":3.89,"lengthIn":27,"pointGr":[50]},
+        "2000":{"odMm":4.96,"gpi":3.60,"lengthIn":26,"pointGr":[50]}
+      }
+    }
+  }
+}

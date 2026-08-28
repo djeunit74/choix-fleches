@@ -1,0 +1,28 @@
+{
+  "updatedAt": "2026-08-21",
+  "vanes": [
+    {
+      "id": "jet6-s-175",
+      "manufacturer": "Jet6 Archery",
+      "model": "S 1.75\"",
+      "family": "Spin vane",
+      "length": "1,75\"",
+      "weight": "≈ 0,9 gr (plage recoupée 0,8–1,0 gr)",
+      "weightGrains": 0.9,
+      "weightRangeGrains": [0.8, 1.0],
+      "weightConfidence": "medium-high",
+      "weightSourceTier": "reseller-consensus",
+      "stiffness": "Normal spin",
+      "disciplines": ["cible", "campagne"],
+      "diameters": ["thin"],
+      "bowStyles": ["classique", "barebow"],
+      "drawWeight": null,
+      "use": "Cible et campagne sur tubes fins ; profil spin compact, disponible en version gauche ou droite.",
+      "sourceUrl": "https://jvd-archery.com/webshop/arrows-bolts/arrow-bolts-components/vanes/jet6-archery-vane-s-1-75",
+      "sourceLabel": "Jet6 Archery via JVD — S 1.75\"",
+      "sourceTier": "brand-distributor",
+      "massDataFile": "component-masses.json",
+      "note": "La fiche JVD renseigne 0 grain, traitee comme valeur placeholder. Pour le FOC, l app utilise 0,9 gr comme estimation issue de deux sources independantes : 0,8 gr pese par Bogensportshop.eu et ~1,0 gr annonce par Monster Archery Malaysia."
+    }
+  ]
+}

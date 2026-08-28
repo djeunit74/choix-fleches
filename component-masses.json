@@ -1,0 +1,173 @@
+{
+  "updatedAt": "2026-08-21",
+  "policy": {
+    "manufacturerPreferred": true,
+    "resellerConsensusAllowed": true,
+    "minimumIndependentSources": 2,
+    "comparableComponentProxyAllowed": true,
+    "note": "Une masse constructeur reste prioritaire. Une masse non constructeur est utilisee si des sources independantes convergent. Si aucune masse du composant exact n est publiee, une estimation proxy peut servir de repere a condition d etre explicitement etiquetee, accompagnee d une plage prudente et validee ensuite par le FOC mesure."
+  },
+  "vaneMasses": [
+    {
+      "componentId": "jet6-s-175",
+      "manufacturer": "Jet6 Archery",
+      "component": "S 1.75\"",
+      "estimatedGrains": 0.9,
+      "rangeGrains": [0.8, 1.0],
+      "confidence": "medium-high",
+      "sourceTier": "reseller-consensus",
+      "sources": [
+        {
+          "label": "Bogensportshop.eu — pesee BSS",
+          "valueGrains": 0.8,
+          "url": "https://bogensportshop.eu/en/arrows/vanes-feathers/spin-vanes/jet6-vanes-s-1-75-50-pcs.html"
+        },
+        {
+          "label": "Monster Archery Malaysia — specification produit",
+          "valueGrains": 1.0,
+          "url": "https://monstersportarchery.com/product/k--k-archery-vanes-ksl-jet6-s-175"
+        }
+      ],
+      "note": "La fiche distributeur JVD affiche 0 grain, valeur traitee comme placeholder invalide. L estimation 0,9 gr est le milieu de deux sources independantes 0,8 et ~1,0 gr."
+    }
+  ],
+  "rearComponents": [
+    {
+      "id": "skylon-recurve-pin-nock",
+      "manufacturer": "Skylon",
+      "componentType": "nock",
+      "component": "Recurve Pin Nock",
+      "estimatedGrains": 2.4,
+      "rangeGrains": [2.28, 2.5],
+      "confidence": "medium-high",
+      "sourceTier": "measured-reseller-consensus",
+      "systems": ["3.2", "4.2"],
+      "sources": [
+        {
+          "label": "OCD Strings — mesure de nock",
+          "valueGrains": 2.28,
+          "url": "https://www.ocdstrings.com/nock-guide"
+        },
+        {
+          "label": "Bogenladen Leipzig — fiche produit",
+          "valueGrains": 2.5,
+          "url": "https://www.bogenladen-leipzig.de/Skylon-Recurve-Pin-Nock"
+        }
+      ],
+      "note": "Valeur d estimation utilisee avec un pin compatible documente ou avec une estimation proxy explicitement signalee."
+    },
+    {
+      "id": "skylon-pin-id42",
+      "manufacturer": "Skylon",
+      "componentType": "pin",
+      "component": "Pin Insert ID4.2",
+      "estimatedGrains": 10.8,
+      "rangeGrains": [10.8, 10.8],
+      "confidence": "high",
+      "sourceTier": "reseller-consensus",
+      "systems": ["4.2"],
+      "tubeKeys": ["brixxon", "radius"],
+      "spineGroups": ["400-650", "700-900", "1000-1300", "1500-2000"],
+      "sources": [
+        {
+          "label": "Bogenladen Leipzig — Skylon Pin ID4.2",
+          "valueGrains": 10.8,
+          "url": "https://www.bogenladen-leipzig.de/Skylon-Pin-ID42"
+        },
+        {
+          "label": "Bogensport Roemer — Skylon ID4.2 Pin Insert",
+          "valueGrains": 10.8,
+          "url": "https://bogensport-roemer.de/nl-nl/products/skylon-radius-pin-insert-12er-packung"
+        }
+      ],
+      "note": "Les deux revendeurs donnent 10,8 gr et listent les variantes de spine ID4.2 pour Radius/Brixxon."
+    },
+    {
+      "id": "skylon-pin-id32-proxy",
+      "manufacturer": "Skylon",
+      "componentType": "pin",
+      "component": "Pin Insert ID3.2 — estimation de repere",
+      "estimatedGrains": 8.0,
+      "rangeGrains": [7.0, 9.0],
+      "confidence": "low-medium",
+      "sourceTier": "comparable-component-proxy",
+      "systems": ["3.2"],
+      "tubeKeys": ["paragon", "performa", "precium", "preminens", "premiens"],
+      "sources": [
+        {
+          "label": "Skylon / revendeurs — confirmation du Pin Insert ID3.2 inclus et des groupes de fitment",
+          "url": "https://www.skylonarchery.com/components-for-arrow"
+        },
+        {
+          "label": "Easton Target — pin 3.2MM X10 comparable documente a 8 gr",
+          "valueGrains": 8.0,
+          "url": "https://eastonarchery.com/wp-content/uploads/2024/11/Easton-Target-2025-Small.pdf"
+        }
+      ],
+      "note": "Aucune masse Skylon ID3.2 exploitable n a ete trouvee. Le repere 8 gr utilise un pin aluminium 3.2 mm de fonction comparable documente par Easton ; la plage volontairement large 7-9 gr couvre l incertitude."
+    },
+    {
+      "id": "easton-g-nock-vector",
+      "manufacturer": "Easton",
+      "componentType": "nock",
+      "component": "G Nock",
+      "estimatedGrains": 7.0,
+      "rangeGrains": [7.0, 7.0],
+      "confidence": "high",
+      "sourceTier": "manufacturer-documented-component",
+      "systems": ["4mm-g-nock"],
+      "tubeKeys": ["vector", "vector ready to shoot"],
+      "sources": [
+        {
+          "label": "Easton Target catalog — G Nock 7 gr",
+          "valueGrains": 7.0,
+          "url": "https://eastonarchery.com/wp-content/uploads/2018/10/2018_Target_Catalog_email_web.pdf"
+        },
+        {
+          "label": "esemro — G Nock 7 gr, compatibilite Easton Vector",
+          "valueGrains": 7.0,
+          "url": "https://www.esemro.com/produkte/pfeile/komponenten"
+        }
+      ],
+      "note": "Le Vector peut utiliser directement une G Nock ; aucun pin separe n est ajoute dans ce montage de repere."
+    }
+  ],
+  "rearAssemblies": [
+    {
+      "id": "skylon-id42-recurve-rear",
+      "manufacturer": "Skylon",
+      "tubeKeys": ["brixxon", "radius"],
+      "components": ["skylon-pin-id42", "skylon-recurve-pin-nock"],
+      "estimatedGrains": 13.2,
+      "rangeGrains": [13.08, 13.3],
+      "confidence": "medium-high",
+      "sourceTier": "reseller-consensus",
+      "label": "Pin ID4.2 10,8 gr + Recurve Pin Nock ≈2,4 gr",
+      "note": "Ensemble arriere estime pour arc recurve. La plage vient de 10,8 gr pour le pin et 2,28-2,5 gr pour l encoche."
+    },
+    {
+      "id": "skylon-id32-recurve-rear-proxy",
+      "manufacturer": "Skylon",
+      "tubeKeys": ["paragon", "performa", "precium", "preminens", "premiens"],
+      "components": ["skylon-pin-id32-proxy", "skylon-recurve-pin-nock"],
+      "estimatedGrains": 10.4,
+      "rangeGrains": [9.28, 11.5],
+      "confidence": "low-medium",
+      "sourceTier": "proxy-estimate",
+      "label": "Pin ID3.2 ≈8 gr + Recurve Pin Nock ≈2,4 gr",
+      "note": "Repere volontairement prudent : l encoche est recoupee, mais le pin ID3.2 utilise un proxy 3.2 mm comparable. Le FOC mesure reste la validation prioritaire."
+    },
+    {
+      "id": "easton-vector-g-nock-rear",
+      "manufacturer": "Easton",
+      "tubeKeys": ["vector", "vector ready to shoot"],
+      "components": ["easton-g-nock-vector"],
+      "estimatedGrains": 7.0,
+      "rangeGrains": [7.0, 7.0],
+      "confidence": "high",
+      "sourceTier": "manufacturer-documented-component",
+      "label": "Easton G Nock 7 gr",
+      "note": "Montage arriere de repere sans pin separe."
+    }
+  ]
+}
