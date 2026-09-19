@@ -1,70 +1,53 @@
-/* Assistant Archer TEST - affichage/repli des offres sans modifier le contenu rendu. */
+/* Assistant Archer TEST - repli des offres sans reconstruire leur contenu. */
 (() => {
   'use strict';
 
+  const PANEL_SELECTOR = '.merchant-panel';
+  const BLOCK_SELECTOR = ':scope > .merchant-block';
+  const TITLE_SELECTOR = ':scope > h3';
   let scheduled = false;
   let merchantBlockId = 0;
 
-  function directMerchantBlock(host) {
-    return [...host.children].find(child => child instanceof HTMLElement && child.classList.contains('merchant-block')) || null;
+  function setExpanded(panel, expanded) {
+    const title = panel.querySelector(TITLE_SELECTOR);
+    panel.dataset.merchantExpanded = expanded ? 'true' : 'false';
+    title?.setAttribute('aria-expanded', expanded ? 'true' : 'false');
   }
 
-  function setExpanded(host, expanded) {
-    if (!(host instanceof HTMLElement)) return;
-    const button = [...host.children].find(child => child instanceof HTMLButtonElement && child.classList.contains('merchant-toggle'));
-    host.dataset.merchantExpanded = expanded ? 'true' : 'false';
-    if (button instanceof HTMLButtonElement) {
-      button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-      button.textContent = expanded ? 'Masquer les offres ▴' : 'Afficher les offres ▾';
-    }
-  }
+  function bindPanel(panel) {
+    if (!(panel instanceof HTMLElement)) return;
 
-  function toggleHost(host) {
-    setExpanded(host, host.dataset.merchantExpanded !== 'true');
-  }
-
-  function ensureToggleButton(host, block) {
-    let button = [...host.children].find(child => child instanceof HTMLButtonElement && child.classList.contains('merchant-toggle'));
-    if (!(button instanceof HTMLButtonElement)) {
-      button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'merchant-toggle';
-      host.insertBefore(button, block);
-    }
+    const block = panel.querySelector(BLOCK_SELECTOR);
+    const title = panel.querySelector(TITLE_SELECTOR);
+    if (!(block instanceof HTMLElement) || !(title instanceof HTMLHeadingElement)) return;
 
     if (!block.id) {
       merchantBlockId += 1;
       block.id = `merchant-offers-${merchantBlockId}`;
     }
-    button.setAttribute('aria-controls', block.id);
 
-    if (button.dataset.merchantToggleBound !== '1') {
-      button.dataset.merchantToggleBound = '1';
-      button.addEventListener('click', () => toggleHost(host));
+    title.setAttribute('role', 'button');
+    title.setAttribute('tabindex', '0');
+    title.setAttribute('aria-controls', block.id);
+
+    if (title.dataset.merchantToggleBound !== '1') {
+      title.dataset.merchantToggleBound = '1';
+      title.addEventListener('click', () => {
+        setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
+      });
+      title.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
+      });
     }
-    return button;
-  }
 
-  function bindHost(host) {
-    if (!(host instanceof HTMLElement)) return;
-    const block = directMerchantBlock(host);
-    if (!(block instanceof HTMLElement)) return;
-
-    host.classList.add('merchant-offers-host');
-    ensureToggleButton(host, block);
-
-    if (!host.dataset.merchantExpanded) setExpanded(host, false);
-    else setExpanded(host, host.dataset.merchantExpanded === 'true');
+    setExpanded(panel, panel.dataset.merchantExpanded === 'true');
   }
 
   function bindAll(root = document) {
-    const scope = root instanceof Document || root instanceof HTMLElement ? root : document;
-
-    if (scope instanceof HTMLElement && (scope.matches('.merchant-panel') || scope.matches('.mini-card'))) {
-      bindHost(scope);
-    }
-
-    scope.querySelectorAll?.('.merchant-panel, .mini-card').forEach(bindHost);
+    if (root instanceof HTMLElement && root.matches(PANEL_SELECTOR)) bindPanel(root);
+    root.querySelectorAll?.(PANEL_SELECTOR).forEach(bindPanel);
   }
 
   function scheduleBind() {
@@ -77,18 +60,14 @@
   }
 
   function install() {
-    const release = document.getElementById('appReleaseStatic');
-    if (release) release.textContent = 'Version : Pré-alpha v11';
-
     bindAll();
     const result = document.getElementById('result');
-    if (!result) return;
-    new MutationObserver(scheduleBind).observe(result, { childList: true, subtree: true });
+    if (result) new MutationObserver(scheduleBind).observe(result, { childList: true, subtree: true });
   }
 
   window.AssistantArcherMerchantUi = Object.freeze({
     refresh: bindAll,
-    mode: 'host-sibling-toggle',
+    mode: 'panel-attribute-toggle',
     release: 'Pre-alpha v11'
   });
 

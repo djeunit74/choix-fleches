@@ -64,38 +64,43 @@
   clear:both;
 }
 
-/* Pré-alpha v11 : le bouton est toujours un frere direct de .merchant-block.
-   Le moteur marchand peut donc reecrire le contenu du bloc sans detruire le controle. */
-.merchant-toggle{
-  display:inline-flex;
+/* Pré-alpha v11 : le titre pilote uniquement un attribut du panneau.
+   Le contenu marchand reste entièrement géré par le moteur de recommandation. */
+.merchant-panel > h3{
+  display:flex;
   align-items:center;
-  justify-content:center;
-  width:auto;
-  margin:.35rem 0 .7rem;
+  justify-content:space-between;
+  gap:.7rem;
+  margin:0 0 .7rem;
   padding:.62rem .85rem;
   border:1px solid color-mix(in srgb,var(--accent-2) 38%,var(--line));
   border-radius:10px;
   background:color-mix(in srgb,var(--accent-2) 8%,white);
   color:var(--accent-2);
-  font:inherit;
-  font-size:.84rem;
-  font-weight:850;
-  line-height:1.2;
   cursor:pointer;
 }
-.merchant-toggle:hover,
-.merchant-toggle:focus-visible{
+.merchant-panel > h3::after{
+  content:'Afficher les offres \25BE';
+  flex:0 0 auto;
+  font-size:.78rem;
+  font-weight:800;
+}
+.merchant-panel[data-merchant-expanded="true"] > h3::after{
+  content:'Masquer les offres \25B4';
+}
+.merchant-panel > h3:hover,
+.merchant-panel > h3:focus-visible{
   background:color-mix(in srgb,var(--accent-2) 14%,white);
   outline:none;
 }
-.merchant-toggle:focus-visible{
+.merchant-panel > h3:focus-visible{
   box-shadow:0 0 0 3px color-mix(in srgb,var(--accent-2) 28%,transparent);
 }
 
-.merchant-offers-host[data-merchant-expanded="false"] > .merchant-block{
+.merchant-panel[data-merchant-expanded="false"] > .merchant-block{
   display:none!important;
 }
-.merchant-offers-host[data-merchant-expanded="true"] > .merchant-block{
+.merchant-panel[data-merchant-expanded="true"] > .merchant-block{
   display:block!important;
 }
 
@@ -183,7 +188,7 @@
   #result li:has(.arrow-model-select){padding:.72rem .68rem .68rem;margin:.58rem 0}
   #result li:has(.arrow-model-select) > strong:first-child{font-size:1.04rem;display:block;margin-right:7.2rem}
   #result li:has(.arrow-model-select) > .arrow-model-select{position:absolute;right:.6rem;top:.58rem;float:none;margin:0!important}
-  .merchant-toggle{width:100%;margin:.3rem 0 .65rem}
+  .merchant-panel > h3{width:100%;margin:.3rem 0 .65rem}
   #eastonSelectorV38{grid-template-columns:1fr!important;gap:.24rem!important}
   #eastonSelectorV38[hidden]{display:none!important}
   #eastonSelectorHintV38,#eastonSelectorCalcV38,#eastonSelectorV38 > .field-hint:last-child{grid-column:1!important}
