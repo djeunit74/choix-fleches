@@ -7,9 +7,11 @@
   const TITLE_SELECTOR = ':scope > h3';
   let scheduled = false;
   let merchantBlockId = 0;
+  let expandedState = false;
 
   function setExpanded(panel, expanded) {
     const title = panel.querySelector(TITLE_SELECTOR);
+    expandedState = expanded;
     panel.dataset.merchantExpanded = expanded ? 'true' : 'false';
     title?.setAttribute('aria-expanded', expanded ? 'true' : 'false');
   }
@@ -30,7 +32,7 @@
     title.setAttribute('tabindex', '0');
     title.setAttribute('aria-controls', block.id);
 
-    setExpanded(panel, panel.dataset.merchantExpanded === 'true');
+    setExpanded(panel, expandedState);
   }
 
   function merchantPanelFromEvent(event, result) {
