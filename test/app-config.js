@@ -1,6 +1,6 @@
 /* Configuration centrale Assistant Archer TEST. */
 window.AssistantArcherConfig = Object.freeze({
-  version: '2026.08.21-v62',
+  version: '2026.09.19-v63',
   channel: 'test',
   historyLimit: 5,
   principles: Object.freeze({
@@ -11,30 +11,23 @@ window.AssistantArcherConfig = Object.freeze({
   })
 });
 
-/* UX TEST v33 : choix direct d'une marque active.
-   Le materiau reste une consequence de la recommandation et non une question obligatoire. */
+/* UX TEST v63 : les filtres de recherche restent disponibles dans les deux parcours.
+   Le moteur de recommandation reste dans app.js ; cette couche ne retire plus
+   de marque et ne masque plus le materiau. */
 (() => {
-  const simplifyArrowChoiceForm = () => {
+  const prepareArrowChoiceForm = () => {
     const material = document.getElementById('shaftMaterial');
     if (material) {
-      material.value = 'all';
       const label = material.closest('label');
-      if (label) { label.hidden = true; label.style.display = 'none'; }
+      if (label) { label.hidden = false; label.style.removeProperty('display'); }
     }
     const guidance = document.getElementById('materialGuidance');
-    if (guidance) { guidance.hidden = true; guidance.style.display = 'none'; }
+    if (guidance) { guidance.hidden = false; guidance.style.removeProperty('display'); }
     const brand = document.getElementById('preferredBrand');
-    if (brand) {
-      for (const value of ['all','carbon','avalon']) {
-        const option = brand.querySelector(`option[value="${value}"]`);
-        if (option) option.remove();
-      }
-      const allowed = ['easton','victory','skylon'];
-      if (!allowed.includes(brand.value)) brand.value = brand.querySelector('option[value="easton"]') ? 'easton' : (brand.options[0]?.value || '');
-    }
+    if (brand && !['all','easton','victory','skylon','carbon'].includes(brand.value)) brand.value = 'all';
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', simplifyArrowChoiceForm, { once: true });
-  else simplifyArrowChoiceForm();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', prepareArrowChoiceForm, { once: true });
+  else prepareArrowChoiceForm();
 })();
 
 /* TEST v43 : enrichit les composants avant arrow-builder.
@@ -107,7 +100,7 @@ window.AssistantArcherConfig = Object.freeze({
 })();
 
 (() => {
-  const refreshUiPolish=()=>{const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>/ui-polish\.css/i.test(el.getAttribute('href')||''));if(link)link.href='ui-polish.css?v=20260919-prealpha-v11-panel';};
+  const refreshUiPolish=()=>{const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>/ui-polish\.css/i.test(el.getAttribute('href')||''));if(link)link.href='ui-polish.css?v=20260919-prealpha-v12';};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshUiPolish,{once:true});else refreshUiPolish();
 })();
 
@@ -121,7 +114,7 @@ window.AssistantArcherConfig = Object.freeze({
   add('vane-mass-v27.js?v=20260822-prealpha-v28','vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30','foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32','point-audit-v31');
-  add('easton-mode-v33.js?v=20260826-prealpha-v58-release','easton-mode-v33');
+  add('easton-mode-v33.js?v=20260919-prealpha-v12-release','easton-mode-v33');
   add('easton-groups-v34.js?v=20260823-prealpha-v34-disabled','easton-groups-v34');
   add('easton-precision-v37.js?v=20260823-prealpha-v38','easton-precision-v37');
   add('vane-sizing.js?v=20260823-prealpha-v44','vane-sizing');

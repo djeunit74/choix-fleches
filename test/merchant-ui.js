@@ -82,7 +82,7 @@
   window.AssistantArcherMerchantUi = Object.freeze({
     refresh: bindAll,
     mode: 'panel-attribute-toggle',
-    release: 'Pre-alpha v11'
+    release: 'Pre-alpha v12'
   });
 
   document.readyState === 'loading'
