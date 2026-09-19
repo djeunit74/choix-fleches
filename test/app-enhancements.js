@@ -473,11 +473,6 @@
         material.value = wanted.some(([value]) => value === selected) ? selected : 'all';
       }
     }
-    const disciplineWrap = document.getElementById('disciplineWrap');
-    if (disciplineWrap) {
-      disciplineWrap.hidden = false;
-      disciplineWrap.style.removeProperty('display');
-    }
     const discipline = document.getElementById('discipline');
     if (discipline) {
       const selected = discipline.value || 'target';

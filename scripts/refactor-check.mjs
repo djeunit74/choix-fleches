@@ -18,15 +18,15 @@ for (const brand of ['skylon','easton','victory','carbon']) assert(index.include
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
 assert(index.includes('20260919-v63'), 'Cache-buster technique v63 absent du shell TEST');
-assert(index.includes('20260919-prealpha-v13'), 'Cache-buster Pré-alpha v13 absent du shell TEST');
-assert(index.includes('Version : Pré-alpha v13'), 'Version visible Pré-alpha v13 absente du shell TEST');
+assert(index.includes('20260919-prealpha-v14'), 'Cache-buster Pré-alpha v14 absent du shell TEST');
+assert(index.includes('Version : Pré-alpha v14'), 'Version visible Pré-alpha v14 absente du shell TEST');
 assert(!index.includes('20260821-prealpha-v8') && !index.includes('20260821-prealpha-v9') && !index.includes('20260821-prealpha-v10'), 'Ancien cache-buster marchand encore present dans le shell TEST');
 assert(!index.includes('20260821-v62'), 'Ancien cache-buster v62 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.09.19-v63'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.09.19-prealpha-v14'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 for (const id of ['guidedQuestions','archerExperience','guidedGoal','drawWeightKnown','arrowLengthKnown']) assert(index.includes(`id="${id}"`), `Parcours guide incomplet: ${id}`);
 assert(index.includes('name="searchMode" value="guided"') && index.includes('name="searchMode" value="expert"'), 'Choix Guide-moi / Recherche precise absent');
 assert(index.includes('<option value="all">Toutes les marques</option>'), 'Recherche multi-marques absente');
@@ -41,7 +41,7 @@ for (const feature of [
   'packageInfo','priceOpportunityIds','Bonne affaire','uniqueRecommendationModels','renderComparisonBrandCard','data-aa-brand','renderAllModelList'
 ]) assert(enhancements.toLowerCase().includes(feature.toLowerCase()), `Fonction integree manquante: ${feature}`);
 assert(enhancements.includes('const discipline = input.discipline'), 'La discipline choisie ne survit plus a la normalisation');
-assert(enhancements.includes("disciplineWrap.hidden = false"), 'La discipline doit rester visible');
+assert(!enhancements.includes("disciplineWrap.hidden = false"), 'La couche d integration ne doit pas forcer la discipline visible');
 assert(enhancements.includes('encodeURIComponent(cfg.version'), 'Les modules dynamiques ne suivent plus la version centrale');
 assert(!enhancements.includes('?v=refactor2'), 'Ancien cache-buster refactor2 encore present');
 assert(!enhancements.includes('Voici des offres compatibles avec la marque'), 'Fallback marchand trop large encore present');
@@ -67,7 +67,7 @@ has(uiPolish, [
   '.merchant-panel > h3'
 ], 'Affichage/repli marchand Pré-alpha v12 incomplet');
 const releaseController = read('test/easton-mode-v33.js');
-has(releaseController, ["const VERSION = 'Pré-alpha v13'",'window.AssistantArcherRelease'], 'Version visible Pré-alpha v13 non centralisee');
+has(releaseController, ["const VERSION = 'Pré-alpha v14'",'window.AssistantArcherRelease'], 'Version visible Pré-alpha v14 non centralisee');
 assert(!uiPolish.includes('.merchant-block > .merchant-intro') && !uiPolish.includes('.merchant-block > .merchant-shops'), 'Ancien forçage permanent des offres encore present');
 assert(!uiPolish.includes('.merchant-disclosure'), 'Ancien style d accordeon marchand encore present');
 assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.test(uiPolish), 'Le bouton tube ne doit pas redevenir transparent');
@@ -79,7 +79,11 @@ has(focCss, ['.foc-measure-card','.foc-measure-grid','.foc-measure-result','.foc
 execFileSync(process.execPath, ['-e', "require('./test/foc-measure.js'); const m=globalThis.AssistantArcherFocMeasureMath; if(!m) process.exit(1); const foc=m.calculateMeasuredFoc(72,43.2); if(Math.abs(foc-10)>1e-9) process.exit(2); if(m.calculateMeasuredFoc(72,73)!==null) process.exit(3); if(m.classifyMeasuredFoc(12).key!=='coherent') process.exit(4);"], { stdio: 'pipe' });
 
 const uiRefactor = read('test/ui-refactor.js');
-has(uiRefactor, ['bindDisciplineToTheme','themeSelect','disciplineWrap',"discipline.value=theme.value==='cible'?'target':'field'",'syncFromDiscipline'], 'Liaison theme/discipline incomplete');
+has(uiRefactor, ['bindDisciplineToTheme','themeSelect',"discipline.value=theme.value==='cible'?'target':'field'",'syncFromDiscipline'], 'Liaison theme/discipline incomplete');
+const searchApp = read('test/app.js');
+has(searchApp, ['AssistantArcherSearchMode','shootingEnvironmentWrap','disciplineWrap','expertObjectiveWrap','field.hidden = !guided'], 'Affichage simplifie de la recherche precise incomplet');
+const expertRanking = read('test/expert-model-ranking.js');
+has(expertRanking, ["label.id='expertObjectiveWrap'",'AssistantArcherSearchMode?.refresh?.()'], 'Priorite de selection non rattachee au mode de recherche');
 assert(!uiRefactor.includes('#disciplineWrap{display:none!important}'), 'La discipline est encore masquee');
 
 const refreshPrices = read('scripts/refresh-prices.mjs');
@@ -259,4 +263,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: parcours guide/expert, choix Skylon groupe, FOC et panneau marchand Pré-alpha v13 OK');
+console.log('Assistant Archer refactor: recherche precise simplifiee, choix Skylon groupe, FOC et panneau marchand Pré-alpha v14 OK');

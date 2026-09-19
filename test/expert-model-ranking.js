@@ -23,6 +23,7 @@
     label.id='expertObjectiveWrap';
     label.innerHTML=`Priorité de sélection<select id="expertObjective"><option value="progression">Progression</option><option value="performance" selected>Performance / compétition</option><option value="elite">Performance maximale / tuning expert</option></select><small class="field-hint">Le spine reste celui du fabricant. Le mode progression resserre la liste vers les tubes les plus simples/cohérents ; le mode expert vers les modèles réellement spécialisés.</small>`;
     if(discipline?.nextSibling)form.insertBefore(label,discipline.nextSibling);else form.appendChild(label);
+    window.AssistantArcherSearchMode?.refresh?.();
   }
 
   const ctx=input=>({objective:objective(),discipline:input?.discipline||document.getElementById('discipline')?.value||'target',environment:input?.shootingEnvironment||'outdoor',bowType:input?.bowType||'recurve'});
@@ -154,7 +155,7 @@
       const p=document.createElement('p');p.className='expert-model-why muted';p.style.cssText='margin:.25rem 0 .15rem;font-size:.82rem;line-height:1.35';p.innerHTML=`<strong>Interprétation app :</strong> ${why}`;li.appendChild(p);
     });
   }
-  function refresh(){installObjectiveInput();patchRecommendationEngine();decorateInterpretation();const release=document.getElementById('appReleaseStatic');if(release&&patched)release.textContent=`Version : ${VERSION}`;}
+  function refresh(){installObjectiveInput();patchRecommendationEngine();decorateInterpretation();}
   function install(){refresh();let attempts=0;const timer=setInterval(()=>{attempts++;refresh();if(patched||attempts>80)clearInterval(timer);},100);const result=document.getElementById('result');if(result){let queued=false;observer=new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorateInterpretation();});});observer.observe(result,{childList:true,subtree:true});}}
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',install,{once:true}):install();
 })();

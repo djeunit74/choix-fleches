@@ -1,4 +1,4 @@
-/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v13.
+/* Assistant Archer TEST - contrôleur de version visible, Pré-alpha v14.
    Compatibilité de chargement : ce fichier conserve son ancien nom pour ne pas
    modifier l'architecture de boot. Il ne contient aucune logique Easton.
 
@@ -8,7 +8,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'Pré-alpha v13';
+  const VERSION = 'Pré-alpha v14';
   const LABEL = `Version : ${VERSION}`;
 
   function apply() {

@@ -1,6 +1,6 @@
 /* Configuration centrale Assistant Archer TEST. */
 window.AssistantArcherConfig = Object.freeze({
-  version: '2026.09.19-v63',
+  version: '2026.09.19-prealpha-v14',
   channel: 'test',
   historyLimit: 5,
   principles: Object.freeze({
@@ -100,7 +100,7 @@ window.AssistantArcherConfig = Object.freeze({
 })();
 
 (() => {
-  const refreshUiPolish=()=>{const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>/ui-polish\.css/i.test(el.getAttribute('href')||''));if(link)link.href='ui-polish.css?v=20260919-prealpha-v13';};
+  const refreshUiPolish=()=>{const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>/ui-polish\.css/i.test(el.getAttribute('href')||''));if(link)link.href='ui-polish.css?v=20260919-prealpha-v14';};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshUiPolish,{once:true});else refreshUiPolish();
 })();
 
@@ -108,13 +108,13 @@ window.AssistantArcherConfig = Object.freeze({
 (() => {
   if (typeof document === 'undefined') return;
   const add=(src,marker)=>{if(document.querySelector(`script[data-${marker}]`))return;const script=document.createElement('script');script.src=src;script.async=false;script.setAttribute(`data-${marker}`,'1');document.head.appendChild(script);};
-  add('expert-model-ranking.js?v=20260823-prealpha-v30-label','expert-model-ranking');
+  add('expert-model-ranking.js?v=20260919-prealpha-v14','expert-model-ranking');
   add('catalog-audit.js?v=20260823-prealpha-v47-victory','catalog-audit');
   add('vane-library-v25.js?v=20260822-prealpha-v28','vane-library-v25');
   add('vane-mass-v27.js?v=20260822-prealpha-v28','vane-mass-v27');
   add('foc-zone-v29.js?v=20260823-prealpha-v30','foc-zone-v29');
   add('point-audit-v31.js?v=20260823-prealpha-v31-rollback-easton-v32','point-audit-v31');
-  add('easton-mode-v33.js?v=20260919-prealpha-v13-release','easton-mode-v33');
+  add('easton-mode-v33.js?v=20260919-prealpha-v14-release','easton-mode-v33');
   add('easton-groups-v34.js?v=20260823-prealpha-v34-disabled','easton-groups-v34');
   add('easton-precision-v37.js?v=20260823-prealpha-v38','easton-precision-v37');
   add('vane-sizing.js?v=20260823-prealpha-v44','vane-sizing');
