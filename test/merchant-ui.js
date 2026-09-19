@@ -78,7 +78,7 @@
 
   function install() {
     const release = document.getElementById('appReleaseStatic');
-    if (release) release.textContent = 'Version : Pré-alpha v11';
+    if (release) release.textContent = 'Version : Pré-alpha v12';
 
     bindAll();
     const result = document.getElementById('result');
@@ -89,7 +89,7 @@
   window.AssistantArcherMerchantUi = Object.freeze({
     refresh: bindAll,
     mode: 'host-sibling-toggle',
-    release: 'Pre-alpha v11'
+    release: 'Pre-alpha v12'
   });
 
   document.readyState === 'loading'

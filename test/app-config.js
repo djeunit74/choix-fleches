@@ -1,6 +1,6 @@
 /* Configuration centrale Assistant Archer TEST. */
 window.AssistantArcherConfig = Object.freeze({
-  version: '2026.08.21-v62',
+  version: '2026.09.19-v63',
   channel: 'test',
   historyLimit: 5,
   principles: Object.freeze({
@@ -11,30 +11,23 @@ window.AssistantArcherConfig = Object.freeze({
   })
 });
 
-/* UX TEST v33 : choix direct d'une marque active.
-   Le materiau reste une consequence de la recommandation et non une question obligatoire. */
+/* UX TEST v63 : les filtres de recherche restent disponibles dans les deux parcours.
+   Le moteur de recommandation reste dans app.js ; cette couche ne retire plus
+   de marque et ne masque plus le materiau. */
 (() => {
-  const simplifyArrowChoiceForm = () => {
+  const prepareArrowChoiceForm = () => {
     const material = document.getElementById('shaftMaterial');
     if (material) {
-      material.value = 'all';
       const label = material.closest('label');
-      if (label) { label.hidden = true; label.style.display = 'none'; }
+      if (label) { label.hidden = false; label.style.removeProperty('display'); }
     }
     const guidance = document.getElementById('materialGuidance');
-    if (guidance) { guidance.hidden = true; guidance.style.display = 'none'; }
+    if (guidance) { guidance.hidden = false; guidance.style.removeProperty('display'); }
     const brand = document.getElementById('preferredBrand');
-    if (brand) {
-      for (const value of ['all','carbon','avalon']) {
-        const option = brand.querySelector(`option[value="${value}"]`);
-        if (option) option.remove();
-      }
-      const allowed = ['easton','victory','skylon'];
-      if (!allowed.includes(brand.value)) brand.value = brand.querySelector('option[value="easton"]') ? 'easton' : (brand.options[0]?.value || '');
-    }
+    if (brand && !['all','easton','victory','skylon','carbon'].includes(brand.value)) brand.value = 'all';
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', simplifyArrowChoiceForm, { once: true });
-  else simplifyArrowChoiceForm();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', prepareArrowChoiceForm, { once: true });
+  else prepareArrowChoiceForm();
 })();
 
 /* TEST v43 : enrichit les composants avant arrow-builder.

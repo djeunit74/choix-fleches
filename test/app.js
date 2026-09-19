@@ -18,6 +18,12 @@
   shootingEnvironment: document.getElementById("shootingEnvironment"),
   shaftMaterial: document.getElementById("shaftMaterial"),
   materialGuidance: document.getElementById("materialGuidance"),
+  searchModeInputs: Array.from(document.querySelectorAll('input[name="searchMode"]')),
+  guidedQuestions: document.getElementById("guidedQuestions"),
+  archerExperience: document.getElementById("archerExperience"),
+  guidedGoal: document.getElementById("guidedGoal"),
+  drawWeightKnown: document.getElementById("drawWeightKnown"),
+  arrowLengthKnown: document.getElementById("arrowLengthKnown"),
   drawWeight: document.getElementById("drawWeight"),
   arrowLength: document.getElementById("arrowLength"),
   arcLength: document.getElementById("arcLength"),
@@ -1244,10 +1250,10 @@ function updateVisibility() {
     els.shootingProfileWrap.hidden = true;
     els.shootingProfileWrap.style.display = "none";
   }
-  els.shootingEnvironmentWrap.hidden = true;
-  els.shootingEnvironmentWrap.style.display = "none";
-  els.disciplineWrap.hidden = true;
-  els.disciplineWrap.style.display = "none";
+  els.shootingEnvironmentWrap.hidden = false;
+  els.shootingEnvironmentWrap.style.removeProperty("display");
+  els.disciplineWrap.hidden = false;
+  els.disciplineWrap.style.removeProperty("display");
 }
 
 function updateMaterialOptions() {
@@ -1278,18 +1284,17 @@ function updateMaterialGuidance() {
 }
 
 function normalizeInput(input) {
-  if (input.shaftMaterial === "alu") {
-    return { ...input, shootingProfile: "recurve_indoor", shootingEnvironment: "indoor", discipline: "target" };
-  }
-  if (input.shaftMaterial === "carbon" || input.shaftMaterial === "all") {
-    return { ...input, shootingProfile: "recurve_outdoor", shootingEnvironment: "outdoor", discipline: "target" };
-  }
-  return input;
+  const shootingProfile = input.shaftMaterial === "alu"
+    ? "recurve_indoor"
+    : input.shaftMaterial === "carbon"
+      ? "recurve_outdoor"
+      : "recurve_all";
+  return { ...input, shootingProfile };
 }
 
 function applyProfileDefaults() {
-  els.shootingEnvironment.value = "outdoor";
-  els.discipline.value = "target";
+  if (!["outdoor", "indoor", "mixed"].includes(els.shootingEnvironment.value)) els.shootingEnvironment.value = "outdoor";
+  if (!["target", "field"].includes(els.discipline.value)) els.discipline.value = "target";
   updateMaterialOptions();
   updateMaterialGuidance();
   updateVisibility();
@@ -1396,7 +1401,7 @@ function deriveTargetProfile(input) {
   if (input.discipline === "hunting") pointRange = [100, input.bowType === "compound" ? 150 : 125];
   if (input.shootingEnvironment === "indoor" && input.discipline === "target") pointRange = [input.bowType === "compound" ? 120 : 100, input.bowType === "compound" ? 150 : 120];
 
-  let preferredSeries = input.shootingEnvironment === "indoor" ? "performance" : "performance";
+  let preferredSeries = input.goal === "club" ? "club" : input.goal === "competition" ? "competition" : "performance";
 
   let preferredMass = "medium";
   if (input.shootingEnvironment === "indoor") preferredMass = "heavy";
@@ -1487,6 +1492,7 @@ function scoreModel(modelName, input, profile) {
   if (meta.toleranceClass === profile.preferredTolerance) score += 1;
   if (meta.distanceBand === profile.preferredDistanceBand) score += 2;
   if (meta.useCase === profile.preferredUseCase) score += 2;
+  if (input.goal && meta.goals?.includes(input.goal)) score += 3;
   if (meta.dataPrecision === "model") score += 1;
   return { score, meta };
 }
@@ -2615,6 +2621,32 @@ function validateInput(input) {
   return "";
 }
 
+function currentSearchMode() {
+  return els.searchModeInputs.find((input) => input.checked)?.value || "guided";
+}
+
+function updateSearchMode() {
+  const guided = currentSearchMode() === "guided";
+  els.guidedQuestions.hidden = !guided;
+  if (guided) {
+    if (els.archerExperience.value === "beginner") {
+      els.preferredBrand.value = "all";
+      els.shaftMaterial.value = "all";
+      updateMaterialGuidance();
+    }
+  }
+}
+
+function validateGuidedMeasurements() {
+  if (currentSearchMode() !== "guided") return "";
+  if (!els.drawWeightKnown.checked && !els.arrowLengthKnown.checked) {
+    return "Avant de calculer : mesurez la puissance réelle à votre allonge avec un peson et la longueur réelle de la flèche, du creux d’encoche à l’extrémité du tube.";
+  }
+  if (!els.drawWeightKnown.checked) return "Avant de calculer : mesurez la puissance réelle à votre allonge avec un peson. La puissance marquée sur les branches ne suffit pas.";
+  if (!els.arrowLengthKnown.checked) return "Avant de calculer : mesurez la longueur réelle de la flèche, du creux d’encoche à l’extrémité du tube.";
+  return "";
+}
+
 function defaultBraceRangeCm(arcLength) {
   const ranges = {
     66: [21.0, 22.5],
@@ -2930,7 +2962,11 @@ function renderRecommendation(input) {
 
 els.shootingProfile.addEventListener("change", applyProfileDefaults);
 els.shaftMaterial.addEventListener("change", updateMaterialGuidance);
-window.addEventListener("pageshow", applyProfileDefaults);
+els.searchModeInputs.forEach((input) => input.addEventListener("change", updateSearchMode));
+window.addEventListener("pageshow", () => {
+  applyProfileDefaults();
+  updateSearchMode();
+});
 els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setActiveTab(button.dataset.tab || "spine"));
 });
@@ -3159,6 +3195,11 @@ els.sightContent.addEventListener("click", (event) => {
 
 els.form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const guidedError = validateGuidedMeasurements();
+  if (guidedError) {
+    els.result.innerHTML = `<h2>Mesures à vérifier</h2><p>${guidedError}</p><p>Aucune recommandation n’est calculée tant que ces données ne sont pas connues.</p>`;
+    return;
+  }
   const converted = toImperial(Number(els.drawWeight.value), Number(els.arrowLength.value));
   const input = {
     bowType: "recurve",
@@ -3168,7 +3209,10 @@ els.form.addEventListener("submit", async (event) => {
     shaftMaterial: els.shaftMaterial.value,
     drawWeight: converted.drawWeight,
     arrowLength: converted.arrowLength,
-    discipline: els.discipline.value
+    discipline: els.discipline.value,
+    goal: currentSearchMode() === "guided" ? els.guidedGoal.value : "performance",
+    searchMode: currentSearchMode(),
+    experience: els.archerExperience.value
   };
   const normalizedInput = normalizeInput(input);
   normalizedInput.pointWeight = defaultPointWeightForInput(normalizedInput);
@@ -3213,6 +3257,7 @@ applyScaleLabelSide(localStorage.getItem(STORAGE.scaleSide) || "left");
 applyBowStyle(localStorage.getItem(STORAGE.bowStyle) || "classique");
 applyProfileDefaults();
 updateVisibility();
+updateSearchMode();
 fillBarebowArcSetupDraft();
 renderHistory();
 resetNotebookForm();
@@ -3251,5 +3296,3 @@ if (initialArcSetupError) {
   if (currentBowStyle() === "barebow") renderBarebowArcSetup(initialArcSetup);
   else renderArcSetup(initialArcSetup);
 }
-
-
