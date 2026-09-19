@@ -30,19 +30,21 @@
     title.setAttribute('tabindex', '0');
     title.setAttribute('aria-controls', block.id);
 
-    if (title.dataset.merchantToggleBound !== '1') {
-      title.dataset.merchantToggleBound = '1';
-      title.addEventListener('click', () => {
-        setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
-      });
-      title.addEventListener('keydown', event => {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        event.preventDefault();
-        setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
-      });
-    }
-
     setExpanded(panel, panel.dataset.merchantExpanded === 'true');
+  }
+
+  function merchantPanelFromEvent(event, result) {
+    const target = event.target;
+    if (!(target instanceof Element)) return null;
+    const title = target.closest(`${PANEL_SELECTOR} > h3`);
+    if (!(title instanceof HTMLHeadingElement) || !result.contains(title)) return null;
+    return title.parentElement instanceof HTMLElement ? title.parentElement : null;
+  }
+
+  function toggleFromEvent(event, result) {
+    const panel = merchantPanelFromEvent(event, result);
+    if (!panel) return;
+    setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
   }
 
   function bindAll(root = document) {
@@ -62,7 +64,17 @@
   function install() {
     bindAll();
     const result = document.getElementById('result');
-    if (result) new MutationObserver(scheduleBind).observe(result, { childList: true, subtree: true });
+    if (!result) return;
+
+    result.addEventListener('click', event => toggleFromEvent(event, result));
+    result.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const panel = merchantPanelFromEvent(event, result);
+      if (!panel) return;
+      event.preventDefault();
+      setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
+    });
+    new MutationObserver(scheduleBind).observe(result, { childList: true, subtree: true });
   }
 
   window.AssistantArcherMerchantUi = Object.freeze({
