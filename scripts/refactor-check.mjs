@@ -18,15 +18,15 @@ for (const brand of ['skylon','easton','victory','carbon']) assert(index.include
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
 assert(index.includes('20260919-v63'), 'Cache-buster technique v63 absent du shell TEST');
-assert(index.includes('20260919-prealpha-v14'), 'Cache-buster Pré-alpha v14 absent du shell TEST');
-assert(index.includes('Version : Pré-alpha v14'), 'Version visible Pré-alpha v14 absente du shell TEST');
+assert(index.includes('20260919-prealpha-v15'), 'Cache-buster Pré-alpha v15 absent du shell TEST');
+assert(index.includes('Version : Pré-alpha v15'), 'Version visible Pré-alpha v15 absente du shell TEST');
 assert(!index.includes('20260821-prealpha-v8') && !index.includes('20260821-prealpha-v9') && !index.includes('20260821-prealpha-v10'), 'Ancien cache-buster marchand encore present dans le shell TEST');
 assert(!index.includes('20260821-v62'), 'Ancien cache-buster v62 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
 assert(!fs.existsSync('test/audit-fixes.js') && !fs.existsSync('test/final-fixes.js'), 'Ancien fichier de correctifs encore present');
 
 const config = read('test/app-config.js');
-has(config, ["version: '2026.09.19-prealpha-v14'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
+has(config, ["version: '2026.09.19-prealpha-v15'", "channel: 'test'", 'manufacturerSourcesFirst: true', 'coachValidationRecommended: true', 'measuredDrawWeightPreferred: true'], 'Configuration TEST incomplete');
 for (const id of ['guidedQuestions','archerExperience','guidedGoal','drawWeightKnown','arrowLengthKnown']) assert(index.includes(`id="${id}"`), `Parcours guide incomplet: ${id}`);
 assert(index.includes('name="searchMode" value="guided"') && index.includes('name="searchMode" value="expert"'), 'Choix Guide-moi / Recherche precise absent');
 assert(index.includes('<option value="all">Toutes les marques</option>'), 'Recherche multi-marques absente');
@@ -67,7 +67,7 @@ has(uiPolish, [
   '.merchant-panel > h3'
 ], 'Affichage/repli marchand Pré-alpha v12 incomplet');
 const releaseController = read('test/easton-mode-v33.js');
-has(releaseController, ["const VERSION = 'Pré-alpha v14'",'window.AssistantArcherRelease'], 'Version visible Pré-alpha v14 non centralisee');
+has(releaseController, ["const VERSION = 'Pré-alpha v15'",'window.AssistantArcherRelease'], 'Version visible Pré-alpha v15 non centralisee');
 assert(!uiPolish.includes('.merchant-block > .merchant-intro') && !uiPolish.includes('.merchant-block > .merchant-shops'), 'Ancien forçage permanent des offres encore present');
 assert(!uiPolish.includes('.merchant-disclosure'), 'Ancien style d accordeon marchand encore present');
 assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.test(uiPolish), 'Le bouton tube ne doit pas redevenir transparent');
@@ -81,9 +81,9 @@ execFileSync(process.execPath, ['-e', "require('./test/foc-measure.js'); const m
 const uiRefactor = read('test/ui-refactor.js');
 has(uiRefactor, ['bindDisciplineToTheme','themeSelect',"discipline.value=theme.value==='cible'?'target':'field'",'syncFromDiscipline'], 'Liaison theme/discipline incomplete');
 const searchApp = read('test/app.js');
-has(searchApp, ['AssistantArcherSearchMode','shootingEnvironmentWrap','disciplineWrap','expertObjectiveWrap','field.hidden = !guided'], 'Affichage simplifie de la recherche precise incomplet');
+has(searchApp, ['AssistantArcherSearchMode','shootingEnvironmentWrap','disciplineWrap','expertObjectiveWrap','field.hidden = true','els.shootingEnvironmentWrap.hidden = !guided'], 'Affichage sans doublons des deux parcours incomplet');
 const expertRanking = read('test/expert-model-ranking.js');
-has(expertRanking, ["label.id='expertObjectiveWrap'",'AssistantArcherSearchMode?.refresh?.()'], 'Priorite de selection non rattachee au mode de recherche');
+has(expertRanking, ["label.id='expertObjectiveWrap'",'AssistantArcherSearchMode?.refresh?.()',"goal==='club'?'progression'","goal==='competition'?'competition'"], 'Objectif du guide non rattache au classement des modeles');
 assert(!uiRefactor.includes('#disciplineWrap{display:none!important}'), 'La discipline est encore masquee');
 
 const refreshPrices = read('scripts/refresh-prices.mjs');
@@ -263,4 +263,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: recherche precise simplifiee, choix Skylon groupe, FOC et panneau marchand Pré-alpha v14 OK');
+console.log('Assistant Archer refactor: parcours sans doublons, choix Skylon groupe, FOC et panneau marchand Pré-alpha v15 OK');

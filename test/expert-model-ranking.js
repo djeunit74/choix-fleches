@@ -15,7 +15,14 @@
     ['brixxon','brixxon'],['radius','radius'],['edge','edge'],['bruxx','bruxx'],['empros','empros'],['vxt','vxt'],['vap','vap']
   ].sort((a,b)=>b[0].length-a[0].length);
   const modelKey=name=>{const t=norm(name);for(const [a,k] of aliases)if(t.includes(a))return k;return '';};
-  const objective=()=>document.getElementById('expertObjective')?.value||'performance';
+  const objective=()=>{
+    const guided=document.querySelector('input[name="searchMode"][value="guided"]')?.checked;
+    if(guided){
+      const goal=document.getElementById('guidedGoal')?.value;
+      return goal==='club'?'progression':goal==='competition'?'competition':'performance';
+    }
+    return 'performance';
+  };
 
   function installObjectiveInput(){
     const form=document.getElementById('spine-form'); if(!form||document.getElementById('expertObjective'))return;
