@@ -107,7 +107,7 @@ window.AssistantArcherConfig = Object.freeze({
 })();
 
 (() => {
-  const refreshUiPolish=()=>{const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>/ui-polish\.css/i.test(el.getAttribute('href')||''));if(link)link.href='ui-polish.css?v=20260824-prealpha-v49';};
+  const refreshUiPolish=()=>{const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>/ui-polish\.css/i.test(el.getAttribute('href')||''));if(link)link.href='ui-polish.css?v=20260919-prealpha-v11-panel';};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshUiPolish,{once:true});else refreshUiPolish();
 })();
 
