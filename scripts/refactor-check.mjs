@@ -18,8 +18,8 @@ for (const brand of ['skylon','easton','victory','carbon']) assert(index.include
 for (const script of ['app-config.js','app.js','app-enhancements.js','merchant-ui.js','arrow-builder.js','foc-measure.js','refactor-smoke.js']) assert(index.includes(script), `Script non charge: ${script}`);
 for (const style of ['arrow-builder.css','ui-polish.css','foc-measure.css']) assert(index.includes(style), `Style non charge: ${style}`);
 assert(index.includes('20260919-v63'), 'Cache-buster technique v63 absent du shell TEST');
-assert(index.includes('20260919-prealpha-v12'), 'Cache-buster Pré-alpha v12 absent du shell TEST');
-assert(index.includes('Version : Pré-alpha v12'), 'Version visible Pré-alpha v12 absente du shell TEST');
+assert(index.includes('20260919-prealpha-v13'), 'Cache-buster Pré-alpha v13 absent du shell TEST');
+assert(index.includes('Version : Pré-alpha v13'), 'Version visible Pré-alpha v13 absente du shell TEST');
 assert(!index.includes('20260821-prealpha-v8') && !index.includes('20260821-prealpha-v9') && !index.includes('20260821-prealpha-v10'), 'Ancien cache-buster marchand encore present dans le shell TEST');
 assert(!index.includes('20260821-v62'), 'Ancien cache-buster v62 encore present dans le shell TEST');
 assert(!index.includes('audit-fixes.js') && !index.includes('final-fixes.js'), 'Ancienne couche de correctifs rechargee');
@@ -67,7 +67,7 @@ has(uiPolish, [
   '.merchant-panel > h3'
 ], 'Affichage/repli marchand Pré-alpha v12 incomplet');
 const releaseController = read('test/easton-mode-v33.js');
-has(releaseController, ["const VERSION = 'Pré-alpha v12'",'window.AssistantArcherRelease'], 'Version visible Pré-alpha v12 non centralisee');
+has(releaseController, ["const VERSION = 'Pré-alpha v13'",'window.AssistantArcherRelease'], 'Version visible Pré-alpha v13 non centralisee');
 assert(!uiPolish.includes('.merchant-block > .merchant-intro') && !uiPolish.includes('.merchant-block > .merchant-shops'), 'Ancien forçage permanent des offres encore present');
 assert(!uiPolish.includes('.merchant-disclosure'), 'Ancien style d accordeon marchand encore present');
 assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.test(uiPolish), 'Le bouton tube ne doit pas redevenir transparent');
@@ -114,12 +114,16 @@ has(builder, [
   'modelEntries','decorateModelChoices',"insertAdjacentElement('beforebegin', builder)",'state.part = \'vane\'',
   'state.part = \'point\'','state.part = \'balance\'','scheduleRefresh(120)','arrow-balance.json','jet6-vanes.json'
 ], 'Parcours de fabrication incomplet');
+has(builder, ['arrow-spine-choice','Choisissez d’abord le spine','spineChoice.addEventListener'], 'Choix du spine Skylon groupe incomplet');
 assert(builder.indexOf('data-arrow-part="shaft"') < builder.indexOf('data-arrow-part="vane"'), 'Empennage doit suivre le tube');
 assert(builder.indexOf('data-arrow-part="vane"') < builder.indexOf('data-arrow-part="point"'), 'Pointe doit suivre l empennage');
 assert(builder.indexOf('data-arrow-part="point"') < builder.indexOf('data-arrow-part="balance"'), 'Equilibre doit suivre la pointe');
 assert(!builder.includes('state.tube = state.tubes[0]'), 'Le premier tube ne doit jamais etre selectionne automatiquement');
 assert(!builder.includes('renderTubePanel'), 'Le tube ne doit pas etre duplique dans le panneau flottant');
 assert(builder.includes("version: 'v58'"), 'Version interne arrow-builder historique modifiee sans changement du module');
+
+const skylonSelector = read('test/skylon-selector-v55.js');
+has(skylonSelector, ['families=new Map()','Spine fabricant','tailles compatibles','arrow-spine-choice'], 'Regroupement Skylon par modele incomplet');
 
 // Pointe : uniquement compatibilites fabricant, puis classement d equilibre si les masses existent.
 has(builder, [
@@ -255,4 +259,4 @@ for (const feature of [
   'eastonAluRecommendation','victoryRecurveRecommendation','victoryVxtRecommendation','carbonExpressRecommendation','feedbackDraft'
 ]) assert(app.includes(feature), `Fonction coeur manquante: ${feature}`);
 
-console.log('Assistant Archer refactor: parcours guide/expert, FOC, masses arriere et panneau marchand Pré-alpha v12 OK');
+console.log('Assistant Archer refactor: parcours guide/expert, choix Skylon groupe, FOC et panneau marchand Pré-alpha v13 OK');

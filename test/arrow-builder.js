@@ -140,7 +140,8 @@
 
         if (!brand && !modelMeta && !addedEaston) return;
 
-        const advisedSpine = spine(item.textContent);
+        const spineChoice = item.querySelector(':scope .arrow-spine-choice');
+        const advisedSpine = spineChoice instanceof HTMLSelectElement ? spineChoice.value : spine(item.textContent);
         const tube = {
           id: `${brand || 'unknown'}|${norm(model)}|${advisedSpine || 'na'}`,
           brand,
@@ -558,10 +559,21 @@
       const button = row.querySelector('.arrow-model-select');
       if (!button) return;
       button.dataset.selectTube = tube.id;
+      const spineChoice = item.querySelector(':scope .arrow-spine-choice');
+      const spineRequired = spineChoice instanceof HTMLSelectElement && !tube.spine;
+      button.disabled = spineRequired;
       const selected = state.tube?.id === tube.id;
       button.classList.toggle('is-selected', selected);
-      const label = selected ? '✓ Tube selectionne' : 'Choisir ce tube';
+      const label = selected ? '✓ Tube selectionne' : spineRequired ? 'Choisissez d’abord le spine' : 'Choisir ce tube';
       if (button.textContent !== label) button.textContent = label;
+
+      if (spineChoice instanceof HTMLSelectElement && !spineChoice.dataset.arrowBuilderBound) {
+        spineChoice.dataset.arrowBuilderBound = '1';
+        spineChoice.addEventListener('change', () => {
+          if (state.tube?.model === tube.model) resetComposition();
+          scheduleRefresh(0);
+        });
+      }
 
       if (!button.dataset.bound) {
         button.dataset.bound = '1';
