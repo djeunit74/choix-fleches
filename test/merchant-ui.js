@@ -68,14 +68,14 @@
     const result = document.getElementById('result');
     if (!result) return;
 
-    result.addEventListener('click', event => toggleFromEvent(event, result));
+    result.addEventListener('click', event => toggleFromEvent(event, result), { capture: true });
     result.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       const panel = merchantPanelFromEvent(event, result);
       if (!panel) return;
       event.preventDefault();
       setExpanded(panel, panel.dataset.merchantExpanded !== 'true');
-    });
+    }, { capture: true });
     new MutationObserver(scheduleBind).observe(result, { childList: true, subtree: true });
   }
 
