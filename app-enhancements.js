@@ -43,10 +43,13 @@
   if (typeof originalNormalizeInput === 'function') {
     window.normalizeInput = input => {
       const discipline = input.discipline || 'target';
-      if (input.shaftMaterial === 'all') {
-        return { ...input, shootingProfile: 'recurve_all', shootingEnvironment: 'mixed', discipline };
-      }
-      return { ...originalNormalizeInput(input), discipline };
+      const shootingEnvironment = input.shootingEnvironment || 'mixed';
+      const shootingProfile = input.shaftMaterial === 'alu'
+        ? 'recurve_indoor'
+        : input.shaftMaterial === 'carbon'
+          ? 'recurve_outdoor'
+          : 'recurve_all';
+      return { ...input, shootingProfile, shootingEnvironment, discipline };
     };
   }
   if (typeof originalScoreModel === 'function') {
@@ -470,18 +473,13 @@
         material.value = wanted.some(([value]) => value === selected) ? selected : 'all';
       }
     }
-    const disciplineWrap = document.getElementById('disciplineWrap');
-    if (disciplineWrap) {
-      disciplineWrap.hidden = true;
-      disciplineWrap.style.display = 'none';
-    }
     const discipline = document.getElementById('discipline');
     if (discipline) {
       const selected = discipline.value || 'target';
       const signature = [...discipline.options].map(option => `${option.value}:${option.textContent}`).join('|');
-      const wanted = 'target:Cible (salle ou exterieur)|field:Campagne|field:3D';
+      const wanted = 'target:Cible (salle ou extérieur)|field:Campagne / 3D';
       if (signature !== wanted) {
-        discipline.innerHTML = '<option value="target">Cible (salle ou exterieur)</option><option value="field">Campagne</option><option value="field">3D</option>';
+        discipline.innerHTML = '<option value="target">Cible (salle ou extérieur)</option><option value="field">Campagne / 3D</option>';
         discipline.value = selected === 'field' ? 'field' : 'target';
       }
     }

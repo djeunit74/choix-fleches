@@ -8,10 +8,10 @@
   <meta name="theme-color" content="#b23b2f" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon-assistant-archer-v11.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=20260821-v62" />
-  <link rel="stylesheet" href="arrow-builder.css?v=20260821-v62" />
-  <link rel="stylesheet" href="ui-polish.css?v=20260821-prealpha-v11" />
-  <link rel="stylesheet" href="foc-measure.css?v=20260821-v62" />
+  <link rel="stylesheet" href="styles.css?v=20260919-v63" />
+  <link rel="stylesheet" href="arrow-builder.css?v=20260919-v63" />
+  <link rel="stylesheet" href="ui-polish.css?v=20260919-prealpha-v15" />
+  <link rel="stylesheet" href="foc-measure.css?v=20260919-v63" />
 </head>
 <body>
   <main class="app">
@@ -25,7 +25,7 @@
             <div class="theme-picker"><label for="themeSelect">Theme</label><select id="themeSelect"><option value="cible">Cible</option><option value="campagne">Campagne</option><option value="3d">3D</option></select></div>
             <label>Type d arc<select id="bowStyle"><option value="classique">Classique</option><option value="barebow">Barebow</option></select></label>
           </div>
-          <p id="appReleaseStatic" style="margin:.8rem 0 0;font-weight:700;opacity:.8">Version : Pré-alpha v11</p>
+          <p id="appReleaseStatic" style="margin:.8rem 0 0;font-weight:700;opacity:.8">Version : Pré-alpha v15</p>
         </div>
       </details>
     </header>
@@ -33,12 +33,23 @@
     <nav class="tab-nav" aria-label="Navigation principale"><button type="button" class="tab-button is-active" data-tab="spine">Choix des fleches</button><button type="button" class="tab-button" data-tab="arc-setup">Reglage de base</button><button type="button" class="tab-button" data-tab="notebook">Mes reglages</button><button type="button" class="tab-button" data-tab="sight" id="sightTabButton">Reperes</button></nav>
 
     <section class="tab-panel is-active" data-panel="spine">
-      <section class="card"><form id="spine-form" novalidate autocomplete="off">
+      <section class="card arrow-search-card"><form id="spine-form" novalidate autocomplete="off">
+        <fieldset class="search-mode" aria-describedby="searchModeHelp">
+          <legend>Comment souhaitez-vous chercher ?</legend>
+          <label><input type="radio" name="searchMode" value="guided" checked /> Guide-moi</label>
+          <label><input type="radio" name="searchMode" value="expert" /> Recherche précise</label>
+        </fieldset>
+        <p id="searchModeHelp" class="field-hint">Le guide utilise votre expérience et votre objectif pour adapter les modèles proposés. La recherche précise va directement aux caractéristiques du matériel.</p>
+        <div id="guidedQuestions" class="guided-questions">
+          <label>Votre expérience<select id="archerExperience"><option value="beginner">Je débute</option><option value="club">Je pratique en club</option><option value="experienced">Je connais mon matériel</option></select></label>
+          <label>Quel est votre objectif ?<select id="guidedGoal"><option value="club">Progresser avec un matériel simple</option><option value="performance">Chercher plus de performance</option><option value="competition">Compétition</option></select></label>
+          <div class="measurement-check"><p><strong>Deux mesures indispensables</strong></p><label><input id="drawWeightKnown" type="checkbox" /> La puissance a été mesurée à mon allonge avec un peson.</label><label><input id="arrowLengthKnown" type="checkbox" /> Je connais la longueur réelle de ma flèche, du creux d’encoche à l’extrémité du tube.</label><p id="measurementHelp" class="field-hint">Sans ces deux mesures, l’application explique quoi mesurer mais ne donne pas de spine.</p></div>
+        </div>
         <label id="shootingProfileWrap" hidden style="display:none">Profil de tir<select id="shootingProfile" required><option value="recurve_outdoor">Recurve exterieur</option><option value="recurve_indoor">Recurve salle</option></select></label>
-        <label>Marque preferee<select id="preferredBrand" required><option value="all">Toutes</option><option value="skylon">Skylon</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="carbon">Carbon Express</option></select></label>
-        <label id="shootingEnvironmentWrap" hidden style="display:none">Environnement<select id="shootingEnvironment" required><option value="outdoor">Exterieur</option><option value="indoor">Interieur / salle</option><option value="mixed">Polyvalent</option></select></label>
+        <label>Marque<select id="preferredBrand" required><option value="all">Toutes les marques</option><option value="skylon">Skylon</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="carbon">Carbon Express</option></select></label>
+        <label id="shootingEnvironmentWrap">Où tirez-vous surtout ?<select id="shootingEnvironment" required><option value="outdoor">Extérieur</option><option value="indoor">Salle</option><option value="mixed">Salle et extérieur</option></select></label>
         <label>Type de tube souhaite<select id="shaftMaterial" required><option value="all">Peu importe / conseille-moi</option><option value="carbon">Carbone</option><option value="alu">Aluminium</option></select></label><p id="materialGuidance">Le lieu de tir n impose pas un materiau. Le carbone est polyvalent, l aluminium est courant en salle, et les tubes aluminium/carbone sont proposes automatiquement lorsqu un modele compatible existe.</p>
-        <label id="disciplineWrap">Discipline<select id="discipline"><option value="target">Cible (salle ou exterieur)</option><option value="field">Campagne</option><option value="field">3D</option></select></label>
+        <label id="disciplineWrap">Discipline<select id="discipline"><option value="target">Cible (salle ou extérieur)</option><option value="field">Campagne / 3D</option></select></label>
         <label id="drawWeightLabel">Puissance reelle a l'allonge<input id="drawWeight" type="number" min="10" max="70" step="0.5" value="30" required /></label>
         <label id="arrowLengthLabel">Longueur de fleche<input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required /></label>
         <button type="submit">Calculer</button>
@@ -66,12 +77,12 @@
   </main>
   <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">Je donne mon avis</button>
   <section id="feedbackPanel" class="feedback-panel" hidden><div class="feedback-panel-card"><div class="feedback-panel-head"><h2>Je donne mon avis</h2><button id="feedbackCloseBtn" type="button" class="feedback-close">Fermer</button></div><form id="feedbackForm"><fieldset class="feedback-categories"><legend>Categorie</legend><label><input type="radio" name="feedbackCategory" value="Ca manque" /> Ca manque</label><label><input type="radio" name="feedbackCategory" value="C'est faux" /> C'est faux</label><label><input type="radio" name="feedbackCategory" value="C'est confus" /> C'est confus</label><label><input type="radio" name="feedbackCategory" value="C'est utile" /> C'est utile</label></fieldset><label>Mon avis<textarea id="feedbackMessage" rows="4" maxlength="600"></textarea></label><div class="row-actions"><button id="feedbackSendBtn" type="button">Envoyer mon avis</button><button id="feedbackResetBtn" type="button">Vider</button></div></form><p id="feedbackStatus"></p></div></section>
-  <script src="app-config.js?v=20260821-v62"></script>
-  <script src="app.js?v=20260821-v62"></script>
-  <script src="app-enhancements.js?v=20260821-v62"></script>
-  <script src="merchant-ui.js?v=20260821-prealpha-v11"></script>
-  <script src="arrow-builder.js?v=20260821-v62"></script>
-  <script src="foc-measure.js?v=20260821-v62"></script>
-  <script src="refactor-smoke.js?v=20260821-v62"></script>
+  <script src="app-config.js?v=20260919-prealpha-v15"></script>
+  <script src="app.js?v=20260919-prealpha-v15"></script>
+  <script src="app-enhancements.js?v=20260919-prealpha-v15"></script>
+  <script src="merchant-ui.js?v=20260919-prealpha-v12-panel"></script>
+  <script src="arrow-builder.js?v=20260919-prealpha-v13"></script>
+  <script src="foc-measure.js?v=20260919-v63"></script>
+  <script src="refactor-smoke.js?v=20260919-v63"></script>
 </body>
 </html>

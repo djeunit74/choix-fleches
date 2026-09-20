@@ -1,11 +1,11 @@
-/* Assistant Archer TEST - Skylon official target/field/3D chart, Pré-alpha v56.
+/* Assistant Archer TEST - Skylon official target/field/3D chart.
    Source fabricant : https://www.skylonarchery.com/images/chart/chart%20target.pdf
    La longueur Skylon est mesurée CUT TO CUT. Le tableau donne d'abord un groupe,
    puis une ou plusieurs tailles par famille. Aucune formule générique n'est utilisée.
 */
 (() => {
   'use strict';
-  const VERSION = 'Pré-alpha v56';
+  const VERSION = 'Pré-alpha v13';
   const SOURCE = 'https://www.skylonarchery.com/images/chart/chart%20target.pdf';
   const LENGTHS = Object.freeze([23,24,25,26,27,28,29,30,31,32]);
 
@@ -114,9 +114,22 @@
   }
 
   function renderEntries(rec) {
-    return (rec.models||[]).map(entry=>{
-      const choices=(entry.skylonChartChoices||[]).join(' / ');
-      return `<li data-skylon-chart="1" data-skylon-spine="${esc(entry.advisedSpine)}"><strong>${esc(entry.model)}</strong> - spine conseillé <strong>${esc(entry.advisedSpine)}</strong>${choices?` <span class="result-subvalue">(tableau fabricant, groupe ${esc(entry.skylonGroup)} : ${esc(choices)})</span>`:''}<div class="aa-model-why" style="margin-top:.28rem;line-height:1.35"><strong>Pourquoi ce modèle :</strong> taille explicitement publiée dans le groupe Skylon ${esc(entry.skylonGroup)} pour cette puissance et cette longueur.</div></li>`;
+    const families=new Map();
+    (rec.models||[]).forEach(entry=>{
+      const key=String(entry.model||'').trim().toLowerCase();
+      if(!key)return;
+      if(!families.has(key))families.set(key,{entry,spines:[]});
+      const family=families.get(key);
+      const choices=entry.skylonChartChoices?.length?entry.skylonChartChoices:[entry.advisedSpine];
+      choices.map(String).filter(Boolean).forEach(spine=>{if(!family.spines.includes(spine))family.spines.push(spine);});
+    });
+    return [...families.values()].map(({entry,spines})=>{
+      const single=spines.length===1;
+      const options=[single?'':`<option value="">Choisir le spine</option>`,...spines.map(spine=>`<option value="${esc(spine)}"${single?' selected':''}>${esc(spine)}</option>`)].join('');
+      const guidance=single
+        ? `Taille publiée par Skylon pour ce modèle dans le groupe ${esc(entry.skylonGroup)}.`
+        : `Skylon publie ces ${spines.length} tailles dans le même groupe sans en désigner une comme meilleure. Le choix final se confirme avec le réglage et le tir.`;
+      return `<li data-skylon-chart="1" data-skylon-spines="${esc(spines.join(','))}"><strong>${esc(entry.model)}</strong><div class="skylon-spine-choice-wrap"><label>Spine fabricant<select class="arrow-spine-choice" aria-label="Spine pour ${esc(entry.model)}">${options}</select></label><span class="result-subvalue">Groupe ${esc(entry.skylonGroup)} · tailles compatibles : ${esc(spines.join(' / '))}</span></div><div class="aa-model-why" style="margin-top:.28rem;line-height:1.35"><strong>Pourquoi ce modèle :</strong> ${guidance}</div></li>`;
     }).join('');
   }
 
