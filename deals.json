@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02T10:31:45.865Z",
+  "updatedAt": "2026-10-03T09:53:15.083Z",
   "source": "local-csv-sync",
   "deals": [
     {
@@ -15,7 +15,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/skylon-tubes-brixxon-carbone-42-lot-de-12-tubes",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:08.913Z",
+      "lastCheckedAt": "2026-10-03T09:52:40.629Z",
       "checkReason": "ok"
     },
     {
@@ -31,7 +31,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/2690-skylon-douzaine-de-tubes-paragon.html",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:11.126Z",
+      "lastCheckedAt": "2026-10-03T09:52:42.856Z",
       "checkReason": "ok"
     },
     {
@@ -47,7 +47,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/2689-skylon-preminens-lot-de-12-tubes.html",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:12.680Z",
+      "lastCheckedAt": "2026-10-03T09:52:44.452Z",
       "checkReason": "ok"
     },
     {
@@ -63,7 +63,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/easton-avance-tube-carbone-competition",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:13.829Z",
+      "lastCheckedAt": "2026-10-03T09:52:45.618Z",
       "checkReason": "ok"
     },
     {
@@ -79,7 +79,7 @@
       "url": "https://www.heraclesarcherie.fr/tubes-carbone/easton-tube-avance-detail",
       "shop": "heraclesarcherie.fr",
       "availability": "unknown",
-      "lastCheckedAt": "2026-10-02T10:31:15.274Z",
+      "lastCheckedAt": "2026-10-03T09:52:47.027Z",
       "checkReason": "http-403"
     },
     {
@@ -95,7 +95,7 @@
       "url": "https://www.archerie.fr/fr/4838-tubes-easton-avance-sport-4mm-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:15.400Z",
+      "lastCheckedAt": "2026-10-03T09:52:47.084Z",
       "checkReason": "ok"
     },
     {
@@ -112,7 +112,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/easton-x7-lot-de-12-tubes",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:16.061Z",
+      "lastCheckedAt": "2026-10-03T09:52:47.863Z",
       "checkReason": "ok"
     },
     {
@@ -128,7 +128,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/easton-x23-tube-aluminium",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:17.499Z",
+      "lastCheckedAt": "2026-10-03T09:52:49.254Z",
       "checkReason": "ok"
     },
     {
@@ -144,7 +144,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/easton-rx7-tube-aluminium",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:18.926Z",
+      "lastCheckedAt": "2026-10-03T09:52:50.634Z",
       "checkReason": "ok"
     },
     {
@@ -161,7 +161,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/2143-443507-victory-vap-target-v1-lot-de-12-tubes.html",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:20.341Z",
+      "lastCheckedAt": "2026-10-03T09:52:51.998Z",
       "checkReason": "ok"
     },
     {
@@ -178,7 +178,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/victory-vap-target-v1-2017-unit2",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:21.495Z",
+      "lastCheckedAt": "2026-10-03T09:52:53.181Z",
       "checkReason": "ok"
     },
     {
@@ -195,7 +195,7 @@
       "url": "https://www.archerie.fr/fr/2375-tube-vap-target-elite-victory.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:22.996Z",
+      "lastCheckedAt": "2026-10-03T09:52:54.678Z",
       "checkReason": "ok"
     },
     {
@@ -211,7 +211,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/victory-v-tac-23-elite-lot-de-12-tubes",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:23.731Z",
+      "lastCheckedAt": "2026-10-03T09:52:55.335Z",
       "checkReason": "ok"
     },
     {
@@ -227,7 +227,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/3949-victory-vap-gamer-v3-tube-carbone.html",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:25.171Z",
+      "lastCheckedAt": "2026-10-03T09:52:56.725Z",
       "checkReason": "ok"
     },
     {
@@ -243,7 +243,7 @@
       "url": "https://www.erhart-sports.com/tubes-nus/3953-victory-vft-target-tube-carbone.html",
       "shop": "erhart-sports.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:26.334Z",
+      "lastCheckedAt": "2026-10-03T09:52:57.838Z",
       "checkReason": "ok"
     },
     {
@@ -259,7 +259,7 @@
       "url": "https://www.archerie.fr/fr/2262-tube-predator-ii-carbon-express.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:27.431Z",
+      "lastCheckedAt": "2026-10-03T09:52:58.957Z",
       "checkReason": "ok"
     },
     {
@@ -275,7 +275,7 @@
       "url": "https://www.archerie.fr/fr/4766-lot-de-12-fleches-skylon-radius-42-mm-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:28.519Z",
+      "lastCheckedAt": "2026-10-03T09:53:00.156Z",
       "checkReason": "ok"
     },
     {
@@ -291,7 +291,7 @@
       "url": "https://www.archerie.fr/fr/4760-lot-de-12-tubes-skylon-radius-id42-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:29.027Z",
+      "lastCheckedAt": "2026-10-03T09:53:00.634Z",
       "checkReason": "ok"
     },
     {
@@ -307,7 +307,7 @@
       "url": "https://www.archerie.fr/fr/8503-lot-de-12-tubes-easton-superdrive-micro-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:29.392Z",
+      "lastCheckedAt": "2026-10-03T09:53:00.956Z",
       "checkReason": "ok"
     },
     {
@@ -323,7 +323,7 @@
       "url": "https://www.archerie.fr/fr/9000-lot-de-12-tubes-easton-vector-4-mm-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:29.692Z",
+      "lastCheckedAt": "2026-10-03T09:53:01.275Z",
       "checkReason": "ok"
     },
     {
@@ -340,7 +340,7 @@
       "url": "https://www.archerie.fr/fr/2004-tube-xx75-platinum-plus-easton.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:29.985Z",
+      "lastCheckedAt": "2026-10-03T09:53:01.579Z",
       "checkReason": "ok"
     },
     {
@@ -357,7 +357,7 @@
       "url": "https://www.archerie.fr/fr/2325-tube-victory-vforce-245-v6-sport.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:30.282Z",
+      "lastCheckedAt": "2026-10-03T09:53:01.879Z",
       "checkReason": "ok"
     },
     {
@@ -374,7 +374,7 @@
       "url": "https://www.archerie.fr/fr/2377-tube-victory-vap-target-sport.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:30.607Z",
+      "lastCheckedAt": "2026-10-03T09:53:02.171Z",
       "checkReason": "ok"
     },
     {
@@ -390,7 +390,7 @@
       "url": "https://www.archerie.fr/fr/2343-tube-medallion-xr-2016-carbon-express.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:30.911Z",
+      "lastCheckedAt": "2026-10-03T09:53:02.462Z",
       "checkReason": "ok"
     },
     {
@@ -406,7 +406,7 @@
       "url": "https://www.archerie.fr/fr/4612-lot-de-12-tubes-skylon-brixxon-id42-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:31.895Z",
+      "lastCheckedAt": "2026-10-03T09:53:03.380Z",
       "checkReason": "ok"
     },
     {
@@ -422,7 +422,7 @@
       "url": "https://www.archerie.fr/fr/4616-lot-de-12-tubes-skylon-paragon-id32-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:32.262Z",
+      "lastCheckedAt": "2026-10-03T09:53:03.763Z",
       "checkReason": "ok"
     },
     {
@@ -438,7 +438,7 @@
       "url": "https://www.archerie.fr/fr/4615-lot-de-12-tubes-skylon-precium-id-32-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:32.634Z",
+      "lastCheckedAt": "2026-10-03T09:53:04.144Z",
       "checkReason": "ok"
     },
     {
@@ -454,7 +454,7 @@
       "url": "https://www.archerie.fr/fr/4614-lot-de-12-tubes-skylon-performa-id32-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:32.974Z",
+      "lastCheckedAt": "2026-10-03T09:53:04.489Z",
       "checkReason": "ok"
     },
     {
@@ -470,7 +470,7 @@
       "url": "https://www.archerie.fr/fr/2087-tube-nano-sst-carbon-express.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:33.294Z",
+      "lastCheckedAt": "2026-10-03T09:53:04.799Z",
       "checkReason": "ok"
     },
     {
@@ -482,11 +482,11 @@
       ],
       "tier": "premium",
       "title": "Easton X10 lot de 12 tubes",
-      "price": "558,00 EUR",
+      "price": "557,00 EUR",
       "url": "https://besancon-archerie.fr/en/products/easton-x10-418",
       "shop": "besancon-archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:33.564Z",
+      "lastCheckedAt": "2026-10-03T09:53:05.090Z",
       "checkReason": "ok"
     },
     {
@@ -502,7 +502,7 @@
       "url": "https://www.archeryshop.it/aluminum-carbon-shafts-asta-easton-x10-conf-12-pz-.4.1.15.gp.3695.uw",
       "shop": "archeryshop.it",
       "availability": "unavailable",
-      "lastCheckedAt": "2026-10-02T10:31:34.113Z",
+      "lastCheckedAt": "2026-10-03T09:53:05.839Z",
       "checkReason": "http-404"
     },
     {
@@ -519,7 +519,7 @@
       "url": "https://archery-attack.de/shop/EASTON_ACE_Schaft_12_Stueck_en",
       "shop": "archery-attack.de",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:35.309Z",
+      "lastCheckedAt": "2026-10-03T09:53:06.741Z",
       "checkReason": "ok"
     },
     {
@@ -536,7 +536,7 @@
       "url": "https://www.arrowforge.de/epages/63122672.sf/de_DE/?ObjectPath=%2FShops%2F63122672%2FProducts%2F102280",
       "shop": "arrowforge.de",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:36.612Z",
+      "lastCheckedAt": "2026-10-03T09:53:08.008Z",
       "checkReason": "ok"
     },
     {
@@ -553,7 +553,7 @@
       "url": "https://archery-attack.de/shop/Easton_X10_Parallel_Pro",
       "shop": "archery-attack.de",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:38.786Z",
+      "lastCheckedAt": "2026-10-03T09:53:08.621Z",
       "checkReason": "ok"
     },
     {
@@ -570,7 +570,7 @@
       "url": "https://archery-attack.de/shop/Easton_X10_Parallel_Pro_32mm_12_Stueck_en?language=en",
       "shop": "archery-attack.de",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:39.906Z",
+      "lastCheckedAt": "2026-10-03T09:53:09.712Z",
       "checkReason": "ok"
     },
     {
@@ -583,11 +583,11 @@
       ],
       "tier": "premium",
       "title": "Skylon Preminens ID3.2 lot de 12 tubes",
-      "price": "171,00 EUR",
+      "price": "170,00 EUR",
       "url": "https://besancon-archerie.fr/products/skylon-preminens",
       "shop": "besancon-archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:40.834Z",
+      "lastCheckedAt": "2026-10-03T09:53:10.666Z",
       "checkReason": "ok"
     },
     {
@@ -604,7 +604,7 @@
       "url": "https://www.europearchery.com/skylon-shaft-brixxon-id4-2",
       "shop": "europearchery.com",
       "availability": "unknown",
-      "lastCheckedAt": "2026-10-02T10:31:41.223Z",
+      "lastCheckedAt": "2026-10-03T09:53:11.100Z",
       "checkReason": "http-403"
     },
     {
@@ -621,7 +621,7 @@
       "url": "https://target-archery.eu/products/skylon-paragon-shaft-12-pcs",
       "shop": "target-archery.eu",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:41.335Z",
+      "lastCheckedAt": "2026-10-03T09:53:11.210Z",
       "checkReason": "ok"
     },
     {
@@ -638,7 +638,7 @@
       "url": "https://target-archery.eu/products/skylon-precium-shaft-12-pcs",
       "shop": "target-archery.eu",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:43.030Z",
+      "lastCheckedAt": "2026-10-03T09:53:12.070Z",
       "checkReason": "ok"
     },
     {
@@ -655,7 +655,7 @@
       "url": "https://www.europearchery.com/skylon-id4-2-radius-arrow",
       "shop": "europearchery.com",
       "availability": "unknown",
-      "lastCheckedAt": "2026-10-02T10:31:43.272Z",
+      "lastCheckedAt": "2026-10-03T09:53:12.468Z",
       "checkReason": "http-403"
     },
     {
@@ -672,7 +672,7 @@
       "url": "https://www.archerie.fr/fr/4761-lot-de-12-tubes-skylon-edge-id62-en-carbone.html",
       "shop": "archerie.fr",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:43.291Z",
+      "lastCheckedAt": "2026-10-03T09:53:12.485Z",
       "checkReason": "ok"
     },
     {
@@ -689,7 +689,7 @@
       "url": "https://www.hattila.com/fr/tubes-darcherie/4761-lot-de-12-tubes-skylon-edge-id62-en-carbone.html",
       "shop": "hattila.com",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:44.053Z",
+      "lastCheckedAt": "2026-10-03T09:53:13.166Z",
       "checkReason": "ok"
     },
     {
@@ -705,7 +705,7 @@
       "url": "https://www.bogenladen-leipzig.de/Carbon-Express-Medallion-XR-2016-Schaft",
       "shop": "bogenladen-leipzig.de",
       "availability": "available",
-      "lastCheckedAt": "2026-10-02T10:31:44.655Z",
+      "lastCheckedAt": "2026-10-03T09:53:13.837Z",
       "checkReason": "ok"
     }
   ]
