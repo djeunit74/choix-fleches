@@ -50,8 +50,8 @@
         <label id="shootingEnvironmentWrap">Où tirez-vous surtout ?<select id="shootingEnvironment" required><option value="outdoor">Extérieur</option><option value="indoor">Salle</option><option value="mixed">Salle et extérieur</option></select></label>
         <label>Type de tube souhaite<select id="shaftMaterial" required><option value="all">Peu importe / conseille-moi</option><option value="carbon">Carbone</option><option value="alu">Aluminium</option></select></label><p id="materialGuidance">Le lieu de tir n impose pas un materiau. Le carbone est polyvalent, l aluminium est courant en salle, et les tubes aluminium/carbone sont proposes automatiquement lorsqu un modele compatible existe.</p>
         <label id="disciplineWrap">Discipline<select id="discipline"><option value="target">Cible (salle ou extérieur)</option><option value="field">Campagne / 3D</option></select></label>
-        <label id="drawWeightLabel">Puissance reelle a l'allonge<input id="drawWeight" type="number" min="10" max="70" step="0.5" value="30" required /></label>
-        <label id="arrowLengthLabel">Longueur de fleche<input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required /></label>
+        <label id="drawWeightLabel">Puissance réelle à l’allonge (lb)<input id="drawWeight" type="number" min="10" max="70" step="0.5" value="30" required /></label>
+        <label id="arrowLengthLabel">Longueur de flèche (pouces)<input id="arrowLength" type="number" min="22" max="34" step="0.25" value="28" required /></label>
         <button type="submit">Calculer</button>
       </form></section>
       <section class="card result" id="result" aria-live="polite"><h2>Recommandation</h2><p>Entrez vos parametres puis lancez le calcul.</p></section>
@@ -83,6 +83,7 @@
   <script src="merchant-ui.js?v=20260919-prealpha-v12-panel"></script>
   <script src="arrow-builder.js?v=20260919-prealpha-v13"></script>
   <script src="foc-measure.js?v=20260919-v63"></script>
+  <script src="reliability.js?v=20261021"></script>
   <script src="refactor-smoke.js?v=20260919-v63"></script>
 </body>
 </html>
