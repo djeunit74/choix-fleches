@@ -13,11 +13,7 @@
 
   function classifyMeasuredFoc(foc) {
     if (!Number.isFinite(foc)) return { key: 'invalid', label: 'Mesure invalide' };
-    if (foc < 0) return { key: 'negative', label: 'FOC negatif - a corriger' };
-    if (foc < 7) return { key: 'low', label: 'FOC faible' };
-    if (foc < 10) return { key: 'indoor', label: 'Dans le repere salle 7-15 % ; a confirmer pour l exterieur' };
-    if (foc <= 15) return { key: 'coherent', label: 'Dans le repere cible 10-15 %' };
-    return { key: 'high', label: 'Au-dessus du repere general 15 % - a valider au tir' };
+    return { key: 'measured', label: 'FOC calculé depuis vos mesures ; à interpréter selon le montage et les essais au tir' };
   }
 
   globalThis.AssistantArcherFocMeasureMath = Object.freeze({ calculateMeasuredFoc, classifyMeasuredFoc });
@@ -97,7 +93,7 @@
       </div>
       <button type="button" class="foc-measure-button" data-foc-calculate>Calculer mon FOC reel</button>
       <div class="foc-measure-result" data-foc-measure-result aria-live="polite">Saisissez le point d equilibre pour obtenir le FOC mesure.</div>
-      <p class="foc-measure-reference">Repere Easton cible : 7-15 % en salle, 10-15 % en exterieur. Ce sont des plages de depart, pas une valeur parfaite universelle. <a href="https://eastonarchery.com/faqs/" target="_blank" rel="noopener noreferrer">Formule et reference Easton</a>.</p>`;
+      <p class="foc-measure-reference">Le FOC est un calcul géométrique, pas une validation du vol de la flèche. Aucune plage universelle salle/extérieur n’est imposée ici. <a href="https://eastonarchery.com/foc-calculator/" target="_blank" rel="noopener noreferrer">Formule et reference Easton</a>.</p>`;
 
     const doneButton = panel.querySelector('[data-balance-done]');
     if (doneButton) panel.insertBefore(section, doneButton);
