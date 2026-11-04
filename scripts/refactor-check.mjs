@@ -74,9 +74,9 @@ assert(/\.arrow-model-select\{[\s\S]*?background:var\(--accent-2\)!important/.te
 
 const focMeasure = read('test/foc-measure.js');
 const focCss = read('test/foc-measure.css');
-has(focMeasure, ['calculateMeasuredFoc','classifyMeasuredFoc','100 * (balance - length / 2) / length','data-foc-length','data-foc-balance','Calculer mon FOC reel','eastonarchery.com/faqs/','version: \'v59\''], 'Mesure FOC v59 incomplete');
+has(focMeasure, ['calculateMeasuredFoc','classifyMeasuredFoc','100 * (balance - length / 2) / length','data-foc-length','data-foc-balance','Calculer mon FOC reel','eastonarchery.com/foc-calculator/','version: \'v59\''], 'Mesure FOC v59 incomplete');
 has(focCss, ['.foc-measure-card','.foc-measure-grid','.foc-measure-result','.foc-measure-button'], 'Styles FOC v59 incomplets');
-execFileSync(process.execPath, ['-e', "require('./test/foc-measure.js'); const m=globalThis.AssistantArcherFocMeasureMath; if(!m) process.exit(1); const foc=m.calculateMeasuredFoc(72,43.2); if(Math.abs(foc-10)>1e-9) process.exit(2); if(m.calculateMeasuredFoc(72,73)!==null) process.exit(3); if(m.classifyMeasuredFoc(12).key!=='coherent') process.exit(4);"], { stdio: 'pipe' });
+execFileSync(process.execPath, ['-e', "require('./test/foc-measure.js'); const m=globalThis.AssistantArcherFocMeasureMath; if(!m) process.exit(1); const foc=m.calculateMeasuredFoc(72,43.2); if(Math.abs(foc-10)>1e-9) process.exit(2); if(m.calculateMeasuredFoc(72,73)!==null) process.exit(3); if(m.classifyMeasuredFoc(12).key!=='measured') process.exit(4);"], { stdio: 'pipe' });
 
 const uiRefactor = read('test/ui-refactor.js');
 has(uiRefactor, ['bindDisciplineToTheme','themeSelect',"discipline.value=theme.value==='cible'?'target':'field'",'syncFromDiscipline'], 'Liaison theme/discipline incomplete');
