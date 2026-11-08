@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#b23b2f" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon-assistant-archer-v11.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=20261108-personal-6" />
-  <link rel="stylesheet" id="releaseTheme" href="release.css?v=20261108-personal-6" />
+  <link rel="stylesheet" href="styles.css?v=20261108-tubes-8" />
+  <link rel="stylesheet" id="releaseTheme" href="release.css?v=20261108-tubes-8" />
 </head>
 <body>
   <main class="app">
@@ -64,30 +64,42 @@
     </section>
 
     <section class="tab-panel is-active" data-panel="spine">
-      <section class="card arrow-search-card"><form id="spine-form" novalidate autocomplete="off">
-        <fieldset class="search-mode" aria-describedby="searchModeHelp">
-          <legend>Comment souhaitez-vous chercher ?</legend>
-          <label><input type="radio" name="searchMode" value="guided" checked /> Guide-moi</label>
-          <label><input type="radio" name="searchMode" value="expert" /> Recherche précise</label>
-        </fieldset>
-        <p id="searchModeHelp" class="field-hint">Les résultats sont des lectures de tableaux publiés, sous les conditions de chaque fabricant.</p>
-        <div id="guidedQuestions" class="guided-questions">
-          <label>Votre expérience<select id="archerExperience"><option value="beginner">Je débute</option><option value="club">Je pratique en club</option><option value="experienced">Je connais mon matériel</option></select></label>
-          <label>Quel est votre objectif ?<select id="guidedGoal"><option value="club">Progresser avec un matériel simple</option><option value="performance">Chercher plus de performance</option><option value="competition">Compétition</option></select></label>
-          <div class="measurement-check"><p><strong>Deux mesures indispensables</strong></p><label><input id="drawWeightKnown" type="checkbox" /> La puissance a été mesurée à mon allonge avec un peson.</label><label><input id="arrowLengthKnown" type="checkbox" /> Je connais la longueur réelle de ma flèche, du creux d’encoche à l’extrémité du tube.</label><p id="measurementHelp" class="field-hint">Sans ces deux mesures, l’application explique quoi mesurer mais ne donne pas de spine.</p></div>
-        </div>
-        <label id="shootingProfileWrap" hidden style="display:none">Profil de tir<select id="shootingProfile" required><option value="recurve_outdoor">Recurve exterieur</option><option value="recurve_indoor">Recurve salle</option></select></label>
-        <label>Marque<select id="preferredBrand" required><option value="all">Toutes les marques</option><option value="skylon">Skylon</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="carbon">Carbon Express</option></select></label>
-        <label id="shootingEnvironmentWrap">Où tirez-vous surtout ?<select id="shootingEnvironment" required><option value="outdoor">Extérieur</option><option value="indoor">Salle</option><option value="mixed">Salle et extérieur</option></select></label>
-        <label>Type de tube souhaite<select id="shaftMaterial" required><option value="all">Peu importe / conseille-moi</option><option value="carbon">Carbone</option><option value="alu">Aluminium</option></select></label><p id="materialGuidance">Le lieu de tir n impose pas un materiau. Le carbone est polyvalent, l aluminium est courant en salle, et les tubes aluminium/carbone sont proposes automatiquement lorsqu un modele compatible existe.</p>
-        <label id="disciplineWrap">Discipline<select id="discipline"><option value="target">Cible (salle ou extérieur)</option><option value="field">Campagne / 3D</option></select></label>
-        <label id="drawWeightLabel">Puissance réelle à l’allonge (lb)<input id="drawWeight" type="number" min="10" max="70" step="0.5" placeholder="Mesure personnelle" required /></label>
-        <label id="arrowLengthLabel">Longueur de flèche (pouces)<input id="arrowLength" type="number" min="22" max="34" step="0.25" placeholder="Mesure personnelle" required /></label>
-        <button type="submit">Calculer</button>
-      </form></section>
-      <section class="card result" id="result" aria-live="polite"><h2>Recommandation</h2><p>Entrez vos parametres puis lancez le calcul.</p></section>
-      <section class="card notes" id="history"><h3>Historique (5 derniers)</h3><div id="historyContent"><p>Aucun calcul pour le moment.</p></div><button id="clearHistoryBtn" type="button">Vider l'historique</button></section>
-      <section class="card notes"><h3>Important</h3><ul><li>Cette application reste <strong>indicative</strong> et donne un <strong>point de depart</strong>.</li><li>Confirmez le choix avec le tableau du fabricant du modele vise et, si possible, avec un entraineur.</li><li>La puissance utilisee doit etre la puissance <strong>reellement mesuree a l'allonge</strong>.</li><li>Reference pedagogique FFTA : <a href="https://www.ffta.fr/pratiquer/le-materiel/les-fleches" target="_blank" rel="noopener noreferrer">Les fleches</a>.</li><li>Tableaux fabricants : <a href="https://eastonarchery.com/selector/" target="_blank" rel="noopener noreferrer">Easton</a>, <a href="https://victoryarchery.com/arrow-guide/" target="_blank" rel="noopener noreferrer">Victory</a>, <a href="https://thecarbonexpress.com/wp-content/uploads/2024/11/recurve-series-arrow-selection-chart.pdf" target="_blank" rel="noopener noreferrer">Carbon Express</a>, <a href="https://skylonarchery.com/images/catalog/skylon%202023.pdf" target="_blank" rel="noopener noreferrer">Skylon</a>, <a href="https://www.avalon-archery.com/" target="_blank" rel="noopener noreferrer">Avalon</a>.</li></ul></section>
+      <section class="card tube-choice-card">
+        <h2>Choisir mes tubes</h2>
+        <p class="tube-intro">Trouvez une référence dans le tableau du fabricant, à partir de vos mesures. Pour arc classique ou arc nu à décoche aux doigts.</p>
+        <form id="spine-form" novalidate autocomplete="off">
+          <fieldset><legend>1. Mon choix</legend><div class="field-grid">
+            <label>Marque<select id="preferredBrand" required><option value="">Choisir une marque</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="skylon">Skylon</option><option value="all">Comparer Easton, Victory et Skylon</option><option value="carbon">Carbon Express — document uniquement</option></select></label>
+            <label>Type de tube<select id="shaftMaterial"><option value="carbon">Carbone ou aluminium/carbone</option><option value="alu">Aluminium — codes de taille</option><option value="all">Comparer les matériaux disponibles</option></select></label>
+          </div><p id="tube-compatibility" class="field-hint" hidden>Pour cette marque, aucun tableau aluminium n’est contrôlé. Choisissez Easton pour lire des codes aluminium.</p></fieldset>
+          <section id="tube-document" class="tube-reading" hidden><h3>Carbon Express : consulter la source</h3><p>Des codes du document restent ambigus. Aucun spine générique n’est calculé à partir de ces codes.</p><a href="https://thecarbonexpress.com/wp-content/uploads/2024/11/recurve-series-arrow-selection-chart.pdf" target="_blank" rel="noopener noreferrer">Ouvrir le tableau Carbon Express</a></section>
+          <fieldset id="tube-measures" hidden><legend>2. Mes mesures</legend>
+            <div class="field-grid"><label id="drawWeightLabel"><span>Puissance à mon allonge</span><input id="drawWeight" type="number" min="0" step="any" inputmode="decimal" placeholder="Mesurée au peson" required></label><label>Unité de puissance<select id="tube-weight-unit"><option value="lb">Livres (lb)</option><option value="kg">Kilogrammes (kg)</option></select></label>
+            <label id="arrowLengthLabel"><span id="tube-length-title">Longueur de flèche pour le tableau (pouces)</span><input id="arrowLength" type="number" min="0" step="any" inputmode="decimal" placeholder="Votre mesure" required></label><label>Unité des longueurs<select id="tube-length-unit"><option value="in">Pouces</option><option value="cm">Centimètres</option></select></label></div>
+            <p id="tube-length-help" class="field-hint"></p>
+            <label id="tube-skylon-extra" hidden><span id="tube-skylon-title">Longueur Skylon de coupe à coupe (pouces, facultatif)</span><input id="verifiedSkylonLength" type="number" min="0" step="any" inputmode="decimal" placeholder="Mesure distincte, pour le résultat Skylon"></label>
+            <details><summary>Comment prendre les mesures ?</summary><p>Mesurez la puissance au peson à votre allonge de tir, avec votre arc monté. La puissance marquée sur les branches ne la remplace pas. Pour la longueur, utilisez les points de mesure indiqués ci-dessus ; l’allonge et la longueur de flèche sont deux mesures différentes.</p><p>Les unités choisies sont converties vers celles du tableau. L’application n’arrondit pas une puissance pour la faire entrer dans une ligne absente.</p></details>
+          </fieldset>
+          <fieldset id="tube-conditions" hidden><legend>3. Conditions du tableau</legend><div class="field-grid">
+            <label>Masse avant totale (grains)<input id="verifiedFront" type="number" min="0" step="any" inputmode="decimal" placeholder="Pointe + insert et autres masses avant"></label>
+            <label>Branches pour le tableau Easton<select id="verifiedLimbs"><option value="">Identifier mes branches</option><option value="carbon">Carbone de compétition (termes Easton)</option><option value="beginner">Bois / fibre de verre débutant</option></select></label>
+          </div><p class="field-hint">Additionnez les masses réellement montées à l’avant. Ne confondez pas les grains avec les grammes.</p></fieldset>
+          <label id="tube-confirmation" class="check-line" hidden><input id="verifiedConvention" type="checkbox"> Je confirme la puissance mesurée, la longueur selon la convention indiquée et les conditions du tableau.</label>
+          <p id="selection-status" role="alert"></p>
+          <button id="tube-submit" type="submit" hidden>Lire le tableau fabricant</button>
+          <div hidden>
+            <div id="guidedQuestions"><select id="archerExperience"><option value="experienced">Matériel personnel</option></select><select id="guidedGoal"><option value="club">Club</option></select></div>
+            <div class="measurement-check"><input id="drawWeightKnown" type="checkbox"><input id="arrowLengthKnown" type="checkbox"></div>
+            <p id="searchModeHelp"></p><p id="materialGuidance"></p><p id="measurementHelp"></p>
+            <label id="shootingProfileWrap"><select id="shootingProfile"><option value="recurve_outdoor">Classique</option></select></label>
+            <label id="shootingEnvironmentWrap"><select id="shootingEnvironment"><option value="outdoor">Extérieur</option></select></label>
+            <label id="disciplineWrap"><select id="discipline"><option value="target">Cible</option></select></label>
+          </div>
+        </form>
+      </section>
+      <section class="card result tube-result" id="result" tabindex="-1" aria-live="polite" hidden></section>
+      <section id="history" hidden><div id="historyContent"></div><button id="clearHistoryBtn" type="button">Vider l’historique</button></section>
+      <section class="card tube-source-card"><details><summary>Sources, limites et vérification avant montage</summary><p>Easton, Victory et Skylon sont lus à partir des transcriptions contrôlées le 21 octobre 2026. Un résultat n’est ni une preuve de disponibilité commerciale ni une validation du montage complet. Carbon Express reste consultable dans son document, sans lecture automatique.</p><p>Les lignes absentes, les limites ambiguës et les conditions non couvertes sont signalées sans résultat de remplacement. Les références et le détail des mesures apparaissent avec chaque résultat.</p><p><a href="audit-report.md">Rapport des vérifications</a> · <a href="https://eastonarchery.com/safety/" target="_blank" rel="noopener noreferrer">Inspection des flèches avant utilisation</a></p></details></section>
     </section>
 
     <section class="tab-panel arc-setup-panel" data-panel="arc-setup" hidden>
@@ -352,16 +364,18 @@
   </main>
   <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">Je donne mon avis</button>
   <section id="feedbackPanel" class="feedback-panel" hidden><div class="feedback-panel-card"><div class="feedback-panel-head"><h2>Je donne mon avis</h2><button id="feedbackCloseBtn" type="button" class="feedback-close">Fermer</button></div><form id="feedbackForm"><fieldset class="feedback-categories"><legend>Categorie</legend><label><input type="radio" name="feedbackCategory" value="Ca manque" /> Ca manque</label><label><input type="radio" name="feedbackCategory" value="C'est faux" /> C'est faux</label><label><input type="radio" name="feedbackCategory" value="C'est confus" /> C'est confus</label><label><input type="radio" name="feedbackCategory" value="C'est utile" /> C'est utile</label></fieldset><label>Mon avis<textarea id="feedbackMessage" rows="4" maxlength="600"></textarea></label><div class="row-actions"><button id="feedbackSendBtn" type="button">Envoyer mon avis</button><button id="feedbackResetBtn" type="button">Vider</button></div></form><p id="feedbackStatus"></p></div></section>
-  <script src="app-config.js?v=20261108-personal-6"></script>
-  <script src="app.js?v=20261108-personal-6"></script>
-  <script src="foc-measure.js?v=20261108-personal-6"></script>
-  <script src="reliability.js?v=20261108-personal-6"></script>
-  <script src="verified-engine.js?v=20261108-personal-6"></script>
-  <script src="verified-app.js?v=20261108-personal-6"></script>
-  <script src="point-advisor.js?v=20261108-personal-6"></script>
-  <script src="point-ui.js?v=20261108-personal-6"></script>
-  <script src="backup-data.js?v=20261108-personal-6"></script>
-  <script src="backup-ui.js?v=20261108-personal-6"></script>
-  <script src="pwa.js?v=20261108-personal-6"></script>
+  <script src="app-config.js?v=20261108-tubes-8"></script>
+  <script src="app.js?v=20261108-tubes-8"></script>
+  <script src="foc-measure.js?v=20261108-tubes-8"></script>
+  <script src="reliability.js?v=20261108-tubes-8"></script>
+  <script src="verified-engine.js?v=20261108-tubes-8"></script>
+  <script src="verified-app.js?v=20261108-tubes-8"></script>
+  <script src="tube-selector.js?v=20261108-tubes-8"></script>
+  <script src="tube-ui.js?v=20261108-tubes-8"></script>
+  <script src="point-advisor.js?v=20261108-tubes-8"></script>
+  <script src="point-ui.js?v=20261108-tubes-8"></script>
+  <script src="backup-data.js?v=20261108-tubes-8"></script>
+  <script src="backup-ui.js?v=20261108-tubes-8"></script>
+  <script src="pwa.js?v=20261108-tubes-8"></script>
 </body>
 </html>

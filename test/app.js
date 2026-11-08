@@ -1238,6 +1238,7 @@ async function loadAppData({ force = false } = {}) {
 }
 
 function applyUnitConstraints() {
+  if (window.AssistantArcherConfig?.strictAudit) return;
   els.drawWeightLabel.firstChild.textContent = "Puissance reelle a l'allonge (lbs)";
   els.arrowLengthLabel.firstChild.textContent = "Longueur de fleche (pouces)";
   els.drawWeight.min = "10";
@@ -1296,6 +1297,7 @@ function normalizeInput(input) {
 }
 
 function applyProfileDefaults() {
+  if (window.AssistantArcherConfig?.strictAudit) return;
   if (!["outdoor", "indoor", "mixed"].includes(els.shootingEnvironment.value)) els.shootingEnvironment.value = "outdoor";
   if (!["target", "field"].includes(els.discipline.value)) els.discipline.value = "target";
   updateMaterialOptions();

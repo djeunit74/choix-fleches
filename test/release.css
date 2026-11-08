@@ -44,3 +44,27 @@ th { background:#edf4f0; }
 .guided-questions:empty { display:none; }
 @media(max-width:600px) { .app { padding:12px 10px 30px; } .tab-button { flex-basis:42%; } .card { padding:1rem; } .field-grid { grid-template-columns:minmax(0,1fr); } }
 [hidden] { display:none!important; }
+/* Choisir un tube : styles limités à ce parcours. Les panneaux personnels gardent leur modèle historique. */
+.app:has([data-panel="spine"].is-active) > .reliability-card { display:none; }
+.app:has([data-panel="spine"].is-active) .hero h1 { max-width:none; color:#18493f; }
+.app:has([data-panel="spine"].is-active) .hero p { max-width:none; }
+#tube-submit { background:#156658; color:white; }
+#spine-form { display:grid; gap:.85rem; }
+#spine-form fieldset { margin:0; }
+#spine-form label { display:grid; gap:.35rem; min-width:0; }
+#spine-form .check-line { display:flex; }
+#spine-form input[aria-invalid="true"],#spine-form select[aria-invalid="true"] { border:2px solid #b52c2c; }
+#selection-status { margin:0; color:#9c2626; font-weight:650; }
+#selection-status:empty { display:none; }
+.tube-intro { color:#52665e; margin-top:.3rem; }
+.tube-choice-card h2 { margin-bottom:.25rem; }
+.tube-result { scroll-margin-top:1rem; }
+.tube-reading { padding:1rem; margin:1rem 0; border:1px solid #dce5e1; border-radius:12px; }
+.tube-reading h3 { margin-top:0; }
+.tube-reading.is-readable { border-left:4px solid #156658; }
+.tube-reading.is-unavailable { background:#f6f7f6; }
+.tube-reference { font-size:clamp(1.7rem,6vw,2.25rem); color:#155f50; font-weight:800; margin:.2rem 0; line-height:1.3; }
+.tube-source,.tube-result-summary { font-size:.9rem; color:#52665e; }
+.tube-source-card details { margin:0; }
+.tube-source-card summary { font-weight:650; }
+.secondary-action { background:#edf5f0; color:#18493f; border:1px solid #b9d5c9; }
