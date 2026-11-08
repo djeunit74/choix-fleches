@@ -30,6 +30,8 @@ details { margin:.7rem 0; }
 summary { cursor:pointer; font-weight:650; min-height:36px; }
 .trial-details { padding:1rem; background:#f3f7f5; border-radius:12px; }
 .answer-lead { font-size:1.2rem; font-weight:700; color:#155f50; }
+.mass-proposal { background:#edf6f1; border-left:4px solid #156658; border-radius:12px; padding:1rem; margin-bottom:1.4rem; }
+.mass-proposal h2 { margin-top:0; color:#18493f; }
 .field-hint,#candidate-help { color:#52665e; font-size:.92rem; }
 .table-scroll { overflow-x:auto; }
 table { border-collapse:collapse; width:100%; }
