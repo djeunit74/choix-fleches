@@ -1224,6 +1224,7 @@ async function refreshDealsCatalog() {
 }
 
 async function loadAppData({ force = false } = {}) {
+  if (window.AssistantArcherConfig?.strictAudit) return;
   const now = Date.now();
   if (!force && dataLoadPromise && now - dataLoadedAt < DATA_CACHE_MS) return dataLoadPromise;
 
@@ -1265,6 +1266,10 @@ function updateMaterialOptions() {
 }
 
 function updateMaterialGuidance() {
+  if (window.AssistantArcherConfig?.strictAudit) {
+    els.materialGuidance.textContent = 'Le matériau sélectionne le tableau disponible. Il ne certifie ni l’usage ni la compatibilité d’un modèle.';
+    return;
+  }
   if (!els.materialGuidance) return;
   const materialValue = els.shaftMaterial.value;
 
@@ -2622,6 +2627,7 @@ function currentSearchMode() {
 }
 
 function updateSearchMode() {
+  if (window.AssistantArcherConfig?.strictAudit) return;
   const guided = currentSearchMode() === "guided";
   els.guidedQuestions.hidden = !guided;
   const alwaysHidden = [
@@ -2811,6 +2817,10 @@ function barebowAdjustmentLine(label, measured, target, unit) {
 }
 
 function renderArcSetup(input) {
+  if (window.AssistantArcherConfig?.strictAudit) {
+    els.arcSetupResult.innerHTML = '<h2>Mesures personnelles</h2><p>Relevez vos mesures puis lancez le calcul du tiller. Aucune cible universelle n’est déduite du matériel déclaré.</p>';
+    return;
+  }
   const setup = computeArcSetup(input);
   const targetLower = Math.round((input.upperTiller - setup.tillerTarget) * 10) / 10;
   const lowerDelta = Math.round((input.lowerTillerMeasured - targetLower) * 10) / 10;
@@ -2861,6 +2871,7 @@ function renderArcSetup(input) {
 }
 
 function renderBarebowArcSetup(input) {
+  if (window.AssistantArcherConfig?.strictAudit) return renderArcSetup(input);
   const bb = barebowArcSetupData();
   const setup = computeArcSetup(input);
   const tillerGuide = bb.tiller || "0 mm (base barebow)";
@@ -2925,6 +2936,7 @@ function renderComparison(input) {
 }
 
 function renderRecommendation(input) {
+  if (window.AssistantArcherConfig?.strictAudit) return;
   if (input.preferredBrand === "all") {
     renderComparison(input);
     return;
@@ -3276,32 +3288,4 @@ renderSightEntries();
 renderFeedbackDraft();
 setActiveTab(localStorage.getItem(STORAGE.activeTab) || "spine");
 loadAppData();
-const initialArcSetup = {
-  arcLength: Number(els.arcLength.value),
-  braceMeasured: parseLooseNumber(els.braceMeasured.value),
-  upperTiller: Number(els.upperTiller.value),
-  lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
-  limbMarkedWeight: Number(els.limbMarkedWeight.value),
-  riserLength: Number(els.riserLength.value),
-  drawLengthForWeight: Number(els.drawLengthForWeight.value)
-};
-const initialArcSetupError = validateArcSetupInput(initialArcSetup);
-if (initialArcSetupError) {
-  els.upperTiller.value = "222";
-  els.lowerTillerMeasured.value = "218";
-  els.limbMarkedWeight.value = "30";
-  els.riserLength.value = "25";
-  els.drawLengthForWeight.value = "28";
-  renderArcSetup({
-    arcLength: Number(els.arcLength.value),
-    braceMeasured: parseLooseNumber(els.braceMeasured.value),
-    upperTiller: Number(els.upperTiller.value),
-    lowerTillerMeasured: Number(els.lowerTillerMeasured.value),
-    limbMarkedWeight: Number(els.limbMarkedWeight.value),
-    riserLength: Number(els.riserLength.value),
-    drawLengthForWeight: Number(els.drawLengthForWeight.value)
-  });
-} else {
-  if (currentBowStyle() === "barebow") renderBarebowArcSetup(initialArcSetup);
-  else renderArcSetup(initialArcSetup);
-}
+els.arcSetupResult.innerHTML = '<h2>Mesures personnelles</h2><p>Saisissez vos propres mesures pour calculer le tiller.</p>';
