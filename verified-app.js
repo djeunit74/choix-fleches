@@ -5,70 +5,7 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=id=>{const s=$(id)?.value?.trim();return s?Number(s):NaN;};
   const link=(url,title)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(title)}</a>`;
-  let data=null;
-  let requestVersion=0;
-  const dataPromise=fetch('verified-charts.json?v=20261021-audit-1',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(d=>{if(d.version!=='2026-10-21-audit-1')throw Error('Version inattendue');data=d;return d;}).catch(()=>null);
-
-  $('appReleaseStatic').textContent='Version du 8 novembre 2026 · vérification de pointe, carnet et accès hors connexion';
-  $('searchModeHelp').textContent='Choisissez une marque, saisissez vos mesures puis consultez la référence du fabricant. Vous possédez déjà vos tubes ? Ouvrez « Vérifier ma pointe ».';
-  for(const id of ['archerExperience','guidedGoal'])$(id).closest('label').hidden=true;
-  document.querySelector('.search-mode').hidden=true;
-  for(const id of ['shootingEnvironmentWrap','disciplineWrap'])$(id).hidden=true;
-  $('guidedQuestions').hidden=true;
-  const controls=document.createElement('fieldset');
-  controls.className='verified-conditions';
-  controls.innerHTML=`<legend>Conditions du tableau fabricant</legend><label>Masse avant totale : pointe + insert (grains)<input id="verifiedFront" type="number" min="1" step="1" placeholder="À renseigner"></label><label>Branches pour Easton<select id="verifiedLimbs"><option value="">À identifier</option><option value="carbon">Branches carbone de compétition (termes du tableau)</option><option value="beginner">Branches bois / fibre de verre débutant</option></select></label><label>Longueur Skylon cut-to-cut (pouces)<input id="verifiedSkylonLength" type="number" min="1" step="0.01" placeholder="Mesure distincte du creux d’encoche"></label><p>Easton : du creux d’encoche à la fin du tube. Skylon : tube coupé, de coupe à coupe. Victory indique « Arrow length » sur ce tableau : confirmez la convention du fabricant pour votre montage.</p><label><input id="verifiedConvention" type="checkbox"> J’ai vérifié la convention de longueur et les conditions du tableau choisi.</label>`;
-  $('spine-form').querySelector('button[type="submit"]').before(controls);
-  $('drawWeight').value='';$('arrowLength').value='';
-  $('drawWeightKnown').checked=false;$('arrowLengthKnown').checked=false;
-  for(const id of ['verifiedFront','verifiedLimbs','verifiedSkylonLength','preferredBrand','shaftMaterial'])$(id).addEventListener('input',()=>{$('verifiedConvention').checked=false;});
-  $('preferredBrand').addEventListener('change',()=>{$('verifiedConvention').checked=false;});
-  const showBrandFields=()=>{
-    const brand=$('preferredBrand').value;
-    $('verifiedLimbs').closest('label').hidden=!['all','easton'].includes(brand);
-    $('verifiedSkylonLength').closest('label').hidden=!['all','skylon'].includes(brand);
-    $('arrowLengthLabel').hidden=brand==='skylon';
-    $('verifiedFront').closest('label').hidden=['skylon','carbon'].includes(brand);
-  };
-  $('preferredBrand').addEventListener('change',showBrandFields);showBrandFields();
-  // Editing a measurement must also invalidate a result or a pending lookup.
-  const invalidate=()=>{
-    requestVersion++;
-    $('result').innerHTML='<h2>Lecture à recalculer</h2><p>Les paramètres ont changé. Vérifiez les mesures et les conditions puis relancez le calcul.</p>';
-  };
-  $('spine-form').addEventListener('input',invalidate);
-  $('spine-form').addEventListener('change',invalidate);
-  window.updateMaterialGuidance=()=>{$('materialGuidance').textContent='Le matériau sélectionne le tableau disponible. Il ne certifie ni l’usage ni la compatibilité d’un modèle.';};
-  window.updateMaterialGuidance();
-  $('arrowLengthKnown').closest('label').lastChild.textContent=' Je connais les longueurs réellement mesurées selon les conventions des tableaux utilisés.';
-
-  const policy=document.querySelector('.reliability-card');
-  policy.innerHTML=`<h2>Des résultats traçables</h2><p>Les tableaux Easton, Victory et Skylon ont été contrôlés : 638 cases de grille comparées aux documents originaux. Les limites et conditions restent affichées avec chaque résultat.</p><details><summary>Ce qui est vérifié et ce qui est suspendu</summary><p>Les anciennes recommandations de modèles, scores de performance, masses estimées, compatibilités de composants, prix et stocks sont suspendus : une URL de fabricant ou une page marchande accessible ne suffit pas à les certifier. Carbon Express reste consultable dans son PDF original, sans recommandation automatique.</p><p>Votre carnet et vos repères restent des observations personnelles. Vos anciennes fiches sont conservées ; elles ne sont pas validées par cet audit.</p>${link('audit-report.md','Lire le rapport détaillé')} · ${link('audit-inventory.json','Consulter l’inventaire des données écartées')}</details>`;
-  $('history').hidden=true;
-  const sourceCard=document.querySelector('[data-panel="spine"] > .card.notes:last-child');
-  if(sourceCard)sourceCard.innerHTML='<h3>Avant de choisir un tube</h3><p>Vérifiez le modèle exact et sa taille fabriquée dans le catalogue actuel. Les codes aluminium (ex. 1914) ne sont pas des valeurs de spine carbone. Un tableau constitue une base de sélection, à confirmer au tir. Inspectez vos flèches selon la procédure du fabricant.</p>'+link('https://eastonarchery.com/safety/','Consignes Easton sur l’inspection des flèches');
-
-  // Capture prevents all legacy recommendation handlers from running.
-  $('spine-form').addEventListener('submit',async event=>{
-    event.preventDefault();event.stopImmediatePropagation();
-    const version=++requestVersion;
-    const result=$('result');
-    if(!$('drawWeightKnown').checked||!$('arrowLengthKnown').checked||!$('verifiedConvention').checked){result.innerHTML='<h2>Mesures à confirmer</h2><p>Confirmez les deux mesures et les conditions du tableau avant de calculer.</p>';return;}
-    const input={weight:num('drawWeight'),length:num('arrowLength'),skylonLength:num('verifiedSkylonLength'),front:num('verifiedFront'),limbs:$('verifiedLimbs').value,material:$('shaftMaterial').value};
-    result.innerHTML='<h2>Lecture du tableau</h2><p>Chargement des références vérifiées…</p>';
-    await dataPromise;
-    if(version!==requestVersion)return;
-    if(!data){result.innerHTML='<h2>Références indisponibles</h2><p>Le fichier vérifié n’a pas pu être chargé. Aucun calcul de remplacement n’est utilisé. Rechargez la page.</p>';return;}
-    const brands=$('preferredBrand').value==='all'?['easton','victory','skylon','carbon']:[$('preferredBrand').value];
-    result.innerHTML='<h2>Lecture des tableaux publiés</h2>'+brands.map(brand=>{
-      const source=data.sources[brand];
-      const materials=brand==='easton'&&input.material==='all'?['carbon','alu']:[input.material];
-      return materials.map(material=>{
-        const r=brand!=='easton'&&material==='alu'?{ok:false,reason:'Aucun tableau aluminium vérifié pour cette marque.'}:window.AssistantArcherVerifiedEngine.lookup(data,brand,{...input,material});
-        return `<section class="subcard"><h3>${esc(({easton:'Easton',victory:'Victory',skylon:'Skylon',carbon:'Carbon Express'})[brand])}${brand==='easton'?' — '+(material==='alu'?'aluminium':'carbone / aluminium-carbone'):''}</h3>${r.ok?`<p><strong>${esc(r.kind)} : ${esc(r.value)}</strong></p><p>Ligne ${esc(r.row)} · colonne ${r.column} pouces${Number.isFinite(r.adjusted)?` · puissance corrigée pour le tableau : ${r.adjusted.toFixed(1)} lb`:''}.</p>${r.models?'<ul>'+r.models.map(([name,spines])=>`<li>${esc(name)} : ${spines.join(' / ')}</li>`).join('')+'</ul><p>Tailles citées dans ce tableau ; disponibilité actuelle et composants à vérifier séparément.</p>':''}<p>La lecture ne certifie pas la compatibilité d’un tube ou d’un montage. ${brand==='skylon'?'Longueur cut-to-cut.':brand==='victory'?'Confirmez la convention de longueur dans la documentation Victory.':'Arrondi de longueur à la colonne la plus proche selon Easton ; demi-pouce arrondi vers le haut.'}</p>`:`<p>${esc(r.reason)}</p>`}<p>${link(source.url,source.title)} · contrôlé le ${esc(data.checkedOn)}</p></section>`;
-      }).join('');
-    }).join('');
-  },true);
+  $('appReleaseStatic').textContent='Assistant Archer · version du 8 novembre 2026';
 
   // Descriptive measurements only, for both classic and barebow.
   $('arcSetupIntro').textContent='Relevez les mesures de votre arc. La notice du modèle exact fixe les plages de band et les limites de réglage des vis.';
@@ -113,7 +50,7 @@
   }
 
   const foc=document.createElement('section');foc.className='card';
-  foc.innerHTML=`<h2>FOC de ma flèche terminée</h2><p>Montez tous les composants. L : du creux d’encoche à la fin du tube, sans la pointe. A : du même creux d’encoche au point d’équilibre.</p><div class="field-grid"><label>Longueur L (cm)<input id="verifiedFocLength" type="number" min="0" step="0.1"></label><label>Distance A (cm)<input id="verifiedFocBalance" type="number" min="0" step="0.1"></label></div><button type="button">Calculer le FOC</button><p role="status"></p><p>FOC (%) = 100 × (A − L/2) / L. Ce calcul décrit la position du centre de masse ; il ne valide pas le vol de la flèche. ${link('https://eastonarchery.com/foc-calculator/','Méthode Easton')}</p>`;
+  foc.innerHTML=`<details><summary>Calculer le FOC de ma flèche (facultatif)</summary><p>Montez tous les composants. L : du creux d’encoche à la fin du tube, sans la pointe. A : du même creux d’encoche au point d’équilibre.</p><div class="field-grid"><label>Longueur L (cm)<input id="verifiedFocLength" type="number" min="0" step="0.1"></label><label>Distance A (cm)<input id="verifiedFocBalance" type="number" min="0" step="0.1"></label></div><button type="button">Calculer le FOC</button><p role="status"></p><p>FOC (%) = 100 × (A − L/2) / L. Ce calcul décrit la position du centre de masse ; il ne valide pas le vol de la flèche. ${link('https://eastonarchery.com/foc-calculator/','Méthode Easton')}</p></details>`;
   $('result').after(foc);
   const updateFoc=()=>{const value=window.AssistantArcherVerifiedEngine.measuredFoc(num('verifiedFocLength'),num('verifiedFocBalance'));foc.querySelector('[role="status"]').textContent=value===null?'Renseignez une longueur positive et une distance au point d’équilibre positive ou nulle.':`FOC calculé : ${value.toFixed(1)} %. À interpréter avec vos essais au tir.`;};
   foc.querySelector('button').addEventListener('click',updateFoc);

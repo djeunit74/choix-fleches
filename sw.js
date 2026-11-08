@@ -1,8 +1,8 @@
 /* Une version complète par périmètre (racine et /test/ restent indépendants). */
-const RELEASE='20261108-personal-6';
+const RELEASE='20261108-tubes-8';
 const PREFIX='assistant-archer-v2:'+self.registration.scope+':';
 const CACHE_NAME=PREFIX+RELEASE;
-const ASSETS=['index.html','styles.css','release.css','app-config.js','app.js','foc-measure.js','reliability.js','verified-engine.js','verified-app.js','point-advisor.js','point-ui.js','backup-data.js','backup-ui.js','pwa.js','manifest.webmanifest','icon-assistant-archer-v11.svg','verified-charts.json','audit-report.md','audit-inventory.json'];
+const ASSETS=['index.html','styles.css','release.css','app-config.js','app.js','foc-measure.js','reliability.js','verified-engine.js','verified-app.js','tube-selector.js','tube-ui.js','point-advisor.js','point-ui.js','backup-data.js','backup-ui.js','pwa.js','manifest.webmanifest','icon-assistant-archer-v11.svg','verified-charts.json','audit-report.md','audit-inventory.json'];
 const urls=ASSETS.map(path=>/\.(js|css)$/.test(path)?path+'?v='+RELEASE:path);
 urls.push('verified-charts.json?v=20261021-audit-1');
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(urls))));

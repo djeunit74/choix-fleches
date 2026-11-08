@@ -1,6 +1,34 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const advisor=require('../point-advisor.js'),backup=require('../backup-data.js'),charts=require('../verified-charts.json');
 const input={brand:'easton',model:'Avance',spine:'800',material:'carbon',length:28,weight:30,point:100,insert:0,limbs:'carbon',candidates:[75,125,110],impact:'none'};
+const tube=require('../tube-selector.js');
+const selection={brand:'easton',material:'carbon',weight:30,weightUnit:'lb',length:28,lengthUnit:'in',front:100,limbs:'carbon',skylonLength:NaN};
+test('Tube selection converts kilograms and centimetres without changing the chart result',()=>{
+  const imperial=tube.evaluate(charts,selection);
+  const metric=tube.evaluate(charts,{...selection,weight:13.6077711,weightUnit:'kg',length:71.12,lengthUnit:'cm'});
+  assert.equal(imperial.records[0].reading.value,'800-700');
+  assert.equal(metric.records[0].reading.value,imperial.records[0].reading.value);
+  assert.equal(metric.measurements.weight,30);assert.equal(metric.measurements.length,28);
+});
+test('A missing brand, unit or measured value cannot yield a recommendation',()=>{
+  for(const change of [{brand:''},{weight:NaN},{weight:0},{length:NaN},{front:NaN},{limbs:''},{weightUnit:'g'},{lengthUnit:'mm'}])assert.equal(tube.evaluate(charts,{...selection,...change}).ok,false);
+});
+test('Brand comparison preserves partial results and never substitutes a Skylon length',()=>{
+  const a=tube.evaluate(charts,{...selection,brand:'all'});assert.equal(a.count,2);
+  const skylon=a.records.find(r=>r.brand==='skylon');assert.equal(skylon.reading.ok,false);assert.deepEqual(skylon.fields,['verifiedSkylonLength']);
+  const b=tube.evaluate(charts,{...selection,brand:'skylon',length:27,front:NaN,limbs:''});assert.equal(b.count,1);assert.equal(b.records[0].reading.value,'A3');
+});
+test('Fractional and uncovered measurements retain the engine refusal, not an approximation',()=>{
+  assert.equal(tube.evaluate(charts,{...selection,brand:'victory',length:28.5}).count,0);
+  assert.equal(tube.evaluate(charts,{...selection,weight:26.5}).count,0);
+  assert.equal(tube.evaluate(charts,{...selection,brand:'victory',front:140}).count,0);
+  assert.equal(tube.evaluate(charts,{...selection,length:34.1}).count,0);
+});
+test('Aluminium comparison and document-only Carbon Express are kept distinct',()=>{
+  const a=tube.evaluate(charts,{...selection,material:'all'});assert.equal(a.records.length,2);assert.deepEqual(a.records.map(r=>r.material),['carbon','alu']);
+  assert.equal(tube.evaluate(charts,{...selection,brand:'victory',material:'alu'}).count,0);
+  assert.equal(tube.evaluate(charts,{brand:'carbon'}).documentOnly,true);
+});
 test('Existing shaft comparison uses the total front mass and preserves unsupported candidates',()=>{
   const a=advisor.assess(charts,input);assert.equal(a.current.status,'match');
   assert.deepEqual(a.candidates.map(r=>r.status),['match','outside','unknown']);
@@ -81,10 +109,10 @@ test('Offline worker serves the precached document/assets without a network and 
   const cache={addAll:async list=>{urls=list;},match:async request=>request==='index.html'?'document':request?.url?.includes('point-advisor.js')?'advisor':undefined};
   const context={URL,self:{registration:{scope},location:{origin:'https://example.com'},clients:{claim:async()=>{}},addEventListener:(name,cb)=>handlers[name]=cb},caches:{open:async()=>cache,keys:async()=>['other-app','assistant-archer-v2:'+scope+':old','assistant-archer-v2:https://example.com/choix-fleches/test/:old'],delete:async name=>deleted.push(name)},fetch:()=>{throw Error('offline');}};
   vm.runInNewContext(fs.readFileSync('sw.js','utf8'),context);
-  let promise;handlers.install({waitUntil:p=>promise=p});await promise;assert.ok(urls.includes('point-advisor.js?v=20261108-personal-6'));
+  let promise;handlers.install({waitUntil:p=>promise=p});await promise;assert.ok(urls.includes('point-advisor.js?v=20261108-tubes-8'));
   handlers.activate({waitUntil:p=>promise=p});await promise;assert.deepEqual(deleted,['assistant-archer-v2:'+scope+':old']);
   handlers.fetch({request:{method:'GET',mode:'navigate',url:scope+'?pwa=11'},respondWith:p=>promise=p});assert.equal(await promise,'document');
-  handlers.fetch({request:{method:'GET',mode:'cors',url:scope+'point-advisor.js?v=20261108-personal-6'},respondWith:p=>promise=p});assert.equal(await promise,'advisor');
+  handlers.fetch({request:{method:'GET',mode:'cors',url:scope+'point-advisor.js?v=20261108-tubes-8'},respondWith:p=>promise=p});assert.equal(await promise,'advisor');
 });
 test('Restored visual marks keep saved values and exclude unplaced cursors from saved data',()=>{
   const source=fs.readFileSync('app.js','utf8');
