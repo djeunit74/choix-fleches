@@ -81,8 +81,21 @@ test('Offline worker serves the precached document/assets without a network and 
   const cache={addAll:async list=>{urls=list;},match:async request=>request==='index.html'?'document':request?.url?.includes('point-advisor.js')?'advisor':undefined};
   const context={URL,self:{registration:{scope},location:{origin:'https://example.com'},clients:{claim:async()=>{}},addEventListener:(name,cb)=>handlers[name]=cb},caches:{open:async()=>cache,keys:async()=>['other-app','assistant-archer-v2:'+scope+':old','assistant-archer-v2:https://example.com/choix-fleches/test/:old'],delete:async name=>deleted.push(name)},fetch:()=>{throw Error('offline');}};
   vm.runInNewContext(fs.readFileSync('sw.js','utf8'),context);
-  let promise;handlers.install({waitUntil:p=>promise=p});await promise;assert.ok(urls.includes('point-advisor.js?v=20261108-pointe-4'));
+  let promise;handlers.install({waitUntil:p=>promise=p});await promise;assert.ok(urls.includes('point-advisor.js?v=20261108-personal-6'));
   handlers.activate({waitUntil:p=>promise=p});await promise;assert.deepEqual(deleted,['assistant-archer-v2:'+scope+':old']);
   handlers.fetch({request:{method:'GET',mode:'navigate',url:scope+'?pwa=11'},respondWith:p=>promise=p});assert.equal(await promise,'document');
-  handlers.fetch({request:{method:'GET',mode:'cors',url:scope+'point-advisor.js?v=20261108-pointe-4'},respondWith:p=>promise=p});assert.equal(await promise,'advisor');
+  handlers.fetch({request:{method:'GET',mode:'cors',url:scope+'point-advisor.js?v=20261108-personal-6'},respondWith:p=>promise=p});assert.equal(await promise,'advisor');
+});
+test('Restored visual marks keep saved values and exclude unplaced cursors from saved data',()=>{
+  const source=fs.readFileSync('app.js','utf8');
+  const start=source.indexOf('function sightFormData()');
+  const end=source.indexOf('\nfunction sightMarksSummary',start);
+  class Input { constructor(distance,value,pending){this.dataset={distance,...(pending?{pending:'true'}:{})};this.value=value;} }
+  const fields=[new Input('18','3,8'),new Input('25','0,0',true),new Input('30','repère personnel'),new Input('40','')];
+  const els=Object.fromEntries(['sightDate','sightTitle','sightEquipment','sightArrows','sightNotes'].map(key=>[key,{value:'personnel'}]));
+  const context={HTMLInputElement:Input,els,currentBowStyle:()=> 'barebow',document:{querySelectorAll:()=>fields}};
+  vm.createContext(context);vm.runInContext(source.slice(start,end),context);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.sightFormData().marks)),{'18':'3,8','30':'repère personnel'});
+  delete fields[1].dataset.pending;fields[1].value='1,0';
+  assert.equal(context.sightFormData().marks['25'],'1,0');
 });
