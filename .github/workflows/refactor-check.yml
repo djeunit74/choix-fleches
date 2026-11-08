@@ -22,5 +22,11 @@ jobs:
           node --check verified-app.js
           node --check verified-engine.js
           node --check scripts/refresh-prices.mjs
+          node --check point-advisor.js
+          node --check point-ui.js
+          node --check backup-data.js
+          node --check backup-ui.js
+          node --check sw.js
+          node --check pwa.js
       - name: Moteur verifie et parite public-test
-        run: node --test scripts/verified-check.test.cjs
+        run: node --test scripts/verified-check.test.cjs scripts/release-check.test.cjs

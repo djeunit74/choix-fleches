@@ -31,6 +31,7 @@
   };
 
   const backup = document.createElement('section');
+  backup.id = 'backup-card';
   backup.className = 'card';
   backup.innerHTML = `<h2>Sauvegarder mes données</h2><p>Vos fiches et repères sont conservés dans ce navigateur. Exportez une copie avant de changer d’appareil ou d’effacer ses données.</p><button type="button">Télécharger ma sauvegarde</button><p role="status"></p>`;
   document.querySelector('[data-panel="notebook"]')?.append(backup);

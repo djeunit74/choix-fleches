@@ -8,29 +8,60 @@
   <meta name="theme-color" content="#b23b2f" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon-assistant-archer-v11.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=20260919-v63" />
-  <link rel="stylesheet" href="arrow-builder.css?v=20260919-v63" />
-  <link rel="stylesheet" href="ui-polish.css?v=20260919-prealpha-v15" />
-  <link rel="stylesheet" href="foc-measure.css?v=20260919-v63" />
+  <link rel="stylesheet" href="styles.css?v=20261108-pointe-3" />
+  <link rel="stylesheet" href="release.css?v=20261108-pointe-3" />
 </head>
 <body>
   <main class="app">
     <header class="hero">
       <h1>Assistant Archer</h1>
-      <p>Choisir ses fleches, regler son arc et garder ses reperes.</p>
+      <p>Choisir un tube, vérifier sa pointe et retrouver ses réglages.</p>
       <details class="app-settings">
-        <summary class="app-settings-toggle" aria-label="Ouvrir les parametres"><span class="gear-icon" aria-hidden="true">&#9881;</span><span> Reglages Parametres</span></summary>
+        <summary class="app-settings-toggle" aria-label="Ouvrir les parametres"><span class="gear-icon" aria-hidden="true">&#9881;</span><span> Paramètres</span></summary>
         <div class="app-settings-body">
           <div class="app-settings-grid">
-            <div class="theme-picker"><label for="themeSelect">Theme</label><select id="themeSelect"><option value="cible">Cible</option><option value="campagne">Campagne</option><option value="3d">3D</option></select></div>
-            <label>Type d arc<select id="bowStyle"><option value="classique">Classique</option><option value="barebow">Barebow</option></select></label>
+            <div class="theme-picker"><label for="themeSelect">Thème</label><select id="themeSelect"><option value="cible">Cible</option><option value="campagne">Campagne</option><option value="3d">3D</option></select></div>
+            <label>Type d’arc<select id="bowStyle"><option value="classique">Classique</option><option value="barebow">Barebow</option></select></label>
           </div>
           <p id="appReleaseStatic" style="margin:.8rem 0 0;font-weight:700;opacity:.8">Version : audit du 21 octobre 2026</p>
         </div>
       </details>
     </header>
 
-    <nav class="tab-nav" aria-label="Navigation principale"><button type="button" class="tab-button is-active" data-tab="spine">Choix des fleches</button><button type="button" class="tab-button" data-tab="arc-setup">Reglage de base</button><button type="button" class="tab-button" data-tab="notebook">Mes reglages</button><button type="button" class="tab-button" data-tab="sight" id="sightTabButton">Reperes</button></nav>
+    <nav class="tab-nav" aria-label="Navigation principale"><button type="button" class="tab-button is-active" data-tab="spine">Choisir un tube</button><button type="button" class="tab-button" data-tab="point">Vérifier ma pointe</button><button type="button" class="tab-button" data-tab="arc-setup">Mesurer mon arc</button><button type="button" class="tab-button" data-tab="notebook">Mon carnet</button><button type="button" class="tab-button" data-tab="sight" id="sightTabButton">Mes repères</button></nav>
+
+    <section class="tab-panel" data-panel="point" hidden>
+      <section class="card">
+        <h2>Mon tube, mon spine, ma pointe</h2>
+        <p>Vérifiez votre montage actuel, comparez vos options de pointe et préparez un essai au tir. Pour arc classique ou arc nu à décoche aux doigts.</p>
+        <form id="point-form" novalidate>
+          <fieldset><legend>1. Mon tube actuel</legend><div class="field-grid">
+            <label>Marque du tube<select id="point-brand"><option value="">Choisir la marque</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="skylon">Skylon</option><option value="carbon">Carbon Express (document uniquement)</option></select></label>
+            <label>Modèle exact<input id="point-model" type="text" maxlength="100" placeholder="Inscription sur le tube" required></label>
+            <label>Type de tube<select id="point-material"><option value="carbon">Carbone ou aluminium/carbone</option><option value="alu">Aluminium — code de taille</option></select></label>
+            <label>Spine ou code inscrit<input id="point-spine" type="text" maxlength="30" placeholder="Valeur inscrite sur votre tube" required></label>
+            <label>Longueur pour ce tableau (pouces)<input id="point-length" type="number" min="1" step="any" required></label>
+            <label>Puissance mesurée à mon allonge (lb)<input id="point-weight" type="number" min="1" step="any" required></label>
+            <label>Type de branches<select id="point-limbs"><option value="">À identifier</option><option value="carbon">Carbone de compétition (termes Easton)</option><option value="beginner">Bois / fibre de verre débutant</option></select></label>
+          </div><p id="point-length-help" class="field-hint"></p><p>Le code d’un tube aluminium (par exemple 1914) ne se convertit pas directement en spine carbone.</p></fieldset>
+          <fieldset><legend>2. Ma masse avant</legend><div class="field-grid">
+            <label>Masse de ma pointe (grains)<input id="point-mass" type="number" min="1" step="any" required></label>
+            <label>Insert, outsert et autres composants avant (grains)<input id="point-insert" type="number" min="0" step="any" placeholder="0 si aucun" required></label>
+          </div><label>Autres masses de pointe à comparer (facultatif)<input id="point-candidates" type="text" maxlength="150" placeholder="Séparer les masses par ;" aria-describedby="candidate-help"></label><p id="candidate-help">Saisissez seulement les masses que vous envisagez pour une pointe compatible. L’insert reste inchangé dans la comparaison.</p></fieldset>
+          <details class="trial-details"><summary>3. J’ai fait un essai fûts nus / flèches empennées (facultatif)</summary>
+            <p>Comparez des flèches de même montage, pointes de cible, au même point visé. Observez les groupes depuis le pas de tir. Contrôlez d’abord le détalonnage et les contacts ; faites-vous accompagner pour vos premiers essais.</p>
+            <div class="field-grid"><label>Ma latéralité<select id="point-hand"><option value="">À préciser</option><option value="right">Droitier</option><option value="left">Gaucher</option></select></label>
+            <label>Groupe des fûts nus par rapport aux empennées<select id="point-impact"><option value="none">Pas d’essai / résultat incertain</option><option value="left">À gauche</option><option value="center">Dans le même groupe</option><option value="right">À droite</option></select></label></div>
+            <label class="check-line"><input id="point-repeatable" type="checkbox"> L’écart est répété sur plusieurs volées, avec des groupements réguliers.</label>
+            <label class="check-line"><input id="point-clearance" type="checkbox"> J’ai contrôlé l’absence de contact parasite des flèches avec l’arc.</label>
+          </details>
+          <label class="check-line"><input id="point-measured" type="checkbox"> Je confirme mes mesures, les masses avant et la convention de longueur du fabricant.</label>
+          <button type="submit">Vérifier mon montage et mes options</button>
+        </form>
+      </section>
+      <section class="card result" id="point-result" aria-live="polite"><h2>Ma pointe est-elle adaptée ?</h2><p>Le spine seul ne suffit pas. Renseignez le montage pour lire le tableau ; ajoutez votre essai pour obtenir une piste de réglage.</p></section>
+      <section class="card"><button id="save-point" type="button" disabled>Enregistrer dans mon carnet</button><p id="point-save-status" role="status"></p></section>
+    </section>
 
     <section class="tab-panel is-active" data-panel="spine">
       <section class="card arrow-search-card"><form id="spine-form" novalidate autocomplete="off">
@@ -77,11 +108,16 @@
   </main>
   <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">Je donne mon avis</button>
   <section id="feedbackPanel" class="feedback-panel" hidden><div class="feedback-panel-card"><div class="feedback-panel-head"><h2>Je donne mon avis</h2><button id="feedbackCloseBtn" type="button" class="feedback-close">Fermer</button></div><form id="feedbackForm"><fieldset class="feedback-categories"><legend>Categorie</legend><label><input type="radio" name="feedbackCategory" value="Ca manque" /> Ca manque</label><label><input type="radio" name="feedbackCategory" value="C'est faux" /> C'est faux</label><label><input type="radio" name="feedbackCategory" value="C'est confus" /> C'est confus</label><label><input type="radio" name="feedbackCategory" value="C'est utile" /> C'est utile</label></fieldset><label>Mon avis<textarea id="feedbackMessage" rows="4" maxlength="600"></textarea></label><div class="row-actions"><button id="feedbackSendBtn" type="button">Envoyer mon avis</button><button id="feedbackResetBtn" type="button">Vider</button></div></form><p id="feedbackStatus"></p></div></section>
-  <script src="app-config.js?v=20261108-reprise-1"></script>
-  <script src="app.js?v=20261108-reprise-1"></script>
-  <script src="foc-measure.js?v=20261108-reprise-1"></script>
-  <script src="reliability.js?v=20261108-reprise-1"></script>
-  <script src="verified-engine.js?v=20261108-reprise-1"></script>
-  <script src="verified-app.js?v=20261108-reprise-1"></script>
+  <script src="app-config.js?v=20261108-pointe-3"></script>
+  <script src="app.js?v=20261108-pointe-3"></script>
+  <script src="foc-measure.js?v=20261108-pointe-3"></script>
+  <script src="reliability.js?v=20261108-pointe-3"></script>
+  <script src="verified-engine.js?v=20261108-pointe-3"></script>
+  <script src="verified-app.js?v=20261108-pointe-3"></script>
+  <script src="point-advisor.js?v=20261108-pointe-3"></script>
+  <script src="point-ui.js?v=20261108-pointe-3"></script>
+  <script src="backup-data.js?v=20261108-pointe-3"></script>
+  <script src="backup-ui.js?v=20261108-pointe-3"></script>
+  <script src="pwa.js?v=20261108-pointe-3"></script>
 </body>
 </html>

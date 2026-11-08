@@ -9,11 +9,12 @@
   let requestVersion=0;
   const dataPromise=fetch('verified-charts.json?v=20261021-audit-1',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(d=>{if(d.version!=='2026-10-21-audit-1')throw Error('Version inattendue');data=d;return d;}).catch(()=>null);
 
-  $('appReleaseStatic').textContent='Version : reprise du 8 novembre 2026 · tableaux contrôlés le 21 octobre';
-  $('searchModeHelp').textContent='Les résultats sont des lectures de tableaux publiés. Le niveau et l’objectif ne modifient pas le spine. Une référence du tableau ne valide pas un montage complet.';
+  $('appReleaseStatic').textContent='Version du 8 novembre 2026 · vérification de pointe, carnet et accès hors connexion';
+  $('searchModeHelp').textContent='Choisissez une marque, saisissez vos mesures puis consultez la référence du fabricant. Vous possédez déjà vos tubes ? Ouvrez « Vérifier ma pointe ».';
   for(const id of ['archerExperience','guidedGoal'])$(id).closest('label').hidden=true;
   document.querySelector('.search-mode').hidden=true;
   for(const id of ['shootingEnvironmentWrap','disciplineWrap'])$(id).hidden=true;
+  $('guidedQuestions').hidden=true;
   const controls=document.createElement('fieldset');
   controls.className='verified-conditions';
   controls.innerHTML=`<legend>Conditions du tableau fabricant</legend><label>Masse avant totale : pointe + insert (grains)<input id="verifiedFront" type="number" min="1" step="1" placeholder="À renseigner"></label><label>Branches pour Easton<select id="verifiedLimbs"><option value="">À identifier</option><option value="carbon">Branches carbone de compétition (termes du tableau)</option><option value="beginner">Branches bois / fibre de verre débutant</option></select></label><label>Longueur Skylon cut-to-cut (pouces)<input id="verifiedSkylonLength" type="number" min="1" step="0.01" placeholder="Mesure distincte du creux d’encoche"></label><p>Easton : du creux d’encoche à la fin du tube. Skylon : tube coupé, de coupe à coupe. Victory indique « Arrow length » sur ce tableau : confirmez la convention du fabricant pour votre montage.</p><label><input id="verifiedConvention" type="checkbox"> J’ai vérifié la convention de longueur et les conditions du tableau choisi.</label>`;
@@ -22,6 +23,14 @@
   $('drawWeightKnown').checked=false;$('arrowLengthKnown').checked=false;
   for(const id of ['verifiedFront','verifiedLimbs','verifiedSkylonLength','preferredBrand','shaftMaterial'])$(id).addEventListener('input',()=>{$('verifiedConvention').checked=false;});
   $('preferredBrand').addEventListener('change',()=>{$('verifiedConvention').checked=false;});
+  const showBrandFields=()=>{
+    const brand=$('preferredBrand').value;
+    $('verifiedLimbs').closest('label').hidden=!['all','easton'].includes(brand);
+    $('verifiedSkylonLength').closest('label').hidden=!['all','skylon'].includes(brand);
+    $('arrowLengthLabel').hidden=brand==='skylon';
+    $('verifiedFront').closest('label').hidden=['skylon','carbon'].includes(brand);
+  };
+  $('preferredBrand').addEventListener('change',showBrandFields);showBrandFields();
   // Editing a measurement must also invalidate a result or a pending lookup.
   const invalidate=()=>{
     requestVersion++;
