@@ -1,5 +1,5 @@
 /* Une version complète par périmètre (racine et /test/ restent indépendants). */
-const RELEASE='20261108-pointe-4';
+const RELEASE='20261108-personal-6';
 const PREFIX='assistant-archer-v2:'+self.registration.scope+':';
 const CACHE_NAME=PREFIX+RELEASE;
 const ASSETS=['index.html','styles.css','release.css','app-config.js','app.js','foc-measure.js','reliability.js','verified-engine.js','verified-app.js','point-advisor.js','point-ui.js','backup-data.js','backup-ui.js','pwa.js','manifest.webmanifest','icon-assistant-archer-v11.svg','verified-charts.json','audit-report.md','audit-inventory.json'];

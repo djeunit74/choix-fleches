@@ -106,49 +106,7 @@
   },true);
   $('notebookEstimatedWeight').closest('label').firstChild.textContent='Puissance personnelle (préciser mesurée ou estimée)';
   $('notebookPositiveTiller').closest('label').firstChild.textContent='Tiller haut moins bas (signé)';
-  const save=document.createElement('button');save.type='submit';save.textContent='Enregistrer cette fiche';$('notebook-form').append(save);
-  const note=document.createElement('p');note.textContent='Ces fiches contiennent vos saisies personnelles, y compris celles des versions précédentes. Elles ne constituent pas des données fabricant vérifiées.';$('notebook-form').before(note);
-
-  // Personal sight/string-walking marks are entered by the archer, never predicted from distance.
-  window.renderSightVisual=()=>{};
-  window.updateSightCopyForBowStyle=style=>{
-    $('sightHeading').textContent=style==='barebow'?'Mes repères de prise de corde':'Mes repères de viseur';
-    $('sightTabButton').textContent='Mes repères';
-    $('sightIntro').textContent='Saisissez vos repères réellement relevés et précisez leur unité dans les notes. Aucune valeur n’est calculée depuis la distance.';
-    $('sightHelp').textContent='Une distance sans repère saisi n’est pas enregistrée.';
-    $('sightScaleNote').textContent='';
-    const notes=typeof els!=='undefined'?els.sightNotes:$('sightNotes');
-    $('sightNotesLabel').textContent=style==='barebow'?'Notes et unité des repères de prise de corde':'Notes et unité des repères de viseur';
-    if(notes)$('sightNotesLabel').append(notes);
-    $('saveSightBtn').textContent='Enregistrer mes repères';
-    $('sightResultHeading').textContent='Repères personnels enregistrés';
-    $('sightRail').hidden=true;
-    $('sightScaleSide').closest('label').hidden=true;
-  };
-  for(const input of $('sightMarkers').querySelectorAll('input')){
-    const distance=input.id.replace('sightMark','');
-    input.className='sight-mark-input';input.dataset.distance=distance;
-  }
-  window.ensureSightInput=distance=>{
-    const key=String(distance);
-    let input=[...$('sightMarkers').querySelectorAll('input')].find(el=>el.dataset.distance===key);
-    if(input)return input;
-    const label=document.createElement('label');label.dataset.customSight='true';label.textContent=key+' m';
-    input=document.createElement('input');input.className='sight-mark-input';input.dataset.distance=key;input.type='text';
-    label.append(input);$('sightMarkers').append(label);return input;
-  };
-  $('sightMarkers').replaceChildren();
-  for(const distance of [18,30,40,50,60,70])window.ensureSightInput(distance).closest('label').removeAttribute('data-custom-sight');
-  window.clearCustomSightInputs=()=>{
-    $('sightMarkers').querySelectorAll('[data-custom-sight]').forEach(el=>el.remove());
-    $('sightMarkers').querySelectorAll('input').forEach(input=>{input.value='';});
-  };
-  $('addSightDistanceBtn').addEventListener('click',event=>{
-    event.preventDefault();event.stopImmediatePropagation();
-    const distance=num('sightCustomDistance');
-    if(!Number.isInteger(distance)||distance<1||distance>100){$('sightHelp').textContent='Saisissez une distance entière de 1 à 100 m.';return;}
-    window.ensureSightInput(distance).focus();$('sightHelp').textContent='Saisissez le repère réellement relevé à cette distance.';
-  },true);
+  // Carnet et réglette : structure et commandes du modèle historique.
   if(typeof currentBowStyle==='function'){
     window.updateSightCopyForBowStyle(currentBowStyle());
     window.updateArcSetupCopyForBowStyle(currentBowStyle());

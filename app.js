@@ -904,6 +904,8 @@ function profileLabel(key) {
   return "Recurve";
 }
 function setActiveTab(tabName) {
+  const releaseTheme = document.getElementById('releaseTheme');
+  if (releaseTheme) releaseTheme.disabled = ['notebook', 'sight'].includes(tabName);
   els.tabButtons.forEach((button) => {
     const isActive = button.dataset.tab === tabName;
     button.classList.toggle("is-active", isActive);
@@ -2373,7 +2375,7 @@ function sightFormData() {
   document.querySelectorAll(".sight-mark-input").forEach((input) => {
     if (!(input instanceof HTMLInputElement)) return;
     const distance = input.dataset.distance;
-    if (distance && input.value.trim()) marks[distance] = input.value.trim();
+    if (distance && input.value.trim() && input.dataset.pending !== 'true') marks[distance] = input.value.trim();
   });
   return {
     bowStyle: currentBowStyle(),
@@ -2435,6 +2437,7 @@ function sightInputForDistance(distance) {
 }
 
 function clearCustomSightInputs() {
+  document.querySelectorAll('.sight-mark-input').forEach(input => { delete input.dataset.pending; });
   document.querySelectorAll(".sight-mark-input[data-custom='true']").forEach((input) => input.remove());
   SIGHT_DISTANCES.forEach((distance) => {
     const input = sightInputForDistance(distance);
@@ -2480,10 +2483,8 @@ function formatSightValue(value) {
 }
 
 function defaultSightMarkForDistance(distance) {
-  const numericDistance = Number(distance);
-  if (SIGHT_DEFAULT_MARKS[distance]) return SIGHT_DEFAULT_MARKS[distance];
-  if (!Number.isFinite(numericDistance)) return 8;
-  return Math.max(0, Math.min(SIGHT_MAX_CM, 1.5 + (numericDistance / 120) * 13));
+  // A neutral editing position, never a measured mark derived from distance.
+  return 0;
 }
 
 function sightDistanceColor(distance) {
@@ -2501,7 +2502,10 @@ function sightDistanceColor(distance) {
 }
 
 function sightMarkerEntries() {
-  const data = sightFormData();
+  const data = { marks: {} };
+  document.querySelectorAll('.sight-mark-input').forEach(input => {
+    if (input.dataset.distance && input.value.trim()) data.marks[input.dataset.distance] = input.value.trim();
+  });
   return Object.keys(data.marks)
     .sort((a, b) => Number(a) - Number(b))
     .map((distance) => {
@@ -2510,6 +2514,7 @@ function sightMarkerEntries() {
       return {
         distance,
         value: savedValue,
+        pending: sightInputForDistance(distance)?.dataset.pending === 'true',
         configured: true,
         position: sightValueToTop(savedValue)
       };
@@ -2555,7 +2560,7 @@ function renderSightVisual() {
   }
   const labelPositions = spreadSightLabels(marks);
   els.sightMarkers.innerHTML = marks.map((entry) => {
-    const label = `${entry.distance} m - ${formatSightValue(entry.value)} cm`;
+    const label = `${entry.distance} m - ${formatSightValue(entry.value)} cm${entry.pending ? ' (à placer)' : ''}`;
     const colorStyle = `--distance-color: ${sightDistanceColor(entry.distance)}`;
     return `
       <button type="button" class="sight-marker sight-distance-${entry.distance}" data-distance="${entry.distance}" style="top: ${entry.position.toFixed(2)}%; ${colorStyle}" aria-label="Regler ${entry.distance} metres">
@@ -2576,6 +2581,7 @@ function setSightMarkFromPointer(distance, clientY) {
   const rect = rail.getBoundingClientRect();
   const top = ((clientY - rect.top) / rect.height) * 100;
   input.value = formatSightValue(sightTopToValue(top));
+  delete input.dataset.pending;
   renderSightVisual();
 }
 
@@ -3073,6 +3079,10 @@ els.notebookForm.addEventListener("submit", (event) => {
   }
 
   const entries = readNotebook();
+  if (!currentNotebookId && entries.length >= 50) {
+    els.notebookStatus.textContent = 'Carnet plein : exportez vos fiches avant d’en ajouter une nouvelle.';
+    return;
+  }
   const record = {
     id: currentNotebookId || `notebook-${Date.now()}`,
     ...entry,
@@ -3083,7 +3093,7 @@ els.notebookForm.addEventListener("submit", (event) => {
     : [record, ...entries];
 
   currentNotebookId = record.id;
-  writeNotebook(nextEntries.slice(0, 50));
+  writeNotebook(nextEntries);
   els.notebookStatus.textContent = `Fiche enregistree${record.title ? ` : ${record.title}` : ""}.`;
 });
 
@@ -3120,9 +3130,12 @@ els.addSightDistanceBtn.addEventListener("click", () => {
     return;
   }
   const input = ensureSightInput(distance);
-  input.value = input.value || formatSightValue(defaultSightMarkForDistance(distance));
+  if (!input.value.trim()) {
+    input.value = formatSightValue(defaultSightMarkForDistance(distance));
+    input.dataset.pending = 'true';
+  }
   els.sightCustomDistance.value = "";
-  els.sightStatus.textContent = `Curseur ${distance} m ajoute.`;
+  els.sightStatus.textContent = `Curseur ${distance} m ajouté : placez-le sur votre mesure avant de l’enregistrer.`;
   renderSightVisual();
 });
 
@@ -3164,6 +3177,7 @@ els.sightMarkers.addEventListener("keydown", (event) => {
   const step = event.key.startsWith("Page") ? 1 : 0.1;
   const nextValue = event.key === "ArrowUp" || event.key === "PageUp" ? baseValue - step : baseValue + step;
   input.value = formatSightValue(Math.max(0, Math.min(SIGHT_MAX_CM, nextValue)));
+  delete input.dataset.pending;
   renderSightVisual();
 });
 
@@ -3180,13 +3194,17 @@ els.sightForm.addEventListener("submit", (event) => {
     return;
   }
   const entries = readSightEntries();
+  if (!currentSightId && entries.length >= 50) {
+    els.sightStatus.textContent = 'Carnet de repères plein : exportez vos fiches avant d’en ajouter une nouvelle.';
+    return;
+  }
   const record = {
     ...entry,
     id: currentSightId || `sight-${Date.now()}`
   };
   const nextEntries = currentSightId
     ? entries.map((existing) => (existing.id === currentSightId ? record : existing))
-    : [record, ...entries].slice(0, 30);
+    : [record, ...entries];
   writeSightEntries(nextEntries);
   currentSightId = record.id;
   els.sightStatus.textContent = `${currentBowStyle() === "barebow" ? "Reglage barebow" : "Reglage viseur"} enregistre${record.title ? ` : ${record.title}` : ""}.`;
