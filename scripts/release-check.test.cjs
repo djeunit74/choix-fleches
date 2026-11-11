@@ -109,10 +109,10 @@ test('Offline worker serves the precached document/assets without a network and 
   const cache={addAll:async list=>{urls=list;},match:async request=>request==='index.html'?'document':request?.url?.includes('point-advisor.js')?'advisor':undefined};
   const context={URL,self:{registration:{scope},location:{origin:'https://example.com'},clients:{claim:async()=>{}},addEventListener:(name,cb)=>handlers[name]=cb},caches:{open:async()=>cache,keys:async()=>['other-app','assistant-archer-v2:'+scope+':old','assistant-archer-v2:https://example.com/choix-fleches/test/:old'],delete:async name=>deleted.push(name)},fetch:()=>{throw Error('offline');}};
   vm.runInNewContext(fs.readFileSync('sw.js','utf8'),context);
-  let promise;handlers.install({waitUntil:p=>promise=p});await promise;assert.ok(urls.includes('point-advisor.js?v=20261108-tubes-8'));
+  let promise;handlers.install({waitUntil:p=>promise=p});await promise;assert.ok(urls.includes('point-advisor.js?v=20261111-theme-9'));
   handlers.activate({waitUntil:p=>promise=p});await promise;assert.deepEqual(deleted,['assistant-archer-v2:'+scope+':old']);
   handlers.fetch({request:{method:'GET',mode:'navigate',url:scope+'?pwa=11'},respondWith:p=>promise=p});assert.equal(await promise,'document');
-  handlers.fetch({request:{method:'GET',mode:'cors',url:scope+'point-advisor.js?v=20261108-tubes-8'},respondWith:p=>promise=p});assert.equal(await promise,'advisor');
+  handlers.fetch({request:{method:'GET',mode:'cors',url:scope+'point-advisor.js?v=20261111-theme-9'},respondWith:p=>promise=p});assert.equal(await promise,'advisor');
 });
 test('Restored visual marks keep saved values and exclude unplaced cursors from saved data',()=>{
   const source=fs.readFileSync('app.js','utf8');
