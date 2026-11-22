@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-21T12:41:16.915Z",
+  "updatedAt": "2026-11-22T12:36:58.659Z",
   "source": "local-csv-sync",
   "deals": [
     {
@@ -16,7 +16,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:35.166Z",
+      "lastCheckedAt": "2026-11-22T12:36:25.678Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -34,7 +34,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:37.432Z",
+      "lastCheckedAt": "2026-11-22T12:36:27.731Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -52,7 +52,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:38.929Z",
+      "lastCheckedAt": "2026-11-22T12:36:29.197Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -70,7 +70,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:40.050Z",
+      "lastCheckedAt": "2026-11-22T12:36:30.273Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -88,7 +88,7 @@
       "shop": "heraclesarcherie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:41.567Z",
+      "lastCheckedAt": "2026-11-22T12:36:31.651Z",
       "pageStatus": 403,
       "checkReason": "http-403"
     },
@@ -106,7 +106,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:41.676Z",
+      "lastCheckedAt": "2026-11-22T12:36:31.739Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -125,7 +125,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:42.415Z",
+      "lastCheckedAt": "2026-11-22T12:36:32.328Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -143,7 +143,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:43.870Z",
+      "lastCheckedAt": "2026-11-22T12:36:33.695Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -161,7 +161,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:45.427Z",
+      "lastCheckedAt": "2026-11-22T12:36:35.104Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -180,7 +180,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:46.939Z",
+      "lastCheckedAt": "2026-11-22T12:36:36.494Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -199,7 +199,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:48.148Z",
+      "lastCheckedAt": "2026-11-22T12:36:37.741Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -218,7 +218,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:49.646Z",
+      "lastCheckedAt": "2026-11-22T12:36:39.117Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -236,7 +236,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:50.419Z",
+      "lastCheckedAt": "2026-11-22T12:36:39.673Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -254,7 +254,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:51.907Z",
+      "lastCheckedAt": "2026-11-22T12:36:41.029Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -272,7 +272,7 @@
       "shop": "erhart-sports.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:53.061Z",
+      "lastCheckedAt": "2026-11-22T12:36:42.086Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -290,7 +290,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:54.221Z",
+      "lastCheckedAt": "2026-11-22T12:36:43.105Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -308,7 +308,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:55.400Z",
+      "lastCheckedAt": "2026-11-22T12:36:44.714Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -326,7 +326,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:55.708Z",
+      "lastCheckedAt": "2026-11-22T12:36:45.005Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -344,7 +344,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:56.480Z",
+      "lastCheckedAt": "2026-11-22T12:36:45.500Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -362,7 +362,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:56.787Z",
+      "lastCheckedAt": "2026-11-22T12:36:45.715Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -381,7 +381,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:57.080Z",
+      "lastCheckedAt": "2026-11-22T12:36:45.927Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -400,7 +400,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:57.370Z",
+      "lastCheckedAt": "2026-11-22T12:36:46.342Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -419,7 +419,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:57.660Z",
+      "lastCheckedAt": "2026-11-22T12:36:46.575Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -437,7 +437,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:57.962Z",
+      "lastCheckedAt": "2026-11-22T12:36:46.809Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -455,7 +455,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:58.549Z",
+      "lastCheckedAt": "2026-11-22T12:36:47.270Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -473,7 +473,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:58.869Z",
+      "lastCheckedAt": "2026-11-22T12:36:47.529Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -491,7 +491,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:59.173Z",
+      "lastCheckedAt": "2026-11-22T12:36:47.769Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -509,7 +509,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:59.460Z",
+      "lastCheckedAt": "2026-11-22T12:36:47.997Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -527,7 +527,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:40:59.763Z",
+      "lastCheckedAt": "2026-11-22T12:36:48.244Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -545,7 +545,7 @@
       "shop": "besancon-archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:00.063Z",
+      "lastCheckedAt": "2026-11-22T12:36:48.464Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -563,7 +563,7 @@
       "shop": "archeryshop.it",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:00.585Z",
+      "lastCheckedAt": "2026-11-22T12:36:48.751Z",
       "pageStatus": 404,
       "checkReason": "http-404"
     },
@@ -582,7 +582,7 @@
       "shop": "archery-attack.de",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:01.619Z",
+      "lastCheckedAt": "2026-11-22T12:36:50.169Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -601,7 +601,7 @@
       "shop": "arrowforge.de",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:03.615Z",
+      "lastCheckedAt": "2026-11-22T12:36:51.882Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -620,7 +620,7 @@
       "shop": "archery-attack.de",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:09.891Z",
+      "lastCheckedAt": "2026-11-22T12:36:52.438Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -639,7 +639,7 @@
       "shop": "archery-attack.de",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:11.566Z",
+      "lastCheckedAt": "2026-11-22T12:36:53.951Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -658,7 +658,7 @@
       "shop": "besancon-archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:13.192Z",
+      "lastCheckedAt": "2026-11-22T12:36:55.485Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -677,7 +677,7 @@
       "shop": "europearchery.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:13.492Z",
+      "lastCheckedAt": "2026-11-22T12:36:55.729Z",
       "pageStatus": 403,
       "checkReason": "http-403"
     },
@@ -696,7 +696,7 @@
       "shop": "target-archery.eu",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:13.616Z",
+      "lastCheckedAt": "2026-11-22T12:36:55.825Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -715,7 +715,7 @@
       "shop": "target-archery.eu",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:14.168Z",
+      "lastCheckedAt": "2026-11-22T12:36:56.120Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -734,7 +734,7 @@
       "shop": "europearchery.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:14.560Z",
+      "lastCheckedAt": "2026-11-22T12:36:56.593Z",
       "pageStatus": 403,
       "checkReason": "http-403"
     },
@@ -753,7 +753,7 @@
       "shop": "archerie.fr",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:14.582Z",
+      "lastCheckedAt": "2026-11-22T12:36:56.610Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -772,7 +772,7 @@
       "shop": "hattila.com",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:15.114Z",
+      "lastCheckedAt": "2026-11-22T12:36:57.035Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     },
@@ -790,7 +790,7 @@
       "shop": "bogenladen-leipzig.de",
       "priceVerification": "unverified",
       "availability": "unknown",
-      "lastCheckedAt": "2026-11-21T12:41:15.883Z",
+      "lastCheckedAt": "2026-11-22T12:36:57.678Z",
       "pageStatus": 200,
       "checkReason": "page-reachable-stock-and-price-not-verified"
     }
