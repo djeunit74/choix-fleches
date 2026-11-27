@@ -8,14 +8,13 @@
   <meta name="theme-color" content="#b23b2f" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon-assistant-archer-v11.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=20261111-theme-9" />
-  <link rel="stylesheet" id="releaseTheme" href="release.css?v=20261111-theme-9" />
+  <link rel="stylesheet" href="styles.css?v=20261127-simple-2" />
+  <link rel="stylesheet" id="releaseTheme" href="release.css?v=20261127-simple-2" />
 </head>
 <body>
   <main class="app">
     <header class="hero">
-      <h1>Assistant Archer</h1>
-      <p>Choisir un tube, vérifier sa pointe et retrouver ses réglages.</p>
+      <div class="hero-copy"><h1>Assistant Archer</h1><p>Mesurer, comparer, garder ses repères.</p></div>
       <details class="app-settings">
         <summary class="app-settings-toggle" aria-label="Ouvrir les parametres"><span class="gear-icon" aria-hidden="true">&#9881;</span><span> Paramètres</span></summary>
         <div class="app-settings-body">
@@ -28,12 +27,12 @@
       </details>
     </header>
 
-    <nav class="tab-nav" aria-label="Navigation principale"><button type="button" class="tab-button is-active" data-tab="spine">Choisir un tube</button><button type="button" class="tab-button" data-tab="point">Vérifier ma pointe</button><button type="button" class="tab-button" data-tab="arc-setup">Mesurer mon arc</button><button type="button" class="tab-button" data-tab="notebook">Mon carnet</button><button type="button" class="tab-button" data-tab="sight" id="sightTabButton">Mes repères</button></nav>
+    <nav class="tab-nav" aria-label="Navigation principale"><button type="button" class="tab-button is-active" data-tab="spine">Tubes</button><button type="button" class="tab-button" data-tab="point">Pointes</button><button type="button" class="tab-button" data-tab="arc-setup">Mon arc</button><button type="button" class="tab-button" data-tab="notebook">Carnet</button><button type="button" class="tab-button" data-tab="sight" id="sightTabButton">Repères</button></nav>
 
     <section class="tab-panel" data-panel="point" hidden>
       <section class="card">
-        <h2>Mon tube, mon spine, ma pointe</h2>
-        <p>Vérifiez votre montage actuel, comparez vos options de pointe et préparez un essai au tir. Pour arc classique ou arc nu à décoche aux doigts.</p>
+        <h2>Comparer mes pointes</h2>
+        <p>Comparez votre montage au tableau, puis préparez un essai au tir. Pour classique et arc nu à décoche aux doigts.</p>
         <form id="point-form" novalidate>
           <fieldset><legend>1. Mon tube actuel</legend><div class="field-grid">
             <label>Marque du tube<select id="point-brand"><option value="">Choisir la marque</option><option value="easton">Easton</option><option value="victory">Victory</option><option value="skylon">Skylon</option><option value="carbon">Carbon Express (document uniquement)</option></select></label>
@@ -47,7 +46,7 @@
           <fieldset><legend>2. Ma masse avant</legend><div class="field-grid">
             <label>Masse de ma pointe (grains)<input id="point-mass" type="number" min="1" step="any" required></label>
             <label>Insert, outsert et autres composants avant (grains)<input id="point-insert" type="number" min="0" step="any" placeholder="0 si aucun" required></label>
-          </div><label>Autres masses de pointe à comparer (facultatif)<input id="point-candidates" type="text" maxlength="150" placeholder="Séparer les masses par ;" aria-describedby="candidate-help"></label><p id="candidate-help">Saisissez seulement les masses que vous envisagez pour une pointe compatible. L’insert reste inchangé dans la comparaison.</p></fieldset>
+          </div><details id="point-options"><summary>Comparer d’autres masses de pointe (facultatif)</summary><label>Autres masses de pointe à comparer (facultatif)<input id="point-candidates" type="text" maxlength="150" placeholder="Séparer les masses par ;" aria-describedby="candidate-help"></label><p id="candidate-help">Saisissez seulement les masses que vous envisagez pour une pointe compatible. L’insert reste inchangé dans la comparaison.</p></details></fieldset>
           <details class="trial-details"><summary>3. J’ai fait un essai fûts nus / flèches empennées (facultatif)</summary>
             <p>Comparez des flèches de même montage, pointes de cible, au même point visé. Observez les groupes depuis le pas de tir. Contrôlez d’abord le détalonnage et les contacts ; faites-vous accompagner pour vos premiers essais.</p>
             <div class="field-grid"><label>Ma latéralité<select id="point-hand"><option value="">À préciser</option><option value="right">Droitier</option><option value="left">Gaucher</option></select></label>
@@ -56,11 +55,11 @@
             <label class="check-line"><input id="point-clearance" type="checkbox"> J’ai contrôlé l’absence de contact parasite des flèches avec l’arc.</label>
           </details>
           <label class="check-line"><input id="point-measured" type="checkbox"> Je confirme mes mesures, les masses avant et la convention de longueur du fabricant.</label>
-          <button type="submit">Vérifier mon montage et mes options</button>
+          <button type="submit">Comparer au tableau</button>
         </form>
       </section>
-      <section class="card result" id="point-result" aria-live="polite"><h2>Ma pointe est-elle adaptée ?</h2><p>Le spine seul ne suffit pas. Renseignez le montage pour lire le tableau ; ajoutez votre essai pour obtenir une piste de réglage.</p></section>
-      <section class="card"><button id="save-point" type="button" disabled>Enregistrer dans mon carnet</button><p id="point-save-status" role="status"></p></section>
+      <section class="card result" id="point-result" tabindex="-1" aria-live="polite" hidden><h2>Ma comparaison</h2><p>Le spine seul ne suffit pas. Renseignez le montage pour lire le tableau ; ajoutez votre essai pour obtenir une piste de réglage.</p></section>
+      <section class="point-actions" hidden><button id="save-point" type="button" disabled>Enregistrer dans mon carnet</button><p id="point-save-status" role="status"></p></section>
     </section>
 
     <section class="tab-panel is-active" data-panel="spine">
@@ -99,19 +98,31 @@
       </section>
       <section class="card result tube-result" id="result" tabindex="-1" aria-live="polite" hidden></section>
       <section id="history" hidden><div id="historyContent"></div><button id="clearHistoryBtn" type="button">Vider l’historique</button></section>
-      <section class="card tube-source-card"><details><summary>Sources, limites et vérification avant montage</summary><p>Easton, Victory et Skylon sont lus à partir des transcriptions contrôlées le 21 octobre 2026. Un résultat n’est ni une preuve de disponibilité commerciale ni une validation du montage complet. Carbon Express reste consultable dans son document, sans lecture automatique.</p><p>Les lignes absentes, les limites ambiguës et les conditions non couvertes sont signalées sans résultat de remplacement. Les références et le détail des mesures apparaissent avec chaque résultat.</p><p><a href="audit-report.md">Rapport des vérifications</a> · <a href="https://eastonarchery.com/safety/" target="_blank" rel="noopener noreferrer">Inspection des flèches avant utilisation</a></p></details></section>
+
     </section>
 
     <section class="tab-panel arc-setup-panel" data-panel="arc-setup" hidden>
-      <section class="card arc-setup-card"><h2 id="arcSetupHeading">Reglage de l'arc classique</h2><p id="arcSetupIntro">Mesures de base et estimations indicatives. La notice du fabricant de votre poignee et de vos branches reste prioritaire.</p><p id="arcSetupDocRef">Repere pedagogique FFTA : <a href="https://www.ffta.fr/sites/default/files/imported-documents-files/7_arcclassique.pdf" target="_blank" rel="noopener noreferrer">Je regle mon arc classique</a>.</p>
-      <div class="measurement-guide arc-classic-only"><h3>Mesures a prendre</h3><ul class="measurement-list"><li><strong>Band</strong> : mesurez selon le point de reference indique par le fabricant de la poignee.</li><li><strong>Tiller</strong> : mesurez haut et bas avec la meme methode et calculez la difference.</li></ul></div>
-      <div class="measurement-guide danger-guide arc-classic-only"><h3>Important</h3><ul class="measurement-list"><li>Respectez les limites de reglage et la procedure du fabricant.</li><li>Travaillez par petites corrections et re-mesurez.</li><li>En cas de doute, demandez l'aide d'un entraineur ou d'un referent materiel.</li></ul></div>
-      <form id="arc-setup-form" novalidate autocomplete="off">
-        <section class="subcard arc-classic-only"><h3>Band et tiller</h3><div class="field-grid"><label>Taille d'arc (AMO)<select id="arcLength"><option value="66">66&quot;</option><option value="68" selected>68&quot;</option><option value="70">70&quot;</option><option value="72">72&quot;</option></select></label><label>Distance corde / branche haute (mm)<input id="upperTiller" type="number" min="150" max="260" step="0.5" placeholder="Ex : 222" required /></label><label>Distance corde / branche basse mesuree (mm)<input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" placeholder="Ex : 218" required /></label><label>Band mesure (cm)<input id="braceMeasured" type="number" min="18" max="28" step="0.1" placeholder="Ex : 22,6" /></label></div><p>Tiller = distance haute moins distance basse. Aucune valeur cible universelle n’est proposée.</p></section>
-        <section class="subcard arc-classic-only"><h3>Identification du matériel</h3><div class="field-grid"><label>Taille de poignee (&quot;)<select id="riserLength"><option value="23">23&quot;</option><option value="25" selected>25&quot;</option><option value="27">27&quot;</option></select></label><label>Puissance marquee des branches (lbs)<input id="limbMarkedWeight" type="number" min="10" max="60" step="1" placeholder="Mesure personnelle" required /></label><label>Allonge reelle (&quot;)<input id="drawLengthForWeight" type="number" min="22" max="34" step="0.25" placeholder="Mesure personnelle" required /></label></div><p><strong>Estimation uniquement.</strong> Pour choisir une fleche, utilisez de preference une puissance mesuree au peson a votre allonge.</p></section>
-        <section class="subcard" id="barebowArcSetupCard" hidden><h3>Reglage arc nu</h3><p>Les reglages d'arc nu dependent fortement de la prise de corde et du deplacement des doigts sous l'encoche. Validez a plusieurs distances.</p><div class="field-grid"><label>Band mesure (cm)<input id="arcBbBandMeasured" type="number" min="18" max="28" step="0.1" /></label><label>Tiller mesure (mm)<input id="arcBbTillerMeasured" type="number" min="-8" max="12" step="0.5" /></label><label>Detalonnage mesure (mm)<input id="arcBbNockingMeasured" type="number" min="0" max="20" step="0.5" /></label><label>Point d ancrage<input id="arcBbAnchorPoint" type="text" maxlength="80" /></label><label>Deplacement des doigts sous l encoche<input id="arcBbStringwalk" type="text" maxlength="80" /></label><label>Point d encochage<input id="arcBbNockingPoint" type="text" maxlength="40" /></label><label>Band<input id="arcBbBraceHeight" type="text" maxlength="40" /></label><label>Tiller<input id="arcBbTiller" type="text" maxlength="40" /></label><label>Berger button<input id="arcBbBerger" type="text" maxlength="80" /></label><label>Centrage fleche<input id="arcBbCenterShot" type="text" maxlength="80" /></label></div></section>
-        <button type="submit">Analyser les reglages</button>
-      </form></section><section class="card result" id="arcSetupResult" aria-live="polite"><h2>Resultat</h2><p>Entrez vos mesures puis lancez l'analyse.</p></section>
+      <section class="card arc-setup-card">
+        <h2 id="arcSetupHeading">Mesures de mon arc</h2>
+        <p id="arcSetupIntro">Relevez le band et les deux distances de tiller.</p>
+        <form id="arc-setup-form" novalidate autocomplete="off">
+          <section class="subcard"><h3>Mes relevés</h3><div class="field-grid">
+            <label>Distance corde / branche haute (mm)<input id="upperTiller" type="number" min="150" max="260" step="0.5" placeholder="Ex : 222" required /></label>
+<label>Distance corde / branche basse mesuree (mm)<input id="lowerTillerMeasured" type="number" min="150" max="260" step="0.5" placeholder="Ex : 218" required /></label>
+<label>Band mesure (cm)<input id="braceMeasured" type="number" min="18" max="28" step="0.1" placeholder="Ex : 22,6" /></label>
+          </div><p>Utilisez la même méthode pour les mesures haute et basse.</p></section>
+          <details class="measure-help"><summary>Comment mesurer le band et le tiller ?</summary><p>Pour le band, utilisez le point de référence défini par la notice de la poignée. Pour le tiller, relevez la distance corde / branche en haut puis en bas, aux points indiqués par le fabricant.</p><p id="arcSetupDocRef">La notice du matériel définit les limites de réglage.</p><p>Le calcul ne prescrit aucune valeur cible. Faites-vous accompagner pour une première modification des vis de branches.</p></details>
+          <details class="subcard"><summary>Identifier mon matériel (facultatif)</summary><h3>Identification du matériel</h3><div class="field-grid">
+            <label>Taille d'arc (AMO)<select id="arcLength"><option value="66">66&quot;</option><option value="68" selected>68&quot;</option><option value="70">70&quot;</option><option value="72">72&quot;</option></select></label>
+<label>Taille de poignee (&quot;)<select id="riserLength"><option value="23">23&quot;</option><option value="25" selected>25&quot;</option><option value="27">27&quot;</option></select></label>
+<label>Puissance marquee des branches (lbs)<input id="limbMarkedWeight" type="number" min="10" max="60" step="1" placeholder="Mesure personnelle" required /></label>
+<label>Allonge reelle (&quot;)<input id="drawLengthForWeight" type="number" min="22" max="34" step="0.25" placeholder="Mesure personnelle" required /></label>
+          </div><p>Ces champs n’estiment pas la puissance réelle.</p></details>
+                  <section class="subcard" id="barebowArcSetupCard" hidden><h3>Reglage arc nu</h3><p>Les reglages d'arc nu dependent fortement de la prise de corde et du deplacement des doigts sous l'encoche. Validez a plusieurs distances.</p><div class="field-grid"><label>Band mesure (cm)<input id="arcBbBandMeasured" type="number" min="18" max="28" step="0.1" /></label><label>Tiller mesure (mm)<input id="arcBbTillerMeasured" type="number" min="-8" max="12" step="0.5" /></label><label>Detalonnage mesure (mm)<input id="arcBbNockingMeasured" type="number" min="0" max="20" step="0.5" /></label><label>Point d ancrage<input id="arcBbAnchorPoint" type="text" maxlength="80" /></label><label>Deplacement des doigts sous l encoche<input id="arcBbStringwalk" type="text" maxlength="80" /></label><label>Point d encochage<input id="arcBbNockingPoint" type="text" maxlength="40" /></label><label>Band<input id="arcBbBraceHeight" type="text" maxlength="40" /></label><label>Tiller<input id="arcBbTiller" type="text" maxlength="40" /></label><label>Berger button<input id="arcBbBerger" type="text" maxlength="80" /></label><label>Centrage fleche<input id="arcBbCenterShot" type="text" maxlength="80" /></label></div></section>
+          <button type="submit">Calculer mon tiller</button>
+        </form>
+      </section>
+      <section class="card result" id="arcSetupResult" aria-live="polite" hidden></section>
     </section>
 
     <section class="tab-panel" data-panel="sight" hidden>
@@ -151,50 +162,50 @@
           </section>
 
           <section class="subcard">
-            <h3>Reperes par distance</h3>
+            <h3>Mes repères par distance</h3><p>Saisissez vos relevés personnels et précisez leur unité dans les notes. La réglette facultative représente uniquement les valeurs numériques en centimètres.</p>
             <div class="sight-layout">
-              <div class="sight-mark-grid sight-mark-fields" aria-hidden="true">
+              <div class="sight-mark-grid sight-mark-fields">
                 <label>
                   18 m
-                  <input id="sightMark18" class="sight-mark-input" data-distance="18" type="hidden" inputmode="decimal" maxlength="20" />
+                  <input id="sightMark18" class="sight-mark-input" data-distance="18" type="text" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   30 m
-                  <input id="sightMark30" class="sight-mark-input" data-distance="30" type="hidden" inputmode="decimal" maxlength="20" />
+                  <input id="sightMark30" class="sight-mark-input" data-distance="30" type="text" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   40 m
-                  <input id="sightMark40" class="sight-mark-input" data-distance="40" type="hidden" inputmode="decimal" maxlength="20" />
+                  <input id="sightMark40" class="sight-mark-input" data-distance="40" type="text" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   50 m
-                  <input id="sightMark50" class="sight-mark-input" data-distance="50" type="hidden" inputmode="decimal" maxlength="20" />
+                  <input id="sightMark50" class="sight-mark-input" data-distance="50" type="text" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   60 m
-                  <input id="sightMark60" class="sight-mark-input" data-distance="60" type="hidden" inputmode="decimal" maxlength="20" />
+                  <input id="sightMark60" class="sight-mark-input" data-distance="60" type="text" inputmode="decimal" maxlength="20" />
                 </label>
                 <label>
                   70 m
-                  <input id="sightMark70" class="sight-mark-input" data-distance="70" type="hidden" inputmode="decimal" maxlength="20" />
+                  <input id="sightMark70" class="sight-mark-input" data-distance="70" type="text" inputmode="decimal" maxlength="20" />
                 </label>
               </div>
               <div class="sight-custom-distance">
+
                 <label>
+                  Distance a reperer (m)
+                  <input id="sightCustomDistance" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="Ex : 25" />
+                </label>
+                <button id="addSightDistanceBtn" type="button">Ajouter une distance</button>
+              </div>
+
+              <details class="sight-ruler-details"><summary>Voir mes repères sur la réglette (facultatif)</summary><label>
                   Ecriture reglette
                   <select id="scaleLabelSideSight" aria-label="Position des mesures de reglette viseur">
                     <option value="left">Gauche</option>
                     <option value="right">Droite</option>
                   </select>
-                </label>
-                <label>
-                  Distance a reperer (m)
-                  <input id="sightCustomDistance" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="Ex : 25" />
-                </label>
-                <button id="addSightDistanceBtn" type="button">Ajouter le curseur</button>
-              </div>
-
-              <div class="sight-visual" id="sightVisual" aria-label="Representation des reperes de viseur">
+                </label>              <div class="sight-visual" id="sightVisual" aria-label="Representation des reperes de viseur">
                 <p class="sight-help" id="sightHelp">Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette.</p>
                 <div class="sight-rail" id="sightRail" aria-label="Reglette de viseur de 0 a 16 centimetres">
                   <span class="sight-scale-label" style="top: 8%">0 cm</span>
@@ -232,150 +243,115 @@
     </section>
 
     <section class="tab-panel" data-panel="notebook" hidden>
-      <section class="card">
-        <h2>Carnet de reglage</h2>
-        <p>Enregistrez une fiche personnelle pour garder une trace du materiel, des reglages et des fleches utilisees.</p>
+      <section class="card"><h2>Mon carnet</h2><p>Gardez vos configurations et vos observations au tir. Seul un titre, un arc ou un modèle de flèche est nécessaire pour enregistrer.</p>
         <form id="notebook-form" novalidate autocomplete="off">
-          <section class="subcard">
-            <h3>Demarrage rapide</h3>
-            <p>Le plus simple est de repartir du dernier calcul deja fait dans l'app.</p>
-            <div class="row-actions">
-              <button id="prefillNotebookBtn" type="button">Pre-remplir avec le dernier calcul</button>
-              <button id="saveNotebookBtn" type="submit">Enregistrer la fiche</button>
-              <button id="resetNotebookBtn" type="button">Vider</button>
-            </div>
-          </section>
-
-          <section class="subcard">
-            <h3>Fiche</h3>
-            <div class="field-grid">
-              <label>
+          <div class="field-grid">
+            <label>
                 Date
                 <input id="notebookDate" type="date" required />
               </label>
-              <label>
+<label>
                 Titre libre
                 <input id="notebookTitle" type="text" maxlength="100" placeholder="Ex : reglages salle mars / setup exterieur" />
               </label>
-            </div>
-          </section>
-
-          <section class="subcard">
-            <h3>Materiel</h3>
-            <div class="field-grid">
-              <label>
+<label>
                 Arc / modele
                 <input id="notebookArcModel" type="text" maxlength="100" placeholder="Ex : WNS / Hoyt / autre" />
               </label>
-              <label>
-                Taille d'arc
-                <input id="notebookArcLength" type="text" maxlength="20" placeholder='Ex : 68"' />
-              </label>
-              <label>
-                Poignee
-                <input id="notebookRiserLength" type="text" maxlength="20" placeholder='Ex : 25"' />
-              </label>
-              <label>
-                Branches
-                <input id="notebookLimbs" type="text" maxlength="100" placeholder="Ex : WNS / Uukha / autre" />
-              </label>
-              <label>
-                Puissance marquee
-                <input id="notebookLimbWeight" type="text" maxlength="20" placeholder="Ex : 30 lbs" />
-              </label>
-              <label>
-                Allonge
-                <input id="notebookDrawLength" type="text" maxlength="20" placeholder='Ex : 28"' />
-              </label>
-            </div>
-          </section>
-
-          <section class="subcard">
-            <h3>Reglage</h3>
-            <div class="field-grid">
-              <label>
-                Band
-                <input id="notebookBrace" type="text" maxlength="20" placeholder="Ex : 22,5 cm" />
-              </label>
-              <label>
-                Tiller haut
-                <input id="notebookUpperTiller" type="text" maxlength="20" placeholder="Ex : 222 mm" />
-              </label>
-              <label>
-                Tiller bas
-                <input id="notebookLowerTiller" type="text" maxlength="20" placeholder="Ex : 216 mm" />
-              </label>
-              <label>
-                Tiller positif
-                <input id="notebookPositiveTiller" type="text" maxlength="20" placeholder="Ex : +6 mm" />
-              </label>
-              <label>
-                Puissance tiree estimee
-                <input id="notebookEstimatedWeight" type="text" maxlength="20" placeholder="Ex : 31 lbs" />
-              </label>
-            </div>
-          </section>
-
-          <section class="subcard">
-            <h3>Fleches</h3>
-            <div class="field-grid">
-              <label>
-                Marque
-                <input id="notebookArrowBrand" type="text" maxlength="80" placeholder="Ex : Skylon" />
-              </label>
-              <label>
+<label>
                 Modele
                 <input id="notebookArrowModel" type="text" maxlength="100" list="notebookArrowModelOptions" placeholder="Ex : Paragon 800" />
                 <datalist id="notebookArrowModelOptions"></datalist>
                 <small id="notebookArrowModelHint" class="field-hint"></small>
               </label>
-              <label>
+<label>
                 Spine
                 <input id="notebookArrowSpine" type="text" maxlength="40" placeholder="Ex : 800 / A3 / NPX7500" />
               </label>
+          </div>
+          <details id="notebook-details"><summary>Ajouter les mesures et le matériel détaillé</summary>
+            <h3>Arc et réglages</h3><div class="field-grid">
               <label>
+                Taille d'arc
+                <input id="notebookArcLength" type="text" maxlength="20" placeholder='Ex : 68"' />
+              </label>
+<label>
+                Poignee
+                <input id="notebookRiserLength" type="text" maxlength="20" placeholder='Ex : 25"' />
+              </label>
+<label>
+                Branches
+                <input id="notebookLimbs" type="text" maxlength="100" placeholder="Ex : WNS / Uukha / autre" />
+              </label>
+<label>
+                Puissance marquee
+                <input id="notebookLimbWeight" type="text" maxlength="20" placeholder="Ex : 30 lbs" />
+              </label>
+<label>
+                Allonge
+                <input id="notebookDrawLength" type="text" maxlength="20" placeholder='Ex : 28"' />
+              </label>
+<label>
+                Band
+                <input id="notebookBrace" type="text" maxlength="20" placeholder="Ex : 22,5 cm" />
+              </label>
+<label>
+                Tiller haut
+                <input id="notebookUpperTiller" type="text" maxlength="20" placeholder="Ex : 222 mm" />
+              </label>
+<label>
+                Tiller bas
+                <input id="notebookLowerTiller" type="text" maxlength="20" placeholder="Ex : 216 mm" />
+              </label>
+<label>
+                Tiller positif
+                <input id="notebookPositiveTiller" type="text" maxlength="20" placeholder="Ex : +6 mm" />
+              </label>
+<label>
+                Puissance tiree estimee
+                <input id="notebookEstimatedWeight" type="text" maxlength="20" placeholder="Ex : 31 lbs" />
+              </label>
+            </div>
+            <h3>Flèches</h3><div class="field-grid">
+              <label>
+                Marque
+                <input id="notebookArrowBrand" type="text" maxlength="80" placeholder="Ex : Skylon" />
+              </label>
+<label>
                 Longueur
                 <input id="notebookArrowLength" type="text" maxlength="20" placeholder='Ex : 28"' />
               </label>
-              <label>
+<label>
                 Pointe
                 <input id="notebookPointWeight" type="text" maxlength="20" placeholder="Ex : 100 gr" />
               </label>
             </div>
-          </section>
-
-          <section class="subcard">
-            <h3>Notes</h3>
-            <label>
+            <button id="prefillNotebookBtn" type="button" class="secondary-action">Reprendre mes mesures</button>
+          </details>
+          <label>
               Remarques / sensations / conseil entraineur
               <textarea id="notebookNotes" rows="5" maxlength="1000" placeholder="Ex : bon ressenti, a re-tester avec 110 gr, avis entraineur..."></textarea>
             </label>
-          </section>
+          <div class="row-actions"><button id="saveNotebookBtn" type="submit">Enregistrer la fiche</button><button id="resetNotebookBtn" type="button" class="secondary-action">Nouvelle fiche</button></div>
         </form>
       </section>
-
-      <section class="card result" id="notebookResult" aria-live="polite">
-        <h2>Fiches enregistrees</h2>
-        <p id="notebookStatus">Aucune fiche pour le moment.</p>
-        <div id="notebookContent">
-        </div>
-      </section>
+      <section class="card result" id="notebookResult" aria-live="polite"><h2>Mes fiches</h2><p id="notebookStatus">Aucune fiche pour le moment.</p><div id="notebookContent"></div></section>
     </section>
   </main>
   <button id="feedbackToggleBtn" class="feedback-toggle" type="button" aria-expanded="false" aria-controls="feedbackPanel">Je donne mon avis</button>
   <section id="feedbackPanel" class="feedback-panel" hidden><div class="feedback-panel-card"><div class="feedback-panel-head"><h2>Je donne mon avis</h2><button id="feedbackCloseBtn" type="button" class="feedback-close">Fermer</button></div><form id="feedbackForm"><fieldset class="feedback-categories"><legend>Categorie</legend><label><input type="radio" name="feedbackCategory" value="Ca manque" /> Ca manque</label><label><input type="radio" name="feedbackCategory" value="C'est faux" /> C'est faux</label><label><input type="radio" name="feedbackCategory" value="C'est confus" /> C'est confus</label><label><input type="radio" name="feedbackCategory" value="C'est utile" /> C'est utile</label></fieldset><label>Mon avis<textarea id="feedbackMessage" rows="4" maxlength="600"></textarea></label><div class="row-actions"><button id="feedbackSendBtn" type="button">Envoyer mon avis</button><button id="feedbackResetBtn" type="button">Vider</button></div></form><p id="feedbackStatus"></p></div></section>
-  <script src="app-config.js?v=20261111-theme-9"></script>
-  <script src="app.js?v=20261111-theme-9"></script>
-  <script src="foc-measure.js?v=20261111-theme-9"></script>
-  <script src="reliability.js?v=20261111-theme-9"></script>
-  <script src="verified-engine.js?v=20261111-theme-9"></script>
-  <script src="verified-app.js?v=20261111-theme-9"></script>
-  <script src="tube-selector.js?v=20261111-theme-9"></script>
-  <script src="tube-ui.js?v=20261111-theme-9"></script>
-  <script src="point-advisor.js?v=20261111-theme-9"></script>
-  <script src="point-ui.js?v=20261111-theme-9"></script>
-  <script src="backup-data.js?v=20261111-theme-9"></script>
-  <script src="backup-ui.js?v=20261111-theme-9"></script>
-  <script src="pwa.js?v=20261111-theme-9"></script>
+  <script src="app-config.js?v=20261127-simple-2"></script>
+  <script src="app.js?v=20261127-simple-2"></script>
+  <script src="foc-measure.js?v=20261127-simple-2"></script>
+  <script src="reliability.js?v=20261127-simple-2"></script>
+  <script src="verified-engine.js?v=20261127-simple-2"></script>
+  <script src="verified-app.js?v=20261127-simple-2"></script>
+  <script src="tube-selector.js?v=20261127-simple-2"></script>
+  <script src="tube-ui.js?v=20261127-simple-2"></script>
+  <script src="point-advisor.js?v=20261127-simple-2"></script>
+  <script src="point-ui.js?v=20261127-simple-2"></script>
+  <script src="backup-data.js?v=20261127-simple-2"></script>
+  <script src="backup-ui.js?v=20261127-simple-2"></script>
+  <script src="pwa.js?v=20261127-simple-2"></script>
 </body>
-</html>
+</html></details>

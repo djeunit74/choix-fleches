@@ -904,8 +904,6 @@ function profileLabel(key) {
   return "Recurve";
 }
 function setActiveTab(tabName) {
-  const releaseTheme = document.getElementById('releaseTheme');
-  if (releaseTheme) releaseTheme.disabled = ['notebook', 'sight'].includes(tabName);
   els.tabButtons.forEach((button) => {
     const isActive = button.dataset.tab === tabName;
     button.classList.toggle("is-active", isActive);
@@ -958,17 +956,17 @@ function sightLabelByBowStyle(style, plural = false) {
 function updateSightCopyForBowStyle(style) {
   const normalized = normalizeBowStyle(style);
   const isBarebow = normalized === "barebow";
-  if (els.sightHeading) els.sightHeading.textContent = isBarebow ? "Reglage barebow" : "Reglage du viseur";
-  if (els.sightTabButton) els.sightTabButton.textContent = isBarebow ? "Reglage barebow" : "Reglage du viseur";
+  if (els.sightHeading) els.sightHeading.textContent = isBarebow ? "Mes repères de prise de corde" : "Mes repères de viseur";
+  if (els.sightTabButton) els.sightTabButton.textContent = "Repères";
   if (els.sightIntro) els.sightIntro.textContent = isBarebow
-    ? "Enregistrez vos reperes barebow par distance et visualisez-les sur une palette."
-    : "Enregistrez vos reperes de viseur par distance et visualisez-les sur une reglette.";
+    ? "Conservez vos prises de corde réellement relevées à chaque distance."
+    : "Conservez vos réglages de viseur réellement relevés à chaque distance.";
   if (els.sightHelp) els.sightHelp.textContent = isBarebow
     ? "Indiquez une distance, ajoutez le curseur, puis glissez-le sur la palette."
     : "Indiquez une distance, ajoutez le curseur, puis glissez-le sur la reglette.";
   if (els.sightScaleNote) els.sightScaleNote.textContent = "0 cm en haut, 16 cm en bas. Fleches clavier : 1 mm, Page : 1 cm.";
-  if (els.sightNotesLabel) els.sightNotesLabel.textContent = isBarebow ? "Notes barebow" : "Notes viseur";
-  if (els.saveSightBtn) els.saveSightBtn.textContent = isBarebow ? "Enregistrer le reglage barebow" : "Enregistrer le reglage viseur";
+  if (els.sightNotesLabel) els.sightNotesLabel.textContent = "Notes et unité des repères";
+  if (els.saveSightBtn) els.saveSightBtn.textContent = "Enregistrer mes repères";
   if (els.sightResultHeading) els.sightResultHeading.textContent = isBarebow ? "Reglages barebow enregistres" : "Reglages viseur enregistres";
   if (els.sightRail) els.sightRail.setAttribute("aria-label", isBarebow ? "Palette barebow de 0 a 16 centimetres" : "Reglette de viseur de 0 a 16 centimetres");
   if (els.barebowArcSetupCard) els.barebowArcSetupCard.hidden = !isBarebow;
@@ -2236,6 +2234,8 @@ function fillNotebookForm(entry = {}) {
   els.notebookPointWeight.value = entry.pointWeight || "";
   els.notebookNotes.value = entry.notes || "";
   renderNotebookArrowModelSuggestions(entry._modelSuggestions || [], entry.arrowModel || "");
+  const details = document.getElementById('notebook-details');
+  if (details) details.open = Array.from(details.querySelectorAll('input')).some(input => input.value.trim());
 }
 
 function resetNotebookForm() {
@@ -2440,7 +2440,7 @@ function sightInputForDistance(distance) {
 
 function clearCustomSightInputs() {
   document.querySelectorAll('.sight-mark-input').forEach(input => { delete input.dataset.pending; });
-  document.querySelectorAll(".sight-mark-input[data-custom='true']").forEach((input) => input.remove());
+  document.querySelectorAll(".sight-mark-input[data-custom='true']").forEach((input) => (input.closest('label') || input).remove());
   SIGHT_DISTANCES.forEach((distance) => {
     const input = sightInputForDistance(distance);
     if (input) input.value = "";
@@ -2448,8 +2448,8 @@ function clearCustomSightInputs() {
 }
 
 function normalizeSightDistance(value) {
-  const parsed = Math.round(Number(String(value || "").replace(",", ".")));
-  if (!Number.isFinite(parsed) || parsed < 1 || parsed > 120) return "";
+  const parsed = Number(String(value || "").replace(",", "."));
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 120) return "";
   return String(parsed);
 }
 
@@ -2458,12 +2458,16 @@ function ensureSightInput(distance) {
   const existing = normalized ? sightInputForDistance(normalized) : null;
   if (existing instanceof HTMLInputElement) return existing;
   const input = document.createElement("input");
-  input.type = "hidden";
+  input.type = "text";
   input.className = "sight-mark-input";
   input.dataset.distance = normalized;
   input.dataset.custom = "true";
-  document.querySelector(".sight-mark-fields")?.appendChild(input);
-  input.addEventListener("input", renderSightVisual);
+  input.maxLength = 20;
+  const label = document.createElement('label');
+  label.textContent = normalized + ' m';
+  label.appendChild(input);
+  document.querySelector(".sight-mark-fields")?.appendChild(label);
+  input.addEventListener("input", () => { delete input.dataset.pending; renderSightVisual(); });
   return input;
 }
 
@@ -3122,22 +3126,19 @@ els.notebookContent.addEventListener("click", (event) => {
 });
 
 document.querySelectorAll(".sight-mark-input").forEach((input) => {
-  input.addEventListener("input", renderSightVisual);
+  input.addEventListener("input", () => { delete input.dataset.pending; renderSightVisual(); });
 });
 
 els.addSightDistanceBtn.addEventListener("click", () => {
   const distance = normalizeSightDistance(els.sightCustomDistance.value);
   if (!distance) {
-    els.sightStatus.textContent = "Indiquez une distance entre 1 et 120 m.";
+    els.sightStatus.textContent = "Indiquez une distance entière entre 1 et 120 m.";
     return;
   }
   const input = ensureSightInput(distance);
-  if (!input.value.trim()) {
-    input.value = formatSightValue(defaultSightMarkForDistance(distance));
-    input.dataset.pending = 'true';
-  }
   els.sightCustomDistance.value = "";
-  els.sightStatus.textContent = `Curseur ${distance} m ajouté : placez-le sur votre mesure avant de l’enregistrer.`;
+  els.sightStatus.textContent = `Distance ${distance} m ajoutée : saisissez votre repère mesuré.`;
+  input.focus();
   renderSightVisual();
 });
 

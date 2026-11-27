@@ -4,8 +4,8 @@
   const sources = `<a href="https://eastonarchery.com/selector/" target="_blank" rel="noopener noreferrer">Sélecteur officiel Easton</a> · <a href="https://eastonarchery.com/foc-calculator/" target="_blank" rel="noopener noreferrer">Calculateur FOC Easton</a>`;
   const card = document.createElement('section');
   card.className = 'card reliability-card';
-  card.innerHTML = `<h2>Des repères, avec leurs limites</h2><p><strong>Mesuré</strong> : vos relevés au peson et à la règle. <strong>Calculé</strong> : une opération sur ces relevés. <strong>À confirmer</strong> : le choix du tube et des composants dans le tableau du modèle exact.</p><details><summary>Comprendre les résultats et consulter les sources</summary><p>Le catalogue et les tableaux intégrés ne sont pas intégralement revérifiés. Un résultat local, un classement ou une compatibilité affichée ne constitue pas une validation du fabricant. Vérifiez la longueur selon la convention de son tableau, la puissance, la masse de pointe et les composants avant achat ou coupe.</p><p>${sources}</p><p>Sources consultées le 21 octobre 2026. Le band et le tiller dépendent du matériel : utilisez la notice de votre poignée et de vos branches.</p></details>`;
-  document.querySelector('.tab-nav')?.before(card);
+  card.innerHTML = `<details><summary>Sources et limites de l’application</summary><p>Les transcriptions Easton, Victory et Skylon ont été contrôlées le 21 octobre 2026. Elles donnent une référence de tableau, sans certifier un modèle ou un montage complet.</p><p><strong>Mesuré</strong> : vos relevés. <strong>Calculé</strong> : une opération sur ces relevés. <strong>À confirmer au tir</strong> : le choix final du montage.</p><p>${sources}</p><p><a href="audit-report.md">Rapport des vérifications</a> · <a href="audit-inventory.json">Inventaire des données</a></p><p>Le catalogue historique, les prix et les compatibilités non démontrés restent exclus des conseils automatiques. Les consignes de la notice de votre matériel restent prioritaires.</p></details>`;
+  document.querySelector('main')?.append(card);
 
   // Make measurement confirmation available in both search modes.
   const checks = document.querySelector('.measurement-check');
@@ -30,10 +30,10 @@
     if (typeof lastArcSetupSnapshot !== 'undefined') lastArcSetupSnapshot = null;
   };
 
-  const backup = document.createElement('section');
+  const backup = document.createElement('details');
   backup.id = 'backup-card';
   backup.className = 'card';
-  backup.innerHTML = `<h2>Sauvegarder mes données</h2><p>Vos fiches et repères sont conservés dans ce navigateur. Exportez une copie avant de changer d’appareil ou d’effacer ses données.</p><button type="button">Télécharger ma sauvegarde</button><p role="status"></p>`;
+  backup.innerHTML = `<summary>Sauvegarder ou retrouver mes fiches</summary><p>Vos fiches restent dans ce navigateur. Gardez une sauvegarde pour changer d’appareil ou les retrouver après un effacement.</p><button type="button">Télécharger ma sauvegarde</button><p role="status"></p>`;
   document.querySelector('[data-panel="notebook"]')?.append(backup);
   backup.querySelector('button').addEventListener('click', () => {
     const status = backup.querySelector('[role="status"]');
