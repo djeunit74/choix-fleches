@@ -1,38 +1,10 @@
-name: Refactor non-regression
-
+name: Audit factuel et non-regression
 on:
   push:
-    branches:
-      - main
-      - refactor-preserve-features
-    paths:
-      - 'test/**'
-      - 'scripts/refactor-check.mjs'
-      - 'scripts/manufacturer-reference-check.mjs'
-      - 'scripts/expert-model-ranking-check.mjs'
-      - 'scripts/catalog-audit-check.mjs'
-      - 'scripts/vane-library-check.mjs'
-      - 'scripts/vane-mass-check.mjs'
-      - 'scripts/point-catalog-check.mjs'
-      - 'scripts/easton-mode-check.mjs'
-      - 'scripts/easton-groups-check.mjs'
-      - 'scripts/easton-precision-check.mjs'
-      - '.github/workflows/refactor-check.yml'
+    branches: [main, 'codex/**']
   pull_request:
-    paths:
-      - 'test/**'
-      - 'scripts/refactor-check.mjs'
-      - 'scripts/manufacturer-reference-check.mjs'
-      - 'scripts/expert-model-ranking-check.mjs'
-      - 'scripts/catalog-audit-check.mjs'
-      - 'scripts/vane-library-check.mjs'
-      - 'scripts/vane-mass-check.mjs'
-      - 'scripts/point-catalog-check.mjs'
-      - 'scripts/easton-mode-check.mjs'
-      - 'scripts/easton-groups-check.mjs'
-      - 'scripts/easton-precision-check.mjs'
-      - '.github/workflows/refactor-check.yml'
-
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -41,45 +13,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Syntaxe JavaScript
+      - name: Syntaxe des sources actives
         run: |
-          node --check test/app-config.js
-          node --check test/app.js
-          node --check test/app-enhancements.js
-          node --check test/arrow-builder.js
-          node --check test/refactor-smoke.js
-          node --check test/barebow-guidance.js
-          node --check test/ui-refactor.js
-          node --check test/expert-audit.js
-          node --check test/onboarding.js
-          node --check test/avalon-addon.js
-          node --check test/manufacturer-reference.js
-          node --check test/expert-model-ranking.js
-          node --check test/catalog-audit.js
-          node --check test/vane-library-v25.js
-          node --check test/vane-mass-v27.js
-          node --check test/point-audit-v31.js
-          node --check test/easton-mode-v33.js
-          node --check test/easton-groups-v34.js
-          node --check test/easton-mode-v35.js
-          node --check test/easton-precision-v37.js
-      - name: Controles de non regression
-        run: node scripts/refactor-check.mjs
-      - name: References fabricant
-        run: node scripts/manufacturer-reference-check.mjs
-      - name: Classement expert des modeles
-        run: node scripts/expert-model-ranking-check.mjs
-      - name: Audit catalogue fabricant
-        run: node scripts/catalog-audit-check.mjs
-      - name: Bibliotheque empennages
-        run: node scripts/vane-library-check.mjs
-      - name: Masses empennages et FOC
-        run: node scripts/vane-mass-check.mjs
-      - name: Pointes Easton Victory Skylon
-        run: node scripts/point-catalog-check.mjs
-      - name: Mode Easton
-        run: node scripts/easton-mode-check.mjs
-      - name: Groupes Easton recurve
-        run: node scripts/easton-groups-check.mjs
-      - name: Precision Easton v38
-        run: node scripts/easton-precision-check.mjs
+          node --check app.js
+          node --check app-config.js
+          node --check reliability.js
+          node --check foc-measure.js
+          node --check verified-app.js
+          node --check verified-engine.js
+          node --check scripts/refresh-prices.mjs
+      - name: Moteur verifie et parite public-test
+        run: node --test scripts/verified-check.test.cjs

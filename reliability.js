@@ -30,18 +30,6 @@
     if (typeof lastArcSetupSnapshot !== 'undefined') lastArcSetupSnapshot = null;
   };
 
-  const result = document.getElementById('result');
-  const markResult = () => {
-    if (!result || result.querySelector('[data-reliability]')) return;
-    const note = document.createElement('p');
-    note.dataset.reliability = 'true';
-    note.className = 'field-hint';
-    note.textContent = 'À confirmer : les recommandations et compatibilités issues du catalogue local ne sont pas certifiées. Consultez le tableau du modèle exact avant achat ou coupe.';
-    result.prepend(note);
-  };
-  new MutationObserver(markResult).observe(result, { childList: true });
-  markResult();
-
   const backup = document.createElement('section');
   backup.className = 'card';
   backup.innerHTML = `<h2>Sauvegarder mes données</h2><p>Vos fiches et repères sont conservés dans ce navigateur. Exportez une copie avant de changer d’appareil ou d’effacer ses données.</p><button type="button">Télécharger ma sauvegarde</button><p role="status"></p>`;

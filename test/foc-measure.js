@@ -7,7 +7,7 @@
   function calculateMeasuredFoc(lengthCm, balanceCm) {
     const length = Number(lengthCm);
     const balance = Number(balanceCm);
-    if (!Number.isFinite(length) || !Number.isFinite(balance) || length <= 0 || balance <= 0 || balance >= length) return null;
+    if (!Number.isFinite(length) || !Number.isFinite(balance) || length <= 0 || balance < 0) return null;
     return 100 * (balance - length / 2) / length;
   }
 

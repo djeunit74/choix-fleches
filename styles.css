@@ -1148,3 +1148,8 @@ ul {
     align-items: start;
   }
 }
+
+/* Audit : les attributs hidden doivent rester prioritaires sur les styles de cartes. */
+[hidden]{display:none!important}
+.verified-conditions{display:grid;gap:.85rem;border:1px solid var(--line);border-radius:12px;padding:1rem}
+.reliability-card details{line-height:1.6}
