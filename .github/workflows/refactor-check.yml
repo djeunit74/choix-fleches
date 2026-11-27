@@ -31,4 +31,4 @@ jobs:
           node --check tube-selector.js
           node --check tube-ui.js
       - name: Moteur verifie et parite public-test
-        run: node --test scripts/verified-check.test.cjs scripts/release-check.test.cjs
+        run: node --test scripts/verified-check.test.cjs scripts/release-check.test.cjs scripts/usability-check.test.cjs
